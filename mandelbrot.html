@@ -1,0 +1,474 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Conjunto de Mandelbrot - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        #canvas {
+            cursor: grab;
+        }
+        #canvas:active {
+            cursor: grabbing;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Mandelbrot</span> Set
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Zoom: <span id="zoom-display" class="text-violet-400">1.00x</span></span>
+                    <span class="text-gray-500">Centro: <span id="center-display" class="text-cyan-400">(-0.5, 0)</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+            <div id="loading" class="absolute inset-0 flex items-center justify-center bg-black/80 pointer-events-none">
+                <div class="text-center">
+                    <div class="w-8 h-8 border-2 border-violet-400 border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+                    <span class="text-violet-400 mono text-sm">Renderizando...</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Controles</h2>
+
+            <!-- Iterations -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Iteraciones Máximas: <span id="iter-value" class="text-violet-400 mono">100</span>
+                </label>
+                <input type="range" id="iterations" min="50" max="500" value="100" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Más iteraciones = más detalle, más lento</p>
+            </div>
+
+            <!-- Color Scheme -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Esquema de Color</label>
+                <select id="color-scheme" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="hsv">HSV Cíclico</option>
+                    <option value="fire">Fuego</option>
+                    <option value="ice">Hielo</option>
+                    <option value="neon">Neón</option>
+                    <option value="grayscale">Escala de Grises</option>
+                </select>
+            </div>
+
+            <!-- Presets -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Ubicaciones Interesantes</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="goToPreset('full')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Vista Completa</button>
+                    <button onclick="goToPreset('seahorse')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Caballito</button>
+                    <button onclick="goToPreset('spiral')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Espiral</button>
+                    <button onclick="goToPreset('minibrot')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Mini-Mandelbrot</button>
+                    <button onclick="goToPreset('antenna')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Antena</button>
+                    <button onclick="goToPreset('lightning')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Rayos</button>
+                </div>
+            </div>
+
+            <!-- Julia Set Toggle -->
+            <div class="mb-6">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="julia-mode" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500 focus:ring-violet-500">
+                    <span class="text-sm text-gray-400">Modo Julia (mueve el mouse)</span>
+                </label>
+            </div>
+
+            <!-- Instructions -->
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Navegación</h3>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• Click y arrastrar para mover</li>
+                    <li>• Rueda del mouse para zoom</li>
+                    <li>• El zoom se centra en el cursor</li>
+                    <li>• Doble click para zoom x2</li>
+                </ul>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-violet-400 mb-3">La Matemática</h3>
+                <div class="mono text-lg text-center mb-3 text-cyan-400">
+                    z<sub>n+1</sub> = z<sub>n</sub>² + c
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Para cada punto <span class="text-cyan-400">c</span> en el plano complejo, iteramos la fórmula comenzando con z₀ = 0. Si |z| nunca supera 2, el punto pertenece al conjunto (negro). La velocidad de escape determina el color.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        Descubierto por Benoit Mandelbrot en 1980, este fractal tiene autosimilaridad infinita: cada región contiene copias del conjunto completo.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Estadísticas</h3>
+                <div class="grid grid-cols-2 gap-2 text-xs mono">
+                    <div class="text-gray-500">Render time:</div>
+                    <div id="render-time" class="text-violet-400">-</div>
+                    <div class="text-gray-500">Píxeles:</div>
+                    <div id="pixel-count" class="text-cyan-400">-</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const loading = document.getElementById('loading');
+
+        // Mandelbrot parameters
+        let centerX = -0.5;
+        let centerY = 0;
+        let zoom = 1;
+        let maxIterations = 100;
+        let colorScheme = 'hsv';
+
+        // Julia mode
+        let juliaMode = false;
+        let juliaC = { re: -0.7, im: 0.27015 };
+
+        // Pan state
+        let isPanning = false;
+        let panStart = { x: 0, y: 0 };
+        let panStartCenter = { x: 0, y: 0 };
+
+        // Rendering
+        let renderTimeout = null;
+
+        // Presets
+        const presets = {
+            full: { x: -0.5, y: 0, zoom: 1 },
+            seahorse: { x: -0.743643887037151, y: 0.131825904205330, zoom: 10000 },
+            spiral: { x: -0.761574, y: -0.0847596, zoom: 500 },
+            minibrot: { x: -1.7497591451303785, y: 0.0000000001, zoom: 50000000 },
+            antenna: { x: -0.1592, y: 1.0317, zoom: 50 },
+            lightning: { x: -0.170337, y: -1.06506, zoom: 100 }
+        };
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            render();
+        }
+
+        function hsvToRgb(h, s, v) {
+            const c = v * s;
+            const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            const m = v - c;
+            let r, g, b;
+            if (h < 60) { r = c; g = x; b = 0; }
+            else if (h < 120) { r = x; g = c; b = 0; }
+            else if (h < 180) { r = 0; g = c; b = x; }
+            else if (h < 240) { r = 0; g = x; b = c; }
+            else if (h < 300) { r = x; g = 0; b = c; }
+            else { r = c; g = 0; b = x; }
+            return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+        }
+
+        function getColor(iterations, maxIter) {
+            if (iterations === maxIter) return [0, 0, 0];
+
+            const t = iterations / maxIter;
+            const smooth = iterations + 1 - Math.log2(Math.log2(iterations + 1));
+            const smoothT = smooth / maxIter;
+
+            switch (colorScheme) {
+                case 'hsv':
+                    return hsvToRgb((smoothT * 360 * 3) % 360, 0.8, 0.9);
+                case 'fire':
+                    return [
+                        Math.min(255, smoothT * 3 * 255),
+                        Math.min(255, Math.max(0, (smoothT - 0.33) * 3 * 255)),
+                        Math.min(255, Math.max(0, (smoothT - 0.66) * 3 * 255))
+                    ];
+                case 'ice':
+                    return [
+                        Math.min(255, Math.max(0, (smoothT - 0.5) * 2 * 255)),
+                        Math.min(255, smoothT * 255),
+                        255
+                    ];
+                case 'neon':
+                    const hue = (smoothT * 180 + 270) % 360;
+                    return hsvToRgb(hue, 1, 1);
+                case 'grayscale':
+                    const gray = Math.floor(smoothT * 255);
+                    return [gray, gray, gray];
+                default:
+                    return hsvToRgb((smoothT * 360) % 360, 0.8, 0.9);
+            }
+        }
+
+        function mandelbrot(cRe, cIm, maxIter) {
+            let zRe = 0, zIm = 0;
+            let zRe2 = 0, zIm2 = 0;
+
+            for (let i = 0; i < maxIter; i++) {
+                zIm = 2 * zRe * zIm + cIm;
+                zRe = zRe2 - zIm2 + cRe;
+                zRe2 = zRe * zRe;
+                zIm2 = zIm * zIm;
+
+                if (zRe2 + zIm2 > 4) {
+                    return i;
+                }
+            }
+            return maxIter;
+        }
+
+        function julia(zRe, zIm, cRe, cIm, maxIter) {
+            let zRe2 = zRe * zRe;
+            let zIm2 = zIm * zIm;
+
+            for (let i = 0; i < maxIter; i++) {
+                zIm = 2 * zRe * zIm + cIm;
+                zRe = zRe2 - zIm2 + cRe;
+                zRe2 = zRe * zRe;
+                zIm2 = zIm * zIm;
+
+                if (zRe2 + zIm2 > 4) {
+                    return i;
+                }
+            }
+            return maxIter;
+        }
+
+        function render() {
+            loading.classList.remove('hidden');
+            const startTime = performance.now();
+
+            // Use setTimeout to allow UI update
+            setTimeout(() => {
+                const width = canvas.width;
+                const height = canvas.height;
+                const imageData = ctx.createImageData(width, height);
+                const data = imageData.data;
+
+                const aspectRatio = width / height;
+                const viewWidth = 3.5 / zoom;
+                const viewHeight = viewWidth / aspectRatio;
+
+                const minRe = centerX - viewWidth / 2;
+                const maxRe = centerX + viewWidth / 2;
+                const minIm = centerY - viewHeight / 2;
+                const maxIm = centerY + viewHeight / 2;
+
+                const reStep = (maxRe - minRe) / width;
+                const imStep = (maxIm - minIm) / height;
+
+                for (let py = 0; py < height; py++) {
+                    const cIm = minIm + py * imStep;
+                    for (let px = 0; px < width; px++) {
+                        const cRe = minRe + px * reStep;
+
+                        let iterations;
+                        if (juliaMode) {
+                            iterations = julia(cRe, cIm, juliaC.re, juliaC.im, maxIterations);
+                        } else {
+                            iterations = mandelbrot(cRe, cIm, maxIterations);
+                        }
+
+                        const [r, g, b] = getColor(iterations, maxIterations);
+                        const idx = (py * width + px) * 4;
+                        data[idx] = r;
+                        data[idx + 1] = g;
+                        data[idx + 2] = b;
+                        data[idx + 3] = 255;
+                    }
+                }
+
+                ctx.putImageData(imageData, 0, 0);
+
+                const endTime = performance.now();
+                document.getElementById('render-time').textContent = (endTime - startTime).toFixed(0) + 'ms';
+                document.getElementById('pixel-count').textContent = (width * height).toLocaleString();
+
+                updateDisplay();
+                loading.classList.add('hidden');
+            }, 10);
+        }
+
+        function updateDisplay() {
+            document.getElementById('zoom-display').textContent = zoom.toFixed(2) + 'x';
+            document.getElementById('center-display').textContent = `(${centerX.toFixed(4)}, ${centerY.toFixed(4)})`;
+        }
+
+        function scheduleRender() {
+            if (renderTimeout) clearTimeout(renderTimeout);
+            renderTimeout = setTimeout(render, 100);
+        }
+
+        function goToPreset(name) {
+            const preset = presets[name];
+            if (preset) {
+                centerX = preset.x;
+                centerY = preset.y;
+                zoom = preset.zoom;
+                render();
+            }
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', (e) => {
+            if (e.button === 0) {
+                isPanning = true;
+                panStart = { x: e.clientX, y: e.clientY };
+                panStartCenter = { x: centerX, y: centerY };
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isPanning) {
+                const dx = e.clientX - panStart.x;
+                const dy = e.clientY - panStart.y;
+
+                const aspectRatio = canvas.width / canvas.height;
+                const viewWidth = 3.5 / zoom;
+                const viewHeight = viewWidth / aspectRatio;
+
+                centerX = panStartCenter.x - (dx / canvas.offsetWidth) * viewWidth;
+                centerY = panStartCenter.y - (dy / canvas.offsetHeight) * viewHeight;
+
+                updateDisplay();
+                scheduleRender();
+            }
+
+            if (juliaMode) {
+                const rect = canvas.getBoundingClientRect();
+                const x = (e.clientX - rect.left) / rect.width;
+                const y = (e.clientY - rect.top) / rect.height;
+                juliaC.re = x * 4 - 2;
+                juliaC.im = y * 4 - 2;
+                scheduleRender();
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isPanning = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isPanning = false;
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left) / rect.width;
+            const mouseY = (e.clientY - rect.top) / rect.height;
+
+            const aspectRatio = canvas.width / canvas.height;
+            const viewWidth = 3.5 / zoom;
+            const viewHeight = viewWidth / aspectRatio;
+
+            // Position in complex plane before zoom
+            const complexX = centerX - viewWidth / 2 + mouseX * viewWidth;
+            const complexY = centerY - viewHeight / 2 + mouseY * viewHeight;
+
+            // Apply zoom
+            const zoomFactor = e.deltaY < 0 ? 1.2 : 0.8;
+            zoom *= zoomFactor;
+            zoom = Math.max(0.5, Math.min(zoom, 1e15));
+
+            // Calculate new view dimensions
+            const newViewWidth = 3.5 / zoom;
+            const newViewHeight = newViewWidth / aspectRatio;
+
+            // Adjust center to keep mouse position fixed
+            centerX = complexX - (mouseX - 0.5) * newViewWidth;
+            centerY = complexY - (mouseY - 0.5) * newViewHeight;
+
+            render();
+        });
+
+        canvas.addEventListener('dblclick', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = (e.clientX - rect.left) / rect.width;
+            const mouseY = (e.clientY - rect.top) / rect.height;
+
+            const aspectRatio = canvas.width / canvas.height;
+            const viewWidth = 3.5 / zoom;
+            const viewHeight = viewWidth / aspectRatio;
+
+            centerX = centerX - viewWidth / 2 + mouseX * viewWidth;
+            centerY = centerY - viewHeight / 2 + mouseY * viewHeight;
+            zoom *= 2;
+
+            render();
+        });
+
+        document.getElementById('iterations').addEventListener('input', (e) => {
+            maxIterations = parseInt(e.target.value);
+            document.getElementById('iter-value').textContent = maxIterations;
+            scheduleRender();
+        });
+
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            colorScheme = e.target.value;
+            render();
+        });
+
+        document.getElementById('julia-mode').addEventListener('change', (e) => {
+            juliaMode = e.target.checked;
+            render();
+        });
+
+        window.addEventListener('resize', () => {
+            initCanvas();
+        });
+
+        // Initialize
+        initCanvas();
+    </script>
+</body>
+</html>

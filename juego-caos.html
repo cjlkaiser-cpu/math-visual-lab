@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Juego del Caos | Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; }
+        canvas { display: block; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1e1b4b;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        select, button {
+            background: #1e1b4b;
+            border: 1px solid #a855f7;
+            color: #e9d5ff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        select:hover, button:hover {
+            background: #2e1065;
+            border-color: #c084fc;
+        }
+        .control-group {
+            background: rgba(30, 27, 75, 0.5);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-purple-100 overflow-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur border-b border-purple-900/50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-purple-400 hover:text-purple-300 transition-colors">
+                    ← Volver
+                </a>
+                <h1 class="text-xl font-light">Juego del <span class="text-purple-400">Caos</span></h1>
+            </div>
+            <div class="text-purple-400/60 text-sm">
+                Fractales por iteración estocástica
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 flex h-screen">
+        <!-- Canvas Container -->
+        <div class="flex-1 relative">
+            <canvas id="canvas"></canvas>
+
+            <!-- Stats Overlay -->
+            <div class="absolute top-4 left-4 control-group text-sm">
+                <div class="text-purple-400/60">Puntos</div>
+                <div id="pointCount" class="text-2xl font-light text-purple-300">0</div>
+                <div class="text-purple-400/60 mt-2">Velocidad</div>
+                <div id="speed" class="text-lg text-purple-300">0 pts/s</div>
+            </div>
+
+            <!-- Current Attractor -->
+            <div class="absolute bottom-4 left-4 control-group">
+                <div class="text-purple-400/60 text-sm mb-1">Atractor actual</div>
+                <div id="currentAttractor" class="text-purple-300">-</div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 bg-black/50 border-l border-purple-900/50 p-4 overflow-y-auto">
+            <div class="space-y-4">
+                <!-- Preset Selection -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">Fractal</label>
+                    <select id="preset" class="w-full">
+                        <option value="sierpinski">Triángulo de Sierpinski</option>
+                        <option value="square">Alfombra de Sierpinski</option>
+                        <option value="pentagon">Pentágono</option>
+                        <option value="hexagon">Hexágono</option>
+                        <option value="fern">Helecho de Barnsley</option>
+                        <option value="tree">Árbol</option>
+                        <option value="dragon">Curva del Dragón</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+                </div>
+
+                <!-- Jump Ratio -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Ratio de salto: <span id="ratioValue" class="text-purple-300">0.50</span>
+                    </label>
+                    <input type="range" id="ratio" min="0.1" max="0.9" step="0.01" value="0.5" class="w-full">
+                    <div class="flex justify-between text-xs text-purple-400/50 mt-1">
+                        <span>0.1</span>
+                        <span>0.9</span>
+                    </div>
+                </div>
+
+                <!-- Points per frame -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Puntos/frame: <span id="ptsFrameValue" class="text-purple-300">100</span>
+                    </label>
+                    <input type="range" id="ptsFrame" min="1" max="1000" value="100" class="w-full">
+                </div>
+
+                <!-- Number of Vertices (for custom) -->
+                <div class="control-group" id="verticesGroup">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Vértices: <span id="verticesValue" class="text-purple-300">3</span>
+                    </label>
+                    <input type="range" id="vertices" min="3" max="12" value="3" class="w-full">
+                </div>
+
+                <!-- Restriction Rule -->
+                <div class="control-group" id="restrictionGroup">
+                    <label class="block text-purple-400/80 text-sm mb-2">Restricción</label>
+                    <select id="restriction" class="w-full">
+                        <option value="none">Ninguna</option>
+                        <option value="noRepeat">No repetir vértice</option>
+                        <option value="noAdjacent">No adyacente al anterior</option>
+                        <option value="noOpposite">No opuesto al anterior</option>
+                    </select>
+                </div>
+
+                <!-- Color Scheme -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">Colores</label>
+                    <select id="colorScheme" class="w-full">
+                        <option value="byVertex">Por vértice</option>
+                        <option value="gradient">Gradiente radial</option>
+                        <option value="depth">Por profundidad</option>
+                        <option value="mono">Monocromático</option>
+                    </select>
+                </div>
+
+                <!-- Point Size -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Tamaño punto: <span id="pointSizeValue" class="text-purple-300">1</span>px
+                    </label>
+                    <input type="range" id="pointSize" min="1" max="4" value="1" class="w-full">
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="flex gap-2">
+                    <button id="playPause" class="flex-1">
+                        ⏸ Pausar
+                    </button>
+                    <button id="reset" class="flex-1">
+                        ↻ Reiniciar
+                    </button>
+                </div>
+
+                <button id="addBatch" class="w-full">
+                    + Añadir 10,000 puntos
+                </button>
+
+                <!-- Show Elements -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">Mostrar</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showVertices" checked class="accent-purple-500">
+                            <span class="text-sm">Vértices</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showLabels" checked class="accent-purple-500">
+                            <span class="text-sm">Etiquetas</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showCurrent" checked class="accent-purple-500">
+                            <span class="text-sm">Punto actual</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Info -->
+                <div class="control-group">
+                    <h3 class="text-purple-400 font-medium mb-2">Instrucciones</h3>
+                    <ul class="text-sm text-purple-300/70 space-y-1">
+                        <li>• El punto salta hacia un vértice aleatorio</li>
+                        <li>• La fracción del salto determina el patrón</li>
+                        <li>• Sierpinski: ratio 0.5, sin restricción</li>
+                        <li>• Experimenta con distintas restricciones</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let state = {
+            vertices: [],
+            points: [],
+            current: null,
+            lastVertex: -1,
+            running: true,
+            pointCount: 0,
+            frameCount: 0,
+            lastCountTime: Date.now(),
+            lastCount: 0
+        };
+
+        // Colors for vertices
+        const vertexColors = [
+            '#f472b6', // pink
+            '#facc15', // yellow
+            '#a855f7', // violet
+            '#22d3ee', // cyan
+            '#a3e635', // lime
+            '#fb923c', // orange
+            '#f87171', // red
+            '#38bdf8', // sky
+            '#4ade80', // green
+            '#e879f9', // fuchsia
+            '#fbbf24', // amber
+            '#34d399'  // emerald
+        ];
+
+        // Presets
+        const presets = {
+            sierpinski: {
+                vertices: 3,
+                ratio: 0.5,
+                restriction: 'none'
+            },
+            square: {
+                vertices: 4,
+                ratio: 0.5,
+                restriction: 'noRepeat'
+            },
+            pentagon: {
+                vertices: 5,
+                ratio: 0.618,
+                restriction: 'none'
+            },
+            hexagon: {
+                vertices: 6,
+                ratio: 0.667,
+                restriction: 'noAdjacent'
+            },
+            fern: {
+                type: 'ifs',
+                transforms: [
+                    { a: 0, b: 0, c: 0, d: 0.16, e: 0, f: 0, p: 0.01 },
+                    { a: 0.85, b: 0.04, c: -0.04, d: 0.85, e: 0, f: 1.6, p: 0.85 },
+                    { a: 0.2, b: -0.26, c: 0.23, d: 0.22, e: 0, f: 1.6, p: 0.07 },
+                    { a: -0.15, b: 0.28, c: 0.26, d: 0.24, e: 0, f: 0.44, p: 0.07 }
+                ]
+            },
+            tree: {
+                type: 'ifs',
+                transforms: [
+                    { a: 0.195, b: -0.488, c: 0.344, d: 0.443, e: 0.4431, f: 0.2452, p: 0.25 },
+                    { a: 0.462, b: 0.414, c: -0.252, d: 0.361, e: 0.2511, f: 0.5692, p: 0.25 },
+                    { a: -0.058, b: -0.07, c: 0.453, d: -0.111, e: 0.5976, f: 0.0969, p: 0.25 },
+                    { a: -0.035, b: 0.07, c: -0.469, d: -0.022, e: 0.4884, f: 0.5069, p: 0.25 }
+                ]
+            },
+            dragon: {
+                type: 'ifs',
+                transforms: [
+                    { a: 0.5, b: -0.5, c: 0.5, d: 0.5, e: 0, f: 0, p: 0.5 },
+                    { a: -0.5, b: -0.5, c: 0.5, d: -0.5, e: 1, f: 0, p: 0.5 }
+                ]
+            },
+            custom: {
+                vertices: 3,
+                ratio: 0.5,
+                restriction: 'none'
+            }
+        };
+
+        function resize() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            initVertices();
+            draw();
+        }
+
+        function initVertices() {
+            const preset = document.getElementById('preset').value;
+            const presetData = presets[preset];
+
+            if (presetData.type === 'ifs') {
+                state.vertices = [];
+                state.isIFS = true;
+                state.transforms = presetData.transforms;
+                return;
+            }
+
+            state.isIFS = false;
+            const n = preset === 'custom' ?
+                parseInt(document.getElementById('vertices').value) :
+                presetData.vertices;
+
+            const cx = canvas.width / 2;
+            const cy = canvas.height / 2;
+            const r = Math.min(canvas.width, canvas.height) * 0.4;
+
+            state.vertices = [];
+            for (let i = 0; i < n; i++) {
+                const angle = (i * 2 * Math.PI / n) - Math.PI / 2;
+                state.vertices.push({
+                    x: cx + r * Math.cos(angle),
+                    y: cy + r * Math.sin(angle),
+                    color: vertexColors[i % vertexColors.length]
+                });
+            }
+        }
+
+        function initGame() {
+            state.points = [];
+            state.pointCount = 0;
+
+            if (state.isIFS) {
+                state.current = { x: 0, y: 0 };
+            } else {
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+                state.current = { x: cx, y: cy };
+            }
+
+            state.lastVertex = -1;
+        }
+
+        function selectVertex() {
+            const restriction = document.getElementById('restriction').value;
+            const n = state.vertices.length;
+            let attempts = 0;
+            let idx;
+
+            do {
+                idx = Math.floor(Math.random() * n);
+                attempts++;
+
+                if (attempts > 100) break;
+
+                if (restriction === 'noRepeat' && idx === state.lastVertex) continue;
+                if (restriction === 'noAdjacent' &&
+                    (idx === (state.lastVertex + 1) % n || idx === (state.lastVertex - 1 + n) % n)) continue;
+                if (restriction === 'noOpposite' && n % 2 === 0 &&
+                    idx === (state.lastVertex + n/2) % n) continue;
+
+                break;
+            } while (true);
+
+            state.lastVertex = idx;
+            return idx;
+        }
+
+        function iterate() {
+            if (state.isIFS) {
+                // IFS iteration
+                const r = Math.random();
+                let cumP = 0;
+                let transform = state.transforms[0];
+
+                for (const t of state.transforms) {
+                    cumP += t.p;
+                    if (r < cumP) {
+                        transform = t;
+                        break;
+                    }
+                }
+
+                const newX = transform.a * state.current.x + transform.b * state.current.y + transform.e;
+                const newY = transform.c * state.current.x + transform.d * state.current.y + transform.f;
+
+                state.current = { x: newX, y: newY };
+
+                // Transform to screen coordinates
+                const preset = document.getElementById('preset').value;
+                let sx, sy;
+
+                if (preset === 'fern') {
+                    const scale = canvas.height / 12;
+                    sx = canvas.width / 2 + newX * scale;
+                    sy = canvas.height - newY * scale - 20;
+                } else if (preset === 'dragon') {
+                    const scale = Math.min(canvas.width, canvas.height) * 0.4;
+                    sx = canvas.width / 2 + (newX - 0.5) * scale;
+                    sy = canvas.height / 2 + newY * scale;
+                } else {
+                    const scale = Math.min(canvas.width, canvas.height) * 0.6;
+                    sx = canvas.width / 2 + newX * scale;
+                    sy = canvas.height / 2 - newY * scale;
+                }
+
+                return { x: sx, y: sy, color: getColor(0, sx, sy) };
+            } else {
+                // Chaos game iteration
+                const ratio = parseFloat(document.getElementById('ratio').value);
+                const vertexIdx = selectVertex();
+                const vertex = state.vertices[vertexIdx];
+
+                const newX = state.current.x + ratio * (vertex.x - state.current.x);
+                const newY = state.current.y + ratio * (vertex.y - state.current.y);
+
+                state.current = { x: newX, y: newY };
+
+                return { x: newX, y: newY, vertexIdx, color: getColor(vertexIdx, newX, newY) };
+            }
+        }
+
+        function getColor(vertexIdx, x, y) {
+            const scheme = document.getElementById('colorScheme').value;
+
+            switch (scheme) {
+                case 'byVertex':
+                    return state.isIFS ? '#a855f7' : state.vertices[vertexIdx].color;
+
+                case 'gradient': {
+                    const cx = canvas.width / 2;
+                    const cy = canvas.height / 2;
+                    const dist = Math.sqrt((x - cx) ** 2 + (y - cy) ** 2);
+                    const maxDist = Math.min(canvas.width, canvas.height) / 2;
+                    const t = Math.min(dist / maxDist, 1);
+
+                    const r = Math.round(244 * (1 - t) + 34 * t);
+                    const g = Math.round(114 * (1 - t) + 211 * t);
+                    const b = Math.round(182 * (1 - t) + 238 * t);
+                    return `rgb(${r},${g},${b})`;
+                }
+
+                case 'depth': {
+                    const depth = state.pointCount % 1000;
+                    const hue = (depth / 1000) * 360;
+                    return `hsl(${hue}, 80%, 60%)`;
+                }
+
+                case 'mono':
+                    return '#a855f7';
+
+                default:
+                    return '#a855f7';
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Draw points
+            const pointSize = parseInt(document.getElementById('pointSize').value);
+
+            for (const pt of state.points) {
+                ctx.fillStyle = pt.color;
+                ctx.fillRect(pt.x - pointSize/2, pt.y - pointSize/2, pointSize, pointSize);
+            }
+
+            // Draw vertices
+            if (document.getElementById('showVertices').checked && !state.isIFS) {
+                for (let i = 0; i < state.vertices.length; i++) {
+                    const v = state.vertices[i];
+
+                    ctx.beginPath();
+                    ctx.arc(v.x, v.y, 8, 0, Math.PI * 2);
+                    ctx.fillStyle = v.color;
+                    ctx.fill();
+                    ctx.strokeStyle = '#000';
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    if (document.getElementById('showLabels').checked) {
+                        ctx.fillStyle = '#fff';
+                        ctx.font = 'bold 12px monospace';
+                        ctx.textAlign = 'center';
+                        ctx.textBaseline = 'middle';
+                        ctx.fillText((i + 1).toString(), v.x, v.y);
+                    }
+                }
+            }
+
+            // Draw current point
+            if (document.getElementById('showCurrent').checked && state.current) {
+                let sx = state.current.x;
+                let sy = state.current.y;
+
+                if (state.isIFS) {
+                    const preset = document.getElementById('preset').value;
+                    if (preset === 'fern') {
+                        const scale = canvas.height / 12;
+                        sx = canvas.width / 2 + state.current.x * scale;
+                        sy = canvas.height - state.current.y * scale - 20;
+                    } else if (preset === 'dragon') {
+                        const scale = Math.min(canvas.width, canvas.height) * 0.4;
+                        sx = canvas.width / 2 + (state.current.x - 0.5) * scale;
+                        sy = canvas.height / 2 + state.current.y * scale;
+                    } else {
+                        const scale = Math.min(canvas.width, canvas.height) * 0.6;
+                        sx = canvas.width / 2 + state.current.x * scale;
+                        sy = canvas.height / 2 - state.current.y * scale;
+                    }
+                }
+
+                ctx.beginPath();
+                ctx.arc(sx, sy, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#fff';
+                ctx.fill();
+            }
+        }
+
+        function update() {
+            if (!state.running) return;
+
+            const ptsPerFrame = parseInt(document.getElementById('ptsFrame').value);
+
+            for (let i = 0; i < ptsPerFrame; i++) {
+                if (state.pointCount < 10) {
+                    // Skip first few iterations for IFS
+                    iterate();
+                } else {
+                    const pt = iterate();
+                    state.points.push(pt);
+                }
+                state.pointCount++;
+            }
+
+            // Update stats
+            state.frameCount++;
+            const now = Date.now();
+            if (now - state.lastCountTime > 1000) {
+                const speed = state.pointCount - state.lastCount;
+                document.getElementById('speed').textContent = speed.toLocaleString() + ' pts/s';
+                state.lastCount = state.pointCount;
+                state.lastCountTime = now;
+            }
+
+            document.getElementById('pointCount').textContent = state.pointCount.toLocaleString();
+
+            // Update current attractor display
+            if (!state.isIFS && state.lastVertex >= 0) {
+                document.getElementById('currentAttractor').textContent =
+                    `Vértice ${state.lastVertex + 1}`;
+                document.getElementById('currentAttractor').style.color =
+                    state.vertices[state.lastVertex].color;
+            }
+        }
+
+        function animate() {
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        function reset() {
+            initVertices();
+            initGame();
+            updateUI();
+        }
+
+        function updateUI() {
+            const preset = document.getElementById('preset').value;
+            const presetData = presets[preset];
+
+            const isCustom = preset === 'custom';
+            const isIFS = presetData.type === 'ifs';
+
+            document.getElementById('verticesGroup').style.display = isCustom ? 'block' : 'none';
+            document.getElementById('restrictionGroup').style.display = isIFS ? 'none' : 'block';
+
+            if (!isIFS && !isCustom) {
+                document.getElementById('ratio').value = presetData.ratio;
+                document.getElementById('ratioValue').textContent = presetData.ratio.toFixed(2);
+                document.getElementById('restriction').value = presetData.restriction;
+            }
+        }
+
+        // Event listeners
+        document.getElementById('preset').addEventListener('change', () => {
+            updateUI();
+            reset();
+        });
+
+        document.getElementById('ratio').addEventListener('input', (e) => {
+            document.getElementById('ratioValue').textContent = parseFloat(e.target.value).toFixed(2);
+        });
+
+        document.getElementById('ptsFrame').addEventListener('input', (e) => {
+            document.getElementById('ptsFrameValue').textContent = e.target.value;
+        });
+
+        document.getElementById('vertices').addEventListener('input', (e) => {
+            document.getElementById('verticesValue').textContent = e.target.value;
+            reset();
+        });
+
+        document.getElementById('restriction').addEventListener('change', reset);
+
+        document.getElementById('pointSize').addEventListener('input', (e) => {
+            document.getElementById('pointSizeValue').textContent = e.target.value;
+        });
+
+        document.getElementById('playPause').addEventListener('click', () => {
+            state.running = !state.running;
+            document.getElementById('playPause').textContent =
+                state.running ? '⏸ Pausar' : '▶ Reanudar';
+        });
+
+        document.getElementById('reset').addEventListener('click', reset);
+
+        document.getElementById('addBatch').addEventListener('click', () => {
+            const ptsPerFrame = parseInt(document.getElementById('ptsFrame').value);
+            document.getElementById('ptsFrame').value = 10000;
+            document.getElementById('ptsFrameValue').textContent = '10000';
+
+            setTimeout(() => {
+                document.getElementById('ptsFrame').value = ptsPerFrame;
+                document.getElementById('ptsFrameValue').textContent = ptsPerFrame;
+            }, 100);
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+        initGame();
+        animate();
+    </script>
+</body>
+</html>

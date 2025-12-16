@@ -1,0 +1,665 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game of Life - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        #canvas {
+            cursor: crosshair;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(163, 230, 53, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a3e635;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(163, 230, 53, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-lime-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-lime-400 font-medium">Conway's</span> Game of Life
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Gen: <span id="generation" class="text-lime-400">0</span></span>
+                    <span class="text-gray-500">Vivas: <span id="alive-count" class="text-cyan-400">0</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+            <div class="absolute bottom-4 left-4 text-xs mono text-gray-600">
+                Click para alternar celdas · Arrastra para dibujar
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-lime-400 glow-text">Controles</h2>
+
+            <!-- Playback -->
+            <div class="mb-6 flex gap-2">
+                <button id="play-btn" class="flex-1 py-2 px-4 bg-lime-500/20 hover:bg-lime-500/30 text-lime-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg id="play-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <span id="play-text">Iniciar</span>
+                </button>
+                <button id="step-btn" class="py-2 px-4 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm transition" title="Un paso">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 5l7 7-7 7M5 5l7 7-7 7"/>
+                    </svg>
+                </button>
+            </div>
+
+            <!-- Speed -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Velocidad: <span id="speed-value" class="text-lime-400 mono">10</span> gen/s
+                </label>
+                <input type="range" id="speed" min="1" max="60" value="10" class="w-full">
+            </div>
+
+            <!-- Cell Size -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Tamaño de celda: <span id="cell-size-value" class="text-cyan-400 mono">10</span>px
+                </label>
+                <input type="range" id="cell-size" min="3" max="20" value="10" class="w-full">
+            </div>
+
+            <!-- Display Options -->
+            <div class="mb-6 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-grid" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-lime-500 focus:ring-lime-500">
+                    <span class="text-sm text-gray-400">Mostrar grilla</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="wrap-edges" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-lime-500 focus:ring-lime-500">
+                    <span class="text-sm text-gray-400">Bordes conectados (toroide)</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-trails" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-lime-500 focus:ring-lime-500">
+                    <span class="text-sm text-gray-400">Mostrar rastros</span>
+                </label>
+            </div>
+
+            <!-- Color Scheme -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Color de celdas</label>
+                <select id="color-scheme" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-lime-500 focus:outline-none">
+                    <option value="lime">Lima</option>
+                    <option value="cyan">Cian</option>
+                    <option value="pink">Rosa</option>
+                    <option value="rainbow">Arcoíris (por edad)</option>
+                    <option value="white">Blanco</option>
+                </select>
+            </div>
+
+            <!-- Presets -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Patrones Clásicos</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="loadPreset('glider')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Glider</button>
+                    <button onclick="loadPreset('lwss')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">LWSS</button>
+                    <button onclick="loadPreset('blinker')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Blinker</button>
+                    <button onclick="loadPreset('pulsar')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Pulsar</button>
+                    <button onclick="loadPreset('gosper')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition col-span-2">Gosper Glider Gun</button>
+                    <button onclick="loadPreset('pentadecathlon')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition col-span-2">Pentadecathlon</button>
+                </div>
+            </div>
+
+            <!-- Random Fill -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Densidad aleatoria: <span id="density-value" class="text-cyan-400 mono">30</span>%
+                </label>
+                <input type="range" id="density" min="5" max="80" value="30" class="w-full">
+                <button id="random-btn" class="w-full mt-2 py-2 px-4 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm transition">
+                    Llenar Aleatorio
+                </button>
+            </div>
+
+            <!-- Actions -->
+            <div class="mb-6">
+                <button id="clear-btn" class="w-full py-2 px-4 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Limpiar Todo
+                </button>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-lime-400 mb-3">Las Reglas</h3>
+                <div class="mono text-xs space-y-2 mb-3">
+                    <div class="flex items-start gap-2">
+                        <span class="text-lime-400 shrink-0">B3</span>
+                        <span class="text-gray-400">Nace si tiene exactamente 3 vecinos</span>
+                    </div>
+                    <div class="flex items-start gap-2">
+                        <span class="text-cyan-400 shrink-0">S23</span>
+                        <span class="text-gray-400">Sobrevive con 2 o 3 vecinos</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Inventado por <span class="text-lime-400">John Conway</span> en 1970. A pesar de sus reglas simples, es Turing-completo: puede simular cualquier computadora.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        El "Gosper Glider Gun" fue el primer patrón descubierto que crece indefinidamente, probando que poblaciones infinitas son posibles.
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Grid state
+        let grid = [];
+        let ages = []; // Track cell age for rainbow mode
+        let cols, rows;
+        let cellSize = 10;
+
+        // Simulation state
+        let isRunning = false;
+        let generation = 0;
+        let speed = 10;
+        let lastUpdate = 0;
+        let animationId = null;
+
+        // Settings
+        let showGrid = false;
+        let wrapEdges = true;
+        let showTrails = false;
+        let colorScheme = 'lime';
+        let density = 30;
+
+        // Drawing state
+        let isDrawing = false;
+        let drawValue = 1;
+
+        // Patterns
+        const patterns = {
+            glider: [
+                [0, 1, 0],
+                [0, 0, 1],
+                [1, 1, 1]
+            ],
+            lwss: [
+                [0, 1, 0, 0, 1],
+                [1, 0, 0, 0, 0],
+                [1, 0, 0, 0, 1],
+                [1, 1, 1, 1, 0]
+            ],
+            blinker: [
+                [1, 1, 1]
+            ],
+            pulsar: [
+                [0,0,1,1,1,0,0,0,1,1,1,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [1,0,0,0,0,1,0,1,0,0,0,0,1],
+                [1,0,0,0,0,1,0,1,0,0,0,0,1],
+                [1,0,0,0,0,1,0,1,0,0,0,0,1],
+                [0,0,1,1,1,0,0,0,1,1,1,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,1,1,1,0,0,0,1,1,1,0,0],
+                [1,0,0,0,0,1,0,1,0,0,0,0,1],
+                [1,0,0,0,0,1,0,1,0,0,0,0,1],
+                [1,0,0,0,0,1,0,1,0,0,0,0,1],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,1,1,1,0,0,0,1,1,1,0,0]
+            ],
+            gosper: [
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+                [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,1,1],
+                [1,1,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [1,1,0,0,0,0,0,0,0,0,1,0,0,0,1,0,1,1,0,0,0,0,1,0,1,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,1,0,0,0,0,0,1,0,0,0,0,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,1,0,0,0,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0],
+                [0,0,0,0,0,0,0,0,0,0,0,0,1,1,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0,0]
+            ],
+            pentadecathlon: [
+                [0,0,1,0,0,0,0,1,0,0],
+                [1,1,0,1,1,1,1,0,1,1],
+                [0,0,1,0,0,0,0,1,0,0]
+            ]
+        };
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            initGrid();
+            render();
+        }
+
+        function initGrid() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+
+            cols = Math.floor(w / cellSize);
+            rows = Math.floor(h / cellSize);
+
+            grid = [];
+            ages = [];
+            for (let i = 0; i < rows; i++) {
+                grid[i] = [];
+                ages[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    grid[i][j] = 0;
+                    ages[i][j] = 0;
+                }
+            }
+
+            generation = 0;
+            updateStats();
+        }
+
+        function getColor(age) {
+            switch (colorScheme) {
+                case 'lime':
+                    return '#a3e635';
+                case 'cyan':
+                    return '#22d3ee';
+                case 'pink':
+                    return '#f472b6';
+                case 'white':
+                    return '#ffffff';
+                case 'rainbow':
+                    const hue = (age * 10) % 360;
+                    return `hsl(${hue}, 80%, 60%)`;
+                default:
+                    return '#a3e635';
+            }
+        }
+
+        function render() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+
+            // Clear or fade for trails
+            if (showTrails) {
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            } else {
+                ctx.fillStyle = '#000';
+            }
+            ctx.fillRect(0, 0, w, h);
+
+            // Draw grid lines
+            if (showGrid) {
+                ctx.strokeStyle = '#1f293780';
+                ctx.lineWidth = 1;
+
+                for (let i = 0; i <= cols; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(i * cellSize, 0);
+                    ctx.lineTo(i * cellSize, rows * cellSize);
+                    ctx.stroke();
+                }
+
+                for (let i = 0; i <= rows; i++) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, i * cellSize);
+                    ctx.lineTo(cols * cellSize, i * cellSize);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw cells
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    if (grid[i][j] === 1) {
+                        ctx.fillStyle = getColor(ages[i][j]);
+                        ctx.fillRect(j * cellSize, i * cellSize, cellSize - 1, cellSize - 1);
+                    }
+                }
+            }
+        }
+
+        function countNeighbors(row, col) {
+            let count = 0;
+
+            for (let i = -1; i <= 1; i++) {
+                for (let j = -1; j <= 1; j++) {
+                    if (i === 0 && j === 0) continue;
+
+                    let ni = row + i;
+                    let nj = col + j;
+
+                    if (wrapEdges) {
+                        ni = (ni + rows) % rows;
+                        nj = (nj + cols) % cols;
+                    } else {
+                        if (ni < 0 || ni >= rows || nj < 0 || nj >= cols) continue;
+                    }
+
+                    count += grid[ni][nj];
+                }
+            }
+
+            return count;
+        }
+
+        function step() {
+            const newGrid = [];
+            const newAges = [];
+
+            for (let i = 0; i < rows; i++) {
+                newGrid[i] = [];
+                newAges[i] = [];
+                for (let j = 0; j < cols; j++) {
+                    const neighbors = countNeighbors(i, j);
+                    const alive = grid[i][j];
+
+                    if (alive) {
+                        // Survival: 2 or 3 neighbors
+                        if (neighbors === 2 || neighbors === 3) {
+                            newGrid[i][j] = 1;
+                            newAges[i][j] = ages[i][j] + 1;
+                        } else {
+                            newGrid[i][j] = 0;
+                            newAges[i][j] = 0;
+                        }
+                    } else {
+                        // Birth: exactly 3 neighbors
+                        if (neighbors === 3) {
+                            newGrid[i][j] = 1;
+                            newAges[i][j] = 1;
+                        } else {
+                            newGrid[i][j] = 0;
+                            newAges[i][j] = 0;
+                        }
+                    }
+                }
+            }
+
+            grid = newGrid;
+            ages = newAges;
+            generation++;
+            updateStats();
+            render();
+        }
+
+        function updateStats() {
+            let alive = 0;
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    alive += grid[i][j];
+                }
+            }
+
+            document.getElementById('generation').textContent = generation;
+            document.getElementById('alive-count').textContent = alive;
+        }
+
+        function gameLoop(timestamp) {
+            if (!isRunning) return;
+
+            const interval = 1000 / speed;
+
+            if (timestamp - lastUpdate >= interval) {
+                step();
+                lastUpdate = timestamp;
+            }
+
+            animationId = requestAnimationFrame(gameLoop);
+        }
+
+        function togglePlay() {
+            isRunning = !isRunning;
+
+            const btn = document.getElementById('play-btn');
+            const icon = document.getElementById('play-icon');
+            const text = document.getElementById('play-text');
+
+            if (isRunning) {
+                text.textContent = 'Pausar';
+                icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                lastUpdate = performance.now();
+                animationId = requestAnimationFrame(gameLoop);
+            } else {
+                text.textContent = 'Iniciar';
+                icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            }
+        }
+
+        function placePattern(pattern, startRow, startCol) {
+            for (let i = 0; i < pattern.length; i++) {
+                for (let j = 0; j < pattern[i].length; j++) {
+                    const r = startRow + i;
+                    const c = startCol + j;
+
+                    if (r >= 0 && r < rows && c >= 0 && c < cols) {
+                        grid[r][c] = pattern[i][j];
+                        ages[r][c] = pattern[i][j] ? 1 : 0;
+                    }
+                }
+            }
+        }
+
+        function loadPreset(name) {
+            initGrid();
+
+            const pattern = patterns[name];
+            if (!pattern) return;
+
+            const startRow = Math.floor(rows / 2 - pattern.length / 2);
+            const startCol = Math.floor(cols / 2 - pattern[0].length / 2);
+
+            placePattern(pattern, startRow, startCol);
+            updateStats();
+            render();
+        }
+
+        function randomFill() {
+            for (let i = 0; i < rows; i++) {
+                for (let j = 0; j < cols; j++) {
+                    grid[i][j] = Math.random() < density / 100 ? 1 : 0;
+                    ages[i][j] = grid[i][j] ? 1 : 0;
+                }
+            }
+
+            generation = 0;
+            updateStats();
+            render();
+        }
+
+        function getCellFromMouse(e) {
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            const col = Math.floor(x / cellSize);
+            const row = Math.floor(y / cellSize);
+
+            return { row, col };
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', (e) => {
+            isDrawing = true;
+            const { row, col } = getCellFromMouse(e);
+
+            if (row >= 0 && row < rows && col >= 0 && col < cols) {
+                drawValue = grid[row][col] === 1 ? 0 : 1;
+                grid[row][col] = drawValue;
+                ages[row][col] = drawValue ? 1 : 0;
+                updateStats();
+                render();
+            }
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing) return;
+
+            const { row, col } = getCellFromMouse(e);
+
+            if (row >= 0 && row < rows && col >= 0 && col < cols) {
+                grid[row][col] = drawValue;
+                ages[row][col] = drawValue ? 1 : 0;
+                updateStats();
+                render();
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDrawing = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDrawing = false;
+        });
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            const col = Math.floor(x / cellSize);
+            const row = Math.floor(y / cellSize);
+
+            if (row >= 0 && row < rows && col >= 0 && col < cols) {
+                isDrawing = true;
+                drawValue = grid[row][col] === 1 ? 0 : 1;
+                grid[row][col] = drawValue;
+                ages[row][col] = drawValue ? 1 : 0;
+                updateStats();
+                render();
+            }
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDrawing) return;
+
+            const touch = e.touches[0];
+            const rect = canvas.getBoundingClientRect();
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            const col = Math.floor(x / cellSize);
+            const row = Math.floor(y / cellSize);
+
+            if (row >= 0 && row < rows && col >= 0 && col < cols) {
+                grid[row][col] = drawValue;
+                ages[row][col] = drawValue ? 1 : 0;
+                updateStats();
+                render();
+            }
+        });
+
+        canvas.addEventListener('touchend', () => {
+            isDrawing = false;
+        });
+
+        // Controls
+        document.getElementById('play-btn').addEventListener('click', togglePlay);
+
+        document.getElementById('step-btn').addEventListener('click', () => {
+            if (!isRunning) step();
+        });
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            speed = parseInt(e.target.value);
+            document.getElementById('speed-value').textContent = speed;
+        });
+
+        document.getElementById('cell-size').addEventListener('input', (e) => {
+            cellSize = parseInt(e.target.value);
+            document.getElementById('cell-size-value').textContent = cellSize;
+            initGrid();
+            render();
+        });
+
+        document.getElementById('show-grid').addEventListener('change', (e) => {
+            showGrid = e.target.checked;
+            render();
+        });
+
+        document.getElementById('wrap-edges').addEventListener('change', (e) => {
+            wrapEdges = e.target.checked;
+        });
+
+        document.getElementById('show-trails').addEventListener('change', (e) => {
+            showTrails = e.target.checked;
+        });
+
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            colorScheme = e.target.value;
+            render();
+        });
+
+        document.getElementById('density').addEventListener('input', (e) => {
+            density = parseInt(e.target.value);
+            document.getElementById('density-value').textContent = density;
+        });
+
+        document.getElementById('random-btn').addEventListener('click', randomFill);
+
+        document.getElementById('clear-btn').addEventListener('click', () => {
+            initGrid();
+            render();
+        });
+
+        window.addEventListener('resize', () => {
+            const wasRunning = isRunning;
+            if (wasRunning) togglePlay();
+            initCanvas();
+            if (wasRunning) togglePlay();
+        });
+
+        // Initialize
+        initCanvas();
+    </script>
+</body>
+</html>

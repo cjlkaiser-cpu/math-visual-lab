@@ -1,0 +1,712 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Péndulo Doble | Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; }
+        canvas { display: block; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1e1b4b;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        select, button {
+            background: #1e1b4b;
+            border: 1px solid #a855f7;
+            color: #e9d5ff;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        select:hover, button:hover {
+            background: #2e1065;
+            border-color: #c084fc;
+        }
+        .control-group {
+            background: rgba(30, 27, 75, 0.5);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-purple-100 overflow-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur border-b border-purple-900/50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-purple-400 hover:text-purple-300 transition-colors">
+                    ← Volver
+                </a>
+                <h1 class="text-xl font-light">Péndulo <span class="text-purple-400">Doble</span></h1>
+            </div>
+            <div class="text-purple-400/60 text-sm">
+                Sensibilidad a condiciones iniciales
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 flex h-screen">
+        <!-- Canvas Container -->
+        <div class="flex-1 relative">
+            <canvas id="canvas"></canvas>
+
+            <!-- Energy Display -->
+            <div class="absolute top-4 left-4 control-group">
+                <div class="text-purple-400/60 text-sm">Energía total</div>
+                <div id="energy" class="text-2xl font-light text-purple-300">0.00</div>
+                <div class="text-purple-400/60 text-sm mt-2">Tiempo</div>
+                <div id="time" class="text-lg text-purple-300">0.00s</div>
+            </div>
+
+            <!-- State Display -->
+            <div class="absolute bottom-4 left-4 control-group">
+                <div class="grid grid-cols-2 gap-x-4 gap-y-1 text-sm">
+                    <div class="text-purple-400/60">θ₁</div>
+                    <div id="theta1" class="text-purple-300 font-mono">0°</div>
+                    <div class="text-purple-400/60">θ₂</div>
+                    <div id="theta2" class="text-purple-300 font-mono">0°</div>
+                    <div class="text-purple-400/60">ω₁</div>
+                    <div id="omega1" class="text-purple-300 font-mono">0</div>
+                    <div class="text-purple-400/60">ω₂</div>
+                    <div id="omega2" class="text-purple-300 font-mono">0</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 bg-black/50 border-l border-purple-900/50 p-4 overflow-y-auto">
+            <div class="space-y-4">
+                <!-- Initial Angles -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Ángulo inicial θ₁: <span id="angle1Value" class="text-purple-300">90°</span>
+                    </label>
+                    <input type="range" id="angle1" min="-180" max="180" value="90" class="w-full">
+                </div>
+
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Ángulo inicial θ₂: <span id="angle2Value" class="text-purple-300">90°</span>
+                    </label>
+                    <input type="range" id="angle2" min="-180" max="180" value="90" class="w-full">
+                </div>
+
+                <!-- Lengths -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Longitud L₁: <span id="l1Value" class="text-purple-300">1.0</span>
+                    </label>
+                    <input type="range" id="l1" min="0.3" max="2" step="0.1" value="1" class="w-full">
+                </div>
+
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Longitud L₂: <span id="l2Value" class="text-purple-300">1.0</span>
+                    </label>
+                    <input type="range" id="l2" min="0.3" max="2" step="0.1" value="1" class="w-full">
+                </div>
+
+                <!-- Masses -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Masa m₁: <span id="m1Value" class="text-purple-300">1.0</span>
+                    </label>
+                    <input type="range" id="m1" min="0.1" max="3" step="0.1" value="1" class="w-full">
+                </div>
+
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Masa m₂: <span id="m2Value" class="text-purple-300">1.0</span>
+                    </label>
+                    <input type="range" id="m2" min="0.1" max="3" step="0.1" value="1" class="w-full">
+                </div>
+
+                <!-- Gravity -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Gravedad: <span id="gValue" class="text-purple-300">9.8</span>
+                    </label>
+                    <input type="range" id="g" min="1" max="20" step="0.1" value="9.8" class="w-full">
+                </div>
+
+                <!-- Trail -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">
+                        Longitud estela: <span id="trailValue" class="text-purple-300">500</span>
+                    </label>
+                    <input type="range" id="trail" min="0" max="2000" value="500" class="w-full">
+                </div>
+
+                <!-- Display Options -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">Mostrar</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showPendulum" checked class="accent-purple-500">
+                            <span class="text-sm">Péndulo</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showTrail" checked class="accent-purple-500">
+                            <span class="text-sm">Estela</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showGhost" class="accent-purple-500">
+                            <span class="text-sm">Péndulo fantasma (δθ₁ = 0.001°)</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showPhaseSpace" class="accent-purple-500">
+                            <span class="text-sm">Espacio de fases (θ₂, ω₂)</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Color Scheme -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">Color estela</label>
+                    <select id="trailColor" class="w-full">
+                        <option value="velocity">Por velocidad</option>
+                        <option value="time">Por tiempo</option>
+                        <option value="gradient">Gradiente fijo</option>
+                        <option value="mono">Monocromático</option>
+                    </select>
+                </div>
+
+                <!-- Presets -->
+                <div class="control-group">
+                    <label class="block text-purple-400/80 text-sm mb-2">Presets</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setPreset('symmetric')">Simétrico</button>
+                        <button onclick="setPreset('drop')">Caída libre</button>
+                        <button onclick="setPreset('asymmetric')">Asimétrico</button>
+                        <button onclick="setPreset('heavy')">Masa desigual</button>
+                    </div>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2">
+                    <button id="playPause" class="flex-1">
+                        ⏸ Pausar
+                    </button>
+                    <button id="reset" class="flex-1">
+                        ↻ Reiniciar
+                    </button>
+                </div>
+
+                <!-- Info -->
+                <div class="control-group">
+                    <h3 class="text-purple-400 font-medium mb-2">Caos determinista</h3>
+                    <p class="text-sm text-purple-300/70">
+                        El péndulo doble es un sistema caótico clásico. Pequeñas diferencias
+                        en condiciones iniciales producen trayectorias completamente diferentes.
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let state = {
+            theta1: Math.PI / 2,
+            theta2: Math.PI / 2,
+            omega1: 0,
+            omega2: 0,
+            trail: [],
+            time: 0,
+            running: true
+        };
+
+        // Ghost pendulum (slightly different initial condition)
+        let ghost = {
+            theta1: Math.PI / 2 + 0.00001,
+            theta2: Math.PI / 2,
+            omega1: 0,
+            omega2: 0,
+            trail: []
+        };
+
+        // Phase space points
+        let phasePoints = [];
+
+        function resize() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+        }
+
+        function getParams() {
+            return {
+                l1: parseFloat(document.getElementById('l1').value),
+                l2: parseFloat(document.getElementById('l2').value),
+                m1: parseFloat(document.getElementById('m1').value),
+                m2: parseFloat(document.getElementById('m2').value),
+                g: parseFloat(document.getElementById('g').value)
+            };
+        }
+
+        function derivatives(theta1, theta2, omega1, omega2, params) {
+            const { l1, l2, m1, m2, g } = params;
+
+            const delta = theta1 - theta2;
+            const den1 = (m1 + m2) * l1 - m2 * l1 * Math.cos(delta) * Math.cos(delta);
+            const den2 = (l2 / l1) * den1;
+
+            const dOmega1 = (m2 * l1 * omega1 * omega1 * Math.sin(delta) * Math.cos(delta)
+                + m2 * g * Math.sin(theta2) * Math.cos(delta)
+                + m2 * l2 * omega2 * omega2 * Math.sin(delta)
+                - (m1 + m2) * g * Math.sin(theta1)) / den1;
+
+            const dOmega2 = (-m2 * l2 * omega2 * omega2 * Math.sin(delta) * Math.cos(delta)
+                + (m1 + m2) * g * Math.sin(theta1) * Math.cos(delta)
+                - (m1 + m2) * l1 * omega1 * omega1 * Math.sin(delta)
+                - (m1 + m2) * g * Math.sin(theta2)) / den2;
+
+            return { dTheta1: omega1, dTheta2: omega2, dOmega1, dOmega2 };
+        }
+
+        function rk4Step(theta1, theta2, omega1, omega2, dt, params) {
+            const k1 = derivatives(theta1, theta2, omega1, omega2, params);
+
+            const k2 = derivatives(
+                theta1 + dt/2 * k1.dTheta1,
+                theta2 + dt/2 * k1.dTheta2,
+                omega1 + dt/2 * k1.dOmega1,
+                omega2 + dt/2 * k1.dOmega2,
+                params
+            );
+
+            const k3 = derivatives(
+                theta1 + dt/2 * k2.dTheta1,
+                theta2 + dt/2 * k2.dTheta2,
+                omega1 + dt/2 * k2.dOmega1,
+                omega2 + dt/2 * k2.dOmega2,
+                params
+            );
+
+            const k4 = derivatives(
+                theta1 + dt * k3.dTheta1,
+                theta2 + dt * k3.dTheta2,
+                omega1 + dt * k3.dOmega1,
+                omega2 + dt * k3.dOmega2,
+                params
+            );
+
+            return {
+                theta1: theta1 + dt/6 * (k1.dTheta1 + 2*k2.dTheta1 + 2*k3.dTheta1 + k4.dTheta1),
+                theta2: theta2 + dt/6 * (k1.dTheta2 + 2*k2.dTheta2 + 2*k3.dTheta2 + k4.dTheta2),
+                omega1: omega1 + dt/6 * (k1.dOmega1 + 2*k2.dOmega1 + 2*k3.dOmega1 + k4.dOmega1),
+                omega2: omega2 + dt/6 * (k1.dOmega2 + 2*k2.dOmega2 + 2*k3.dOmega2 + k4.dOmega2)
+            };
+        }
+
+        function calculateEnergy(theta1, theta2, omega1, omega2, params) {
+            const { l1, l2, m1, m2, g } = params;
+
+            // Kinetic energy
+            const v1sq = l1 * l1 * omega1 * omega1;
+            const v2sq = l1 * l1 * omega1 * omega1 + l2 * l2 * omega2 * omega2
+                + 2 * l1 * l2 * omega1 * omega2 * Math.cos(theta1 - theta2);
+
+            const KE = 0.5 * m1 * v1sq + 0.5 * m2 * v2sq;
+
+            // Potential energy
+            const y1 = -l1 * Math.cos(theta1);
+            const y2 = y1 - l2 * Math.cos(theta2);
+
+            const PE = m1 * g * y1 + m2 * g * y2;
+
+            return KE + PE;
+        }
+
+        function getPositions(theta1, theta2, params, originX, originY, scale) {
+            const { l1, l2 } = params;
+
+            const x1 = originX + l1 * Math.sin(theta1) * scale;
+            const y1 = originY + l1 * Math.cos(theta1) * scale;
+
+            const x2 = x1 + l2 * Math.sin(theta2) * scale;
+            const y2 = y1 + l2 * Math.cos(theta2) * scale;
+
+            return { x1, y1, x2, y2 };
+        }
+
+        function getTrailColor(velocity, index, total, colorMode) {
+            switch (colorMode) {
+                case 'velocity':
+                    const v = Math.min(velocity / 10, 1);
+                    return `hsl(${270 - v * 90}, 80%, ${50 + v * 20}%)`;
+                case 'time':
+                    const t = index / total;
+                    return `hsla(${270 + t * 60}, 80%, 60%, ${0.3 + t * 0.7})`;
+                case 'gradient':
+                    const g = index / total;
+                    return `hsla(${280}, ${60 + g * 20}%, ${50 + g * 20}%, ${0.3 + g * 0.7})`;
+                case 'mono':
+                    const alpha = index / total;
+                    return `rgba(168, 85, 247, ${0.2 + alpha * 0.8})`;
+                default:
+                    return '#a855f7';
+            }
+        }
+
+        function update() {
+            if (!state.running) return;
+
+            const params = getParams();
+            const dt = 0.01;
+            const trailLength = parseInt(document.getElementById('trail').value);
+
+            // Update main pendulum
+            const newState = rk4Step(state.theta1, state.theta2, state.omega1, state.omega2, dt, params);
+            state.theta1 = newState.theta1;
+            state.theta2 = newState.theta2;
+            state.omega1 = newState.omega1;
+            state.omega2 = newState.omega2;
+            state.time += dt;
+
+            // Store trail point
+            const originX = canvas.width / 2;
+            const originY = canvas.height * 0.35;
+            const scale = Math.min(canvas.width, canvas.height) * 0.15;
+            const pos = getPositions(state.theta1, state.theta2, params, originX, originY, scale);
+
+            const velocity = Math.sqrt(state.omega1 ** 2 + state.omega2 ** 2);
+            state.trail.push({ x: pos.x2, y: pos.y2, velocity });
+            if (state.trail.length > trailLength) {
+                state.trail.shift();
+            }
+
+            // Update ghost pendulum
+            if (document.getElementById('showGhost').checked) {
+                const ghostState = rk4Step(ghost.theta1, ghost.theta2, ghost.omega1, ghost.omega2, dt, params);
+                ghost.theta1 = ghostState.theta1;
+                ghost.theta2 = ghostState.theta2;
+                ghost.omega1 = ghostState.omega1;
+                ghost.omega2 = ghostState.omega2;
+
+                const ghostPos = getPositions(ghost.theta1, ghost.theta2, params, originX, originY, scale);
+                ghost.trail.push({ x: ghostPos.x2, y: ghostPos.y2 });
+                if (ghost.trail.length > trailLength) {
+                    ghost.trail.shift();
+                }
+            }
+
+            // Store phase space point
+            if (document.getElementById('showPhaseSpace').checked) {
+                phasePoints.push({ theta2: state.theta2, omega2: state.omega2 });
+                if (phasePoints.length > 5000) {
+                    phasePoints.shift();
+                }
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const params = getParams();
+            const originX = canvas.width / 2;
+            const originY = canvas.height * 0.35;
+            const scale = Math.min(canvas.width, canvas.height) * 0.15;
+
+            const showPhaseSpace = document.getElementById('showPhaseSpace').checked;
+
+            // Draw phase space
+            if (showPhaseSpace) {
+                const phaseOriginX = canvas.width * 0.15;
+                const phaseOriginY = canvas.height * 0.75;
+                const phaseScale = 30;
+
+                // Phase space axes
+                ctx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(phaseOriginX - 150, phaseOriginY);
+                ctx.lineTo(phaseOriginX + 150, phaseOriginY);
+                ctx.moveTo(phaseOriginX, phaseOriginY - 100);
+                ctx.lineTo(phaseOriginX, phaseOriginY + 100);
+                ctx.stroke();
+
+                ctx.fillStyle = 'rgba(168, 85, 247, 0.5)';
+                ctx.font = '12px monospace';
+                ctx.fillText('θ₂', phaseOriginX + 155, phaseOriginY + 4);
+                ctx.fillText('ω₂', phaseOriginX + 5, phaseOriginY - 105);
+
+                // Phase space points
+                for (let i = 0; i < phasePoints.length; i++) {
+                    const pt = phasePoints[i];
+                    const alpha = i / phasePoints.length;
+                    ctx.fillStyle = `rgba(168, 85, 247, ${0.1 + alpha * 0.5})`;
+                    ctx.fillRect(
+                        phaseOriginX + pt.theta2 * phaseScale - 1,
+                        phaseOriginY - pt.omega2 * phaseScale / 2 - 1,
+                        2, 2
+                    );
+                }
+            }
+
+            // Draw ghost trail
+            if (document.getElementById('showGhost').checked && ghost.trail.length > 1) {
+                ctx.strokeStyle = 'rgba(244, 114, 182, 0.5)';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(ghost.trail[0].x, ghost.trail[0].y);
+                for (let i = 1; i < ghost.trail.length; i++) {
+                    ctx.lineTo(ghost.trail[i].x, ghost.trail[i].y);
+                }
+                ctx.stroke();
+            }
+
+            // Draw main trail
+            if (document.getElementById('showTrail').checked && state.trail.length > 1) {
+                const colorMode = document.getElementById('trailColor').value;
+
+                for (let i = 1; i < state.trail.length; i++) {
+                    const pt = state.trail[i];
+                    const prevPt = state.trail[i - 1];
+
+                    ctx.strokeStyle = getTrailColor(pt.velocity, i, state.trail.length, colorMode);
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.moveTo(prevPt.x, prevPt.y);
+                    ctx.lineTo(pt.x, pt.y);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw pendulum
+            if (document.getElementById('showPendulum').checked) {
+                const pos = getPositions(state.theta1, state.theta2, params, originX, originY, scale);
+
+                // Rods
+                ctx.strokeStyle = '#a855f7';
+                ctx.lineWidth = 3;
+
+                ctx.beginPath();
+                ctx.moveTo(originX, originY);
+                ctx.lineTo(pos.x1, pos.y1);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(pos.x1, pos.y1);
+                ctx.lineTo(pos.x2, pos.y2);
+                ctx.stroke();
+
+                // Pivot
+                ctx.beginPath();
+                ctx.arc(originX, originY, 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#6b21a8';
+                ctx.fill();
+
+                // Mass 1
+                const r1 = 8 + params.m1 * 4;
+                ctx.beginPath();
+                ctx.arc(pos.x1, pos.y1, r1, 0, Math.PI * 2);
+                ctx.fillStyle = '#c084fc';
+                ctx.fill();
+                ctx.strokeStyle = '#a855f7';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Mass 2
+                const r2 = 8 + params.m2 * 4;
+                ctx.beginPath();
+                ctx.arc(pos.x2, pos.y2, r2, 0, Math.PI * 2);
+                ctx.fillStyle = '#e879f9';
+                ctx.fill();
+                ctx.strokeStyle = '#a855f7';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Draw ghost pendulum
+                if (document.getElementById('showGhost').checked) {
+                    const ghostPos = getPositions(ghost.theta1, ghost.theta2, params, originX, originY, scale);
+
+                    ctx.globalAlpha = 0.4;
+                    ctx.strokeStyle = '#f472b6';
+                    ctx.lineWidth = 2;
+
+                    ctx.beginPath();
+                    ctx.moveTo(originX, originY);
+                    ctx.lineTo(ghostPos.x1, ghostPos.y1);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(ghostPos.x1, ghostPos.y1);
+                    ctx.lineTo(ghostPos.x2, ghostPos.y2);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.arc(ghostPos.x1, ghostPos.y1, r1 * 0.8, 0, Math.PI * 2);
+                    ctx.fillStyle = '#f472b6';
+                    ctx.fill();
+
+                    ctx.beginPath();
+                    ctx.arc(ghostPos.x2, ghostPos.y2, r2 * 0.8, 0, Math.PI * 2);
+                    ctx.fill();
+
+                    ctx.globalAlpha = 1;
+                }
+            }
+
+            // Update displays
+            const energy = calculateEnergy(state.theta1, state.theta2, state.omega1, state.omega2, params);
+            document.getElementById('energy').textContent = energy.toFixed(2);
+            document.getElementById('time').textContent = state.time.toFixed(2) + 's';
+
+            const toDeg = 180 / Math.PI;
+            document.getElementById('theta1').textContent = (state.theta1 * toDeg % 360).toFixed(1) + '°';
+            document.getElementById('theta2').textContent = (state.theta2 * toDeg % 360).toFixed(1) + '°';
+            document.getElementById('omega1').textContent = state.omega1.toFixed(2);
+            document.getElementById('omega2').textContent = state.omega2.toFixed(2);
+        }
+
+        function animate() {
+            for (let i = 0; i < 3; i++) {
+                update();
+            }
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        function reset() {
+            const toRad = Math.PI / 180;
+            state.theta1 = parseFloat(document.getElementById('angle1').value) * toRad;
+            state.theta2 = parseFloat(document.getElementById('angle2').value) * toRad;
+            state.omega1 = 0;
+            state.omega2 = 0;
+            state.trail = [];
+            state.time = 0;
+
+            ghost.theta1 = state.theta1 + 0.00001;
+            ghost.theta2 = state.theta2;
+            ghost.omega1 = 0;
+            ghost.omega2 = 0;
+            ghost.trail = [];
+
+            phasePoints = [];
+        }
+
+        function setPreset(name) {
+            switch (name) {
+                case 'symmetric':
+                    document.getElementById('angle1').value = 90;
+                    document.getElementById('angle2').value = 90;
+                    document.getElementById('l1').value = 1;
+                    document.getElementById('l2').value = 1;
+                    document.getElementById('m1').value = 1;
+                    document.getElementById('m2').value = 1;
+                    break;
+                case 'drop':
+                    document.getElementById('angle1').value = 180;
+                    document.getElementById('angle2').value = 180;
+                    document.getElementById('l1').value = 1;
+                    document.getElementById('l2').value = 1;
+                    document.getElementById('m1').value = 1;
+                    document.getElementById('m2').value = 1;
+                    break;
+                case 'asymmetric':
+                    document.getElementById('angle1').value = 120;
+                    document.getElementById('angle2').value = -45;
+                    document.getElementById('l1').value = 1.2;
+                    document.getElementById('l2').value = 0.8;
+                    document.getElementById('m1').value = 1;
+                    document.getElementById('m2').value = 1;
+                    break;
+                case 'heavy':
+                    document.getElementById('angle1').value = 90;
+                    document.getElementById('angle2').value = 90;
+                    document.getElementById('l1').value = 1;
+                    document.getElementById('l2').value = 1;
+                    document.getElementById('m1').value = 2;
+                    document.getElementById('m2').value = 0.5;
+                    break;
+            }
+
+            // Update all displays
+            ['angle1', 'angle2', 'l1', 'l2', 'm1', 'm2'].forEach(id => {
+                const el = document.getElementById(id);
+                const valueEl = document.getElementById(id.replace('angle', 'angle').replace('l', 'l').replace('m', 'm') + 'Value');
+                if (valueEl) {
+                    valueEl.textContent = el.value + (id.startsWith('angle') ? '°' : '');
+                }
+            });
+
+            document.getElementById('angle1Value').textContent = document.getElementById('angle1').value + '°';
+            document.getElementById('angle2Value').textContent = document.getElementById('angle2').value + '°';
+            document.getElementById('l1Value').textContent = document.getElementById('l1').value;
+            document.getElementById('l2Value').textContent = document.getElementById('l2').value;
+            document.getElementById('m1Value').textContent = document.getElementById('m1').value;
+            document.getElementById('m2Value').textContent = document.getElementById('m2').value;
+
+            reset();
+        }
+
+        // Event listeners
+        document.getElementById('angle1').addEventListener('input', (e) => {
+            document.getElementById('angle1Value').textContent = e.target.value + '°';
+        });
+
+        document.getElementById('angle2').addEventListener('input', (e) => {
+            document.getElementById('angle2Value').textContent = e.target.value + '°';
+        });
+
+        document.getElementById('l1').addEventListener('input', (e) => {
+            document.getElementById('l1Value').textContent = e.target.value;
+        });
+
+        document.getElementById('l2').addEventListener('input', (e) => {
+            document.getElementById('l2Value').textContent = e.target.value;
+        });
+
+        document.getElementById('m1').addEventListener('input', (e) => {
+            document.getElementById('m1Value').textContent = e.target.value;
+        });
+
+        document.getElementById('m2').addEventListener('input', (e) => {
+            document.getElementById('m2Value').textContent = e.target.value;
+        });
+
+        document.getElementById('g').addEventListener('input', (e) => {
+            document.getElementById('gValue').textContent = e.target.value;
+        });
+
+        document.getElementById('trail').addEventListener('input', (e) => {
+            document.getElementById('trailValue').textContent = e.target.value;
+        });
+
+        document.getElementById('playPause').addEventListener('click', () => {
+            state.running = !state.running;
+            document.getElementById('playPause').textContent =
+                state.running ? '⏸ Pausar' : '▶ Reanudar';
+        });
+
+        document.getElementById('reset').addEventListener('click', reset);
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+        reset();
+        animate();
+    </script>
+</body>
+</html>

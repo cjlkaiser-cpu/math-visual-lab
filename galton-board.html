@@ -1,0 +1,589 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tablero de Galton | Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; }
+        canvas { display: block; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #14532d;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #a3e635;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        select, button {
+            background: #14532d;
+            border: 1px solid #a3e635;
+            color: #d9f99d;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        select:hover, button:hover {
+            background: #166534;
+            border-color: #bef264;
+        }
+        .control-group {
+            background: rgba(20, 83, 45, 0.5);
+            border: 1px solid rgba(163, 230, 53, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-lime-100 overflow-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur border-b border-lime-900/50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-lime-400 hover:text-lime-300 transition-colors">
+                    ← Volver
+                </a>
+                <h1 class="text-xl font-light">Tablero de <span class="text-lime-400">Galton</span></h1>
+            </div>
+            <div class="text-lime-400/60 text-sm">
+                Distribución binomial → normal
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 flex h-screen">
+        <!-- Canvas Container -->
+        <div class="flex-1 relative">
+            <canvas id="canvas"></canvas>
+
+            <!-- Stats -->
+            <div class="absolute top-4 left-4 control-group">
+                <div class="text-lime-400/60 text-sm">Bolas caídas</div>
+                <div id="ballCount" class="text-3xl font-light text-lime-300">0</div>
+                <div class="text-lime-400/60 text-sm mt-2">En movimiento</div>
+                <div id="activeBalls" class="text-xl text-lime-300">0</div>
+            </div>
+
+            <!-- Distribution Stats -->
+            <div class="absolute bottom-4 left-4 control-group">
+                <div class="text-lime-400/60 text-sm">Media</div>
+                <div id="mean" class="text-lg text-lime-300">-</div>
+                <div class="text-lime-400/60 text-sm mt-1">Desv. estándar</div>
+                <div id="std" class="text-lg text-lime-300">-</div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 bg-black/50 border-l border-lime-900/50 p-4 overflow-y-auto">
+            <div class="space-y-4">
+                <!-- Rows -->
+                <div class="control-group">
+                    <label class="block text-lime-400/80 text-sm mb-2">
+                        Filas de clavos: <span id="rowsValue" class="text-lime-300">10</span>
+                    </label>
+                    <input type="range" id="rows" min="4" max="20" value="10" class="w-full">
+                </div>
+
+                <!-- Ball Rate -->
+                <div class="control-group">
+                    <label class="block text-lime-400/80 text-sm mb-2">
+                        Bolas/segundo: <span id="rateValue" class="text-lime-300">5</span>
+                    </label>
+                    <input type="range" id="rate" min="1" max="50" value="5" class="w-full">
+                </div>
+
+                <!-- Probability -->
+                <div class="control-group">
+                    <label class="block text-lime-400/80 text-sm mb-2">
+                        P(derecha): <span id="probValue" class="text-lime-300">0.50</span>
+                    </label>
+                    <input type="range" id="prob" min="0" max="1" step="0.01" value="0.5" class="w-full">
+                    <div class="flex justify-between text-xs text-lime-400/50 mt-1">
+                        <span>0 (siempre izq)</span>
+                        <span>1 (siempre der)</span>
+                    </div>
+                </div>
+
+                <!-- Ball Size -->
+                <div class="control-group">
+                    <label class="block text-lime-400/80 text-sm mb-2">
+                        Tamaño bola: <span id="ballSizeValue" class="text-lime-300">6</span>px
+                    </label>
+                    <input type="range" id="ballSize" min="2" max="12" value="6" class="w-full">
+                </div>
+
+                <!-- Speed -->
+                <div class="control-group">
+                    <label class="block text-lime-400/80 text-sm mb-2">
+                        Velocidad: <span id="speedValue" class="text-lime-300">1.0</span>x
+                    </label>
+                    <input type="range" id="speed" min="0.2" max="3" step="0.1" value="1" class="w-full">
+                </div>
+
+                <!-- Display Options -->
+                <div class="control-group">
+                    <label class="block text-lime-400/80 text-sm mb-2">Mostrar</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showPegs" checked class="accent-lime-500">
+                            <span class="text-sm">Clavos</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showBalls" checked class="accent-lime-500">
+                            <span class="text-sm">Bolas en movimiento</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showHistogram" checked class="accent-lime-500">
+                            <span class="text-sm">Histograma</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showNormal" checked class="accent-lime-500">
+                            <span class="text-sm">Curva normal teórica</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showLabels" class="accent-lime-500">
+                            <span class="text-sm">Etiquetas bins</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Color Mode -->
+                <div class="control-group">
+                    <label class="block text-lime-400/80 text-sm mb-2">Color bolas</label>
+                    <select id="colorMode" class="w-full">
+                        <option value="lime">Lima</option>
+                        <option value="path">Por camino</option>
+                        <option value="rainbow">Arcoíris</option>
+                        <option value="heat">Por densidad</option>
+                    </select>
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2">
+                    <button id="playPause" class="flex-1">
+                        ⏸ Pausar
+                    </button>
+                    <button id="reset" class="flex-1">
+                        ↻ Reiniciar
+                    </button>
+                </div>
+
+                <div class="flex gap-2">
+                    <button id="addBatch" class="flex-1">
+                        +100 bolas
+                    </button>
+                    <button id="addMany" class="flex-1">
+                        +1000 bolas
+                    </button>
+                </div>
+
+                <!-- Info -->
+                <div class="control-group">
+                    <h3 class="text-lime-400 font-medium mb-2">Teorema Central del Límite</h3>
+                    <p class="text-sm text-lime-300/70">
+                        Cada bola toma n decisiones binarias. La suma de variables aleatorias independientes
+                        converge a una distribución normal.
+                    </p>
+                    <p class="text-sm text-lime-300/70 mt-2">
+                        μ = n·p, σ² = n·p·(1-p)
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let state = {
+            balls: [],
+            bins: [],
+            totalDropped: 0,
+            running: true,
+            lastSpawn: 0
+        };
+
+        // Physics constants
+        const gravity = 0.3;
+        const bounce = 0.5;
+        const friction = 0.98;
+
+        function resize() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            initBins();
+        }
+
+        function initBins() {
+            const rows = parseInt(document.getElementById('rows').value);
+            state.bins = new Array(rows + 1).fill(0);
+        }
+
+        function reset() {
+            state.balls = [];
+            state.totalDropped = 0;
+            initBins();
+        }
+
+        function getPegPositions() {
+            const rows = parseInt(document.getElementById('rows').value);
+            const pegs = [];
+
+            const boardWidth = Math.min(canvas.width * 0.8, 600);
+            const boardHeight = canvas.height * 0.5;
+            const startY = canvas.height * 0.1;
+            const pegSpacingY = boardHeight / rows;
+            const pegSpacingX = boardWidth / rows;
+
+            for (let row = 0; row < rows; row++) {
+                const pegsInRow = row + 1;
+                const rowWidth = pegsInRow * pegSpacingX;
+                const startX = canvas.width / 2 - rowWidth / 2 + pegSpacingX / 2;
+
+                for (let col = 0; col < pegsInRow; col++) {
+                    pegs.push({
+                        x: startX + col * pegSpacingX,
+                        y: startY + row * pegSpacingY,
+                        row: row
+                    });
+                }
+            }
+
+            return { pegs, pegSpacingX, pegSpacingY, startY, boardHeight };
+        }
+
+        function spawnBall() {
+            const prob = parseFloat(document.getElementById('prob').value);
+            const colorMode = document.getElementById('colorMode').value;
+
+            let color;
+            switch (colorMode) {
+                case 'lime':
+                    color = '#a3e635';
+                    break;
+                case 'path':
+                    color = `hsl(${Math.random() * 360}, 80%, 60%)`;
+                    break;
+                case 'rainbow':
+                    color = `hsl(${(state.totalDropped * 7) % 360}, 80%, 60%)`;
+                    break;
+                case 'heat':
+                    color = '#a3e635';
+                    break;
+                default:
+                    color = '#a3e635';
+            }
+
+            state.balls.push({
+                x: canvas.width / 2 + (Math.random() - 0.5) * 4,
+                y: 20,
+                vx: 0,
+                vy: 0,
+                prob: prob,
+                color: color,
+                path: [],
+                settled: false
+            });
+        }
+
+        function updateBall(ball, pegs, pegRadius, ballRadius, dt) {
+            const speed = parseFloat(document.getElementById('speed').value);
+
+            if (ball.settled) return;
+
+            // Apply gravity
+            ball.vy += gravity * speed;
+
+            // Apply friction
+            ball.vx *= friction;
+
+            // Update position
+            ball.x += ball.vx * speed;
+            ball.y += ball.vy * speed;
+
+            // Check peg collisions
+            for (const peg of pegs.pegs) {
+                const dx = ball.x - peg.x;
+                const dy = ball.y - peg.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+                const minDist = pegRadius + ballRadius;
+
+                if (dist < minDist && dist > 0) {
+                    // Collision response
+                    const nx = dx / dist;
+                    const ny = dy / dist;
+
+                    // Move ball outside peg
+                    ball.x = peg.x + nx * minDist;
+                    ball.y = peg.y + ny * minDist;
+
+                    // Reflect velocity
+                    const dotProduct = ball.vx * nx + ball.vy * ny;
+                    ball.vx -= 2 * dotProduct * nx * bounce;
+                    ball.vy -= 2 * dotProduct * ny * bounce;
+
+                    // Add randomness based on probability
+                    const randomPush = (Math.random() < ball.prob ? 1 : -1) * 2;
+                    ball.vx += randomPush;
+
+                    ball.path.push(peg.row);
+                }
+            }
+
+            // Check bin entry
+            const rows = parseInt(document.getElementById('rows').value);
+            const binY = pegs.startY + pegs.boardHeight + 20;
+
+            if (ball.y > binY && !ball.settled) {
+                // Determine which bin
+                const binWidth = pegs.pegSpacingX;
+                const startX = canvas.width / 2 - (rows + 1) * binWidth / 2;
+                const binIndex = Math.floor((ball.x - startX) / binWidth);
+
+                if (binIndex >= 0 && binIndex <= rows) {
+                    state.bins[binIndex]++;
+                    state.totalDropped++;
+                    ball.settled = true;
+                    ball.binIndex = binIndex;
+                } else {
+                    // Out of bounds, respawn
+                    ball.settled = true;
+                }
+            }
+
+            // Wall boundaries
+            if (ball.x < ballRadius) {
+                ball.x = ballRadius;
+                ball.vx = Math.abs(ball.vx) * bounce;
+            }
+            if (ball.x > canvas.width - ballRadius) {
+                ball.x = canvas.width - ballRadius;
+                ball.vx = -Math.abs(ball.vx) * bounce;
+            }
+        }
+
+        function calculateStats() {
+            const rows = parseInt(document.getElementById('rows').value);
+            const total = state.bins.reduce((a, b) => a + b, 0);
+
+            if (total === 0) return { mean: 0, std: 0 };
+
+            let mean = 0;
+            for (let i = 0; i <= rows; i++) {
+                mean += i * state.bins[i];
+            }
+            mean /= total;
+
+            let variance = 0;
+            for (let i = 0; i <= rows; i++) {
+                variance += state.bins[i] * (i - mean) ** 2;
+            }
+            variance /= total;
+
+            return { mean, std: Math.sqrt(variance) };
+        }
+
+        function normalPDF(x, mean, std) {
+            if (std === 0) return 0;
+            const exponent = -0.5 * ((x - mean) / std) ** 2;
+            return Math.exp(exponent) / (std * Math.sqrt(2 * Math.PI));
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const rows = parseInt(document.getElementById('rows').value);
+            const ballRadius = parseInt(document.getElementById('ballSize').value);
+            const pegRadius = 4;
+            const pegs = getPegPositions();
+
+            // Draw pegs
+            if (document.getElementById('showPegs').checked) {
+                ctx.fillStyle = '#64748b';
+                for (const peg of pegs.pegs) {
+                    ctx.beginPath();
+                    ctx.arc(peg.x, peg.y, pegRadius, 0, Math.PI * 2);
+                    ctx.fill();
+                }
+            }
+
+            // Draw histogram
+            if (document.getElementById('showHistogram').checked) {
+                const binY = pegs.startY + pegs.boardHeight + 20;
+                const maxHeight = canvas.height - binY - 40;
+                const binWidth = pegs.pegSpacingX;
+                const startX = canvas.width / 2 - (rows + 1) * binWidth / 2;
+
+                const maxBin = Math.max(...state.bins, 1);
+                const colorMode = document.getElementById('colorMode').value;
+
+                for (let i = 0; i <= rows; i++) {
+                    const height = (state.bins[i] / maxBin) * maxHeight;
+                    const x = startX + i * binWidth;
+
+                    let fillColor;
+                    if (colorMode === 'heat') {
+                        const intensity = state.bins[i] / maxBin;
+                        const hue = 120 - intensity * 120; // green to red
+                        fillColor = `hsl(${hue}, 80%, ${40 + intensity * 20}%)`;
+                    } else {
+                        fillColor = 'rgba(163, 230, 53, 0.6)';
+                    }
+
+                    ctx.fillStyle = fillColor;
+                    ctx.fillRect(x + 2, binY + maxHeight - height, binWidth - 4, height);
+
+                    // Bin outline
+                    ctx.strokeStyle = 'rgba(163, 230, 53, 0.3)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(x, binY, binWidth, maxHeight);
+
+                    // Labels
+                    if (document.getElementById('showLabels').checked) {
+                        ctx.fillStyle = '#a3e635';
+                        ctx.font = '10px monospace';
+                        ctx.textAlign = 'center';
+                        ctx.fillText(state.bins[i].toString(), x + binWidth / 2, binY + maxHeight + 15);
+                    }
+                }
+
+                // Draw normal curve overlay
+                if (document.getElementById('showNormal').checked && state.totalDropped > 10) {
+                    const stats = calculateStats();
+                    const prob = parseFloat(document.getElementById('prob').value);
+
+                    // Theoretical mean and std
+                    const theorMean = rows * prob;
+                    const theorStd = Math.sqrt(rows * prob * (1 - prob));
+
+                    ctx.strokeStyle = '#f472b6';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+
+                    for (let x = 0; x <= rows; x += 0.1) {
+                        const pdf = normalPDF(x, theorMean, theorStd);
+                        const normalizedHeight = pdf * theorStd * Math.sqrt(2 * Math.PI) * maxHeight * 0.9;
+                        const screenX = startX + x * binWidth + binWidth / 2;
+                        const screenY = binY + maxHeight - normalizedHeight;
+
+                        if (x === 0) ctx.moveTo(screenX, screenY);
+                        else ctx.lineTo(screenX, screenY);
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            // Draw balls
+            if (document.getElementById('showBalls').checked) {
+                for (const ball of state.balls) {
+                    if (ball.settled) continue;
+
+                    ctx.beginPath();
+                    ctx.arc(ball.x, ball.y, ballRadius, 0, Math.PI * 2);
+                    ctx.fillStyle = ball.color;
+                    ctx.fill();
+                }
+            }
+
+            // Update stats display
+            document.getElementById('ballCount').textContent = state.totalDropped.toLocaleString();
+            document.getElementById('activeBalls').textContent =
+                state.balls.filter(b => !b.settled).length;
+
+            const stats = calculateStats();
+            document.getElementById('mean').textContent = stats.mean.toFixed(2);
+            document.getElementById('std').textContent = stats.std.toFixed(2);
+        }
+
+        function update() {
+            if (!state.running) return;
+
+            const rate = parseInt(document.getElementById('rate').value);
+            const now = Date.now();
+            const interval = 1000 / rate;
+
+            if (now - state.lastSpawn > interval) {
+                spawnBall();
+                state.lastSpawn = now;
+            }
+
+            const pegs = getPegPositions();
+            const ballRadius = parseInt(document.getElementById('ballSize').value);
+            const pegRadius = 4;
+
+            for (const ball of state.balls) {
+                updateBall(ball, pegs, pegRadius, ballRadius, 1);
+            }
+
+            // Remove settled balls after a while (keep recent ones for visual)
+            state.balls = state.balls.filter(b => !b.settled || Math.random() > 0.01);
+        }
+
+        function animate() {
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        function addBalls(count) {
+            for (let i = 0; i < count; i++) {
+                setTimeout(() => {
+                    if (state.running) spawnBall();
+                }, i * 10);
+            }
+        }
+
+        // Event listeners
+        document.getElementById('rows').addEventListener('input', (e) => {
+            document.getElementById('rowsValue').textContent = e.target.value;
+            reset();
+        });
+
+        document.getElementById('rate').addEventListener('input', (e) => {
+            document.getElementById('rateValue').textContent = e.target.value;
+        });
+
+        document.getElementById('prob').addEventListener('input', (e) => {
+            document.getElementById('probValue').textContent = parseFloat(e.target.value).toFixed(2);
+        });
+
+        document.getElementById('ballSize').addEventListener('input', (e) => {
+            document.getElementById('ballSizeValue').textContent = e.target.value;
+        });
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            document.getElementById('speedValue').textContent = parseFloat(e.target.value).toFixed(1);
+        });
+
+        document.getElementById('playPause').addEventListener('click', () => {
+            state.running = !state.running;
+            document.getElementById('playPause').textContent =
+                state.running ? '⏸ Pausar' : '▶ Reanudar';
+        });
+
+        document.getElementById('reset').addEventListener('click', reset);
+
+        document.getElementById('addBatch').addEventListener('click', () => addBalls(100));
+        document.getElementById('addMany').addEventListener('click', () => addBalls(1000));
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+        animate();
+    </script>
+</body>
+</html>

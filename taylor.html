@@ -1,0 +1,697 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Series de Taylor - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(244, 114, 182, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #f472b6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+        .term-badge {
+            transition: all 0.3s;
+        }
+        .term-active {
+            background: rgba(244, 114, 182, 0.3);
+            border-color: rgba(244, 114, 182, 0.6);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-pink-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-pink-400 font-medium">Taylor</span> Series
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Términos: <span id="term-count" class="text-pink-400">1</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative flex flex-col">
+            <!-- Function Display -->
+            <div class="text-center py-3 border-b border-gray-900 bg-gray-950/50">
+                <div id="current-expansion" class="mono text-sm text-gray-300 px-4 overflow-x-auto">
+                    <span class="text-pink-400">sin(x)</span> ≈ <span id="expansion-terms">x</span>
+                </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="flex-1 relative">
+                <canvas id="canvas" class="w-full h-full"></canvas>
+
+                <!-- Legend -->
+                <div class="absolute top-4 right-4 bg-gray-900/90 px-3 py-2 rounded-lg text-xs">
+                    <div class="flex items-center gap-2 mb-1">
+                        <div class="w-4 h-0.5 bg-pink-400"></div>
+                        <span class="text-gray-400">Función real</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-4 h-0.5 bg-cyan-400"></div>
+                        <span class="text-gray-400">Aproximación Taylor</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Error Display -->
+            <div class="border-t border-gray-900 bg-gray-950/50 px-4 py-2">
+                <div class="flex justify-between items-center max-w-2xl mx-auto text-xs mono">
+                    <span class="text-gray-500">Error máximo en [-π, π]: <span id="max-error" class="text-yellow-400">-</span></span>
+                    <span class="text-gray-500">Radio de convergencia: <span id="convergence" class="text-lime-400">∞</span></span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-pink-400 glow-text">Controles</h2>
+
+            <!-- Function Selection -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Función</label>
+                <select id="function" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-pink-500 focus:outline-none">
+                    <option value="sin">sin(x)</option>
+                    <option value="cos">cos(x)</option>
+                    <option value="exp">e^x</option>
+                    <option value="ln">ln(1+x)</option>
+                    <option value="arctan">arctan(x)</option>
+                    <option value="sinh">sinh(x)</option>
+                    <option value="cosh">cosh(x)</option>
+                    <option value="sqrt">√(1+x)</option>
+                </select>
+            </div>
+
+            <!-- Number of Terms -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Número de términos: <span id="terms-value" class="text-pink-400 mono">1</span>
+                </label>
+                <input type="range" id="terms" min="1" max="20" value="1" class="w-full">
+            </div>
+
+            <!-- Center Point -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Centro (a): <span id="center-value" class="text-cyan-400 mono">0</span>
+                </label>
+                <input type="range" id="center" min="-3" max="3" step="0.5" value="0" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Serie de Taylor centrada en x = a</p>
+            </div>
+
+            <!-- X Range -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Rango X: ±<span id="range-value" class="text-cyan-400 mono">π</span>
+                </label>
+                <input type="range" id="x-range" min="1" max="10" step="0.5" value="3.14159" class="w-full">
+            </div>
+
+            <!-- Animation -->
+            <div class="mb-6">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="animate" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-pink-500 focus:ring-pink-500">
+                    <span class="text-sm text-gray-400">Animar términos</span>
+                </label>
+                <div id="animation-controls" class="mt-3 hidden">
+                    <label class="block text-sm text-gray-400 mb-2">
+                        Velocidad: <span id="speed-value" class="text-pink-400 mono">1.0</span>s
+                    </label>
+                    <input type="range" id="speed" min="0.2" max="3" step="0.1" value="1" class="w-full">
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="mb-6 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-individual" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-pink-500 focus:ring-pink-500">
+                    <span class="text-sm text-gray-400">Mostrar términos individuales</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-error" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-pink-500 focus:ring-pink-500">
+                    <span class="text-sm text-gray-400">Mostrar área de error</span>
+                </label>
+            </div>
+
+            <!-- Terms Display -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Términos activos</label>
+                <div id="terms-grid" class="grid grid-cols-5 gap-1">
+                    <!-- Generated dynamically -->
+                </div>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-pink-400 mb-3">La Fórmula</h3>
+                <div class="mono text-xs text-center mb-3 text-cyan-400 leading-relaxed">
+                    f(x) = Σ f⁽ⁿ⁾(a)/n! · (x-a)ⁿ
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    La <span class="text-pink-400">serie de Taylor</span> aproxima funciones suaves usando polinomios. Cada término añade una derivada de orden superior, mejorando la aproximación.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500" id="function-info">
+                        sin(x) = x - x³/3! + x⁵/5! - x⁷/7! + ...
+                    </p>
+                </div>
+            </div>
+
+            <!-- Convergence Info -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Convergencia</h3>
+                <div id="convergence-info" class="text-xs text-gray-500">
+                    sin(x) y cos(x) convergen para todo x real. El error disminuye como O(xⁿ⁺¹/(n+1)!).
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Settings
+        let selectedFunction = 'sin';
+        let numTerms = 1;
+        let center = 0;
+        let xRange = Math.PI;
+        let showIndividual = false;
+        let showError = false;
+        let animating = false;
+        let animationSpeed = 1;
+
+        // Animation
+        let animationFrame = null;
+        let currentAnimatedTerms = 1;
+        let lastAnimationTime = 0;
+
+        // Function definitions
+        const functions = {
+            sin: {
+                fn: Math.sin,
+                taylor: (x, a, n) => {
+                    let sum = 0;
+                    for (let i = 0; i < n; i++) {
+                        const k = 2 * i + 1;
+                        const sign = i % 2 === 0 ? 1 : -1;
+                        sum += sign * Math.pow(x - a, k) / factorial(k) * Math.cos(a + i * Math.PI / 2);
+                    }
+                    // For sin centered at 0
+                    if (a === 0) {
+                        sum = 0;
+                        for (let i = 0; i < n; i++) {
+                            const k = 2 * i + 1;
+                            const sign = i % 2 === 0 ? 1 : -1;
+                            sum += sign * Math.pow(x, k) / factorial(k);
+                        }
+                    }
+                    return sum;
+                },
+                terms: (n) => n === 0 ? 'x' : `${n % 2 === 0 ? '+' : '-'} x^${2*n+1}/${2*n+1}!`,
+                info: 'sin(x) = x - x³/3! + x⁵/5! - x⁷/7! + ...',
+                convergence: '∞ (todo x)'
+            },
+            cos: {
+                fn: Math.cos,
+                taylor: (x, a, n) => {
+                    if (a === 0) {
+                        let sum = 0;
+                        for (let i = 0; i < n; i++) {
+                            const k = 2 * i;
+                            const sign = i % 2 === 0 ? 1 : -1;
+                            sum += sign * Math.pow(x, k) / factorial(k);
+                        }
+                        return sum;
+                    }
+                    return Math.cos(a); // Simplified
+                },
+                terms: (n) => n === 0 ? '1' : `${n % 2 === 0 ? '+' : '-'} x^${2*n}/${2*n}!`,
+                info: 'cos(x) = 1 - x²/2! + x⁴/4! - x⁶/6! + ...',
+                convergence: '∞ (todo x)'
+            },
+            exp: {
+                fn: Math.exp,
+                taylor: (x, a, n) => {
+                    if (a === 0) {
+                        let sum = 0;
+                        for (let i = 0; i < n; i++) {
+                            sum += Math.pow(x, i) / factorial(i);
+                        }
+                        return sum;
+                    }
+                    return Math.exp(a);
+                },
+                terms: (n) => n === 0 ? '1' : `+ x^${n}/${n}!`,
+                info: 'e^x = 1 + x + x²/2! + x³/3! + x⁴/4! + ...',
+                convergence: '∞ (todo x)'
+            },
+            ln: {
+                fn: (x) => Math.log(1 + x),
+                taylor: (x, a, n) => {
+                    if (a === 0) {
+                        let sum = 0;
+                        for (let i = 1; i <= n; i++) {
+                            const sign = i % 2 === 1 ? 1 : -1;
+                            sum += sign * Math.pow(x, i) / i;
+                        }
+                        return sum;
+                    }
+                    return Math.log(1 + a);
+                },
+                terms: (n) => n === 0 ? 'x' : `${n % 2 === 0 ? '+' : '-'} x^${n+1}/${n+1}`,
+                info: 'ln(1+x) = x - x²/2 + x³/3 - x⁴/4 + ...',
+                convergence: '|x| ≤ 1'
+            },
+            arctan: {
+                fn: Math.atan,
+                taylor: (x, a, n) => {
+                    if (a === 0) {
+                        let sum = 0;
+                        for (let i = 0; i < n; i++) {
+                            const k = 2 * i + 1;
+                            const sign = i % 2 === 0 ? 1 : -1;
+                            sum += sign * Math.pow(x, k) / k;
+                        }
+                        return sum;
+                    }
+                    return Math.atan(a);
+                },
+                terms: (n) => n === 0 ? 'x' : `${n % 2 === 0 ? '+' : '-'} x^${2*n+1}/${2*n+1}`,
+                info: 'arctan(x) = x - x³/3 + x⁵/5 - x⁷/7 + ...',
+                convergence: '|x| ≤ 1'
+            },
+            sinh: {
+                fn: Math.sinh,
+                taylor: (x, a, n) => {
+                    if (a === 0) {
+                        let sum = 0;
+                        for (let i = 0; i < n; i++) {
+                            const k = 2 * i + 1;
+                            sum += Math.pow(x, k) / factorial(k);
+                        }
+                        return sum;
+                    }
+                    return Math.sinh(a);
+                },
+                terms: (n) => n === 0 ? 'x' : `+ x^${2*n+1}/${2*n+1}!`,
+                info: 'sinh(x) = x + x³/3! + x⁵/5! + x⁷/7! + ...',
+                convergence: '∞ (todo x)'
+            },
+            cosh: {
+                fn: Math.cosh,
+                taylor: (x, a, n) => {
+                    if (a === 0) {
+                        let sum = 0;
+                        for (let i = 0; i < n; i++) {
+                            const k = 2 * i;
+                            sum += Math.pow(x, k) / factorial(k);
+                        }
+                        return sum;
+                    }
+                    return Math.cosh(a);
+                },
+                terms: (n) => n === 0 ? '1' : `+ x^${2*n}/${2*n}!`,
+                info: 'cosh(x) = 1 + x²/2! + x⁴/4! + x⁶/6! + ...',
+                convergence: '∞ (todo x)'
+            },
+            sqrt: {
+                fn: (x) => Math.sqrt(1 + x),
+                taylor: (x, a, n) => {
+                    if (a === 0) {
+                        let sum = 1;
+                        let coef = 0.5;
+                        for (let i = 1; i < n; i++) {
+                            sum += coef * Math.pow(x, i);
+                            coef *= (0.5 - i) / (i + 1);
+                        }
+                        return sum;
+                    }
+                    return Math.sqrt(1 + a);
+                },
+                terms: (n) => {
+                    if (n === 0) return '1';
+                    if (n === 1) return '+ x/2';
+                    return `+ (binomial) x^${n}`;
+                },
+                info: '√(1+x) = 1 + x/2 - x²/8 + x³/16 - ...',
+                convergence: '|x| ≤ 1'
+            }
+        };
+
+        function factorial(n) {
+            if (n <= 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        }
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            render();
+        }
+
+        function render() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+            const func = functions[selectedFunction];
+            const terms = animating ? currentAnimatedTerms : numTerms;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, w, h);
+
+            const margin = 40;
+            const graphW = w - margin * 2;
+            const graphH = h - margin * 2;
+            const centerX = margin + graphW / 2;
+            const centerY = margin + graphH / 2;
+
+            // Calculate Y range based on function
+            let yMin = -2, yMax = 2;
+            if (selectedFunction === 'exp') {
+                yMax = Math.exp(xRange);
+                yMin = -1;
+            }
+            const yRange = yMax - yMin;
+
+            // Draw grid
+            ctx.strokeStyle = '#1a1a2e';
+            ctx.lineWidth = 1;
+
+            // Vertical lines
+            for (let x = -xRange; x <= xRange; x += xRange / 4) {
+                const screenX = centerX + (x / xRange) * (graphW / 2);
+                ctx.beginPath();
+                ctx.moveTo(screenX, margin);
+                ctx.lineTo(screenX, h - margin);
+                ctx.stroke();
+            }
+
+            // Horizontal lines
+            for (let y = yMin; y <= yMax; y += yRange / 4) {
+                const screenY = centerY - ((y - (yMax + yMin) / 2) / (yRange / 2)) * (graphH / 2);
+                ctx.beginPath();
+                ctx.moveTo(margin, screenY);
+                ctx.lineTo(w - margin, screenY);
+                ctx.stroke();
+            }
+
+            // Draw axes
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 2;
+
+            // X axis
+            const xAxisY = centerY - ((-yMin - yRange / 2) / (yRange / 2)) * (graphH / 2);
+            ctx.beginPath();
+            ctx.moveTo(margin, Math.max(margin, Math.min(h - margin, xAxisY)));
+            ctx.lineTo(w - margin, Math.max(margin, Math.min(h - margin, xAxisY)));
+            ctx.stroke();
+
+            // Y axis
+            ctx.beginPath();
+            ctx.moveTo(centerX, margin);
+            ctx.lineTo(centerX, h - margin);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillText(`${xRange.toFixed(1)}`, w - margin - 20, xAxisY + 15);
+            ctx.fillText(`-${xRange.toFixed(1)}`, margin, xAxisY + 15);
+
+            // Function to screen coordinates
+            const toScreen = (x, y) => ({
+                x: centerX + (x / xRange) * (graphW / 2),
+                y: centerY - ((y - (yMax + yMin) / 2) / (yRange / 2)) * (graphH / 2)
+            });
+
+            // Draw error area
+            if (showError) {
+                ctx.fillStyle = 'rgba(250, 204, 21, 0.1)';
+                ctx.beginPath();
+
+                for (let px = margin; px <= w - margin; px++) {
+                    const x = ((px - centerX) / (graphW / 2)) * xRange;
+                    const realY = func.fn(x);
+                    const taylorY = func.taylor(x, center, terms);
+                    const p1 = toScreen(x, realY);
+                    const p2 = toScreen(x, taylorY);
+
+                    if (px === margin) {
+                        ctx.moveTo(p1.x, p1.y);
+                    }
+                    ctx.lineTo(p1.x, p1.y);
+                }
+
+                for (let px = w - margin; px >= margin; px--) {
+                    const x = ((px - centerX) / (graphW / 2)) * xRange;
+                    const taylorY = func.taylor(x, center, terms);
+                    const p = toScreen(x, taylorY);
+                    ctx.lineTo(p.x, p.y);
+                }
+
+                ctx.closePath();
+                ctx.fill();
+            }
+
+            // Draw real function
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            let maxError = 0;
+            for (let px = margin; px <= w - margin; px++) {
+                const x = ((px - centerX) / (graphW / 2)) * xRange;
+                let y;
+
+                try {
+                    y = func.fn(x);
+                    if (!isFinite(y)) continue;
+                } catch (e) {
+                    continue;
+                }
+
+                const p = toScreen(x, y);
+
+                if (px === margin) ctx.moveTo(p.x, p.y);
+                else ctx.lineTo(p.x, p.y);
+
+                // Calculate error
+                const taylorY = func.taylor(x, center, terms);
+                if (isFinite(taylorY)) {
+                    maxError = Math.max(maxError, Math.abs(y - taylorY));
+                }
+            }
+            ctx.stroke();
+
+            // Draw individual terms if enabled
+            if (showIndividual) {
+                for (let t = 1; t <= terms; t++) {
+                    ctx.strokeStyle = `hsla(${(t / terms) * 300}, 70%, 50%, 0.3)`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+
+                    for (let px = margin; px <= w - margin; px++) {
+                        const x = ((px - centerX) / (graphW / 2)) * xRange;
+                        const y = func.taylor(x, center, t);
+
+                        if (!isFinite(y) || Math.abs(y) > yMax * 2) continue;
+
+                        const p = toScreen(x, y);
+
+                        if (px === margin) ctx.moveTo(p.x, p.y);
+                        else ctx.lineTo(p.x, p.y);
+                    }
+                    ctx.stroke();
+                }
+            }
+
+            // Draw Taylor approximation
+            ctx.strokeStyle = '#22d3ee';
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            for (let px = margin; px <= w - margin; px++) {
+                const x = ((px - centerX) / (graphW / 2)) * xRange;
+                const y = func.taylor(x, center, terms);
+
+                if (!isFinite(y) || Math.abs(y) > yMax * 3) continue;
+
+                const p = toScreen(x, y);
+
+                if (px === margin) ctx.moveTo(p.x, p.y);
+                else ctx.lineTo(p.x, p.y);
+            }
+            ctx.stroke();
+
+            // Draw center point marker
+            if (center !== 0) {
+                const cp = toScreen(center, func.fn(center));
+                ctx.fillStyle = '#a3e635';
+                ctx.beginPath();
+                ctx.arc(cp.x, cp.y, 6, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Update displays
+            document.getElementById('term-count').textContent = terms;
+            document.getElementById('max-error').textContent = maxError.toExponential(2);
+
+            updateExpansion(terms);
+            updateTermsGrid(terms);
+        }
+
+        function updateExpansion(terms) {
+            const func = functions[selectedFunction];
+            let expansion = '';
+
+            for (let i = 0; i < Math.min(terms, 5); i++) {
+                expansion += func.terms(i) + ' ';
+            }
+
+            if (terms > 5) expansion += '...';
+
+            document.getElementById('expansion-terms').textContent = expansion;
+            document.getElementById('function-info').textContent = func.info;
+            document.getElementById('convergence').textContent = func.convergence;
+        }
+
+        function updateTermsGrid(activeTerms) {
+            const grid = document.getElementById('terms-grid');
+            grid.innerHTML = '';
+
+            for (let i = 1; i <= 20; i++) {
+                const badge = document.createElement('div');
+                badge.className = `term-badge text-xs text-center py-1 rounded border border-gray-800 ${i <= activeTerms ? 'term-active text-pink-400' : 'text-gray-600'}`;
+                badge.textContent = i;
+                badge.onclick = () => {
+                    numTerms = i;
+                    document.getElementById('terms').value = i;
+                    document.getElementById('terms-value').textContent = i;
+                    render();
+                };
+                badge.style.cursor = 'pointer';
+                grid.appendChild(badge);
+            }
+        }
+
+        function animate() {
+            if (!animating) return;
+
+            const now = Date.now();
+            if (now - lastAnimationTime > animationSpeed * 1000) {
+                currentAnimatedTerms++;
+                if (currentAnimatedTerms > numTerms) {
+                    currentAnimatedTerms = 1;
+                }
+                lastAnimationTime = now;
+                render();
+            }
+
+            animationFrame = requestAnimationFrame(animate);
+        }
+
+        // Event listeners
+        document.getElementById('function').addEventListener('change', (e) => {
+            selectedFunction = e.target.value;
+
+            const func = functions[selectedFunction];
+            document.getElementById('convergence-info').textContent =
+                `${e.target.options[e.target.selectedIndex].text} converge para ${func.convergence}.`;
+
+            render();
+        });
+
+        document.getElementById('terms').addEventListener('input', (e) => {
+            numTerms = parseInt(e.target.value);
+            document.getElementById('terms-value').textContent = numTerms;
+            render();
+        });
+
+        document.getElementById('center').addEventListener('input', (e) => {
+            center = parseFloat(e.target.value);
+            document.getElementById('center-value').textContent = center;
+            render();
+        });
+
+        document.getElementById('x-range').addEventListener('input', (e) => {
+            xRange = parseFloat(e.target.value);
+            document.getElementById('range-value').textContent = xRange.toFixed(2);
+            render();
+        });
+
+        document.getElementById('animate').addEventListener('change', (e) => {
+            animating = e.target.checked;
+            document.getElementById('animation-controls').classList.toggle('hidden', !animating);
+
+            if (animating) {
+                currentAnimatedTerms = 1;
+                lastAnimationTime = Date.now();
+                animate();
+            } else {
+                if (animationFrame) cancelAnimationFrame(animationFrame);
+                render();
+            }
+        });
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            animationSpeed = parseFloat(e.target.value);
+            document.getElementById('speed-value').textContent = animationSpeed.toFixed(1);
+        });
+
+        document.getElementById('show-individual').addEventListener('change', (e) => {
+            showIndividual = e.target.checked;
+            render();
+        });
+
+        document.getElementById('show-error').addEventListener('change', (e) => {
+            showError = e.target.checked;
+            render();
+        });
+
+        window.addEventListener('resize', initCanvas);
+
+        // Initialize
+        initCanvas();
+        updateTermsGrid(1);
+    </script>
+</body>
+</html>

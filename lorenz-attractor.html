@@ -1,0 +1,622 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Atractor de Lorenz - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        #canvas {
+            cursor: grab;
+        }
+        #canvas:active {
+            cursor: grabbing;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .param-highlight {
+            display: inline-block;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-size: 0.75rem;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Lorenz</span> Attractor
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">t = <span id="time-display" class="text-violet-400">0.00</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+            <div class="absolute bottom-4 left-4 text-xs mono text-gray-600">
+                Arrastra para rotar · Rueda para zoom
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Parámetros</h2>
+
+            <!-- Sigma -->
+            <div class="mb-5">
+                <label class="block text-sm text-gray-400 mb-2">
+                    <span class="param-highlight bg-pink-500/20 text-pink-400">σ</span> Sigma:
+                    <span id="sigma-value" class="text-violet-400 mono">10</span>
+                </label>
+                <input type="range" id="sigma" min="1" max="30" step="0.1" value="10" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Número de Prandtl</p>
+            </div>
+
+            <!-- Rho -->
+            <div class="mb-5">
+                <label class="block text-sm text-gray-400 mb-2">
+                    <span class="param-highlight bg-cyan-500/20 text-cyan-400">ρ</span> Rho:
+                    <span id="rho-value" class="text-violet-400 mono">28</span>
+                </label>
+                <input type="range" id="rho" min="0.1" max="50" step="0.1" value="28" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Número de Rayleigh</p>
+            </div>
+
+            <!-- Beta -->
+            <div class="mb-5">
+                <label class="block text-sm text-gray-400 mb-2">
+                    <span class="param-highlight bg-lime-500/20 text-lime-400">β</span> Beta:
+                    <span id="beta-value" class="text-violet-400 mono">2.67</span>
+                </label>
+                <input type="range" id="beta" min="0.1" max="10" step="0.01" value="2.67" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Factor geométrico</p>
+            </div>
+
+            <hr class="border-gray-800 my-6">
+
+            <!-- Trail Length -->
+            <div class="mb-5">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Longitud de Estela: <span id="trail-value" class="text-cyan-400 mono">2000</span>
+                </label>
+                <input type="range" id="trail" min="100" max="5000" step="100" value="2000" class="w-full">
+            </div>
+
+            <!-- Speed -->
+            <div class="mb-5">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Velocidad: <span id="speed-value" class="text-cyan-400 mono">1.0x</span>
+                </label>
+                <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1" class="w-full">
+            </div>
+
+            <!-- View Options -->
+            <div class="mb-6 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-axes" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500 focus:ring-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar ejes</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="rainbow-mode" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500 focus:ring-violet-500">
+                    <span class="text-sm text-gray-400">Color por tiempo</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="dual-particle" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500 focus:ring-violet-500">
+                    <span class="text-sm text-gray-400">Dos partículas (caos)</span>
+                </label>
+            </div>
+
+            <!-- Presets -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Configuraciones</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="loadPreset('classic')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Clásico</button>
+                    <button onclick="loadPreset('chaotic')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Caótico</button>
+                    <button onclick="loadPreset('periodic')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Periódico</button>
+                    <button onclick="loadPreset('transient')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Transitorio</button>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mb-6 space-y-2">
+                <button id="reset-btn" class="w-full py-2 px-4 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Reiniciar
+                </button>
+                <button id="pause-btn" class="w-full py-2 px-4 bg-violet-500/20 hover:bg-violet-500/30 text-violet-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg id="pause-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span id="pause-text">Pausar</span>
+                </button>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-violet-400 mb-3">Las Ecuaciones</h3>
+                <div class="mono text-xs space-y-2 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500">dx/dt =</span>
+                        <span class="text-pink-400">σ</span>
+                        <span class="text-gray-400">(y - x)</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500">dy/dt =</span>
+                        <span class="text-gray-400">x(</span>
+                        <span class="text-cyan-400">ρ</span>
+                        <span class="text-gray-400">- z) - y</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500">dz/dt =</span>
+                        <span class="text-gray-400">xy -</span>
+                        <span class="text-lime-400">β</span>
+                        <span class="text-gray-400">z</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Edward Lorenz descubrió este sistema en 1963 modelando convección atmosférica. Es el ejemplo paradigmático del <span class="text-violet-400">efecto mariposa</span>.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        Con los parámetros clásicos (σ=10, ρ=28, β=8/3), el sistema es caótico: trayectorias cercanas divergen exponencialmente.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Current State -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Estado Actual</h3>
+                <div class="grid grid-cols-3 gap-2 text-xs mono text-center">
+                    <div>
+                        <div class="text-gray-500 mb-1">x</div>
+                        <div id="state-x" class="text-pink-400">0.00</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 mb-1">y</div>
+                        <div id="state-y" class="text-cyan-400">0.00</div>
+                    </div>
+                    <div>
+                        <div class="text-gray-500 mb-1">z</div>
+                        <div id="state-z" class="text-lime-400">0.00</div>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Lorenz parameters
+        let sigma = 10;
+        let rho = 28;
+        let beta = 8 / 3;
+
+        // Simulation state
+        let particles = [
+            { x: 1, y: 1, z: 1, trail: [], hue: 0 }
+        ];
+        let time = 0;
+        let isPaused = false;
+
+        // View settings
+        let trailLength = 2000;
+        let speed = 1;
+        let showAxes = false;
+        let rainbowMode = true;
+        let dualParticle = false;
+
+        // 3D rotation
+        let rotationY = 0.5;
+        let rotationX = 0.3;
+        let zoom = 8;
+        let isDragging = false;
+        let lastMouse = { x: 0, y: 0 };
+
+        // Presets
+        const presets = {
+            classic: { sigma: 10, rho: 28, beta: 2.67 },
+            chaotic: { sigma: 10, rho: 28, beta: 2.67 },
+            periodic: { sigma: 10, rho: 99.96, beta: 2.67 },
+            transient: { sigma: 10, rho: 21, beta: 2.67 }
+        };
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        function project(x, y, z) {
+            // Apply rotations
+            const cosY = Math.cos(rotationY);
+            const sinY = Math.sin(rotationY);
+            const cosX = Math.cos(rotationX);
+            const sinX = Math.sin(rotationX);
+
+            // Rotate around Y axis
+            let rx = x * cosY - z * sinY;
+            let rz = x * sinY + z * cosY;
+            let ry = y;
+
+            // Rotate around X axis
+            const ry2 = ry * cosX - rz * sinX;
+            const rz2 = ry * sinX + rz * cosX;
+
+            // Project to 2D
+            const scale = zoom;
+            const cx = canvas.offsetWidth / 2;
+            const cy = canvas.offsetHeight / 2;
+
+            return {
+                x: cx + rx * scale,
+                y: cy - ry2 * scale,
+                z: rz2
+            };
+        }
+
+        function lorenzStep(p, dt) {
+            const dx = sigma * (p.y - p.x);
+            const dy = p.x * (rho - p.z) - p.y;
+            const dz = p.x * p.y - beta * p.z;
+
+            return {
+                x: p.x + dx * dt,
+                y: p.y + dy * dt,
+                z: p.z + dz * dt
+            };
+        }
+
+        function rungeKutta4(p, dt) {
+            // k1
+            const k1 = {
+                dx: sigma * (p.y - p.x),
+                dy: p.x * (rho - p.z) - p.y,
+                dz: p.x * p.y - beta * p.z
+            };
+
+            // k2
+            const p2 = {
+                x: p.x + k1.dx * dt / 2,
+                y: p.y + k1.dy * dt / 2,
+                z: p.z + k1.dz * dt / 2
+            };
+            const k2 = {
+                dx: sigma * (p2.y - p2.x),
+                dy: p2.x * (rho - p2.z) - p2.y,
+                dz: p2.x * p2.y - beta * p2.z
+            };
+
+            // k3
+            const p3 = {
+                x: p.x + k2.dx * dt / 2,
+                y: p.y + k2.dy * dt / 2,
+                z: p.z + k2.dz * dt / 2
+            };
+            const k3 = {
+                dx: sigma * (p3.y - p3.x),
+                dy: p3.x * (rho - p3.z) - p3.y,
+                dz: p3.x * p3.y - beta * p3.z
+            };
+
+            // k4
+            const p4 = {
+                x: p.x + k3.dx * dt,
+                y: p.y + k3.dy * dt,
+                z: p.z + k3.dz * dt
+            };
+            const k4 = {
+                dx: sigma * (p4.y - p4.x),
+                dy: p4.x * (rho - p4.z) - p4.y,
+                dz: p4.x * p4.y - beta * p4.z
+            };
+
+            return {
+                x: p.x + (k1.dx + 2 * k2.dx + 2 * k3.dx + k4.dx) * dt / 6,
+                y: p.y + (k1.dy + 2 * k2.dy + 2 * k3.dy + k4.dy) * dt / 6,
+                z: p.z + (k1.dz + 2 * k2.dz + 2 * k3.dz + k4.dz) * dt / 6
+            };
+        }
+
+        function drawAxes() {
+            const origin = project(0, 0, 0);
+            const xEnd = project(30, 0, 0);
+            const yEnd = project(0, 30, 0);
+            const zEnd = project(0, 0, 30);
+
+            ctx.lineWidth = 1;
+
+            // X axis (red)
+            ctx.strokeStyle = '#ef444480';
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(xEnd.x, xEnd.y);
+            ctx.stroke();
+
+            // Y axis (green)
+            ctx.strokeStyle = '#22c55e80';
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(yEnd.x, yEnd.y);
+            ctx.stroke();
+
+            // Z axis (blue)
+            ctx.strokeStyle = '#3b82f680';
+            ctx.beginPath();
+            ctx.moveTo(origin.x, origin.y);
+            ctx.lineTo(zEnd.x, zEnd.y);
+            ctx.stroke();
+        }
+
+        function animate() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+            // Update particles
+            if (!isPaused) {
+                const dt = 0.005 * speed;
+                const steps = 5;
+
+                for (const particle of particles) {
+                    for (let i = 0; i < steps; i++) {
+                        const newPos = rungeKutta4(particle, dt);
+                        particle.x = newPos.x;
+                        particle.y = newPos.y;
+                        particle.z = newPos.z;
+
+                        particle.trail.push({ x: particle.x, y: particle.y, z: particle.z });
+                        if (particle.trail.length > trailLength) {
+                            particle.trail.shift();
+                        }
+                    }
+
+                    if (rainbowMode) {
+                        particle.hue = (particle.hue + 0.5) % 360;
+                    }
+                }
+
+                time += dt * steps;
+            }
+
+            // Clear for fresh draw
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+            // Draw axes if enabled
+            if (showAxes) {
+                drawAxes();
+            }
+
+            // Draw trails
+            for (let pi = 0; pi < particles.length; pi++) {
+                const particle = particles[pi];
+                const trail = particle.trail;
+
+                if (trail.length < 2) continue;
+
+                ctx.lineWidth = 1.5;
+                ctx.lineCap = 'round';
+                ctx.lineJoin = 'round';
+
+                for (let i = 1; i < trail.length; i++) {
+                    const p1 = project(trail[i - 1].x, trail[i - 1].y, trail[i - 1].z);
+                    const p2 = project(trail[i].x, trail[i].y, trail[i].z);
+
+                    const alpha = i / trail.length;
+
+                    if (rainbowMode) {
+                        const hue = (particle.hue - (trail.length - i) * 0.2 + 360) % 360;
+                        ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${alpha})`;
+                    } else {
+                        const baseColor = pi === 0 ? '168, 85, 247' : '34, 211, 238';
+                        ctx.strokeStyle = `rgba(${baseColor}, ${alpha})`;
+                    }
+
+                    ctx.beginPath();
+                    ctx.moveTo(p1.x, p1.y);
+                    ctx.lineTo(p2.x, p2.y);
+                    ctx.stroke();
+                }
+
+                // Draw particle head
+                const head = project(particle.x, particle.y, particle.z);
+                const headColor = pi === 0 ? '#fff' : '#22d3ee';
+                ctx.fillStyle = headColor;
+                ctx.beginPath();
+                ctx.arc(head.x, head.y, 4, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            // Update displays
+            document.getElementById('time-display').textContent = time.toFixed(2);
+            document.getElementById('state-x').textContent = particles[0].x.toFixed(2);
+            document.getElementById('state-y').textContent = particles[0].y.toFixed(2);
+            document.getElementById('state-z').textContent = particles[0].z.toFixed(2);
+
+            requestAnimationFrame(animate);
+        }
+
+        function reset() {
+            time = 0;
+            particles = [{ x: 1, y: 1, z: 1, trail: [], hue: 0 }];
+
+            if (dualParticle) {
+                particles.push({ x: 1.001, y: 1, z: 1, trail: [], hue: 180 });
+            }
+        }
+
+        function loadPreset(name) {
+            const preset = presets[name];
+            if (preset) {
+                sigma = preset.sigma;
+                rho = preset.rho;
+                beta = preset.beta;
+
+                document.getElementById('sigma').value = sigma;
+                document.getElementById('rho').value = rho;
+                document.getElementById('beta').value = beta;
+                document.getElementById('sigma-value').textContent = sigma;
+                document.getElementById('rho-value').textContent = rho;
+                document.getElementById('beta-value').textContent = beta.toFixed(2);
+
+                reset();
+            }
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const dx = e.clientX - lastMouse.x;
+            const dy = e.clientY - lastMouse.y;
+
+            rotationY += dx * 0.01;
+            rotationX += dy * 0.01;
+
+            // Clamp X rotation
+            rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
+
+            lastMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            isDragging = false;
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            zoom *= e.deltaY < 0 ? 1.1 : 0.9;
+            zoom = Math.max(2, Math.min(30, zoom));
+        });
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            if (e.touches.length === 1) {
+                isDragging = true;
+                lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            }
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            if (!isDragging || e.touches.length !== 1) return;
+            e.preventDefault();
+
+            const dx = e.touches[0].clientX - lastMouse.x;
+            const dy = e.touches[0].clientY - lastMouse.y;
+
+            rotationY += dx * 0.01;
+            rotationX += dy * 0.01;
+            rotationX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotationX));
+
+            lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        });
+
+        canvas.addEventListener('touchend', () => {
+            isDragging = false;
+        });
+
+        // Controls
+        document.getElementById('sigma').addEventListener('input', (e) => {
+            sigma = parseFloat(e.target.value);
+            document.getElementById('sigma-value').textContent = sigma;
+        });
+
+        document.getElementById('rho').addEventListener('input', (e) => {
+            rho = parseFloat(e.target.value);
+            document.getElementById('rho-value').textContent = rho;
+        });
+
+        document.getElementById('beta').addEventListener('input', (e) => {
+            beta = parseFloat(e.target.value);
+            document.getElementById('beta-value').textContent = beta.toFixed(2);
+        });
+
+        document.getElementById('trail').addEventListener('input', (e) => {
+            trailLength = parseInt(e.target.value);
+            document.getElementById('trail-value').textContent = trailLength;
+        });
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            speed = parseFloat(e.target.value);
+            document.getElementById('speed-value').textContent = speed.toFixed(1) + 'x';
+        });
+
+        document.getElementById('show-axes').addEventListener('change', (e) => {
+            showAxes = e.target.checked;
+        });
+
+        document.getElementById('rainbow-mode').addEventListener('change', (e) => {
+            rainbowMode = e.target.checked;
+        });
+
+        document.getElementById('dual-particle').addEventListener('change', (e) => {
+            dualParticle = e.target.checked;
+            reset();
+        });
+
+        document.getElementById('reset-btn').addEventListener('click', reset);
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            isPaused = !isPaused;
+            document.getElementById('pause-text').textContent = isPaused ? 'Reanudar' : 'Pausar';
+        });
+
+        window.addEventListener('resize', initCanvas);
+
+        // Initialize
+        initCanvas();
+        animate();
+    </script>
+</body>
+</html>

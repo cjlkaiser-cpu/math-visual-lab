@@ -1,0 +1,1253 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Math Visual Lab - Visualizaciones Matemáticas</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .card {
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.15);
+        }
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
+        }
+        .card:hover .card-border {
+            opacity: 1;
+        }
+        .card-border {
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            padding: 2px;
+            background: linear-gradient(135deg, #a855f7, #22d3ee, #a3e635);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .preview-canvas {
+            border-radius: 0.5rem;
+        }
+        .equation {
+            font-family: 'JetBrains Mono', monospace;
+            font-style: normal;
+        }
+        .category-tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+        .math-symbol {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.5rem;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <h1 class="text-2xl font-light">
+                        <span class="text-violet-400 font-medium glow-text">Math</span> Visual Lab
+                    </h1>
+                    <p class="text-gray-600 text-sm mono">La belleza de la abstracción</p>
+                </div>
+                <div class="flex items-center gap-4">
+                    <span class="math-symbol text-cyan-400">∑</span>
+                    <span class="math-symbol text-pink-400">∫</span>
+                    <span class="math-symbol text-lime-400">π</span>
+                    <span class="math-symbol text-violet-400">∞</span>
+                    <a href="https://github.com/cjlkaiser-cpu" target="_blank" class="text-gray-500 hover:text-white transition ml-2">
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 24 24"><path d="M12 0C5.37 0 0 5.37 0 12c0 5.31 3.435 9.795 8.205 11.385.6.105.825-.255.825-.57 0-.285-.015-1.23-.015-2.235-3.015.555-3.795-.735-4.035-1.41-.135-.345-.72-1.41-1.23-1.695-.42-.225-1.02-.78-.015-.795.945-.015 1.62.87 1.845 1.23 1.08 1.815 2.805 1.305 3.495.99.105-.78.42-1.305.765-1.605-2.67-.3-5.46-1.335-5.46-5.925 0-1.305.465-2.385 1.23-3.225-.12-.3-.54-1.53.12-3.18 0 0 1.005-.315 3.3 1.23.96-.27 1.98-.405 3-.405s2.04.135 3 .405c2.295-1.56 3.3-1.23 3.3-1.23.66 1.65.24 2.88.12 3.18.765.84 1.23 1.905 1.23 3.225 0 4.605-2.805 5.625-5.475 5.925.435.375.81 1.095.81 2.22 0 1.605-.015 2.895-.015 3.3 0 .315.225.69.825.57A12.02 12.02 0 0024 12c0-6.63-5.37-12-12-12z"/></svg>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <!-- Hero -->
+        <section class="text-center mb-16">
+            <h2 class="text-4xl font-light mb-4">
+                Matemáticas <span class="text-violet-400 font-medium glow-text">visuales</span>
+            </h2>
+            <p class="text-gray-500 max-w-2xl mx-auto">
+                15 experiencias interactivas donde los algoritmos cobran vida.
+                Fractales, caos, cálculo y geometría computacional.
+            </p>
+        </section>
+
+        <!-- Grid de Simulaciones -->
+        <section class="grid md:grid-cols-2 lg:grid-cols-3 gap-6 mb-16">
+
+            <!-- Mandelbrot -->
+            <a href="mandelbrot.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-mandelbrot" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Fractales</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Conjunto de Mandelbrot</h3>
+                        <p class="text-gray-500 text-sm mb-3">Explora el fractal más famoso con zoom infinito. Renderizado pixel por pixel con mapa de colores HSV basado en velocidad de escape.</p>
+                        <div class="equation text-violet-400/70 text-sm mb-4">z_{n+1} = z_n² + c</div>
+                        <span class="block w-full text-center py-2 bg-violet-500/10 text-violet-400 rounded-lg hover:bg-violet-500/20 transition text-sm font-medium">
+                            Explorar Fractal →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Juego del Caos -->
+            <a href="juego-caos.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-caos" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Fractales</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Juego del Caos</h3>
+                        <p class="text-gray-500 text-sm mb-3">Puntos aleatorios que mágicamente crean el triángulo de Sierpinski. La simplicidad genera complejidad infinita.</p>
+                        <div class="equation text-violet-400/70 text-sm mb-4">P_{n+1} = (P_n + V_k) / 2</div>
+                        <span class="block w-full text-center py-2 bg-violet-500/10 text-violet-400 rounded-lg hover:bg-violet-500/20 transition text-sm font-medium">
+                            Ver Emergencia →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Fourier Epicycles -->
+            <a href="fourier-epicycles.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-fourier" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-pink-500/20 text-pink-400">Cálculo</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Dibujo con Fourier</h3>
+                        <p class="text-gray-500 text-sm mb-3">Dibuja cualquier forma y observa cómo los epiciclos giratorios la recrean. La magia de la Transformada Discreta de Fourier.</p>
+                        <div class="equation text-pink-400/70 text-sm mb-4">X_k = Σ x_n · e^{-2πikn/N}</div>
+                        <span class="block w-full text-center py-2 bg-pink-500/10 text-pink-400 rounded-lg hover:bg-pink-500/20 transition text-sm font-medium">
+                            Dibujar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Taylor Series -->
+            <a href="taylor.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-taylor" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-pink-500/20 text-pink-400">Cálculo</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Series de Taylor</h3>
+                        <p class="text-gray-500 text-sm mb-3">Observa cómo los polinomios aproximan funciones trascendentes. Agrega términos y ve la convergencia en tiempo real.</p>
+                        <div class="equation text-pink-400/70 text-sm mb-4">sin(x) ≈ x - x³/3! + x⁵/5! - ...</div>
+                        <span class="block w-full text-center py-2 bg-pink-500/10 text-pink-400 rounded-lg hover:bg-pink-500/20 transition text-sm font-medium">
+                            Aproximar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Riemann Sums -->
+            <a href="riemann.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-riemann" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-pink-500/20 text-pink-400">Cálculo</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Sumas de Riemann</h3>
+                        <p class="text-gray-500 text-sm mb-3">Visualiza la integral como límite de sumas. Rectángulos que convergen al área exacta bajo la curva.</p>
+                        <div class="equation text-pink-400/70 text-sm mb-4">∫f(x)dx ≈ Σ f(xᵢ)Δx</div>
+                        <span class="block w-full text-center py-2 bg-pink-500/10 text-pink-400 rounded-lg hover:bg-pink-500/20 transition text-sm font-medium">
+                            Integrar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Vector Field -->
+            <a href="vector-field.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-vectorfield" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-yellow-500/20 text-yellow-400">Geometría</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Campo Vectorial</h3>
+                        <p class="text-gray-500 text-sm mb-3">Partículas que fluyen siguiendo ecuaciones diferenciales. Visualiza rotacional, divergencia y puntos singulares.</p>
+                        <div class="equation text-yellow-400/70 text-sm mb-4">dx/dt = f(x,y), dy/dt = g(x,y)</div>
+                        <span class="block w-full text-center py-2 bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition text-sm font-medium">
+                            Fluir →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Transform Matrix -->
+            <a href="transform-matrix.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-matrix" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-yellow-500/20 text-yellow-400">Álgebra Lineal</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Transformaciones 2D</h3>
+                        <p class="text-gray-500 text-sm mb-3">Arrastra los vectores base î y ĵ para ver cómo una matriz 2x2 distorsiona el espacio. Rotación, escala, shear.</p>
+                        <div class="equation text-yellow-400/70 text-sm mb-4">[x', y'] = [a b; c d] · [x, y]</div>
+                        <span class="block w-full text-center py-2 bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition text-sm font-medium">
+                            Transformar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Ulam Spiral -->
+            <a href="ulam-spiral.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-ulam" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-cyan-500/20 text-cyan-400">Números</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Espiral de Ulam</h3>
+                        <p class="text-gray-500 text-sm mb-3">Los números primos organizados en espiral revelan patrones diagonales misteriosos. Orden en el aparente caos.</p>
+                        <div class="equation text-cyan-400/70 text-sm mb-4">n ∈ P → pixel iluminado</div>
+                        <span class="block w-full text-center py-2 bg-cyan-500/10 text-cyan-400 rounded-lg hover:bg-cyan-500/20 transition text-sm font-medium">
+                            Descubrir →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Collatz -->
+            <a href="collatz-tree.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-collatz" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-cyan-500/20 text-cyan-400">Números</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Árbol de Collatz</h3>
+                        <p class="text-gray-500 text-sm mb-3">La conjetura 3n+1 visualizada como un árbol orgánico. ¿Todas las ramas llegan al 1? Nadie lo ha probado.</p>
+                        <div class="equation text-cyan-400/70 text-sm mb-4">n → n/2 ó 3n+1</div>
+                        <span class="block w-full text-center py-2 bg-cyan-500/10 text-cyan-400 rounded-lg hover:bg-cyan-500/20 transition text-sm font-medium">
+                            Explorar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Voronoi -->
+            <a href="voronoi.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-voronoi" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-yellow-500/20 text-yellow-400">Geometría</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Diagrama de Voronoi</h3>
+                        <p class="text-gray-500 text-sm mb-3">Regiones de proximidad que se ajustan en tiempo real. Mueve los puntos y observa cómo el espacio se particiona.</p>
+                        <div class="equation text-yellow-400/70 text-sm mb-4">V(p) = {x : d(x,p) ≤ d(x,q)}</div>
+                        <span class="block w-full text-center py-2 bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition text-sm font-medium">
+                            Particionar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Monte Carlo Pi -->
+            <a href="montecarlo-pi.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-montecarlo" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-lime-500/20 text-lime-400">Probabilidad</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Monte Carlo: π</h3>
+                        <p class="text-gray-500 text-sm mb-3">Estima π lanzando puntos aleatorios. La proporción dentro del círculo converge a π/4. Probabilidad en acción.</p>
+                        <div class="equation text-lime-400/70 text-sm mb-4">π ≈ 4 · (puntos en círculo / total)</div>
+                        <span class="block w-full text-center py-2 bg-lime-500/10 text-lime-400 rounded-lg hover:bg-lime-500/20 transition text-sm font-medium">
+                            Estimar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Game of Life -->
+            <a href="game-of-life.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-life" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-lime-500/20 text-lime-400">Autómatas</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Game of Life</h3>
+                        <p class="text-gray-500 text-sm mb-3">El autómata celular de Conway. Reglas simples generan comportamiento complejo: gliders, osciladores, naves espaciales.</p>
+                        <div class="equation text-lime-400/70 text-sm mb-4">B3/S23: nace con 3, sobrevive con 2-3</div>
+                        <span class="block w-full text-center py-2 bg-lime-500/10 text-lime-400 rounded-lg hover:bg-lime-500/20 transition text-sm font-medium">
+                            Simular →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Galton Board -->
+            <a href="galton-board.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-galton" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-lime-500/20 text-lime-400">Probabilidad</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Tablero de Galton</h3>
+                        <p class="text-gray-500 text-sm mb-3">Bolitas cayendo entre clavijas forman la distribución normal. La curva de campana emerge del azar.</p>
+                        <div class="equation text-lime-400/70 text-sm mb-4">P(k) = C(n,k) · p^k · (1-p)^{n-k}</div>
+                        <span class="block w-full text-center py-2 bg-lime-500/10 text-lime-400 rounded-lg hover:bg-lime-500/20 transition text-sm font-medium">
+                            Observar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Lorenz Attractor -->
+            <a href="lorenz-attractor.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-lorenz" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Atractor de Lorenz</h3>
+                        <p class="text-gray-500 text-sm mb-3">El efecto mariposa en 3D. Un sistema determinista con comportamiento impredecible. Caos matemático puro.</p>
+                        <div class="equation text-violet-400/70 text-sm mb-4">dx/dt = σ(y-x), dy/dt = x(ρ-z)-y</div>
+                        <span class="block w-full text-center py-2 bg-violet-500/10 text-violet-400 rounded-lg hover:bg-violet-500/20 transition text-sm font-medium">
+                            Ver Caos →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Double Pendulum -->
+            <a href="double-pendulum.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-pendulum" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Péndulo Doble</h3>
+                        <p class="text-gray-500 text-sm mb-3">Sensibilidad extrema a condiciones iniciales. Dos péndulos idénticos divergen exponencialmente. El caos es inevitable.</p>
+                        <div class="equation text-violet-400/70 text-sm mb-4">L = T - V, θ₁'' = f(θ₁, θ₂, ...)</div>
+                        <span class="block w-full text-center py-2 bg-violet-500/10 text-violet-400 rounded-lg hover:bg-violet-500/20 transition text-sm font-medium">
+                            Comparar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+        </section>
+
+        <!-- Tech Stack -->
+        <section class="text-center">
+            <h3 class="text-lg font-medium mb-4 text-gray-500">Tecnologías</h3>
+            <div class="flex flex-wrap justify-center gap-3">
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Canvas 2D</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">ImageData</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">DFT</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Runge-Kutta</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">HSV Mapping</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Recursión</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Monte Carlo</span>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center text-gray-600 text-sm mono">
+            Math Visual Lab · Donde los algoritmos cobran vida
+        </div>
+    </footer>
+
+    <script>
+        const previews = {};
+        let time = 0;
+
+        function initPreviews() {
+            // Mandelbrot
+            const mandelbrot = document.getElementById('preview-mandelbrot');
+            if (mandelbrot) {
+                previews.mandelbrot = {
+                    ctx: mandelbrot.getContext('2d'),
+                    w: mandelbrot.width = mandelbrot.offsetWidth * 2,
+                    h: mandelbrot.height = mandelbrot.offsetHeight * 2,
+                    rendered: false
+                };
+                renderMiniMandelbrot(previews.mandelbrot);
+            }
+
+            // Juego del Caos
+            const caos = document.getElementById('preview-caos');
+            if (caos) {
+                previews.caos = {
+                    ctx: caos.getContext('2d'),
+                    w: caos.width = caos.offsetWidth * 2,
+                    h: caos.height = caos.offsetHeight * 2,
+                    points: [],
+                    current: { x: 0.5, y: 0.5 }
+                };
+            }
+
+            // Fourier
+            const fourier = document.getElementById('preview-fourier');
+            if (fourier) {
+                previews.fourier = {
+                    ctx: fourier.getContext('2d'),
+                    w: fourier.width = fourier.offsetWidth * 2,
+                    h: fourier.height = fourier.offsetHeight * 2,
+                    phase: 0
+                };
+            }
+
+            // Taylor
+            const taylor = document.getElementById('preview-taylor');
+            if (taylor) {
+                previews.taylor = {
+                    ctx: taylor.getContext('2d'),
+                    w: taylor.width = taylor.offsetWidth * 2,
+                    h: taylor.height = taylor.offsetHeight * 2
+                };
+            }
+
+            // Riemann
+            const riemann = document.getElementById('preview-riemann');
+            if (riemann) {
+                previews.riemann = {
+                    ctx: riemann.getContext('2d'),
+                    w: riemann.width = riemann.offsetWidth * 2,
+                    h: riemann.height = riemann.offsetHeight * 2
+                };
+            }
+
+            // Vector Field
+            const vectorfield = document.getElementById('preview-vectorfield');
+            if (vectorfield) {
+                const particles = [];
+                for (let i = 0; i < 50; i++) {
+                    particles.push({ x: Math.random(), y: Math.random(), age: Math.random() * 100 });
+                }
+                previews.vectorfield = {
+                    ctx: vectorfield.getContext('2d'),
+                    w: vectorfield.width = vectorfield.offsetWidth * 2,
+                    h: vectorfield.height = vectorfield.offsetHeight * 2,
+                    particles
+                };
+            }
+
+            // Matrix Transform
+            const matrix = document.getElementById('preview-matrix');
+            if (matrix) {
+                previews.matrix = {
+                    ctx: matrix.getContext('2d'),
+                    w: matrix.width = matrix.offsetWidth * 2,
+                    h: matrix.height = matrix.offsetHeight * 2
+                };
+            }
+
+            // Ulam Spiral
+            const ulam = document.getElementById('preview-ulam');
+            if (ulam) {
+                previews.ulam = {
+                    ctx: ulam.getContext('2d'),
+                    w: ulam.width = ulam.offsetWidth * 2,
+                    h: ulam.height = ulam.offsetHeight * 2,
+                    rendered: false
+                };
+                renderMiniUlam(previews.ulam);
+            }
+
+            // Collatz
+            const collatz = document.getElementById('preview-collatz');
+            if (collatz) {
+                previews.collatz = {
+                    ctx: collatz.getContext('2d'),
+                    w: collatz.width = collatz.offsetWidth * 2,
+                    h: collatz.height = collatz.offsetHeight * 2
+                };
+                renderMiniCollatz(previews.collatz);
+            }
+
+            // Voronoi
+            const voronoi = document.getElementById('preview-voronoi');
+            if (voronoi) {
+                const points = [];
+                for (let i = 0; i < 8; i++) {
+                    points.push({
+                        x: 0.15 + Math.random() * 0.7,
+                        y: 0.15 + Math.random() * 0.7,
+                        vx: (Math.random() - 0.5) * 0.005,
+                        vy: (Math.random() - 0.5) * 0.005
+                    });
+                }
+                previews.voronoi = {
+                    ctx: voronoi.getContext('2d'),
+                    w: voronoi.width = voronoi.offsetWidth * 2,
+                    h: voronoi.height = voronoi.offsetHeight * 2,
+                    points
+                };
+            }
+
+            // Monte Carlo
+            const montecarlo = document.getElementById('preview-montecarlo');
+            if (montecarlo) {
+                previews.montecarlo = {
+                    ctx: montecarlo.getContext('2d'),
+                    w: montecarlo.width = montecarlo.offsetWidth * 2,
+                    h: montecarlo.height = montecarlo.offsetHeight * 2,
+                    inside: 0,
+                    total: 0,
+                    points: []
+                };
+            }
+
+            // Game of Life
+            const life = document.getElementById('preview-life');
+            if (life) {
+                const size = 40;
+                const grid = [];
+                for (let i = 0; i < size; i++) {
+                    grid[i] = [];
+                    for (let j = 0; j < size; j++) {
+                        grid[i][j] = Math.random() < 0.3 ? 1 : 0;
+                    }
+                }
+                previews.life = {
+                    ctx: life.getContext('2d'),
+                    w: life.width = life.offsetWidth * 2,
+                    h: life.height = life.offsetHeight * 2,
+                    grid,
+                    size
+                };
+            }
+
+            // Galton
+            const galton = document.getElementById('preview-galton');
+            if (galton) {
+                previews.galton = {
+                    ctx: galton.getContext('2d'),
+                    w: galton.width = galton.offsetWidth * 2,
+                    h: galton.height = galton.offsetHeight * 2,
+                    balls: [],
+                    bins: new Array(15).fill(0)
+                };
+            }
+
+            // Lorenz
+            const lorenz = document.getElementById('preview-lorenz');
+            if (lorenz) {
+                previews.lorenz = {
+                    ctx: lorenz.getContext('2d'),
+                    w: lorenz.width = lorenz.offsetWidth * 2,
+                    h: lorenz.height = lorenz.offsetHeight * 2,
+                    x: 1, y: 1, z: 1,
+                    trail: []
+                };
+            }
+
+            // Double Pendulum
+            const pendulum = document.getElementById('preview-pendulum');
+            if (pendulum) {
+                previews.pendulum = {
+                    ctx: pendulum.getContext('2d'),
+                    w: pendulum.width = pendulum.offsetWidth * 2,
+                    h: pendulum.height = pendulum.offsetHeight * 2,
+                    theta1: Math.PI / 2, theta2: Math.PI / 2,
+                    omega1: 0, omega2: 0,
+                    trail: []
+                };
+            }
+        }
+
+        function renderMiniMandelbrot(m) {
+            const imgData = m.ctx.createImageData(m.w, m.h);
+            const maxIter = 50;
+            for (let py = 0; py < m.h; py++) {
+                for (let px = 0; px < m.w; px++) {
+                    const x0 = (px / m.w) * 3.5 - 2.5;
+                    const y0 = (py / m.h) * 2 - 1;
+                    let x = 0, y = 0, iter = 0;
+                    while (x*x + y*y <= 4 && iter < maxIter) {
+                        const xtemp = x*x - y*y + x0;
+                        y = 2*x*y + y0;
+                        x = xtemp;
+                        iter++;
+                    }
+                    const idx = (py * m.w + px) * 4;
+                    if (iter === maxIter) {
+                        imgData.data[idx] = 0;
+                        imgData.data[idx + 1] = 0;
+                        imgData.data[idx + 2] = 0;
+                    } else {
+                        const hue = (iter / maxIter) * 360;
+                        const [r, g, b] = hsvToRgb(hue, 0.8, 0.9);
+                        imgData.data[idx] = r;
+                        imgData.data[idx + 1] = g;
+                        imgData.data[idx + 2] = b;
+                    }
+                    imgData.data[idx + 3] = 255;
+                }
+            }
+            m.ctx.putImageData(imgData, 0, 0);
+            m.rendered = true;
+        }
+
+        function renderMiniUlam(u) {
+            u.ctx.fillStyle = '#000';
+            u.ctx.fillRect(0, 0, u.w, u.h);
+
+            const cx = Math.floor(u.w / 2);
+            const cy = Math.floor(u.h / 2);
+            const pixelSize = 2;
+            let x = 0, y = 0, dx = 1, dy = 0;
+            let steps = 1, stepCount = 0, turnCount = 0;
+
+            for (let n = 1; n < 5000; n++) {
+                if (isPrime(n)) {
+                    u.ctx.fillStyle = '#22d3ee';
+                    u.ctx.fillRect(cx + x * pixelSize, cy + y * pixelSize, pixelSize, pixelSize);
+                }
+                x += dx; y += dy;
+                stepCount++;
+                if (stepCount === steps) {
+                    stepCount = 0;
+                    const temp = dx;
+                    dx = -dy; dy = temp;
+                    turnCount++;
+                    if (turnCount === 2) {
+                        turnCount = 0;
+                        steps++;
+                    }
+                }
+            }
+            u.rendered = true;
+        }
+
+        function renderMiniCollatz(c) {
+            c.ctx.fillStyle = '#000';
+            c.ctx.fillRect(0, 0, c.w, c.h);
+
+            c.ctx.strokeStyle = '#a855f720';
+            c.ctx.lineWidth = 1;
+
+            for (let start = 2; start < 100; start++) {
+                let n = start;
+                let x = c.w / 2;
+                let y = c.h - 20;
+                let angle = -Math.PI / 2;
+
+                c.ctx.beginPath();
+                c.ctx.moveTo(x, y);
+
+                while (n > 1) {
+                    if (n % 2 === 0) {
+                        angle -= 0.1;
+                        n = n / 2;
+                    } else {
+                        angle += 0.1;
+                        n = 3 * n + 1;
+                    }
+                    x += Math.cos(angle) * 3;
+                    y += Math.sin(angle) * 3;
+                    c.ctx.lineTo(x, y);
+                }
+                c.ctx.stroke();
+            }
+        }
+
+        function isPrime(n) {
+            if (n < 2) return false;
+            if (n === 2) return true;
+            if (n % 2 === 0) return false;
+            for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                if (n % i === 0) return false;
+            }
+            return true;
+        }
+
+        function hsvToRgb(h, s, v) {
+            const c = v * s;
+            const x = c * (1 - Math.abs((h / 60) % 2 - 1));
+            const m = v - c;
+            let r, g, b;
+            if (h < 60) { r = c; g = x; b = 0; }
+            else if (h < 120) { r = x; g = c; b = 0; }
+            else if (h < 180) { r = 0; g = c; b = x; }
+            else if (h < 240) { r = 0; g = x; b = c; }
+            else if (h < 300) { r = x; g = 0; b = c; }
+            else { r = c; g = 0; b = x; }
+            return [Math.round((r + m) * 255), Math.round((g + m) * 255), Math.round((b + m) * 255)];
+        }
+
+        function animate() {
+            time += 0.02;
+
+            // Juego del Caos (Sierpinski)
+            if (previews.caos) {
+                const c = previews.caos;
+                if (c.points.length === 0) {
+                    c.ctx.fillStyle = '#000';
+                    c.ctx.fillRect(0, 0, c.w, c.h);
+                }
+                const vertices = [
+                    { x: 0.5, y: 0.1 },
+                    { x: 0.1, y: 0.9 },
+                    { x: 0.9, y: 0.9 }
+                ];
+                for (let i = 0; i < 50; i++) {
+                    const v = vertices[Math.floor(Math.random() * 3)];
+                    c.current.x = (c.current.x + v.x) / 2;
+                    c.current.y = (c.current.y + v.y) / 2;
+                    c.ctx.fillStyle = '#a855f7';
+                    c.ctx.fillRect(c.current.x * c.w, c.current.y * c.h, 1, 1);
+                }
+            }
+
+            // Fourier Epicycles
+            if (previews.fourier) {
+                const f = previews.fourier;
+                f.ctx.fillStyle = '#000';
+                f.ctx.fillRect(0, 0, f.w, f.h);
+
+                const cx = f.w / 2, cy = f.h / 2;
+                let x = cx, y = cy;
+                const harmonics = [
+                    { amp: 50, freq: 1 },
+                    { amp: 25, freq: 2 },
+                    { amp: 15, freq: 3 },
+                    { amp: 10, freq: 5 }
+                ];
+
+                f.ctx.strokeStyle = '#f472b630';
+                f.ctx.lineWidth = 1;
+
+                for (const h of harmonics) {
+                    f.ctx.beginPath();
+                    f.ctx.arc(x, y, h.amp, 0, Math.PI * 2);
+                    f.ctx.stroke();
+
+                    const angle = h.freq * f.phase;
+                    const nx = x + h.amp * Math.cos(angle);
+                    const ny = y + h.amp * Math.sin(angle);
+
+                    f.ctx.strokeStyle = '#f472b6';
+                    f.ctx.beginPath();
+                    f.ctx.moveTo(x, y);
+                    f.ctx.lineTo(nx, ny);
+                    f.ctx.stroke();
+                    f.ctx.strokeStyle = '#f472b630';
+
+                    x = nx; y = ny;
+                }
+
+                f.ctx.fillStyle = '#f472b6';
+                f.ctx.beginPath();
+                f.ctx.arc(x, y, 4, 0, Math.PI * 2);
+                f.ctx.fill();
+
+                f.phase += 0.03;
+            }
+
+            // Taylor Series
+            if (previews.taylor) {
+                const t = previews.taylor;
+                t.ctx.fillStyle = '#000';
+                t.ctx.fillRect(0, 0, t.w, t.h);
+
+                const cy = t.h / 2;
+                const scale = 30;
+                const terms = Math.floor((Math.sin(time * 0.5) + 1) * 4) + 1;
+
+                // Actual sin(x)
+                t.ctx.strokeStyle = '#f472b640';
+                t.ctx.lineWidth = 2;
+                t.ctx.beginPath();
+                for (let px = 0; px < t.w; px++) {
+                    const x = (px - t.w / 2) / scale;
+                    const y = cy - Math.sin(x) * scale;
+                    if (px === 0) t.ctx.moveTo(px, y);
+                    else t.ctx.lineTo(px, y);
+                }
+                t.ctx.stroke();
+
+                // Taylor approximation
+                t.ctx.strokeStyle = '#22d3ee';
+                t.ctx.lineWidth = 2;
+                t.ctx.beginPath();
+                for (let px = 0; px < t.w; px++) {
+                    const x = (px - t.w / 2) / scale;
+                    let taylorY = 0;
+                    for (let n = 0; n < terms; n++) {
+                        const sign = n % 2 === 0 ? 1 : -1;
+                        taylorY += sign * Math.pow(x, 2*n + 1) / factorial(2*n + 1);
+                    }
+                    const y = cy - taylorY * scale;
+                    if (px === 0) t.ctx.moveTo(px, y);
+                    else t.ctx.lineTo(px, y);
+                }
+                t.ctx.stroke();
+            }
+
+            // Riemann Sums
+            if (previews.riemann) {
+                const r = previews.riemann;
+                r.ctx.fillStyle = '#000';
+                r.ctx.fillRect(0, 0, r.w, r.h);
+
+                const n = Math.floor((Math.sin(time * 0.3) + 1) * 10) + 3;
+                const dx = r.w / n;
+
+                // Function curve
+                r.ctx.strokeStyle = '#f472b6';
+                r.ctx.lineWidth = 2;
+                r.ctx.beginPath();
+                for (let px = 0; px < r.w; px++) {
+                    const x = px / r.w;
+                    const y = r.h - (Math.sin(x * Math.PI) * 0.7 + 0.1) * r.h;
+                    if (px === 0) r.ctx.moveTo(px, y);
+                    else r.ctx.lineTo(px, y);
+                }
+                r.ctx.stroke();
+
+                // Rectangles
+                for (let i = 0; i < n; i++) {
+                    const x = (i + 0.5) / n;
+                    const height = (Math.sin(x * Math.PI) * 0.7 + 0.1) * r.h;
+                    r.ctx.fillStyle = '#f472b620';
+                    r.ctx.strokeStyle = '#f472b6';
+                    r.ctx.lineWidth = 1;
+                    r.ctx.fillRect(i * dx, r.h - height, dx - 2, height);
+                    r.ctx.strokeRect(i * dx, r.h - height, dx - 2, height);
+                }
+            }
+
+            // Vector Field
+            if (previews.vectorfield) {
+                const v = previews.vectorfield;
+                v.ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                v.ctx.fillRect(0, 0, v.w, v.h);
+
+                for (const p of v.particles) {
+                    const fx = Math.sin(p.y * 5 + time);
+                    const fy = Math.cos(p.x * 5 + time);
+                    p.x += fx * 0.003;
+                    p.y += fy * 0.003;
+                    p.age++;
+
+                    if (p.x < 0 || p.x > 1 || p.y < 0 || p.y > 1 || p.age > 100) {
+                        p.x = Math.random();
+                        p.y = Math.random();
+                        p.age = 0;
+                    }
+
+                    const alpha = 1 - p.age / 100;
+                    v.ctx.fillStyle = `rgba(250, 204, 21, ${alpha})`;
+                    v.ctx.fillRect(p.x * v.w, p.y * v.h, 2, 2);
+                }
+            }
+
+            // Matrix Transform
+            if (previews.matrix) {
+                const m = previews.matrix;
+                m.ctx.fillStyle = '#000';
+                m.ctx.fillRect(0, 0, m.w, m.h);
+
+                const cx = m.w / 2, cy = m.h / 2;
+                const angle = time * 0.5;
+                const scale = 0.8 + Math.sin(time) * 0.2;
+                const a = Math.cos(angle) * scale;
+                const b = -Math.sin(angle) * scale;
+                const c = Math.sin(angle) * scale;
+                const d = Math.cos(angle) * scale;
+
+                m.ctx.strokeStyle = '#facc1530';
+                m.ctx.lineWidth = 1;
+
+                for (let i = -5; i <= 5; i++) {
+                    m.ctx.beginPath();
+                    const x1 = a * i * 15 + b * (-5) * 15;
+                    const y1 = c * i * 15 + d * (-5) * 15;
+                    const x2 = a * i * 15 + b * 5 * 15;
+                    const y2 = c * i * 15 + d * 5 * 15;
+                    m.ctx.moveTo(cx + x1, cy + y1);
+                    m.ctx.lineTo(cx + x2, cy + y2);
+                    m.ctx.stroke();
+
+                    m.ctx.beginPath();
+                    const x3 = a * (-5) * 15 + b * i * 15;
+                    const y3 = c * (-5) * 15 + d * i * 15;
+                    const x4 = a * 5 * 15 + b * i * 15;
+                    const y4 = c * 5 * 15 + d * i * 15;
+                    m.ctx.moveTo(cx + x3, cy + y3);
+                    m.ctx.lineTo(cx + x4, cy + y4);
+                    m.ctx.stroke();
+                }
+
+                // Basis vectors
+                m.ctx.strokeStyle = '#ef4444';
+                m.ctx.lineWidth = 3;
+                m.ctx.beginPath();
+                m.ctx.moveTo(cx, cy);
+                m.ctx.lineTo(cx + a * 50, cy + c * 50);
+                m.ctx.stroke();
+
+                m.ctx.strokeStyle = '#22c55e';
+                m.ctx.beginPath();
+                m.ctx.moveTo(cx, cy);
+                m.ctx.lineTo(cx + b * 50, cy + d * 50);
+                m.ctx.stroke();
+            }
+
+            // Voronoi
+            if (previews.voronoi) {
+                const v = previews.voronoi;
+                const imgData = v.ctx.createImageData(v.w, v.h);
+                const colors = [
+                    [168, 85, 247], [34, 211, 238], [163, 230, 53],
+                    [244, 114, 182], [250, 204, 21], [239, 68, 68],
+                    [59, 130, 246], [34, 197, 94]
+                ];
+
+                for (const p of v.points) {
+                    p.x += p.vx;
+                    p.y += p.vy;
+                    if (p.x < 0.1 || p.x > 0.9) p.vx *= -1;
+                    if (p.y < 0.1 || p.y > 0.9) p.vy *= -1;
+                }
+
+                for (let py = 0; py < v.h; py += 4) {
+                    for (let px = 0; px < v.w; px += 4) {
+                        let minDist = Infinity;
+                        let closest = 0;
+                        for (let i = 0; i < v.points.length; i++) {
+                            const dx = px / v.w - v.points[i].x;
+                            const dy = py / v.h - v.points[i].y;
+                            const dist = dx * dx + dy * dy;
+                            if (dist < minDist) {
+                                minDist = dist;
+                                closest = i;
+                            }
+                        }
+                        const col = colors[closest % colors.length];
+                        for (let dy = 0; dy < 4; dy++) {
+                            for (let dx = 0; dx < 4; dx++) {
+                                const idx = ((py + dy) * v.w + (px + dx)) * 4;
+                                imgData.data[idx] = col[0] * 0.3;
+                                imgData.data[idx + 1] = col[1] * 0.3;
+                                imgData.data[idx + 2] = col[2] * 0.3;
+                                imgData.data[idx + 3] = 255;
+                            }
+                        }
+                    }
+                }
+                v.ctx.putImageData(imgData, 0, 0);
+
+                v.ctx.fillStyle = '#fff';
+                for (const p of v.points) {
+                    v.ctx.beginPath();
+                    v.ctx.arc(p.x * v.w, p.y * v.h, 4, 0, Math.PI * 2);
+                    v.ctx.fill();
+                }
+            }
+
+            // Monte Carlo Pi
+            if (previews.montecarlo) {
+                const m = previews.montecarlo;
+                if (m.total === 0) {
+                    m.ctx.fillStyle = '#000';
+                    m.ctx.fillRect(0, 0, m.w, m.h);
+                    m.ctx.strokeStyle = '#a3e63530';
+                    m.ctx.lineWidth = 2;
+                    m.ctx.beginPath();
+                    m.ctx.arc(m.w / 2, m.h / 2, Math.min(m.w, m.h) / 2 - 10, 0, Math.PI * 2);
+                    m.ctx.stroke();
+                }
+
+                for (let i = 0; i < 10; i++) {
+                    const x = Math.random();
+                    const y = Math.random();
+                    const dx = x - 0.5;
+                    const dy = y - 0.5;
+                    const inCircle = dx * dx + dy * dy <= 0.25;
+
+                    m.total++;
+                    if (inCircle) m.inside++;
+
+                    m.ctx.fillStyle = inCircle ? '#a3e635' : '#ef4444';
+                    m.ctx.fillRect(x * m.w, y * m.h, 2, 2);
+                }
+
+                if (m.total > 3000) {
+                    m.total = 0;
+                    m.inside = 0;
+                }
+            }
+
+            // Game of Life
+            if (previews.life && Math.floor(time * 5) % 3 === 0) {
+                const l = previews.life;
+                const newGrid = [];
+                for (let i = 0; i < l.size; i++) {
+                    newGrid[i] = [];
+                    for (let j = 0; j < l.size; j++) {
+                        let neighbors = 0;
+                        for (let di = -1; di <= 1; di++) {
+                            for (let dj = -1; dj <= 1; dj++) {
+                                if (di === 0 && dj === 0) continue;
+                                const ni = (i + di + l.size) % l.size;
+                                const nj = (j + dj + l.size) % l.size;
+                                neighbors += l.grid[ni][nj];
+                            }
+                        }
+                        if (l.grid[i][j] === 1) {
+                            newGrid[i][j] = (neighbors === 2 || neighbors === 3) ? 1 : 0;
+                        } else {
+                            newGrid[i][j] = neighbors === 3 ? 1 : 0;
+                        }
+                    }
+                }
+                l.grid = newGrid;
+
+                l.ctx.fillStyle = '#000';
+                l.ctx.fillRect(0, 0, l.w, l.h);
+                const cellW = l.w / l.size;
+                const cellH = l.h / l.size;
+                l.ctx.fillStyle = '#a3e635';
+                for (let i = 0; i < l.size; i++) {
+                    for (let j = 0; j < l.size; j++) {
+                        if (l.grid[i][j] === 1) {
+                            l.ctx.fillRect(j * cellW, i * cellH, cellW - 1, cellH - 1);
+                        }
+                    }
+                }
+            }
+
+            // Galton Board
+            if (previews.galton) {
+                const g = previews.galton;
+                g.ctx.fillStyle = '#000';
+                g.ctx.fillRect(0, 0, g.w, g.h);
+
+                // Add ball
+                if (Math.random() < 0.1 && g.balls.length < 50) {
+                    g.balls.push({ x: g.w / 2, y: 10, vx: 0, vy: 0 });
+                }
+
+                // Pegs
+                const rows = 10;
+                const pegSpacing = g.w / 15;
+                g.ctx.fillStyle = '#a3e63540';
+                for (let row = 0; row < rows; row++) {
+                    const pegsInRow = row + 1;
+                    const startX = g.w / 2 - (pegsInRow - 1) * pegSpacing / 2;
+                    for (let p = 0; p < pegsInRow; p++) {
+                        const px = startX + p * pegSpacing;
+                        const py = 40 + row * 20;
+                        g.ctx.beginPath();
+                        g.ctx.arc(px, py, 3, 0, Math.PI * 2);
+                        g.ctx.fill();
+                    }
+                }
+
+                // Update balls
+                for (let i = g.balls.length - 1; i >= 0; i--) {
+                    const ball = g.balls[i];
+                    ball.vy += 0.3;
+                    ball.x += ball.vx;
+                    ball.y += ball.vy;
+
+                    // Bounce off pegs
+                    for (let row = 0; row < rows; row++) {
+                        const pegsInRow = row + 1;
+                        const startX = g.w / 2 - (pegsInRow - 1) * pegSpacing / 2;
+                        for (let p = 0; p < pegsInRow; p++) {
+                            const px = startX + p * pegSpacing;
+                            const py = 40 + row * 20;
+                            const dx = ball.x - px;
+                            const dy = ball.y - py;
+                            const dist = Math.sqrt(dx * dx + dy * dy);
+                            if (dist < 8) {
+                                ball.vx = (Math.random() - 0.5) * 3;
+                                ball.vy = Math.abs(ball.vy) * 0.5;
+                                ball.y = py + 8;
+                            }
+                        }
+                    }
+
+                    // Remove at bottom and add to bins
+                    if (ball.y > g.h - 30) {
+                        const binIndex = Math.floor(ball.x / (g.w / 15));
+                        if (binIndex >= 0 && binIndex < 15) {
+                            g.bins[binIndex] = Math.min(g.bins[binIndex] + 1, 30);
+                        }
+                        g.balls.splice(i, 1);
+                    }
+                }
+
+                // Draw balls
+                g.ctx.fillStyle = '#a3e635';
+                for (const ball of g.balls) {
+                    g.ctx.beginPath();
+                    g.ctx.arc(ball.x, ball.y, 4, 0, Math.PI * 2);
+                    g.ctx.fill();
+                }
+
+                // Draw bins
+                const binW = g.w / 15;
+                for (let i = 0; i < 15; i++) {
+                    const height = g.bins[i] * 3;
+                    g.ctx.fillStyle = '#a3e63560';
+                    g.ctx.fillRect(i * binW + 2, g.h - height, binW - 4, height);
+                }
+            }
+
+            // Lorenz Attractor
+            if (previews.lorenz) {
+                const l = previews.lorenz;
+                const sigma = 10, rho = 28, beta = 8/3;
+                const dt = 0.01;
+
+                for (let i = 0; i < 5; i++) {
+                    const dx = sigma * (l.y - l.x);
+                    const dy = l.x * (rho - l.z) - l.y;
+                    const dz = l.x * l.y - beta * l.z;
+                    l.x += dx * dt;
+                    l.y += dy * dt;
+                    l.z += dz * dt;
+                    l.trail.push({ x: l.x, y: l.y, z: l.z });
+                }
+
+                if (l.trail.length > 500) l.trail.splice(0, 5);
+
+                l.ctx.fillStyle = 'rgba(0,0,0,0.05)';
+                l.ctx.fillRect(0, 0, l.w, l.h);
+
+                const cx = l.w / 2, cy = l.h / 2;
+                const scale = 4;
+                const rotY = time * 0.2;
+
+                if (l.trail.length > 1) {
+                    l.ctx.beginPath();
+                    for (let i = 0; i < l.trail.length; i++) {
+                        const p = l.trail[i];
+                        const rx = p.x * Math.cos(rotY) - p.z * Math.sin(rotY);
+                        const px = cx + rx * scale;
+                        const py = cy - p.y * scale + 50;
+                        if (i === 0) l.ctx.moveTo(px, py);
+                        else l.ctx.lineTo(px, py);
+                    }
+                    const hue = (time * 50) % 360;
+                    l.ctx.strokeStyle = `hsl(${hue}, 80%, 60%)`;
+                    l.ctx.lineWidth = 1;
+                    l.ctx.stroke();
+                }
+            }
+
+            // Double Pendulum
+            if (previews.pendulum) {
+                const p = previews.pendulum;
+                const g = 9.8, m1 = 1, m2 = 1, l1 = 40, l2 = 40;
+                const dt = 0.05;
+
+                // Equations of motion (simplified)
+                const num1 = -g * (2 * m1 + m2) * Math.sin(p.theta1);
+                const num2 = -m2 * g * Math.sin(p.theta1 - 2 * p.theta2);
+                const num3 = -2 * Math.sin(p.theta1 - p.theta2) * m2;
+                const num4 = p.omega2 * p.omega2 * l2 + p.omega1 * p.omega1 * l1 * Math.cos(p.theta1 - p.theta2);
+                const den = l1 * (2 * m1 + m2 - m2 * Math.cos(2 * p.theta1 - 2 * p.theta2));
+                const alpha1 = (num1 + num2 + num3 * num4) / den;
+
+                const num5 = 2 * Math.sin(p.theta1 - p.theta2);
+                const num6 = p.omega1 * p.omega1 * l1 * (m1 + m2);
+                const num7 = g * (m1 + m2) * Math.cos(p.theta1);
+                const num8 = p.omega2 * p.omega2 * l2 * m2 * Math.cos(p.theta1 - p.theta2);
+                const den2 = l2 * (2 * m1 + m2 - m2 * Math.cos(2 * p.theta1 - 2 * p.theta2));
+                const alpha2 = (num5 * (num6 + num7 + num8)) / den2;
+
+                p.omega1 += alpha1 * dt;
+                p.omega2 += alpha2 * dt;
+                p.theta1 += p.omega1 * dt;
+                p.theta2 += p.omega2 * dt;
+
+                const cx = p.w / 2, cy = p.h * 0.3;
+                const x1 = cx + l1 * Math.sin(p.theta1);
+                const y1 = cy + l1 * Math.cos(p.theta1);
+                const x2 = x1 + l2 * Math.sin(p.theta2);
+                const y2 = y1 + l2 * Math.cos(p.theta2);
+
+                p.trail.push({ x: x2, y: y2 });
+                if (p.trail.length > 200) p.trail.shift();
+
+                p.ctx.fillStyle = 'rgba(0,0,0,0.1)';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                // Trail
+                if (p.trail.length > 1) {
+                    p.ctx.beginPath();
+                    for (let i = 0; i < p.trail.length; i++) {
+                        const pt = p.trail[i];
+                        if (i === 0) p.ctx.moveTo(pt.x, pt.y);
+                        else p.ctx.lineTo(pt.x, pt.y);
+                    }
+                    p.ctx.strokeStyle = '#a855f7';
+                    p.ctx.lineWidth = 1;
+                    p.ctx.stroke();
+                }
+
+                // Rods
+                p.ctx.strokeStyle = '#666';
+                p.ctx.lineWidth = 2;
+                p.ctx.beginPath();
+                p.ctx.moveTo(cx, cy);
+                p.ctx.lineTo(x1, y1);
+                p.ctx.lineTo(x2, y2);
+                p.ctx.stroke();
+
+                // Masses
+                p.ctx.fillStyle = '#a855f7';
+                p.ctx.beginPath();
+                p.ctx.arc(x1, y1, 8, 0, Math.PI * 2);
+                p.ctx.fill();
+                p.ctx.beginPath();
+                p.ctx.arc(x2, y2, 8, 0, Math.PI * 2);
+                p.ctx.fill();
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        function factorial(n) {
+            if (n <= 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        }
+
+        window.addEventListener('load', () => {
+            initPreviews();
+            animate();
+        });
+
+        window.addEventListener('resize', initPreviews);
+    </script>
+</body>
+</html>

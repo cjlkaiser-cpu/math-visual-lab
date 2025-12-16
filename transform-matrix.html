@@ -1,0 +1,724 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Transformaciones Matriciales | Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; }
+        canvas { display: block; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #172554;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #facc15;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        select, button {
+            background: #172554;
+            border: 1px solid #facc15;
+            color: #fef9c3;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        select:hover, button:hover {
+            background: #1e3a5f;
+            border-color: #fde047;
+        }
+        .control-group {
+            background: rgba(23, 37, 84, 0.5);
+            border: 1px solid rgba(250, 204, 21, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .matrix-input {
+            background: #0f172a;
+            border: 1px solid #facc15;
+            color: #fef9c3;
+            width: 60px;
+            text-align: center;
+            padding: 4px;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .matrix-bracket {
+            font-size: 48px;
+            color: #facc15;
+            line-height: 1;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-yellow-100 overflow-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur border-b border-yellow-900/50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-yellow-400 hover:text-yellow-300 transition-colors">
+                    ← Volver
+                </a>
+                <h1 class="text-xl font-light">Transformaciones <span class="text-yellow-400">Matriciales</span></h1>
+            </div>
+            <div class="text-yellow-400/60 text-sm">
+                Visualización de matrices 2×2
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 flex h-screen">
+        <!-- Canvas Container -->
+        <div class="flex-1 relative">
+            <canvas id="canvas"></canvas>
+
+            <!-- Determinant Display -->
+            <div class="absolute top-4 left-4 control-group">
+                <div class="text-yellow-400/60 text-sm">Determinante</div>
+                <div id="determinant" class="text-3xl font-light text-yellow-300">1.00</div>
+                <div class="text-yellow-400/60 text-sm mt-2">Interpretación</div>
+                <div id="interpretation" class="text-sm text-yellow-300/70">Preserva área y orientación</div>
+            </div>
+
+            <!-- Eigenvalues -->
+            <div class="absolute bottom-4 left-4 control-group">
+                <div class="text-yellow-400/60 text-sm mb-1">Valores propios</div>
+                <div id="eigenvalues" class="text-lg text-yellow-300 font-mono">λ₁ = 1, λ₂ = 1</div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-96 bg-black/50 border-l border-yellow-900/50 p-4 overflow-y-auto">
+            <div class="space-y-4">
+                <!-- Matrix Input -->
+                <div class="control-group">
+                    <label class="block text-yellow-400/80 text-sm mb-3">Matriz de transformación</label>
+                    <div class="flex items-center justify-center gap-2">
+                        <span class="matrix-bracket">[</span>
+                        <div class="grid grid-cols-2 gap-2">
+                            <input type="number" id="m00" value="1" step="0.1" class="matrix-input">
+                            <input type="number" id="m01" value="0" step="0.1" class="matrix-input">
+                            <input type="number" id="m10" value="0" step="0.1" class="matrix-input">
+                            <input type="number" id="m11" value="1" step="0.1" class="matrix-input">
+                        </div>
+                        <span class="matrix-bracket">]</span>
+                    </div>
+                </div>
+
+                <!-- Preset Transformations -->
+                <div class="control-group">
+                    <label class="block text-yellow-400/80 text-sm mb-2">Presets</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button onclick="setMatrix(1,0,0,1)">Identidad</button>
+                        <button onclick="setMatrix(2,0,0,2)">Escala 2×</button>
+                        <button onclick="setMatrix(0.5,0,0,0.5)">Escala ½</button>
+                        <button onclick="setMatrix(-1,0,0,1)">Reflejo X</button>
+                        <button onclick="setMatrix(1,0,0,-1)">Reflejo Y</button>
+                        <button onclick="setMatrix(0,-1,1,0)">Rotación 90°</button>
+                        <button onclick="setMatrix(Math.cos(Math.PI/4),-Math.sin(Math.PI/4),Math.sin(Math.PI/4),Math.cos(Math.PI/4))">Rotación 45°</button>
+                        <button onclick="setMatrix(1,0.5,0,1)">Cizalla X</button>
+                        <button onclick="setMatrix(1,0,0.5,1)">Cizalla Y</button>
+                        <button onclick="setMatrix(2,1,1,2)">Expansión</button>
+                        <button onclick="setMatrix(0.5,0.5,-0.5,0.5)">Rot + Escala</button>
+                        <button onclick="setMatrix(0,1,1,0)">Reflejo y=x</button>
+                    </div>
+                </div>
+
+                <!-- Animation -->
+                <div class="control-group">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="animate" class="accent-yellow-500">
+                        <span class="text-sm">Animar transformación</span>
+                    </label>
+                    <div id="animControls" class="mt-2 hidden">
+                        <label class="block text-yellow-400/80 text-sm mb-1">
+                            Progreso: <span id="progressValue" class="text-yellow-300">0</span>%
+                        </label>
+                        <input type="range" id="progress" min="0" max="100" value="0" class="w-full">
+                        <div class="flex gap-2 mt-2">
+                            <button id="playAnim" class="flex-1">▶ Reproducir</button>
+                            <button id="resetAnim" class="flex-1">↻ Reset</button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Shape Selection -->
+                <div class="control-group">
+                    <label class="block text-yellow-400/80 text-sm mb-2">Forma</label>
+                    <select id="shape" class="w-full">
+                        <option value="grid">Cuadrícula</option>
+                        <option value="square">Cuadrado</option>
+                        <option value="circle">Círculo</option>
+                        <option value="triangle">Triángulo</option>
+                        <option value="letter">Letra F</option>
+                        <option value="house">Casa</option>
+                        <option value="arrow">Flecha</option>
+                    </select>
+                </div>
+
+                <!-- Display Options -->
+                <div class="control-group">
+                    <label class="block text-yellow-400/80 text-sm mb-2">Mostrar</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showOriginal" checked class="accent-yellow-500">
+                            <span class="text-sm">Forma original</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showTransformed" checked class="accent-yellow-500">
+                            <span class="text-sm">Forma transformada</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showBasis" checked class="accent-yellow-500">
+                            <span class="text-sm">Vectores base</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showEigen" class="accent-yellow-500">
+                            <span class="text-sm">Vectores propios</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showGrid" checked class="accent-yellow-500">
+                            <span class="text-sm">Ejes</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Grid Density -->
+                <div class="control-group">
+                    <label class="block text-yellow-400/80 text-sm mb-2">
+                        Densidad cuadrícula: <span id="gridDensityValue" class="text-yellow-300">5</span>
+                    </label>
+                    <input type="range" id="gridDensity" min="2" max="15" value="5" class="w-full">
+                </div>
+
+                <!-- Color Scheme -->
+                <div class="control-group">
+                    <label class="block text-yellow-400/80 text-sm mb-2">Colores</label>
+                    <select id="colorScheme" class="w-full">
+                        <option value="yellow">Amarillo / Cyan</option>
+                        <option value="rainbow">Arcoíris</option>
+                        <option value="warm">Cálido</option>
+                        <option value="cool">Frío</option>
+                    </select>
+                </div>
+
+                <!-- Info -->
+                <div class="control-group">
+                    <h3 class="text-yellow-400 font-medium mb-2">Propiedades</h3>
+                    <ul class="text-sm text-yellow-300/70 space-y-1">
+                        <li><strong>det > 0:</strong> preserva orientación</li>
+                        <li><strong>det < 0:</strong> invierte orientación</li>
+                        <li><strong>|det| = 1:</strong> preserva área</li>
+                        <li><strong>det = 0:</strong> colapsa dimensión</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // View settings
+        const view = {
+            scale: 50,
+            offsetX: 0,
+            offsetY: 0
+        };
+
+        let animProgress = 0;
+        let animPlaying = false;
+
+        function resize() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            view.offsetX = canvas.width / 2;
+            view.offsetY = canvas.height / 2;
+            draw();
+        }
+
+        function getMatrix() {
+            return [
+                [parseFloat(document.getElementById('m00').value) || 0,
+                 parseFloat(document.getElementById('m01').value) || 0],
+                [parseFloat(document.getElementById('m10').value) || 0,
+                 parseFloat(document.getElementById('m11').value) || 0]
+            ];
+        }
+
+        function setMatrix(a, b, c, d) {
+            document.getElementById('m00').value = a.toFixed(2);
+            document.getElementById('m01').value = b.toFixed(2);
+            document.getElementById('m10').value = c.toFixed(2);
+            document.getElementById('m11').value = d.toFixed(2);
+            draw();
+        }
+
+        function transformPoint(x, y, matrix, t = 1) {
+            // Interpolate between identity and target matrix
+            const m = [
+                [1 + t * (matrix[0][0] - 1), t * matrix[0][1]],
+                [t * matrix[1][0], 1 + t * (matrix[1][1] - 1)]
+            ];
+
+            return {
+                x: m[0][0] * x + m[0][1] * y,
+                y: m[1][0] * x + m[1][1] * y
+            };
+        }
+
+        function worldToScreen(x, y) {
+            return {
+                x: view.offsetX + x * view.scale,
+                y: view.offsetY - y * view.scale
+            };
+        }
+
+        function getDeterminant(matrix) {
+            return matrix[0][0] * matrix[1][1] - matrix[0][1] * matrix[1][0];
+        }
+
+        function getEigenvalues(matrix) {
+            const a = matrix[0][0];
+            const b = matrix[0][1];
+            const c = matrix[1][0];
+            const d = matrix[1][1];
+
+            const trace = a + d;
+            const det = a * d - b * c;
+            const discriminant = trace * trace - 4 * det;
+
+            if (discriminant >= 0) {
+                const sqrt = Math.sqrt(discriminant);
+                return {
+                    real: true,
+                    lambda1: (trace + sqrt) / 2,
+                    lambda2: (trace - sqrt) / 2
+                };
+            } else {
+                const realPart = trace / 2;
+                const imagPart = Math.sqrt(-discriminant) / 2;
+                return {
+                    real: false,
+                    realPart,
+                    imagPart
+                };
+            }
+        }
+
+        function getEigenvectors(matrix, eigenvalues) {
+            if (!eigenvalues.real) return null;
+
+            const vectors = [];
+
+            for (const lambda of [eigenvalues.lambda1, eigenvalues.lambda2]) {
+                const a = matrix[0][0] - lambda;
+                const b = matrix[0][1];
+
+                if (Math.abs(b) > 0.0001) {
+                    vectors.push({ x: -b, y: a });
+                } else if (Math.abs(a) > 0.0001) {
+                    vectors.push({ x: 1, y: 0 });
+                } else {
+                    vectors.push({ x: 0, y: 1 });
+                }
+            }
+
+            // Normalize
+            return vectors.map(v => {
+                const len = Math.sqrt(v.x * v.x + v.y * v.y);
+                return { x: v.x / len, y: v.y / len };
+            });
+        }
+
+        function getShapePoints(shape) {
+            switch (shape) {
+                case 'grid':
+                    return null; // Special handling
+                case 'square':
+                    return [
+                        { x: -1, y: -1 }, { x: 1, y: -1 },
+                        { x: 1, y: 1 }, { x: -1, y: 1 }
+                    ];
+                case 'circle':
+                    const circlePoints = [];
+                    for (let i = 0; i < 60; i++) {
+                        const angle = (i / 60) * Math.PI * 2;
+                        circlePoints.push({ x: Math.cos(angle), y: Math.sin(angle) });
+                    }
+                    return circlePoints;
+                case 'triangle':
+                    return [
+                        { x: 0, y: 1.5 },
+                        { x: -1.3, y: -0.75 },
+                        { x: 1.3, y: -0.75 }
+                    ];
+                case 'letter':
+                    return [
+                        { x: -0.5, y: -1.5 }, { x: -0.5, y: 1.5 },
+                        { x: 0.8, y: 1.5 }, { x: 0.8, y: 1 },
+                        { x: 0, y: 1 }, { x: 0, y: 0.2 },
+                        { x: 0.6, y: 0.2 }, { x: 0.6, y: -0.3 },
+                        { x: 0, y: -0.3 }, { x: 0, y: -1.5 }
+                    ];
+                case 'house':
+                    return [
+                        { x: -1, y: -1 }, { x: 1, y: -1 },
+                        { x: 1, y: 0.5 }, { x: 0, y: 1.5 },
+                        { x: -1, y: 0.5 }
+                    ];
+                case 'arrow':
+                    return [
+                        { x: 0, y: 1.5 }, { x: 0.8, y: 0.3 },
+                        { x: 0.3, y: 0.3 }, { x: 0.3, y: -1.5 },
+                        { x: -0.3, y: -1.5 }, { x: -0.3, y: 0.3 },
+                        { x: -0.8, y: 0.3 }
+                    ];
+                default:
+                    return [{ x: -1, y: -1 }, { x: 1, y: -1 }, { x: 1, y: 1 }, { x: -1, y: 1 }];
+            }
+        }
+
+        function getColors(scheme) {
+            switch (scheme) {
+                case 'yellow':
+                    return { original: 'rgba(250, 204, 21, 0.5)', transformed: '#22d3ee' };
+                case 'rainbow':
+                    return { original: 'rgba(168, 85, 247, 0.5)', transformed: '#a3e635' };
+                case 'warm':
+                    return { original: 'rgba(251, 146, 60, 0.5)', transformed: '#f472b6' };
+                case 'cool':
+                    return { original: 'rgba(56, 189, 248, 0.5)', transformed: '#a855f7' };
+                default:
+                    return { original: 'rgba(250, 204, 21, 0.5)', transformed: '#22d3ee' };
+            }
+        }
+
+        function drawArrow(x1, y1, x2, y2, color, lineWidth = 2) {
+            const p1 = worldToScreen(x1, y1);
+            const p2 = worldToScreen(x2, y2);
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.beginPath();
+            ctx.moveTo(p1.x, p1.y);
+            ctx.lineTo(p2.x, p2.y);
+            ctx.stroke();
+
+            // Arrowhead
+            const angle = Math.atan2(p1.y - p2.y, p2.x - p1.x);
+            const headLen = 12;
+
+            ctx.beginPath();
+            ctx.moveTo(p2.x, p2.y);
+            ctx.lineTo(p2.x - headLen * Math.cos(angle - 0.3), p2.y + headLen * Math.sin(angle - 0.3));
+            ctx.moveTo(p2.x, p2.y);
+            ctx.lineTo(p2.x - headLen * Math.cos(angle + 0.3), p2.y + headLen * Math.sin(angle + 0.3));
+            ctx.stroke();
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const matrix = getMatrix();
+            const shape = document.getElementById('shape').value;
+            const colors = getColors(document.getElementById('colorScheme').value);
+            const showOriginal = document.getElementById('showOriginal').checked;
+            const showTransformed = document.getElementById('showTransformed').checked;
+            const showBasis = document.getElementById('showBasis').checked;
+            const showEigen = document.getElementById('showEigen').checked;
+            const showGrid = document.getElementById('showGrid').checked;
+
+            // Get animation progress
+            let t = 1;
+            if (document.getElementById('animate').checked) {
+                t = animProgress / 100;
+            }
+
+            // Draw axes
+            if (showGrid) {
+                ctx.strokeStyle = 'rgba(250, 204, 21, 0.2)';
+                ctx.lineWidth = 1;
+
+                // X axis
+                ctx.beginPath();
+                ctx.moveTo(0, view.offsetY);
+                ctx.lineTo(canvas.width, view.offsetY);
+                ctx.stroke();
+
+                // Y axis
+                ctx.beginPath();
+                ctx.moveTo(view.offsetX, 0);
+                ctx.lineTo(view.offsetX, canvas.height);
+                ctx.stroke();
+
+                // Grid lines
+                ctx.strokeStyle = 'rgba(250, 204, 21, 0.1)';
+                for (let i = -10; i <= 10; i++) {
+                    if (i === 0) continue;
+                    const p = worldToScreen(i, 0);
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, 0);
+                    ctx.lineTo(p.x, canvas.height);
+                    ctx.stroke();
+
+                    const p2 = worldToScreen(0, i);
+                    ctx.beginPath();
+                    ctx.moveTo(0, p2.y);
+                    ctx.lineTo(canvas.width, p2.y);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw grid shape
+            if (shape === 'grid') {
+                const density = parseInt(document.getElementById('gridDensity').value);
+                const range = 3;
+
+                // Draw original grid
+                if (showOriginal) {
+                    ctx.strokeStyle = colors.original;
+                    ctx.lineWidth = 1;
+
+                    // Horizontal lines
+                    for (let y = -range; y <= range; y += range * 2 / density) {
+                        ctx.beginPath();
+                        for (let x = -range; x <= range; x += 0.1) {
+                            const p = worldToScreen(x, y);
+                            if (x === -range) ctx.moveTo(p.x, p.y);
+                            else ctx.lineTo(p.x, p.y);
+                        }
+                        ctx.stroke();
+                    }
+
+                    // Vertical lines
+                    for (let x = -range; x <= range; x += range * 2 / density) {
+                        ctx.beginPath();
+                        for (let y = -range; y <= range; y += 0.1) {
+                            const p = worldToScreen(x, y);
+                            if (y === -range) ctx.moveTo(p.x, p.y);
+                            else ctx.lineTo(p.x, p.y);
+                        }
+                        ctx.stroke();
+                    }
+                }
+
+                // Draw transformed grid
+                if (showTransformed) {
+                    ctx.strokeStyle = colors.transformed;
+                    ctx.lineWidth = 1;
+
+                    // Horizontal lines
+                    for (let y = -range; y <= range; y += range * 2 / density) {
+                        ctx.beginPath();
+                        for (let x = -range; x <= range; x += 0.1) {
+                            const tp = transformPoint(x, y, matrix, t);
+                            const p = worldToScreen(tp.x, tp.y);
+                            if (x === -range) ctx.moveTo(p.x, p.y);
+                            else ctx.lineTo(p.x, p.y);
+                        }
+                        ctx.stroke();
+                    }
+
+                    // Vertical lines
+                    for (let x = -range; x <= range; x += range * 2 / density) {
+                        ctx.beginPath();
+                        for (let y = -range; y <= range; y += 0.1) {
+                            const tp = transformPoint(x, y, matrix, t);
+                            const p = worldToScreen(tp.x, tp.y);
+                            if (y === -range) ctx.moveTo(p.x, p.y);
+                            else ctx.lineTo(p.x, p.y);
+                        }
+                        ctx.stroke();
+                    }
+                }
+            } else {
+                // Draw other shapes
+                const points = getShapePoints(shape);
+
+                if (showOriginal && points) {
+                    ctx.strokeStyle = colors.original;
+                    ctx.fillStyle = colors.original.replace('0.5', '0.2');
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    points.forEach((pt, i) => {
+                        const p = worldToScreen(pt.x, pt.y);
+                        if (i === 0) ctx.moveTo(p.x, p.y);
+                        else ctx.lineTo(p.x, p.y);
+                    });
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+
+                if (showTransformed && points) {
+                    ctx.strokeStyle = colors.transformed;
+                    ctx.fillStyle = colors.transformed.replace(')', ', 0.3)').replace('rgb', 'rgba');
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    points.forEach((pt, i) => {
+                        const tp = transformPoint(pt.x, pt.y, matrix, t);
+                        const p = worldToScreen(tp.x, tp.y);
+                        if (i === 0) ctx.moveTo(p.x, p.y);
+                        else ctx.lineTo(p.x, p.y);
+                    });
+                    ctx.closePath();
+                    ctx.fill();
+                    ctx.stroke();
+                }
+            }
+
+            // Draw basis vectors
+            if (showBasis) {
+                // Original basis (faded)
+                drawArrow(0, 0, 1, 0, 'rgba(248, 113, 113, 0.4)', 1);
+                drawArrow(0, 0, 0, 1, 'rgba(74, 222, 128, 0.4)', 1);
+
+                // Transformed basis
+                const e1 = transformPoint(1, 0, matrix, t);
+                const e2 = transformPoint(0, 1, matrix, t);
+
+                drawArrow(0, 0, e1.x, e1.y, '#f87171', 3);
+                drawArrow(0, 0, e2.x, e2.y, '#4ade80', 3);
+
+                // Labels
+                ctx.font = 'bold 14px monospace';
+                const p1 = worldToScreen(e1.x, e1.y);
+                const p2 = worldToScreen(e2.x, e2.y);
+
+                ctx.fillStyle = '#f87171';
+                ctx.fillText('e₁', p1.x + 10, p1.y - 10);
+                ctx.fillStyle = '#4ade80';
+                ctx.fillText('e₂', p2.x + 10, p2.y - 10);
+            }
+
+            // Draw eigenvectors
+            if (showEigen) {
+                const eigenvalues = getEigenvalues(matrix);
+                const eigenvectors = getEigenvectors(matrix, eigenvalues);
+
+                if (eigenvectors) {
+                    ctx.setLineDash([5, 5]);
+                    eigenvectors.forEach((v, i) => {
+                        const scale = 3;
+                        drawArrow(-v.x * scale, -v.y * scale, v.x * scale, v.y * scale,
+                            i === 0 ? '#facc15' : '#f472b6', 2);
+                    });
+                    ctx.setLineDash([]);
+                }
+            }
+
+            // Update info displays
+            const det = getDeterminant(matrix);
+            document.getElementById('determinant').textContent = det.toFixed(3);
+
+            let interpretation = '';
+            if (Math.abs(det) < 0.0001) {
+                interpretation = 'Colapsa a línea o punto (singular)';
+            } else if (det > 0) {
+                interpretation = Math.abs(Math.abs(det) - 1) < 0.001 ?
+                    'Preserva área y orientación' :
+                    `Escala área ×${Math.abs(det).toFixed(2)}, preserva orientación`;
+            } else {
+                interpretation = `Invierte orientación, escala área ×${Math.abs(det).toFixed(2)}`;
+            }
+            document.getElementById('interpretation').textContent = interpretation;
+
+            const eigenvalues = getEigenvalues(matrix);
+            if (eigenvalues.real) {
+                document.getElementById('eigenvalues').textContent =
+                    `λ₁ = ${eigenvalues.lambda1.toFixed(2)}, λ₂ = ${eigenvalues.lambda2.toFixed(2)}`;
+            } else {
+                document.getElementById('eigenvalues').textContent =
+                    `λ = ${eigenvalues.realPart.toFixed(2)} ± ${eigenvalues.imagPart.toFixed(2)}i`;
+            }
+        }
+
+        function animateTransformation() {
+            if (!animPlaying) return;
+
+            animProgress += 1;
+            if (animProgress > 100) {
+                animProgress = 100;
+                animPlaying = false;
+                document.getElementById('playAnim').textContent = '▶ Reproducir';
+            }
+
+            document.getElementById('progress').value = animProgress;
+            document.getElementById('progressValue').textContent = Math.round(animProgress);
+            draw();
+
+            if (animPlaying) {
+                requestAnimationFrame(animateTransformation);
+            }
+        }
+
+        // Event listeners
+        ['m00', 'm01', 'm10', 'm11'].forEach(id => {
+            document.getElementById(id).addEventListener('input', draw);
+        });
+
+        document.getElementById('shape').addEventListener('change', draw);
+        document.getElementById('colorScheme').addEventListener('change', draw);
+        document.getElementById('gridDensity').addEventListener('input', (e) => {
+            document.getElementById('gridDensityValue').textContent = e.target.value;
+            draw();
+        });
+
+        ['showOriginal', 'showTransformed', 'showBasis', 'showEigen', 'showGrid'].forEach(id => {
+            document.getElementById(id).addEventListener('change', draw);
+        });
+
+        document.getElementById('animate').addEventListener('change', (e) => {
+            document.getElementById('animControls').classList.toggle('hidden', !e.target.checked);
+            if (!e.target.checked) {
+                animProgress = 100;
+            }
+            draw();
+        });
+
+        document.getElementById('progress').addEventListener('input', (e) => {
+            animProgress = parseInt(e.target.value);
+            document.getElementById('progressValue').textContent = animProgress;
+            draw();
+        });
+
+        document.getElementById('playAnim').addEventListener('click', () => {
+            if (animPlaying) {
+                animPlaying = false;
+                document.getElementById('playAnim').textContent = '▶ Reproducir';
+            } else {
+                if (animProgress >= 100) animProgress = 0;
+                animPlaying = true;
+                document.getElementById('playAnim').textContent = '⏸ Pausar';
+                animateTransformation();
+            }
+        });
+
+        document.getElementById('resetAnim').addEventListener('click', () => {
+            animProgress = 0;
+            animPlaying = false;
+            document.getElementById('progress').value = 0;
+            document.getElementById('progressValue').textContent = '0';
+            document.getElementById('playAnim').textContent = '▶ Reproducir';
+            draw();
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+    </script>
+</body>
+</html>

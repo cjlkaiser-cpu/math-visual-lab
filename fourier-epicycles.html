@@ -1,0 +1,678 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dibujo con Fourier - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        #canvas {
+            cursor: crosshair;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(244, 114, 182, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #f472b6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(244, 114, 182, 0.3);
+        }
+        .state-indicator {
+            animation: pulse 2s infinite;
+        }
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-pink-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-pink-400 font-medium">Fourier</span> Epicycles
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span id="state-indicator" class="px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 state-indicator">
+                        Dibuja una forma
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+            <div id="instructions" class="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div class="text-center text-gray-600">
+                    <svg class="w-16 h-16 mx-auto mb-4 opacity-30" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="1" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/>
+                    </svg>
+                    <p class="text-lg">Dibuja una forma cerrada</p>
+                    <p class="text-sm mt-1 opacity-50">Mantén presionado y arrastra</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-pink-400 glow-text">Controles</h2>
+
+            <!-- Number of Coefficients -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Coeficientes (N): <span id="coef-value" class="text-pink-400 mono">50</span>
+                </label>
+                <input type="range" id="coefficients" min="1" max="200" value="50" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Más coeficientes = mayor precisión</p>
+            </div>
+
+            <!-- Speed -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Velocidad: <span id="speed-value" class="text-cyan-400 mono">1.0x</span>
+                </label>
+                <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1" class="w-full">
+            </div>
+
+            <!-- Show Options -->
+            <div class="mb-6 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-circles" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-pink-500 focus:ring-pink-500">
+                    <span class="text-sm text-gray-400">Mostrar círculos</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-radii" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-pink-500 focus:ring-pink-500">
+                    <span class="text-sm text-gray-400">Mostrar radios</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-original" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-pink-500 focus:ring-pink-500">
+                    <span class="text-sm text-gray-400">Mostrar dibujo original</span>
+                </label>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="mb-6 space-y-2">
+                <button id="clear-btn" class="w-full py-2 px-4 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/>
+                    </svg>
+                    Limpiar y Dibujar de Nuevo
+                </button>
+                <button id="pause-btn" class="w-full py-2 px-4 bg-pink-500/20 hover:bg-pink-500/30 text-pink-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg id="pause-icon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 9v6m4-6v6m7-3a9 9 0 11-18 0 9 9 0 0118 0z"/>
+                    </svg>
+                    <span id="pause-text">Pausar</span>
+                </button>
+            </div>
+
+            <!-- Preset Shapes -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Formas Predefinidas</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="loadPreset('circle')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Círculo</button>
+                    <button onclick="loadPreset('square')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Cuadrado</button>
+                    <button onclick="loadPreset('star')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Estrella</button>
+                    <button onclick="loadPreset('heart')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Corazón</button>
+                    <button onclick="loadPreset('pi')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">π</button>
+                    <button onclick="loadPreset('infinity')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">∞</button>
+                </div>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-pink-400 mb-3">La Matemática</h3>
+                <div class="mono text-sm text-center mb-3 text-cyan-400">
+                    X<sub>k</sub> = Σ x<sub>n</sub> · e<sup>-2πikn/N</sup>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    La <span class="text-pink-400">Transformada Discreta de Fourier</span> descompone cualquier señal periódica en una suma de senos y cosenos (círculos giratorios).
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        Cada epiciclo gira a una frecuencia diferente. Sumados, recrean la forma original. Este es el principio detrás de la compresión de audio y vídeo.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Estadísticas</h3>
+                <div class="grid grid-cols-2 gap-2 text-xs mono">
+                    <div class="text-gray-500">Puntos originales:</div>
+                    <div id="point-count" class="text-pink-400">0</div>
+                    <div class="text-gray-500">Frecuencia actual:</div>
+                    <div id="current-freq" class="text-cyan-400">-</div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let state = 'drawing'; // 'drawing', 'computing', 'playing'
+        let isDrawing = false;
+        let userPath = [];
+        let fourierCoeffs = [];
+        let time = 0;
+        let drawnPath = [];
+        let isPaused = false;
+        let animationId = null;
+
+        // Settings
+        let numCoefficients = 50;
+        let speed = 1;
+        let showCircles = true;
+        let showRadii = true;
+        let showOriginal = false;
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+        }
+
+        // Discrete Fourier Transform
+        function dft(x) {
+            const N = x.length;
+            const X = [];
+
+            for (let k = 0; k < N; k++) {
+                let re = 0;
+                let im = 0;
+
+                for (let n = 0; n < N; n++) {
+                    const phi = (2 * Math.PI * k * n) / N;
+                    re += x[n].re * Math.cos(phi) + x[n].im * Math.sin(phi);
+                    im += -x[n].re * Math.sin(phi) + x[n].im * Math.cos(phi);
+                }
+
+                re /= N;
+                im /= N;
+
+                const freq = k;
+                const amp = Math.sqrt(re * re + im * im);
+                const phase = Math.atan2(im, re);
+
+                X.push({ re, im, freq, amp, phase });
+            }
+
+            return X;
+        }
+
+        function computeFourier() {
+            if (userPath.length < 3) return;
+
+            state = 'computing';
+            updateStateIndicator();
+
+            // Sample path to get even spacing
+            const numSamples = Math.min(userPath.length, 500);
+            const step = userPath.length / numSamples;
+            const sampledPath = [];
+
+            for (let i = 0; i < numSamples; i++) {
+                const idx = Math.floor(i * step);
+                sampledPath.push(userPath[idx]);
+            }
+
+            // Convert to complex numbers (centered)
+            const cx = canvas.offsetWidth / 2;
+            const cy = canvas.offsetHeight / 2;
+
+            const signal = sampledPath.map(p => ({
+                re: p.x - cx,
+                im: p.y - cy
+            }));
+
+            // Compute DFT
+            fourierCoeffs = dft(signal);
+
+            // Sort by amplitude (largest first)
+            fourierCoeffs.sort((a, b) => b.amp - a.amp);
+
+            // Start animation
+            time = 0;
+            drawnPath = [];
+            state = 'playing';
+            updateStateIndicator();
+            document.getElementById('point-count').textContent = sampledPath.length;
+            document.getElementById('instructions').classList.add('hidden');
+
+            animate();
+        }
+
+        function epicycles(x, y, coeffs, t) {
+            const n = Math.min(numCoefficients, coeffs.length);
+
+            for (let i = 0; i < n; i++) {
+                const prevX = x;
+                const prevY = y;
+
+                const { freq, amp, phase } = coeffs[i];
+                x += amp * Math.cos(freq * t + phase);
+                y += amp * Math.sin(freq * t + phase);
+
+                if (showCircles) {
+                    ctx.strokeStyle = `rgba(244, 114, 182, ${0.2 - i * 0.002})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.arc(prevX, prevY, amp, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+
+                if (showRadii) {
+                    ctx.strokeStyle = `rgba(34, 211, 238, ${0.5 - i * 0.005})`;
+                    ctx.lineWidth = 1;
+                    ctx.beginPath();
+                    ctx.moveTo(prevX, prevY);
+                    ctx.lineTo(x, y);
+                    ctx.stroke();
+                }
+            }
+
+            return { x, y };
+        }
+
+        function animate() {
+            if (state !== 'playing') return;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+            const cx = canvas.offsetWidth / 2;
+            const cy = canvas.offsetHeight / 2;
+
+            // Draw original path if enabled
+            if (showOriginal && userPath.length > 1) {
+                ctx.strokeStyle = '#ffffff20';
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(userPath[0].x, userPath[0].y);
+                for (let i = 1; i < userPath.length; i++) {
+                    ctx.lineTo(userPath[i].x, userPath[i].y);
+                }
+                ctx.closePath();
+                ctx.stroke();
+            }
+
+            // Draw epicycles
+            const result = epicycles(cx, cy, fourierCoeffs, time);
+
+            // Add point to drawn path
+            drawnPath.push({ x: result.x, y: result.y });
+
+            // Draw the resulting path
+            if (drawnPath.length > 1) {
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(drawnPath[0].x, drawnPath[0].y);
+                for (let i = 1; i < drawnPath.length; i++) {
+                    ctx.lineTo(drawnPath[i].x, drawnPath[i].y);
+                }
+                ctx.stroke();
+            }
+
+            // Draw tip
+            ctx.fillStyle = '#22d3ee';
+            ctx.beginPath();
+            ctx.arc(result.x, result.y, 5, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Update time
+            if (!isPaused) {
+                const dt = (2 * Math.PI) / fourierCoeffs.length;
+                time += dt * speed;
+
+                // Reset when complete
+                if (time >= 2 * Math.PI) {
+                    time = 0;
+                    drawnPath = [];
+                }
+            }
+
+            // Update frequency display
+            const currentFreqIdx = Math.floor((time / (2 * Math.PI)) * fourierCoeffs.length) % fourierCoeffs.length;
+            document.getElementById('current-freq').textContent = fourierCoeffs[currentFreqIdx]?.freq || '-';
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function updateStateIndicator() {
+            const indicator = document.getElementById('state-indicator');
+            switch (state) {
+                case 'drawing':
+                    indicator.textContent = 'Dibuja una forma';
+                    indicator.className = 'px-3 py-1 rounded-full bg-cyan-500/20 text-cyan-400 state-indicator';
+                    break;
+                case 'computing':
+                    indicator.textContent = 'Calculando DFT...';
+                    indicator.className = 'px-3 py-1 rounded-full bg-yellow-500/20 text-yellow-400 state-indicator';
+                    break;
+                case 'playing':
+                    indicator.textContent = isPaused ? 'Pausado' : 'Reproduciendo';
+                    indicator.className = `px-3 py-1 rounded-full ${isPaused ? 'bg-orange-500/20 text-orange-400' : 'bg-pink-500/20 text-pink-400'} state-indicator`;
+                    break;
+            }
+        }
+
+        function clearAll() {
+            if (animationId) cancelAnimationFrame(animationId);
+            state = 'drawing';
+            userPath = [];
+            fourierCoeffs = [];
+            drawnPath = [];
+            time = 0;
+            isPaused = false;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+            document.getElementById('instructions').classList.remove('hidden');
+            document.getElementById('point-count').textContent = '0';
+            document.getElementById('current-freq').textContent = '-';
+            document.getElementById('pause-text').textContent = 'Pausar';
+            updateStateIndicator();
+        }
+
+        // Preset shapes
+        function loadPreset(shape) {
+            clearAll();
+            const cx = canvas.offsetWidth / 2;
+            const cy = canvas.offsetHeight / 2;
+            const size = Math.min(canvas.offsetWidth, canvas.offsetHeight) * 0.3;
+
+            userPath = [];
+
+            switch (shape) {
+                case 'circle':
+                    for (let i = 0; i <= 100; i++) {
+                        const t = (i / 100) * Math.PI * 2;
+                        userPath.push({
+                            x: cx + size * Math.cos(t),
+                            y: cy + size * Math.sin(t)
+                        });
+                    }
+                    break;
+
+                case 'square':
+                    const s = size;
+                    const pts = [
+                        { x: cx - s, y: cy - s },
+                        { x: cx + s, y: cy - s },
+                        { x: cx + s, y: cy + s },
+                        { x: cx - s, y: cy + s },
+                        { x: cx - s, y: cy - s }
+                    ];
+                    for (let i = 0; i < pts.length - 1; i++) {
+                        for (let j = 0; j <= 25; j++) {
+                            const t = j / 25;
+                            userPath.push({
+                                x: pts[i].x + (pts[i + 1].x - pts[i].x) * t,
+                                y: pts[i].y + (pts[i + 1].y - pts[i].y) * t
+                            });
+                        }
+                    }
+                    break;
+
+                case 'star':
+                    for (let i = 0; i <= 100; i++) {
+                        const t = (i / 100) * Math.PI * 2;
+                        const r = size * (0.5 + 0.5 * Math.cos(5 * t));
+                        userPath.push({
+                            x: cx + r * Math.cos(t),
+                            y: cy + r * Math.sin(t)
+                        });
+                    }
+                    break;
+
+                case 'heart':
+                    for (let i = 0; i <= 100; i++) {
+                        const t = (i / 100) * Math.PI * 2;
+                        const x = 16 * Math.pow(Math.sin(t), 3);
+                        const y = 13 * Math.cos(t) - 5 * Math.cos(2*t) - 2 * Math.cos(3*t) - Math.cos(4*t);
+                        userPath.push({
+                            x: cx + x * size / 20,
+                            y: cy - y * size / 20
+                        });
+                    }
+                    break;
+
+                case 'pi':
+                    // Simplified pi symbol
+                    const piPts = [];
+                    // Top bar
+                    for (let i = 0; i <= 20; i++) {
+                        piPts.push({ x: cx - size * 0.8 + i * size * 1.6 / 20, y: cy - size * 0.6 });
+                    }
+                    // Right leg
+                    for (let i = 0; i <= 20; i++) {
+                        piPts.push({ x: cx + size * 0.5, y: cy - size * 0.6 + i * size * 1.2 / 20 });
+                    }
+                    // Bottom curve right
+                    for (let i = 0; i <= 10; i++) {
+                        const t = i / 10 * Math.PI * 0.5;
+                        piPts.push({ x: cx + size * 0.5 + size * 0.2 * Math.sin(t), y: cy + size * 0.6 + size * 0.2 * (1 - Math.cos(t)) });
+                    }
+                    // Back up
+                    for (let i = 20; i >= 0; i--) {
+                        piPts.push({ x: cx + size * 0.5 + size * 0.2, y: cy - size * 0.6 + i * size * 1.2 / 20 });
+                    }
+                    // Left leg start
+                    for (let i = 0; i <= 20; i++) {
+                        piPts.push({ x: cx - size * 0.3, y: cy - size * 0.6 + i * size * 1.2 / 20 });
+                    }
+                    // Close path
+                    for (let i = 0; i <= 10; i++) {
+                        piPts.push({ x: cx - size * 0.3 - i * size * 0.5 / 10, y: cy + size * 0.6 - i * size * 1.2 / 10 });
+                    }
+
+                    userPath = piPts;
+                    break;
+
+                case 'infinity':
+                    for (let i = 0; i <= 100; i++) {
+                        const t = (i / 100) * Math.PI * 2;
+                        const scale = 2 / (3 - Math.cos(2 * t));
+                        userPath.push({
+                            x: cx + scale * Math.cos(t) * size,
+                            y: cy + scale * Math.sin(2 * t) / 2 * size
+                        });
+                    }
+                    break;
+            }
+
+            computeFourier();
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousedown', (e) => {
+            if (state !== 'drawing') return;
+            isDrawing = true;
+            userPath = [];
+            const rect = canvas.getBoundingClientRect();
+            userPath.push({
+                x: e.clientX - rect.left,
+                y: e.clientY - rect.top
+            });
+            document.getElementById('instructions').classList.add('hidden');
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDrawing || state !== 'drawing') return;
+
+            const rect = canvas.getBoundingClientRect();
+            const x = e.clientX - rect.left;
+            const y = e.clientY - rect.top;
+
+            userPath.push({ x, y });
+
+            // Draw current path
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+            if (userPath.length > 1) {
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(userPath[0].x, userPath[0].y);
+                for (let i = 1; i < userPath.length; i++) {
+                    ctx.lineTo(userPath[i].x, userPath[i].y);
+                }
+                ctx.stroke();
+            }
+
+            document.getElementById('point-count').textContent = userPath.length;
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            if (userPath.length > 10) {
+                // Close the path
+                userPath.push(userPath[0]);
+                computeFourier();
+            }
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            if (isDrawing && userPath.length > 10) {
+                isDrawing = false;
+                userPath.push(userPath[0]);
+                computeFourier();
+            }
+        });
+
+        // Touch support
+        canvas.addEventListener('touchstart', (e) => {
+            e.preventDefault();
+            if (state !== 'drawing') return;
+            isDrawing = true;
+            userPath = [];
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            userPath.push({
+                x: touch.clientX - rect.left,
+                y: touch.clientY - rect.top
+            });
+            document.getElementById('instructions').classList.add('hidden');
+        });
+
+        canvas.addEventListener('touchmove', (e) => {
+            e.preventDefault();
+            if (!isDrawing || state !== 'drawing') return;
+
+            const rect = canvas.getBoundingClientRect();
+            const touch = e.touches[0];
+            const x = touch.clientX - rect.left;
+            const y = touch.clientY - rect.top;
+
+            userPath.push({ x, y });
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+
+            if (userPath.length > 1) {
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.moveTo(userPath[0].x, userPath[0].y);
+                for (let i = 1; i < userPath.length; i++) {
+                    ctx.lineTo(userPath[i].x, userPath[i].y);
+                }
+                ctx.stroke();
+            }
+        });
+
+        canvas.addEventListener('touchend', (e) => {
+            e.preventDefault();
+            if (!isDrawing) return;
+            isDrawing = false;
+
+            if (userPath.length > 10) {
+                userPath.push(userPath[0]);
+                computeFourier();
+            }
+        });
+
+        // Controls
+        document.getElementById('coefficients').addEventListener('input', (e) => {
+            numCoefficients = parseInt(e.target.value);
+            document.getElementById('coef-value').textContent = numCoefficients;
+        });
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            speed = parseFloat(e.target.value);
+            document.getElementById('speed-value').textContent = speed.toFixed(1) + 'x';
+        });
+
+        document.getElementById('show-circles').addEventListener('change', (e) => {
+            showCircles = e.target.checked;
+        });
+
+        document.getElementById('show-radii').addEventListener('change', (e) => {
+            showRadii = e.target.checked;
+        });
+
+        document.getElementById('show-original').addEventListener('change', (e) => {
+            showOriginal = e.target.checked;
+        });
+
+        document.getElementById('clear-btn').addEventListener('click', clearAll);
+
+        document.getElementById('pause-btn').addEventListener('click', () => {
+            if (state !== 'playing') return;
+            isPaused = !isPaused;
+            document.getElementById('pause-text').textContent = isPaused ? 'Reanudar' : 'Pausar';
+            updateStateIndicator();
+        });
+
+        window.addEventListener('resize', () => {
+            initCanvas();
+            if (state === 'playing') {
+                drawnPath = [];
+            }
+        });
+
+        // Initialize
+        initCanvas();
+        ctx.fillStyle = '#000';
+        ctx.fillRect(0, 0, canvas.offsetWidth, canvas.offsetHeight);
+    </script>
+</body>
+</html>

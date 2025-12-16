@@ -1,0 +1,608 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monte Carlo: π - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(163, 230, 53, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a3e635;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(163, 230, 53, 0.3);
+        }
+        .pi-display {
+            font-size: 3rem;
+            font-weight: 300;
+            letter-spacing: -0.05em;
+        }
+        .pi-digit {
+            transition: color 0.3s;
+        }
+        .pi-correct {
+            color: #a3e635;
+        }
+        .pi-incorrect {
+            color: #ef4444;
+        }
+        @keyframes drop {
+            0% { transform: translateY(-20px); opacity: 0; }
+            100% { transform: translateY(0); opacity: 1; }
+        }
+        .dropping {
+            animation: drop 0.2s ease-out;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-lime-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-lime-400 font-medium">Monte Carlo</span> Estimation of π
+                    </h1>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative flex flex-col">
+            <!-- Pi Display -->
+            <div class="text-center py-4 border-b border-gray-900 bg-gray-950/50">
+                <div class="text-gray-500 text-sm mb-1">Estimación de π</div>
+                <div id="pi-display" class="pi-display mono text-gray-300">
+                    <span class="text-lime-400">3</span>.<span id="pi-decimals">------</span>
+                </div>
+                <div class="text-xs text-gray-600 mt-1 mono">
+                    Valor real: <span class="text-gray-400">3.14159265358979...</span>
+                </div>
+            </div>
+
+            <!-- Canvas -->
+            <div class="flex-1 relative">
+                <canvas id="canvas" class="w-full h-full"></canvas>
+            </div>
+
+            <!-- Stats Bar -->
+            <div class="border-t border-gray-900 bg-gray-950/50 px-4 py-3">
+                <div class="flex justify-between items-center max-w-2xl mx-auto">
+                    <div class="text-center">
+                        <div class="text-xs text-gray-600">Total</div>
+                        <div id="total-points" class="mono text-lg text-gray-300">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-600">Dentro</div>
+                        <div id="inside-points" class="mono text-lg text-lime-400">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-600">Fuera</div>
+                        <div id="outside-points" class="mono text-lg text-red-400">0</div>
+                    </div>
+                    <div class="text-center">
+                        <div class="text-xs text-gray-600">Error</div>
+                        <div id="error" class="mono text-lg text-cyan-400">-</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-lime-400 glow-text">Controles</h2>
+
+            <!-- Playback -->
+            <div class="mb-6 flex gap-2">
+                <button id="play-btn" class="flex-1 py-2 px-4 bg-lime-500/20 hover:bg-lime-500/30 text-lime-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg id="play-icon" class="w-4 h-4" fill="currentColor" viewBox="0 0 24 24">
+                        <path d="M8 5v14l11-7z"/>
+                    </svg>
+                    <span id="play-text">Iniciar</span>
+                </button>
+            </div>
+
+            <!-- Speed -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Puntos por frame: <span id="speed-value" class="text-lime-400 mono">10</span>
+                </label>
+                <input type="range" id="speed" min="1" max="100" value="10" class="w-full">
+            </div>
+
+            <!-- Point Size -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Tamaño de punto: <span id="point-size-value" class="text-cyan-400 mono">2</span>px
+                </label>
+                <input type="range" id="point-size" min="1" max="5" value="2" class="w-full">
+            </div>
+
+            <!-- Quick Add -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Añadir puntos instantáneamente</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="addPoints(100)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">+100</button>
+                    <button onclick="addPoints(1000)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">+1,000</button>
+                    <button onclick="addPoints(10000)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">+10,000</button>
+                    <button onclick="addPoints(100000)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">+100,000</button>
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="mb-6 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-circle" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-lime-500 focus:ring-lime-500">
+                    <span class="text-sm text-gray-400">Mostrar círculo</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-square" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-lime-500 focus:ring-lime-500">
+                    <span class="text-sm text-gray-400">Mostrar cuadrado</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="fade-points" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-lime-500 focus:ring-lime-500">
+                    <span class="text-sm text-gray-400">Desvanecer puntos</span>
+                </label>
+            </div>
+
+            <!-- Reset -->
+            <div class="mb-6">
+                <button id="reset-btn" class="w-full py-2 px-4 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Reiniciar
+                </button>
+            </div>
+
+            <!-- Convergence Graph -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Convergencia</label>
+                <canvas id="graph" class="w-full h-24 bg-gray-900 rounded-lg"></canvas>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-lime-400 mb-3">La Matemática</h3>
+                <div class="mono text-sm text-center mb-3 space-y-1">
+                    <div class="text-cyan-400">A_círculo / A_cuadrado = π/4</div>
+                    <div class="text-gray-500">↓</div>
+                    <div class="text-lime-400">π ≈ 4 × (dentro / total)</div>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Un círculo de radio 1 tiene área π. Un cuadrado de lado 2 tiene área 4. La proporción de puntos aleatorios que caen dentro del círculo converge a π/4.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        El error disminuye como 1/√n. Para obtener un dígito más de precisión, necesitas ~100× más puntos.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Accuracy Info -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Dígitos Correctos</h3>
+                <div id="correct-digits" class="mono text-2xl text-lime-400">0</div>
+                <div class="text-xs text-gray-600 mt-1">de los primeros 6 decimales</div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+        const graphCanvas = document.getElementById('graph');
+        const graphCtx = graphCanvas.getContext('2d');
+
+        // State
+        let totalPoints = 0;
+        let insidePoints = 0;
+        let isRunning = false;
+        let animationId = null;
+        let piHistory = [];
+
+        // Settings
+        let pointsPerFrame = 10;
+        let pointSize = 2;
+        let showCircle = true;
+        let showSquare = true;
+        let fadePoints = false;
+
+        // Real pi for comparison
+        const PI_DIGITS = '14159265358979';
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+
+            graphCanvas.width = graphCanvas.offsetWidth * 2;
+            graphCanvas.height = graphCanvas.offsetHeight * 2;
+
+            render();
+            renderGraph();
+        }
+
+        function getCanvasSize() {
+            const size = Math.min(canvas.offsetWidth, canvas.offsetHeight) - 40;
+            const offsetX = (canvas.offsetWidth - size) / 2;
+            const offsetY = (canvas.offsetHeight - size) / 2;
+            return { size, offsetX, offsetY };
+        }
+
+        function render() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+            const { size, offsetX, offsetY } = getCanvasSize();
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, w, h);
+
+            // Draw square
+            if (showSquare) {
+                ctx.strokeStyle = '#374151';
+                ctx.lineWidth = 2;
+                ctx.strokeRect(offsetX, offsetY, size, size);
+            }
+
+            // Draw circle
+            if (showCircle) {
+                ctx.strokeStyle = '#a3e635';
+                ctx.lineWidth = 2;
+                ctx.beginPath();
+                ctx.arc(offsetX + size / 2, offsetY + size / 2, size / 2, 0, Math.PI * 2);
+                ctx.stroke();
+            }
+
+            // Draw axes hint
+            ctx.fillStyle = '#ffffff20';
+            ctx.font = '12px JetBrains Mono';
+            ctx.fillText('(-1, 1)', offsetX - 5, offsetY - 5);
+            ctx.fillText('(1, -1)', offsetX + size - 30, offsetY + size + 15);
+        }
+
+        function isInsideCircle(x, y) {
+            // x, y are in range [0, 1], map to [-1, 1]
+            const nx = x * 2 - 1;
+            const ny = y * 2 - 1;
+            return nx * nx + ny * ny <= 1;
+        }
+
+        function addPoint(x, y, inside) {
+            const { size, offsetX, offsetY } = getCanvasSize();
+
+            ctx.fillStyle = inside ? '#a3e635' : '#ef4444';
+            ctx.beginPath();
+            ctx.arc(offsetX + x * size, offsetY + y * size, pointSize, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function addPoints(count) {
+            const { size, offsetX, offsetY } = getCanvasSize();
+
+            for (let i = 0; i < count; i++) {
+                const x = Math.random();
+                const y = Math.random();
+                const inside = isInsideCircle(x, y);
+
+                totalPoints++;
+                if (inside) insidePoints++;
+
+                // Only draw a subset if adding many points
+                if (count <= 1000 || i % Math.floor(count / 1000) === 0) {
+                    addPoint(x, y, inside);
+                }
+            }
+
+            updateStats();
+            updatePiDisplay();
+            updateGraph();
+        }
+
+        function updateStats() {
+            document.getElementById('total-points').textContent = totalPoints.toLocaleString();
+            document.getElementById('inside-points').textContent = insidePoints.toLocaleString();
+            document.getElementById('outside-points').textContent = (totalPoints - insidePoints).toLocaleString();
+
+            if (totalPoints > 0) {
+                const pi = 4 * insidePoints / totalPoints;
+                const error = Math.abs(pi - Math.PI);
+                const errorPercent = (error / Math.PI * 100).toFixed(4);
+                document.getElementById('error').textContent = errorPercent + '%';
+            }
+        }
+
+        function updatePiDisplay() {
+            if (totalPoints === 0) {
+                document.getElementById('pi-decimals').textContent = '------';
+                document.getElementById('correct-digits').textContent = '0';
+                return;
+            }
+
+            const pi = 4 * insidePoints / totalPoints;
+            const piStr = pi.toFixed(6);
+            const decimals = piStr.substring(2); // Remove "3."
+
+            let html = '';
+            let correctCount = 0;
+            let stillCorrect = true;
+
+            for (let i = 0; i < 6; i++) {
+                const isCorrect = decimals[i] === PI_DIGITS[i];
+                if (stillCorrect && isCorrect) {
+                    correctCount++;
+                } else {
+                    stillCorrect = false;
+                }
+
+                const colorClass = isCorrect ? 'pi-correct' : 'pi-incorrect';
+                html += `<span class="pi-digit ${colorClass}">${decimals[i]}</span>`;
+            }
+
+            document.getElementById('pi-decimals').innerHTML = html;
+            document.getElementById('correct-digits').textContent = correctCount;
+
+            // Update history for graph
+            piHistory.push(pi);
+            if (piHistory.length > 200) {
+                piHistory.shift();
+            }
+        }
+
+        function updateGraph() {
+            if (piHistory.length < 2) return;
+
+            const w = graphCanvas.width;
+            const h = graphCanvas.height;
+
+            graphCtx.fillStyle = '#111827';
+            graphCtx.fillRect(0, 0, w, h);
+
+            // Draw pi reference line
+            const piY = h / 2;
+            graphCtx.strokeStyle = '#a3e63540';
+            graphCtx.lineWidth = 1;
+            graphCtx.setLineDash([4, 4]);
+            graphCtx.beginPath();
+            graphCtx.moveTo(0, piY);
+            graphCtx.lineTo(w, piY);
+            graphCtx.stroke();
+            graphCtx.setLineDash([]);
+
+            // Calculate scale
+            const minPi = Math.min(...piHistory, Math.PI - 0.5);
+            const maxPi = Math.max(...piHistory, Math.PI + 0.5);
+            const range = maxPi - minPi;
+
+            // Draw convergence line
+            graphCtx.strokeStyle = '#22d3ee';
+            graphCtx.lineWidth = 2;
+            graphCtx.beginPath();
+
+            for (let i = 0; i < piHistory.length; i++) {
+                const x = (i / (piHistory.length - 1)) * w;
+                const y = h - ((piHistory[i] - minPi) / range) * h;
+
+                if (i === 0) {
+                    graphCtx.moveTo(x, y);
+                } else {
+                    graphCtx.lineTo(x, y);
+                }
+            }
+
+            graphCtx.stroke();
+
+            // Label
+            graphCtx.fillStyle = '#6b7280';
+            graphCtx.font = '10px JetBrains Mono';
+            graphCtx.fillText('π', 5, piY - 5);
+        }
+
+        function renderGraph() {
+            const w = graphCanvas.width;
+            const h = graphCanvas.height;
+
+            graphCtx.fillStyle = '#111827';
+            graphCtx.fillRect(0, 0, w, h);
+
+            // Draw pi reference line
+            graphCtx.strokeStyle = '#a3e63540';
+            graphCtx.lineWidth = 1;
+            graphCtx.setLineDash([4, 4]);
+            graphCtx.beginPath();
+            graphCtx.moveTo(0, h / 2);
+            graphCtx.lineTo(w, h / 2);
+            graphCtx.stroke();
+            graphCtx.setLineDash([]);
+
+            graphCtx.fillStyle = '#6b7280';
+            graphCtx.font = '10px JetBrains Mono';
+            graphCtx.fillText('π', 5, h / 2 - 5);
+        }
+
+        function animate() {
+            if (!isRunning) return;
+
+            if (fadePoints) {
+                const { size, offsetX, offsetY } = getCanvasSize();
+                ctx.fillStyle = 'rgba(0, 0, 0, 0.02)';
+                ctx.fillRect(offsetX, offsetY, size, size);
+
+                // Redraw circle and square
+                if (showSquare) {
+                    ctx.strokeStyle = '#374151';
+                    ctx.lineWidth = 2;
+                    ctx.strokeRect(offsetX, offsetY, size, size);
+                }
+                if (showCircle) {
+                    ctx.strokeStyle = '#a3e635';
+                    ctx.lineWidth = 2;
+                    ctx.beginPath();
+                    ctx.arc(offsetX + size / 2, offsetY + size / 2, size / 2, 0, Math.PI * 2);
+                    ctx.stroke();
+                }
+            }
+
+            for (let i = 0; i < pointsPerFrame; i++) {
+                const x = Math.random();
+                const y = Math.random();
+                const inside = isInsideCircle(x, y);
+
+                totalPoints++;
+                if (inside) insidePoints++;
+
+                addPoint(x, y, inside);
+            }
+
+            updateStats();
+            updatePiDisplay();
+            updateGraph();
+
+            animationId = requestAnimationFrame(animate);
+        }
+
+        function togglePlay() {
+            isRunning = !isRunning;
+
+            const btn = document.getElementById('play-btn');
+            const icon = document.getElementById('play-icon');
+            const text = document.getElementById('play-text');
+
+            if (isRunning) {
+                text.textContent = 'Pausar';
+                icon.innerHTML = '<rect x="6" y="4" width="4" height="16"/><rect x="14" y="4" width="4" height="16"/>';
+                animationId = requestAnimationFrame(animate);
+            } else {
+                text.textContent = 'Iniciar';
+                icon.innerHTML = '<path d="M8 5v14l11-7z"/>';
+                if (animationId) {
+                    cancelAnimationFrame(animationId);
+                }
+            }
+        }
+
+        function reset() {
+            isRunning = false;
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+
+            totalPoints = 0;
+            insidePoints = 0;
+            piHistory = [];
+
+            document.getElementById('play-text').textContent = 'Iniciar';
+            document.getElementById('play-icon').innerHTML = '<path d="M8 5v14l11-7z"/>';
+
+            updateStats();
+            document.getElementById('pi-decimals').textContent = '------';
+            document.getElementById('correct-digits').textContent = '0';
+            document.getElementById('error').textContent = '-';
+
+            render();
+            renderGraph();
+        }
+
+        // Event listeners
+        document.getElementById('play-btn').addEventListener('click', togglePlay);
+        document.getElementById('reset-btn').addEventListener('click', reset);
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            pointsPerFrame = parseInt(e.target.value);
+            document.getElementById('speed-value').textContent = pointsPerFrame;
+        });
+
+        document.getElementById('point-size').addEventListener('input', (e) => {
+            pointSize = parseInt(e.target.value);
+            document.getElementById('point-size-value').textContent = pointSize;
+        });
+
+        document.getElementById('show-circle').addEventListener('change', (e) => {
+            showCircle = e.target.checked;
+            render();
+        });
+
+        document.getElementById('show-square').addEventListener('change', (e) => {
+            showSquare = e.target.checked;
+            render();
+        });
+
+        document.getElementById('fade-points').addEventListener('change', (e) => {
+            fadePoints = e.target.checked;
+        });
+
+        // Click to add single point
+        canvas.addEventListener('click', (e) => {
+            if (isRunning) return;
+
+            const rect = canvas.getBoundingClientRect();
+            const { size, offsetX, offsetY } = getCanvasSize();
+
+            const clickX = e.clientX - rect.left;
+            const clickY = e.clientY - rect.top;
+
+            // Check if click is within the square
+            if (clickX >= offsetX && clickX <= offsetX + size &&
+                clickY >= offsetY && clickY <= offsetY + size) {
+
+                const x = (clickX - offsetX) / size;
+                const y = (clickY - offsetY) / size;
+                const inside = isInsideCircle(x, y);
+
+                totalPoints++;
+                if (inside) insidePoints++;
+
+                addPoint(x, y, inside);
+                updateStats();
+                updatePiDisplay();
+                updateGraph();
+            }
+        });
+
+        window.addEventListener('resize', () => {
+            const wasRunning = isRunning;
+            if (wasRunning) togglePlay();
+            initCanvas();
+
+            // Redraw all points (simplified - just redraw)
+            if (totalPoints > 0) {
+                // We can't redraw all points, so just reset visual but keep stats
+                render();
+            }
+
+            if (wasRunning) togglePlay();
+        });
+
+        // Initialize
+        initCanvas();
+    </script>
+</body>
+</html>

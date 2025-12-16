@@ -1,0 +1,703 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sumas de Riemann | Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; }
+        canvas { display: block; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #172554;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #f472b6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        select, button {
+            background: #172554;
+            border: 1px solid #f472b6;
+            color: #fce7f3;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        select:hover, button:hover {
+            background: #1e3a5f;
+            border-color: #f9a8d4;
+        }
+        .control-group {
+            background: rgba(23, 37, 84, 0.5);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .formula {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-pink-100 overflow-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur border-b border-pink-900/50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-pink-400 hover:text-pink-300 transition-colors">
+                    ← Volver
+                </a>
+                <h1 class="text-xl font-light">Sumas de <span class="text-pink-400">Riemann</span></h1>
+            </div>
+            <div class="text-pink-400/60 text-sm">
+                Aproximación de integrales definidas
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 flex h-screen">
+        <!-- Canvas Container -->
+        <div class="flex-1 relative">
+            <canvas id="canvas"></canvas>
+
+            <!-- Area Display -->
+            <div class="absolute top-4 left-4 control-group">
+                <div class="text-pink-400/60 text-sm">Suma de Riemann</div>
+                <div id="riemannSum" class="text-3xl font-light text-pink-300">0</div>
+                <div class="text-pink-400/60 text-sm mt-2">Integral exacta</div>
+                <div id="exactIntegral" class="text-xl text-pink-300/70">-</div>
+                <div class="text-pink-400/60 text-sm mt-2">Error</div>
+                <div id="error" class="text-lg text-pink-300/70">-</div>
+            </div>
+
+            <!-- Formula Display -->
+            <div class="absolute bottom-4 left-4 control-group">
+                <div class="text-pink-400/60 text-sm mb-1">Función</div>
+                <div id="formulaDisplay" class="text-xl formula text-pink-300">f(x) = x²</div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 bg-black/50 border-l border-pink-900/50 p-4 overflow-y-auto">
+            <div class="space-y-4">
+                <!-- Function Selection -->
+                <div class="control-group">
+                    <label class="block text-pink-400/80 text-sm mb-2">Función</label>
+                    <select id="function" class="w-full">
+                        <option value="x2">f(x) = x²</option>
+                        <option value="x3">f(x) = x³</option>
+                        <option value="sin">f(x) = sin(x)</option>
+                        <option value="cos">f(x) = cos(x)</option>
+                        <option value="exp">f(x) = eˣ</option>
+                        <option value="sqrt">f(x) = √x</option>
+                        <option value="1/x">f(x) = 1/x</option>
+                        <option value="ln">f(x) = ln(x)</option>
+                        <option value="x*sin">f(x) = x·sin(x)</option>
+                        <option value="gauss">f(x) = e^(-x²)</option>
+                    </select>
+                </div>
+
+                <!-- Method Selection -->
+                <div class="control-group">
+                    <label class="block text-pink-400/80 text-sm mb-2">Método</label>
+                    <select id="method" class="w-full">
+                        <option value="left">Izquierdo</option>
+                        <option value="right">Derecho</option>
+                        <option value="midpoint">Punto medio</option>
+                        <option value="trapezoid">Trapezoidal</option>
+                        <option value="simpson">Simpson</option>
+                    </select>
+                </div>
+
+                <!-- Number of Rectangles -->
+                <div class="control-group">
+                    <label class="block text-pink-400/80 text-sm mb-2">
+                        Rectángulos: <span id="nValue" class="text-pink-300">10</span>
+                    </label>
+                    <input type="range" id="n" min="1" max="100" value="10" class="w-full">
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="setN(4)" class="flex-1 text-xs">4</button>
+                        <button onclick="setN(10)" class="flex-1 text-xs">10</button>
+                        <button onclick="setN(25)" class="flex-1 text-xs">25</button>
+                        <button onclick="setN(50)" class="flex-1 text-xs">50</button>
+                        <button onclick="setN(100)" class="flex-1 text-xs">100</button>
+                    </div>
+                </div>
+
+                <!-- Interval -->
+                <div class="control-group">
+                    <label class="block text-pink-400/80 text-sm mb-2">Intervalo [a, b]</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <div>
+                            <label class="text-xs text-pink-400/60">a = <span id="aValue">0</span></label>
+                            <input type="range" id="a" min="-5" max="5" step="0.1" value="0" class="w-full">
+                        </div>
+                        <div>
+                            <label class="text-xs text-pink-400/60">b = <span id="bValue">2</span></label>
+                            <input type="range" id="b" min="-5" max="5" step="0.1" value="2" class="w-full">
+                        </div>
+                    </div>
+                    <div class="flex gap-2 mt-2">
+                        <button onclick="setInterval(0, 1)" class="flex-1 text-xs">[0,1]</button>
+                        <button onclick="setInterval(0, Math.PI)" class="flex-1 text-xs">[0,π]</button>
+                        <button onclick="setInterval(-2, 2)" class="flex-1 text-xs">[-2,2]</button>
+                        <button onclick="setInterval(1, 3)" class="flex-1 text-xs">[1,3]</button>
+                    </div>
+                </div>
+
+                <!-- Animation -->
+                <div class="control-group">
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="animate" class="accent-pink-500">
+                        <span class="text-sm">Animar convergencia</span>
+                    </label>
+                    <div id="animSpeedGroup" class="mt-2 hidden">
+                        <label class="block text-pink-400/80 text-sm mb-1">
+                            Velocidad: <span id="animSpeedValue" class="text-pink-300">50</span>ms
+                        </label>
+                        <input type="range" id="animSpeed" min="10" max="500" value="50" class="w-full">
+                    </div>
+                </div>
+
+                <!-- Display Options -->
+                <div class="control-group">
+                    <label class="block text-pink-400/80 text-sm mb-2">Mostrar</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showFunction" checked class="accent-pink-500">
+                            <span class="text-sm">Función</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showRectangles" checked class="accent-pink-500">
+                            <span class="text-sm">Rectángulos</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showArea" checked class="accent-pink-500">
+                            <span class="text-sm">Área real</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showGrid" checked class="accent-pink-500">
+                            <span class="text-sm">Cuadrícula</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showSamplePoints" class="accent-pink-500">
+                            <span class="text-sm">Puntos de muestreo</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Color Scheme -->
+                <div class="control-group">
+                    <label class="block text-pink-400/80 text-sm mb-2">Colores</label>
+                    <select id="colorScheme" class="w-full">
+                        <option value="pink">Rosa</option>
+                        <option value="gradient">Gradiente</option>
+                        <option value="overUnder">Sobre/Bajo</option>
+                        <option value="rainbow">Arcoíris</option>
+                    </select>
+                </div>
+
+                <!-- Info -->
+                <div class="control-group">
+                    <h3 class="text-pink-400 font-medium mb-2">Métodos</h3>
+                    <ul class="text-sm text-pink-300/70 space-y-1">
+                        <li><strong>Izquierdo:</strong> usa f(xᵢ)</li>
+                        <li><strong>Derecho:</strong> usa f(xᵢ₊₁)</li>
+                        <li><strong>Punto medio:</strong> usa f((xᵢ+xᵢ₊₁)/2)</li>
+                        <li><strong>Trapezoidal:</strong> promedio izq/der</li>
+                        <li><strong>Simpson:</strong> parábolas (más preciso)</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Functions
+        const functions = {
+            'x2': {
+                f: x => x * x,
+                integral: (a, b) => (b**3 - a**3) / 3,
+                formula: 'f(x) = x²',
+                domain: [-5, 5]
+            },
+            'x3': {
+                f: x => x * x * x,
+                integral: (a, b) => (b**4 - a**4) / 4,
+                formula: 'f(x) = x³',
+                domain: [-3, 3]
+            },
+            'sin': {
+                f: x => Math.sin(x),
+                integral: (a, b) => -Math.cos(b) + Math.cos(a),
+                formula: 'f(x) = sin(x)',
+                domain: [-Math.PI * 2, Math.PI * 2]
+            },
+            'cos': {
+                f: x => Math.cos(x),
+                integral: (a, b) => Math.sin(b) - Math.sin(a),
+                formula: 'f(x) = cos(x)',
+                domain: [-Math.PI * 2, Math.PI * 2]
+            },
+            'exp': {
+                f: x => Math.exp(x),
+                integral: (a, b) => Math.exp(b) - Math.exp(a),
+                formula: 'f(x) = eˣ',
+                domain: [-3, 3]
+            },
+            'sqrt': {
+                f: x => x >= 0 ? Math.sqrt(x) : NaN,
+                integral: (a, b) => (2/3) * (b**(3/2) - (a >= 0 ? a**(3/2) : 0)),
+                formula: 'f(x) = √x',
+                domain: [0, 10]
+            },
+            '1/x': {
+                f: x => x !== 0 ? 1/x : NaN,
+                integral: (a, b) => Math.log(Math.abs(b)) - Math.log(Math.abs(a)),
+                formula: 'f(x) = 1/x',
+                domain: [0.1, 5]
+            },
+            'ln': {
+                f: x => x > 0 ? Math.log(x) : NaN,
+                integral: (a, b) => b * Math.log(b) - b - (a * Math.log(a) - a),
+                formula: 'f(x) = ln(x)',
+                domain: [0.1, 5]
+            },
+            'x*sin': {
+                f: x => x * Math.sin(x),
+                integral: (a, b) => (Math.sin(b) - b*Math.cos(b)) - (Math.sin(a) - a*Math.cos(a)),
+                formula: 'f(x) = x·sin(x)',
+                domain: [-Math.PI * 2, Math.PI * 2]
+            },
+            'gauss': {
+                f: x => Math.exp(-x * x),
+                integral: null, // No closed form for general bounds
+                formula: 'f(x) = e^(-x²)',
+                domain: [-4, 4]
+            }
+        };
+
+        let animationId = null;
+        let currentN = 10;
+
+        function resize() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+            draw();
+        }
+
+        function getFunction() {
+            return functions[document.getElementById('function').value];
+        }
+
+        function getInterval() {
+            const a = parseFloat(document.getElementById('a').value);
+            const b = parseFloat(document.getElementById('b').value);
+            return { a: Math.min(a, b), b: Math.max(a, b) };
+        }
+
+        function worldToScreen(x, y, xMin, xMax, yMin, yMax) {
+            const margin = 60;
+            const w = canvas.width - 2 * margin;
+            const h = canvas.height - 2 * margin;
+
+            const sx = margin + (x - xMin) / (xMax - xMin) * w;
+            const sy = margin + (yMax - y) / (yMax - yMin) * h;
+
+            return { x: sx, y: sy };
+        }
+
+        function calculateRiemannSum(func, a, b, n, method) {
+            const dx = (b - a) / n;
+            let sum = 0;
+
+            for (let i = 0; i < n; i++) {
+                const x0 = a + i * dx;
+                const x1 = a + (i + 1) * dx;
+
+                let height;
+                switch (method) {
+                    case 'left':
+                        height = func.f(x0);
+                        break;
+                    case 'right':
+                        height = func.f(x1);
+                        break;
+                    case 'midpoint':
+                        height = func.f((x0 + x1) / 2);
+                        break;
+                    case 'trapezoid':
+                        height = (func.f(x0) + func.f(x1)) / 2;
+                        break;
+                    case 'simpson':
+                        if (i % 2 === 0 && i < n - 1) {
+                            const x2 = a + (i + 2) * dx;
+                            sum += (dx / 3) * (func.f(x0) + 4 * func.f(x1) + func.f(x2));
+                        }
+                        continue;
+                    default:
+                        height = func.f(x0);
+                }
+
+                if (method !== 'simpson') {
+                    sum += height * dx;
+                }
+            }
+
+            return sum;
+        }
+
+        function getRectangleColor(i, n, height, scheme) {
+            switch (scheme) {
+                case 'pink':
+                    return 'rgba(244, 114, 182, 0.5)';
+                case 'gradient':
+                    const hue = (i / n) * 60 + 300; // pink to yellow
+                    return `hsla(${hue}, 80%, 60%, 0.5)`;
+                case 'overUnder':
+                    return height >= 0 ? 'rgba(163, 230, 53, 0.5)' : 'rgba(244, 114, 182, 0.5)';
+                case 'rainbow':
+                    const h = (i / n) * 360;
+                    return `hsla(${h}, 80%, 60%, 0.5)`;
+                default:
+                    return 'rgba(244, 114, 182, 0.5)';
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const func = getFunction();
+            const { a, b } = getInterval();
+            const n = currentN;
+            const method = document.getElementById('method').value;
+            const colorScheme = document.getElementById('colorScheme').value;
+
+            // Calculate bounds
+            const domain = func.domain;
+            const xMin = Math.min(domain[0], a - 1);
+            const xMax = Math.max(domain[1], b + 1);
+
+            // Find y bounds
+            let yMin = -1, yMax = 1;
+            for (let x = xMin; x <= xMax; x += (xMax - xMin) / 200) {
+                const y = func.f(x);
+                if (!isNaN(y) && isFinite(y)) {
+                    yMin = Math.min(yMin, y);
+                    yMax = Math.max(yMax, y);
+                }
+            }
+
+            const yPadding = (yMax - yMin) * 0.1;
+            yMin -= yPadding;
+            yMax += yPadding;
+
+            const margin = 60;
+
+            // Draw grid
+            if (document.getElementById('showGrid').checked) {
+                ctx.strokeStyle = 'rgba(244, 114, 182, 0.1)';
+                ctx.lineWidth = 1;
+
+                // Vertical grid lines
+                const xStep = Math.pow(10, Math.floor(Math.log10(xMax - xMin))) / 2;
+                for (let x = Math.ceil(xMin / xStep) * xStep; x <= xMax; x += xStep) {
+                    const p = worldToScreen(x, 0, xMin, xMax, yMin, yMax);
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, margin);
+                    ctx.lineTo(p.x, canvas.height - margin);
+                    ctx.stroke();
+                }
+
+                // Horizontal grid lines
+                const yStep = Math.pow(10, Math.floor(Math.log10(yMax - yMin))) / 2;
+                for (let y = Math.ceil(yMin / yStep) * yStep; y <= yMax; y += yStep) {
+                    const p = worldToScreen(0, y, xMin, xMax, yMin, yMax);
+                    ctx.beginPath();
+                    ctx.moveTo(margin, p.y);
+                    ctx.lineTo(canvas.width - margin, p.y);
+                    ctx.stroke();
+                }
+            }
+
+            // Draw axes
+            ctx.strokeStyle = 'rgba(244, 114, 182, 0.5)';
+            ctx.lineWidth = 1;
+
+            // X axis
+            const origin = worldToScreen(0, 0, xMin, xMax, yMin, yMax);
+            if (origin.y >= margin && origin.y <= canvas.height - margin) {
+                ctx.beginPath();
+                ctx.moveTo(margin, origin.y);
+                ctx.lineTo(canvas.width - margin, origin.y);
+                ctx.stroke();
+            }
+
+            // Y axis
+            if (origin.x >= margin && origin.x <= canvas.width - margin) {
+                ctx.beginPath();
+                ctx.moveTo(origin.x, margin);
+                ctx.lineTo(origin.x, canvas.height - margin);
+                ctx.stroke();
+            }
+
+            // Draw actual area under curve
+            if (document.getElementById('showArea').checked) {
+                ctx.beginPath();
+                const p0 = worldToScreen(a, 0, xMin, xMax, yMin, yMax);
+                ctx.moveTo(p0.x, p0.y);
+
+                for (let x = a; x <= b; x += (b - a) / 200) {
+                    const y = func.f(x);
+                    if (!isNaN(y) && isFinite(y)) {
+                        const p = worldToScreen(x, y, xMin, xMax, yMin, yMax);
+                        ctx.lineTo(p.x, p.y);
+                    }
+                }
+
+                const pb = worldToScreen(b, 0, xMin, xMax, yMin, yMax);
+                ctx.lineTo(pb.x, pb.y);
+                ctx.closePath();
+
+                ctx.fillStyle = 'rgba(34, 211, 238, 0.15)';
+                ctx.fill();
+            }
+
+            // Draw rectangles
+            if (document.getElementById('showRectangles').checked) {
+                const dx = (b - a) / n;
+
+                for (let i = 0; i < n; i++) {
+                    const x0 = a + i * dx;
+                    const x1 = a + (i + 1) * dx;
+
+                    let height, sampleX;
+                    switch (method) {
+                        case 'left':
+                            height = func.f(x0);
+                            sampleX = x0;
+                            break;
+                        case 'right':
+                            height = func.f(x1);
+                            sampleX = x1;
+                            break;
+                        case 'midpoint':
+                            sampleX = (x0 + x1) / 2;
+                            height = func.f(sampleX);
+                            break;
+                        case 'trapezoid':
+                        case 'simpson':
+                            // Draw trapezoid
+                            const y0 = func.f(x0);
+                            const y1 = func.f(x1);
+
+                            const p1 = worldToScreen(x0, 0, xMin, xMax, yMin, yMax);
+                            const p2 = worldToScreen(x0, y0, xMin, xMax, yMin, yMax);
+                            const p3 = worldToScreen(x1, y1, xMin, xMax, yMin, yMax);
+                            const p4 = worldToScreen(x1, 0, xMin, xMax, yMin, yMax);
+
+                            ctx.beginPath();
+                            ctx.moveTo(p1.x, p1.y);
+                            ctx.lineTo(p2.x, p2.y);
+                            ctx.lineTo(p3.x, p3.y);
+                            ctx.lineTo(p4.x, p4.y);
+                            ctx.closePath();
+
+                            ctx.fillStyle = getRectangleColor(i, n, (y0 + y1) / 2, colorScheme);
+                            ctx.fill();
+                            ctx.strokeStyle = 'rgba(244, 114, 182, 0.8)';
+                            ctx.lineWidth = 1;
+                            ctx.stroke();
+                            continue;
+                        default:
+                            height = func.f(x0);
+                            sampleX = x0;
+                    }
+
+                    if (isNaN(height) || !isFinite(height)) continue;
+
+                    const p1 = worldToScreen(x0, 0, xMin, xMax, yMin, yMax);
+                    const p2 = worldToScreen(x1, height, xMin, xMax, yMin, yMax);
+
+                    ctx.fillStyle = getRectangleColor(i, n, height, colorScheme);
+                    ctx.fillRect(p1.x, p2.y, p2.x - p1.x, p1.y - p2.y);
+
+                    ctx.strokeStyle = 'rgba(244, 114, 182, 0.8)';
+                    ctx.lineWidth = 1;
+                    ctx.strokeRect(p1.x, p2.y, p2.x - p1.x, p1.y - p2.y);
+
+                    // Draw sample point
+                    if (document.getElementById('showSamplePoints').checked) {
+                        const sp = worldToScreen(sampleX, height, xMin, xMax, yMin, yMax);
+                        ctx.beginPath();
+                        ctx.arc(sp.x, sp.y, 4, 0, Math.PI * 2);
+                        ctx.fillStyle = '#fff';
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Draw function curve
+            if (document.getElementById('showFunction').checked) {
+                ctx.beginPath();
+                ctx.strokeStyle = '#22d3ee';
+                ctx.lineWidth = 2;
+
+                let started = false;
+                for (let x = xMin; x <= xMax; x += (xMax - xMin) / 500) {
+                    const y = func.f(x);
+                    if (!isNaN(y) && isFinite(y)) {
+                        const p = worldToScreen(x, y, xMin, xMax, yMin, yMax);
+                        if (!started) {
+                            ctx.moveTo(p.x, p.y);
+                            started = true;
+                        } else {
+                            ctx.lineTo(p.x, p.y);
+                        }
+                    } else {
+                        started = false;
+                    }
+                }
+                ctx.stroke();
+            }
+
+            // Draw interval markers
+            ctx.strokeStyle = '#f472b6';
+            ctx.lineWidth = 2;
+
+            const pa = worldToScreen(a, 0, xMin, xMax, yMin, yMax);
+            const pb = worldToScreen(b, 0, xMin, xMax, yMin, yMax);
+
+            ctx.beginPath();
+            ctx.moveTo(pa.x, pa.y - 10);
+            ctx.lineTo(pa.x, pa.y + 10);
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(pb.x, pb.y - 10);
+            ctx.lineTo(pb.x, pb.y + 10);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#f472b6';
+            ctx.font = '14px monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(`a = ${a.toFixed(2)}`, pa.x, pa.y + 25);
+            ctx.fillText(`b = ${b.toFixed(2)}`, pb.x, pb.y + 25);
+
+            // Update displays
+            const riemannSum = calculateRiemannSum(func, a, b, n, method);
+            document.getElementById('riemannSum').textContent = riemannSum.toFixed(6);
+
+            document.getElementById('formulaDisplay').textContent = func.formula;
+
+            if (func.integral) {
+                const exact = func.integral(a, b);
+                document.getElementById('exactIntegral').textContent = exact.toFixed(6);
+                const error = Math.abs(riemannSum - exact);
+                document.getElementById('error').textContent = error.toFixed(6);
+            } else {
+                document.getElementById('exactIntegral').textContent = '(sin forma cerrada)';
+                document.getElementById('error').textContent = '-';
+            }
+        }
+
+        function setN(value) {
+            document.getElementById('n').value = value;
+            document.getElementById('nValue').textContent = value;
+            currentN = value;
+            draw();
+        }
+
+        function setInterval(a, b) {
+            document.getElementById('a').value = a;
+            document.getElementById('b').value = b;
+            document.getElementById('aValue').textContent = a.toFixed(2);
+            document.getElementById('bValue').textContent = b.toFixed(2);
+            draw();
+        }
+
+        function startAnimation() {
+            if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+
+            currentN = 1;
+
+            function step() {
+                currentN++;
+                document.getElementById('n').value = currentN;
+                document.getElementById('nValue').textContent = currentN;
+                draw();
+
+                if (currentN < parseInt(document.getElementById('n').max) &&
+                    document.getElementById('animate').checked) {
+                    const speed = parseInt(document.getElementById('animSpeed').value);
+                    setTimeout(() => {
+                        animationId = requestAnimationFrame(step);
+                    }, speed);
+                }
+            }
+
+            step();
+        }
+
+        // Event listeners
+        document.getElementById('function').addEventListener('change', draw);
+        document.getElementById('method').addEventListener('change', draw);
+        document.getElementById('colorScheme').addEventListener('change', draw);
+
+        document.getElementById('n').addEventListener('input', (e) => {
+            currentN = parseInt(e.target.value);
+            document.getElementById('nValue').textContent = currentN;
+            draw();
+        });
+
+        document.getElementById('a').addEventListener('input', (e) => {
+            document.getElementById('aValue').textContent = parseFloat(e.target.value).toFixed(2);
+            draw();
+        });
+
+        document.getElementById('b').addEventListener('input', (e) => {
+            document.getElementById('bValue').textContent = parseFloat(e.target.value).toFixed(2);
+            draw();
+        });
+
+        document.getElementById('animate').addEventListener('change', (e) => {
+            document.getElementById('animSpeedGroup').classList.toggle('hidden', !e.target.checked);
+            if (e.target.checked) {
+                startAnimation();
+            } else if (animationId) {
+                cancelAnimationFrame(animationId);
+            }
+        });
+
+        document.getElementById('animSpeed').addEventListener('input', (e) => {
+            document.getElementById('animSpeedValue').textContent = e.target.value;
+        });
+
+        ['showFunction', 'showRectangles', 'showArea', 'showGrid', 'showSamplePoints'].forEach(id => {
+            document.getElementById(id).addEventListener('change', draw);
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+    </script>
+</body>
+</html>

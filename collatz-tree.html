@@ -1,0 +1,626 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Árbol de Collatz - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #22d3ee;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(168, 85, 247, 0.05));
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-cyan-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-cyan-400 font-medium">Collatz</span> Tree (3n+1)
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Ramas: <span id="branch-count" class="text-cyan-400">0</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+            <div id="sequence-display" class="absolute top-4 left-4 bg-gray-900/90 px-4 py-3 rounded-lg max-w-md hidden">
+                <div class="text-sm text-gray-400 mb-1">Secuencia desde <span id="seq-start" class="text-cyan-400">-</span></div>
+                <div id="sequence" class="text-xs mono text-gray-300 leading-relaxed max-h-32 overflow-y-auto"></div>
+                <div class="text-xs text-gray-500 mt-2">
+                    Pasos: <span id="seq-steps" class="text-violet-400">-</span> |
+                    Máximo: <span id="seq-max" class="text-pink-400">-</span>
+                </div>
+            </div>
+            <div class="absolute bottom-4 left-4 text-xs mono text-gray-600">
+                Click en un número para ver su secuencia
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-cyan-400 glow-text">Controles</h2>
+
+            <!-- Visualization Mode -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Modo de visualización</label>
+                <select id="viz-mode" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 focus:outline-none">
+                    <option value="tree">Árbol orgánico</option>
+                    <option value="graph">Grafo de órbitas</option>
+                    <option value="sequence">Secuencia animada</option>
+                    <option value="hailstone">Gráfica de alturas</option>
+                </select>
+            </div>
+
+            <!-- Range -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Números a graficar: <span id="range-value" class="text-cyan-400 mono">100</span>
+                </label>
+                <input type="range" id="range" min="10" max="500" value="100" class="w-full">
+            </div>
+
+            <!-- Line Width -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Grosor de línea: <span id="line-value" class="text-cyan-400 mono">1</span>
+                </label>
+                <input type="range" id="line-width" min="0.5" max="3" step="0.5" value="1" class="w-full">
+            </div>
+
+            <!-- Angle -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Ángulo de rama: <span id="angle-value" class="text-cyan-400 mono">10</span>°
+                </label>
+                <input type="range" id="branch-angle" min="2" max="30" value="10" class="w-full">
+            </div>
+
+            <!-- Branch Length -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Longitud de rama: <span id="length-value" class="text-cyan-400 mono">5</span>
+                </label>
+                <input type="range" id="branch-length" min="2" max="15" value="5" class="w-full">
+            </div>
+
+            <!-- Color Options -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Colorear por</label>
+                <select id="color-mode" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 focus:outline-none">
+                    <option value="depth">Profundidad</option>
+                    <option value="parity">Paridad (par/impar)</option>
+                    <option value="value">Valor del número</option>
+                    <option value="gradient">Gradiente único</option>
+                </select>
+            </div>
+
+            <!-- Single Number -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Explorar número específico</label>
+                <div class="flex gap-2">
+                    <input type="number" id="single-number" min="1" max="1000000" value="27"
+                           class="flex-1 bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 focus:outline-none mono">
+                    <button id="trace-btn" class="px-4 py-2 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg text-sm transition">
+                        Trazar
+                    </button>
+                </div>
+            </div>
+
+            <!-- Famous Numbers -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Números interesantes</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button onclick="traceNumber(27)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition mono">27</button>
+                    <button onclick="traceNumber(97)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition mono">97</button>
+                    <button onclick="traceNumber(871)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition mono">871</button>
+                    <button onclick="traceNumber(6171)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition mono">6171</button>
+                    <button onclick="traceNumber(77031)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition mono">77031</button>
+                    <button onclick="traceNumber(837799)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition mono">837799</button>
+                </div>
+            </div>
+
+            <!-- Render -->
+            <div class="mb-6">
+                <button id="render-btn" class="w-full py-2 px-4 bg-gray-900 hover:bg-gray-800 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Regenerar
+                </button>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-cyan-400 mb-3">La Conjetura</h3>
+                <div class="mono text-sm space-y-1 mb-3">
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500">Si n es par:</span>
+                        <span class="text-cyan-400">n → n/2</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-gray-500">Si n es impar:</span>
+                        <span class="text-pink-400">n → 3n + 1</span>
+                    </div>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    La <span class="text-cyan-400">conjetura de Collatz</span> afirma que toda secuencia eventualmente llega a 1. Nadie ha podido probarlo ni encontrar un contraejemplo.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        Paul Erdős dijo: "Las matemáticas aún no están listas para problemas así." El número 27 tarda 111 pasos en llegar a 1, alcanzando un máximo de 9232.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Récords (hasta 10⁶)</h3>
+                <div class="text-xs mono space-y-1">
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mayor pasos:</span>
+                        <span class="text-violet-400">837799 (524 pasos)</span>
+                    </div>
+                    <div class="flex justify-between">
+                        <span class="text-gray-500">Mayor altura:</span>
+                        <span class="text-pink-400">77031 → 21,933,016</span>
+                    </div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Settings
+        let vizMode = 'tree';
+        let range = 100;
+        let lineWidth = 1;
+        let branchAngle = 10;
+        let branchLength = 5;
+        let colorMode = 'depth';
+
+        // State
+        let branchCount = 0;
+        let sequences = new Map();
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            render();
+        }
+
+        function collatzSequence(n) {
+            if (sequences.has(n)) return sequences.get(n);
+
+            const seq = [n];
+            let current = n;
+            let max = n;
+
+            while (current !== 1) {
+                if (current % 2 === 0) {
+                    current = current / 2;
+                } else {
+                    current = 3 * current + 1;
+                }
+                seq.push(current);
+                max = Math.max(max, current);
+
+                // Safety limit
+                if (seq.length > 10000) break;
+            }
+
+            const result = { sequence: seq, steps: seq.length - 1, max };
+            sequences.set(n, result);
+            return result;
+        }
+
+        function getColorByMode(n, depth, maxDepth, isEven) {
+            switch (colorMode) {
+                case 'depth':
+                    const hue = (depth / maxDepth) * 270;
+                    return `hsl(${hue}, 70%, 60%)`;
+                case 'parity':
+                    return isEven ? '#22d3ee' : '#f472b6';
+                case 'value':
+                    const valueHue = (Math.log(n) / Math.log(1000)) * 300;
+                    return `hsl(${valueHue}, 80%, 50%)`;
+                case 'gradient':
+                    return `hsl(${180 + depth * 5}, 70%, 50%)`;
+                default:
+                    return '#22d3ee';
+            }
+        }
+
+        function renderTree() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, w, h);
+
+            branchCount = 0;
+
+            for (let n = 2; n <= range; n++) {
+                const { sequence } = collatzSequence(n);
+                let x = w / 2;
+                let y = h - 20;
+                let angle = -Math.PI / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+
+                for (let i = 0; i < sequence.length - 1; i++) {
+                    const current = sequence[i];
+                    const next = sequence[i + 1];
+                    const isEven = current % 2 === 0;
+
+                    // Turn based on operation
+                    if (isEven) {
+                        angle -= (branchAngle * Math.PI / 180);
+                    } else {
+                        angle += (branchAngle * Math.PI / 180);
+                    }
+
+                    x += Math.cos(angle) * branchLength;
+                    y += Math.sin(angle) * branchLength;
+
+                    ctx.lineTo(x, y);
+                    branchCount++;
+                }
+
+                const alpha = 0.1 + 0.4 * (1 - n / range);
+                ctx.strokeStyle = getColorByMode(n, sequence.length, 200, n % 2 === 0);
+                ctx.globalAlpha = alpha;
+                ctx.lineWidth = lineWidth;
+                ctx.stroke();
+                ctx.globalAlpha = 1;
+            }
+
+            document.getElementById('branch-count').textContent = branchCount.toLocaleString();
+        }
+
+        function renderGraph() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, w, h);
+
+            // Create nodes for all numbers in sequences
+            const nodes = new Map();
+            const edges = [];
+
+            for (let n = 2; n <= range; n++) {
+                const { sequence } = collatzSequence(n);
+
+                for (let i = 0; i < sequence.length - 1; i++) {
+                    const from = sequence[i];
+                    const to = sequence[i + 1];
+
+                    if (!nodes.has(from)) {
+                        nodes.set(from, {
+                            x: w / 2 + (Math.random() - 0.5) * w * 0.8,
+                            y: h / 2 + (Math.random() - 0.5) * h * 0.8
+                        });
+                    }
+                    if (!nodes.has(to)) {
+                        nodes.set(to, {
+                            x: w / 2 + (Math.random() - 0.5) * w * 0.8,
+                            y: h / 2 + (Math.random() - 0.5) * h * 0.8
+                        });
+                    }
+
+                    edges.push({ from, to });
+                }
+            }
+
+            // Simple force-directed layout (few iterations)
+            for (let iter = 0; iter < 50; iter++) {
+                // Repulsion between nodes
+                for (const [n1, pos1] of nodes) {
+                    for (const [n2, pos2] of nodes) {
+                        if (n1 >= n2) continue;
+                        const dx = pos2.x - pos1.x;
+                        const dy = pos2.y - pos1.y;
+                        const dist = Math.sqrt(dx * dx + dy * dy) + 1;
+                        const force = 1000 / (dist * dist);
+                        pos1.x -= dx / dist * force;
+                        pos1.y -= dy / dist * force;
+                        pos2.x += dx / dist * force;
+                        pos2.y += dy / dist * force;
+                    }
+                }
+
+                // Attraction along edges
+                for (const edge of edges) {
+                    const pos1 = nodes.get(edge.from);
+                    const pos2 = nodes.get(edge.to);
+                    if (!pos1 || !pos2) continue;
+                    const dx = pos2.x - pos1.x;
+                    const dy = pos2.y - pos1.y;
+                    const dist = Math.sqrt(dx * dx + dy * dy);
+                    const force = dist * 0.01;
+                    pos1.x += dx / dist * force;
+                    pos1.y += dy / dist * force;
+                    pos2.x -= dx / dist * force;
+                    pos2.y -= dy / dist * force;
+                }
+
+                // Keep node 1 at center
+                if (nodes.has(1)) {
+                    nodes.get(1).x = w / 2;
+                    nodes.get(1).y = h / 2;
+                }
+            }
+
+            // Draw edges
+            ctx.strokeStyle = '#22d3ee20';
+            ctx.lineWidth = lineWidth;
+            for (const edge of edges) {
+                const pos1 = nodes.get(edge.from);
+                const pos2 = nodes.get(edge.to);
+                if (!pos1 || !pos2) continue;
+                ctx.beginPath();
+                ctx.moveTo(pos1.x, pos1.y);
+                ctx.lineTo(pos2.x, pos2.y);
+                ctx.stroke();
+            }
+
+            // Draw nodes
+            for (const [n, pos] of nodes) {
+                const size = n === 1 ? 8 : 3;
+                ctx.fillStyle = n === 1 ? '#a3e635' : (n % 2 === 0 ? '#22d3ee' : '#f472b6');
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, size, 0, Math.PI * 2);
+                ctx.fill();
+            }
+
+            branchCount = nodes.size;
+            document.getElementById('branch-count').textContent = branchCount.toLocaleString();
+        }
+
+        function renderHailstone() {
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, w, h);
+
+            // Find max steps and max value for scaling
+            let maxSteps = 0;
+            let maxValue = 0;
+
+            for (let n = 2; n <= range; n++) {
+                const { sequence, max } = collatzSequence(n);
+                maxSteps = Math.max(maxSteps, sequence.length);
+                maxValue = Math.max(maxValue, max);
+            }
+
+            const margin = 50;
+            const graphW = w - margin * 2;
+            const graphH = h - margin * 2;
+
+            // Draw axes
+            ctx.strokeStyle = '#374151';
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(margin, margin);
+            ctx.lineTo(margin, h - margin);
+            ctx.lineTo(w - margin, h - margin);
+            ctx.stroke();
+
+            // Labels
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '10px JetBrains Mono';
+            ctx.fillText('Valor', margin + 5, margin + 15);
+            ctx.fillText('Pasos', w - margin - 30, h - margin - 5);
+
+            // Draw sequences
+            for (let n = 2; n <= range; n++) {
+                const { sequence } = collatzSequence(n);
+
+                ctx.beginPath();
+                for (let i = 0; i < sequence.length; i++) {
+                    const x = margin + (i / maxSteps) * graphW;
+                    const y = h - margin - (Math.log(sequence[i]) / Math.log(maxValue)) * graphH;
+
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+
+                const hue = (n / range) * 300;
+                ctx.strokeStyle = `hsla(${hue}, 70%, 50%, 0.3)`;
+                ctx.lineWidth = lineWidth;
+                ctx.stroke();
+            }
+
+            branchCount = range - 1;
+            document.getElementById('branch-count').textContent = branchCount.toLocaleString();
+        }
+
+        function render() {
+            sequences.clear();
+
+            switch (vizMode) {
+                case 'tree':
+                    renderTree();
+                    break;
+                case 'graph':
+                    renderGraph();
+                    break;
+                case 'hailstone':
+                    renderHailstone();
+                    break;
+                case 'sequence':
+                    renderTree(); // Default view for sequence mode
+                    break;
+            }
+        }
+
+        function traceNumber(n) {
+            document.getElementById('single-number').value = n;
+
+            const { sequence, steps, max } = collatzSequence(n);
+
+            document.getElementById('seq-start').textContent = n;
+            document.getElementById('seq-steps').textContent = steps;
+            document.getElementById('seq-max').textContent = max.toLocaleString();
+
+            // Format sequence with highlighting
+            let html = '';
+            for (let i = 0; i < sequence.length; i++) {
+                const val = sequence[i];
+                const colorClass = val % 2 === 0 ? 'text-cyan-400' : 'text-pink-400';
+                html += `<span class="${colorClass}">${val}</span>`;
+                if (i < sequence.length - 1) html += ' → ';
+                if (i % 10 === 9) html += '<br>';
+            }
+
+            document.getElementById('sequence').innerHTML = html;
+            document.getElementById('sequence-display').classList.remove('hidden');
+
+            // Highlight this sequence in tree mode
+            if (vizMode === 'tree' || vizMode === 'sequence') {
+                render();
+
+                // Draw highlighted path
+                const w = canvas.offsetWidth;
+                const h = canvas.offsetHeight;
+
+                let x = w / 2;
+                let y = h - 20;
+                let angle = -Math.PI / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(x, y);
+
+                for (let i = 0; i < sequence.length - 1; i++) {
+                    const current = sequence[i];
+                    const isEven = current % 2 === 0;
+
+                    if (isEven) {
+                        angle -= (branchAngle * Math.PI / 180);
+                    } else {
+                        angle += (branchAngle * Math.PI / 180);
+                    }
+
+                    x += Math.cos(angle) * branchLength;
+                    y += Math.sin(angle) * branchLength;
+
+                    ctx.lineTo(x, y);
+                }
+
+                ctx.strokeStyle = '#ffffff';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        // Event listeners
+        document.getElementById('viz-mode').addEventListener('change', (e) => {
+            vizMode = e.target.value;
+            render();
+        });
+
+        document.getElementById('range').addEventListener('input', (e) => {
+            range = parseInt(e.target.value);
+            document.getElementById('range-value').textContent = range;
+        });
+
+        document.getElementById('range').addEventListener('change', render);
+
+        document.getElementById('line-width').addEventListener('input', (e) => {
+            lineWidth = parseFloat(e.target.value);
+            document.getElementById('line-value').textContent = lineWidth;
+            render();
+        });
+
+        document.getElementById('branch-angle').addEventListener('input', (e) => {
+            branchAngle = parseInt(e.target.value);
+            document.getElementById('angle-value').textContent = branchAngle;
+            render();
+        });
+
+        document.getElementById('branch-length').addEventListener('input', (e) => {
+            branchLength = parseInt(e.target.value);
+            document.getElementById('length-value').textContent = branchLength;
+            render();
+        });
+
+        document.getElementById('color-mode').addEventListener('change', (e) => {
+            colorMode = e.target.value;
+            render();
+        });
+
+        document.getElementById('trace-btn').addEventListener('click', () => {
+            const n = parseInt(document.getElementById('single-number').value);
+            if (n > 0) traceNumber(n);
+        });
+
+        document.getElementById('single-number').addEventListener('keypress', (e) => {
+            if (e.key === 'Enter') {
+                const n = parseInt(e.target.value);
+                if (n > 0) traceNumber(n);
+            }
+        });
+
+        document.getElementById('render-btn').addEventListener('click', () => {
+            document.getElementById('sequence-display').classList.add('hidden');
+            render();
+        });
+
+        canvas.addEventListener('click', (e) => {
+            // If in sequence mode, clicking traces a random number from range
+            if (vizMode === 'sequence') {
+                const n = Math.floor(Math.random() * range) + 2;
+                traceNumber(n);
+            }
+        });
+
+        window.addEventListener('resize', initCanvas);
+
+        // Initialize
+        initCanvas();
+    </script>
+</body>
+</html>

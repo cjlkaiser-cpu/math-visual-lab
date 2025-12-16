@@ -1,0 +1,522 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Espiral de Ulam - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        #canvas {
+            cursor: crosshair;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(34, 211, 238, 0.5);
+        }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #22d3ee;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(168, 85, 247, 0.05));
+            border: 1px solid rgba(34, 211, 238, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-cyan-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-cyan-400 font-medium">Ulam</span> Spiral
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Primos: <span id="prime-count" class="text-cyan-400">0</span></span>
+                    <span class="text-gray-500">Hasta: <span id="max-number" class="text-violet-400">0</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+            <div id="hover-info" class="absolute top-4 left-4 bg-gray-900/90 px-3 py-2 rounded-lg text-sm mono hidden">
+                <div>Número: <span id="hover-number" class="text-cyan-400">-</span></div>
+                <div>Posición: <span id="hover-pos" class="text-gray-400">-</span></div>
+                <div id="hover-prime" class="text-lime-400 hidden">PRIMO</div>
+            </div>
+            <div class="absolute bottom-4 left-4 text-xs mono text-gray-600">
+                Pasa el mouse para ver números · Rueda para zoom
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-cyan-400 glow-text">Controles</h2>
+
+            <!-- Size -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Tamaño de espiral: <span id="size-value" class="text-cyan-400 mono">200</span>
+                </label>
+                <input type="range" id="spiral-size" min="50" max="500" value="200" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Números hasta n²</p>
+            </div>
+
+            <!-- Pixel Size -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Tamaño de píxel: <span id="pixel-value" class="text-cyan-400 mono">2</span>px
+                </label>
+                <input type="range" id="pixel-size" min="1" max="6" value="2" class="w-full">
+            </div>
+
+            <!-- Color Scheme -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Color de primos</label>
+                <select id="color-scheme" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-cyan-500 focus:outline-none">
+                    <option value="cyan">Cian</option>
+                    <option value="white">Blanco</option>
+                    <option value="rainbow">Arcoíris (por magnitud)</option>
+                    <option value="heat">Calor (densidad)</option>
+                    <option value="green">Verde Matrix</option>
+                </select>
+            </div>
+
+            <!-- Display Options -->
+            <div class="mb-6 space-y-3">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-composites" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-cyan-500 focus:ring-cyan-500">
+                    <span class="text-sm text-gray-400">Mostrar compuestos (gris)</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-diagonals" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-cyan-500 focus:ring-cyan-500">
+                    <span class="text-sm text-gray-400">Resaltar diagonales</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="highlight-twins" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-cyan-500 focus:ring-cyan-500">
+                    <span class="text-sm text-gray-400">Resaltar primos gemelos</span>
+                </label>
+            </div>
+
+            <!-- Special Numbers -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Filtros especiales</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setFilter('all')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition" id="filter-all">Todos</button>
+                    <button onclick="setFilter('4k+1')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">4k+1</button>
+                    <button onclick="setFilter('4k+3')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">4k+3</button>
+                    <button onclick="setFilter('mersenne')" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">Mersenne</button>
+                </div>
+            </div>
+
+            <!-- Starting Number -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Número inicial: <span id="start-value" class="text-violet-400 mono">1</span>
+                </label>
+                <input type="range" id="start-number" min="1" max="100" value="1" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">Cambia el centro de la espiral</p>
+            </div>
+
+            <!-- Render Button -->
+            <div class="mb-6">
+                <button id="render-btn" class="w-full py-2 px-4 bg-cyan-500/20 hover:bg-cyan-500/30 text-cyan-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/>
+                    </svg>
+                    Regenerar Espiral
+                </button>
+            </div>
+
+            <!-- Math Section -->
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-cyan-400 mb-3">La Matemática</h3>
+                <div class="mono text-sm text-center mb-3 text-violet-400">
+                    n → (x, y) en espiral cuadrática
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Stanisław Ulam descubrió en 1963 que los primos forman <span class="text-cyan-400">patrones diagonales</span> cuando los números naturales se disponen en espiral.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        Muchas diagonales corresponden a polinomios cuadráticos como <span class="text-violet-400">4n² + bn + c</span> que generan muchos primos. El famoso polinomio de Euler n² + n + 41 produce primos para n = 0..39.
+                    </p>
+                </div>
+            </div>
+
+            <!-- Stats -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Estadísticas</h3>
+                <div class="grid grid-cols-2 gap-2 text-xs mono">
+                    <div class="text-gray-500">Densidad:</div>
+                    <div id="density" class="text-cyan-400">-</div>
+                    <div class="text-gray-500">Render:</div>
+                    <div id="render-time" class="text-violet-400">-</div>
+                </div>
+            </div>
+
+            <!-- First Primes -->
+            <div class="mt-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Primeros 20 primos</h3>
+                <div class="text-xs mono text-cyan-400 leading-relaxed">
+                    2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let primes = new Set();
+        let spiralData = [];
+        let maxN = 0;
+        let primeCount = 0;
+
+        // Settings
+        let spiralSize = 200;
+        let pixelSize = 2;
+        let colorScheme = 'cyan';
+        let showComposites = false;
+        let showDiagonals = false;
+        let highlightTwins = false;
+        let startNumber = 1;
+        let filter = 'all';
+
+        // View
+        let offsetX = 0;
+        let offsetY = 0;
+        let zoom = 1;
+
+        // Mersenne prime exponents (for small range)
+        const mersenneExponents = [2, 3, 5, 7, 13, 17, 19, 31];
+        const mersennePrimes = new Set(mersenneExponents.map(p => Math.pow(2, p) - 1));
+
+        function initCanvas() {
+            canvas.width = canvas.offsetWidth * window.devicePixelRatio;
+            canvas.height = canvas.offsetHeight * window.devicePixelRatio;
+            ctx.scale(window.devicePixelRatio, window.devicePixelRatio);
+            render();
+        }
+
+        function isPrime(n) {
+            if (n < 2) return false;
+            if (n === 2) return true;
+            if (n % 2 === 0) return false;
+            for (let i = 3; i <= Math.sqrt(n); i += 2) {
+                if (n % i === 0) return false;
+            }
+            return true;
+        }
+
+        function generatePrimes(max) {
+            primes = new Set();
+            for (let i = 2; i <= max; i++) {
+                if (isPrime(i)) {
+                    primes.add(i);
+                }
+            }
+        }
+
+        function spiralCoordinates(n) {
+            // Convert linear index to spiral coordinates
+            if (n === 0) return { x: 0, y: 0 };
+
+            let layer = Math.ceil((Math.sqrt(n) - 1) / 2);
+            let leg = Math.floor((n - (2 * layer - 1) ** 2) / (2 * layer));
+            let element = (n - (2 * layer - 1) ** 2) - 2 * layer * leg;
+
+            let x, y;
+            switch (leg) {
+                case 0: x = layer; y = -layer + 1 + element; break;
+                case 1: x = layer - 1 - element; y = layer; break;
+                case 2: x = -layer; y = layer - 1 - element; break;
+                case 3: x = -layer + 1 + element; y = -layer; break;
+            }
+
+            return { x, y };
+        }
+
+        function getColor(n, isPrimeN) {
+            if (!isPrimeN) {
+                return showComposites ? '#1a1a2e' : null;
+            }
+
+            // Apply filter
+            if (filter === '4k+1' && n % 4 !== 1) return null;
+            if (filter === '4k+3' && n % 4 !== 3) return null;
+            if (filter === 'mersenne' && !mersennePrimes.has(n)) return null;
+
+            // Twin prime highlighting
+            if (highlightTwins && (primes.has(n - 2) || primes.has(n + 2))) {
+                return '#f472b6'; // Pink for twins
+            }
+
+            switch (colorScheme) {
+                case 'cyan':
+                    return '#22d3ee';
+                case 'white':
+                    return '#ffffff';
+                case 'rainbow':
+                    const hue = (Math.log(n) / Math.log(maxN)) * 300;
+                    return `hsl(${hue}, 80%, 60%)`;
+                case 'heat':
+                    // Color based on local density
+                    return '#ff6b35';
+                case 'green':
+                    const brightness = 40 + Math.random() * 20;
+                    return `hsl(120, 100%, ${brightness}%)`;
+                default:
+                    return '#22d3ee';
+            }
+        }
+
+        function render() {
+            const startTime = performance.now();
+
+            const w = canvas.offsetWidth;
+            const h = canvas.offsetHeight;
+
+            ctx.fillStyle = '#000';
+            ctx.fillRect(0, 0, w, h);
+
+            maxN = spiralSize * spiralSize;
+            generatePrimes(maxN + startNumber);
+
+            const centerX = w / 2 + offsetX;
+            const centerY = h / 2 + offsetY;
+
+            primeCount = 0;
+            spiralData = [];
+
+            // Draw diagonals if enabled
+            if (showDiagonals) {
+                ctx.strokeStyle = '#1a1a3e';
+                ctx.lineWidth = 1;
+
+                // Main diagonals
+                ctx.beginPath();
+                ctx.moveTo(0, 0);
+                ctx.lineTo(w, h);
+                ctx.moveTo(w, 0);
+                ctx.lineTo(0, h);
+                ctx.moveTo(centerX, 0);
+                ctx.lineTo(centerX, h);
+                ctx.moveTo(0, centerY);
+                ctx.lineTo(w, centerY);
+                ctx.stroke();
+            }
+
+            // Draw spiral
+            for (let i = 0; i < maxN; i++) {
+                const n = i + startNumber;
+                const isPrimeN = primes.has(n);
+
+                if (isPrimeN) primeCount++;
+
+                const { x, y } = spiralCoordinates(i);
+                const screenX = centerX + x * pixelSize * zoom;
+                const screenY = centerY + y * pixelSize * zoom;
+
+                // Store for hover detection
+                spiralData.push({
+                    n,
+                    x: screenX,
+                    y: screenY,
+                    isPrime: isPrimeN,
+                    gridX: x,
+                    gridY: y
+                });
+
+                const color = getColor(n, isPrimeN);
+                if (color) {
+                    ctx.fillStyle = color;
+                    const size = pixelSize * zoom;
+                    ctx.fillRect(screenX - size / 2, screenY - size / 2, size, size);
+                }
+            }
+
+            // Update stats
+            const endTime = performance.now();
+            document.getElementById('prime-count').textContent = primeCount.toLocaleString();
+            document.getElementById('max-number').textContent = (maxN + startNumber - 1).toLocaleString();
+            document.getElementById('density').textContent = ((primeCount / maxN) * 100).toFixed(2) + '%';
+            document.getElementById('render-time').textContent = (endTime - startTime).toFixed(0) + 'ms';
+        }
+
+        function setFilter(f) {
+            filter = f;
+
+            // Update button styles
+            document.querySelectorAll('[onclick^="setFilter"]').forEach(btn => {
+                btn.classList.remove('bg-cyan-500/30', 'text-cyan-400');
+                btn.classList.add('bg-gray-900');
+            });
+
+            event.target.classList.remove('bg-gray-900');
+            event.target.classList.add('bg-cyan-500/30', 'text-cyan-400');
+
+            render();
+        }
+
+        // Event listeners
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const mouseX = e.clientX - rect.left;
+            const mouseY = e.clientY - rect.top;
+
+            const hoverInfo = document.getElementById('hover-info');
+            let found = false;
+
+            // Find closest point
+            for (const point of spiralData) {
+                const dx = mouseX - point.x;
+                const dy = mouseY - point.y;
+                const dist = Math.sqrt(dx * dx + dy * dy);
+
+                if (dist < pixelSize * zoom + 2) {
+                    document.getElementById('hover-number').textContent = point.n;
+                    document.getElementById('hover-pos').textContent = `(${point.gridX}, ${point.gridY})`;
+
+                    const primeIndicator = document.getElementById('hover-prime');
+                    if (point.isPrime) {
+                        primeIndicator.classList.remove('hidden');
+                    } else {
+                        primeIndicator.classList.add('hidden');
+                    }
+
+                    hoverInfo.classList.remove('hidden');
+                    found = true;
+                    break;
+                }
+            }
+
+            if (!found) {
+                hoverInfo.classList.add('hidden');
+            }
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            document.getElementById('hover-info').classList.add('hidden');
+        });
+
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+
+            const zoomFactor = e.deltaY < 0 ? 1.1 : 0.9;
+            zoom *= zoomFactor;
+            zoom = Math.max(0.5, Math.min(zoom, 5));
+
+            render();
+        });
+
+        // Pan with drag
+        let isDragging = false;
+        let lastMouse = { x: 0, y: 0 };
+
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+
+            const dx = e.clientX - lastMouse.x;
+            const dy = e.clientY - lastMouse.y;
+
+            offsetX += dx;
+            offsetY += dy;
+
+            lastMouse = { x: e.clientX, y: e.clientY };
+            render();
+        });
+
+        canvas.addEventListener('mouseup', () => {
+            isDragging = false;
+        });
+
+        // Controls
+        document.getElementById('spiral-size').addEventListener('input', (e) => {
+            spiralSize = parseInt(e.target.value);
+            document.getElementById('size-value').textContent = spiralSize;
+        });
+
+        document.getElementById('spiral-size').addEventListener('change', render);
+
+        document.getElementById('pixel-size').addEventListener('input', (e) => {
+            pixelSize = parseInt(e.target.value);
+            document.getElementById('pixel-value').textContent = pixelSize;
+            render();
+        });
+
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            colorScheme = e.target.value;
+            render();
+        });
+
+        document.getElementById('show-composites').addEventListener('change', (e) => {
+            showComposites = e.target.checked;
+            render();
+        });
+
+        document.getElementById('show-diagonals').addEventListener('change', (e) => {
+            showDiagonals = e.target.checked;
+            render();
+        });
+
+        document.getElementById('highlight-twins').addEventListener('change', (e) => {
+            highlightTwins = e.target.checked;
+            render();
+        });
+
+        document.getElementById('start-number').addEventListener('input', (e) => {
+            startNumber = parseInt(e.target.value);
+            document.getElementById('start-value').textContent = startNumber;
+        });
+
+        document.getElementById('start-number').addEventListener('change', render);
+
+        document.getElementById('render-btn').addEventListener('click', () => {
+            offsetX = 0;
+            offsetY = 0;
+            zoom = 1;
+            render();
+        });
+
+        window.addEventListener('resize', initCanvas);
+
+        // Initialize
+        initCanvas();
+        document.getElementById('filter-all').classList.add('bg-cyan-500/30', 'text-cyan-400');
+        document.getElementById('filter-all').classList.remove('bg-gray-900');
+    </script>
+</body>
+</html>

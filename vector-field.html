@@ -1,0 +1,749 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campo Vectorial | Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <style>
+        body { background: #000; }
+        canvas { display: block; }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #172554;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 14px;
+            height: 14px;
+            background: #22d3ee;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        select, button {
+            background: #172554;
+            border: 1px solid #22d3ee;
+            color: #cffafe;
+            padding: 6px 12px;
+            border-radius: 6px;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        select:hover, button:hover {
+            background: #1e3a5f;
+            border-color: #67e8f9;
+        }
+        .control-group {
+            background: rgba(23, 37, 84, 0.5);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .formula {
+            font-family: 'Times New Roman', serif;
+            font-style: italic;
+        }
+    </style>
+</head>
+<body class="min-h-screen text-cyan-100 overflow-hidden">
+    <!-- Header -->
+    <header class="fixed top-0 left-0 right-0 z-50 bg-black/80 backdrop-blur border-b border-cyan-900/50">
+        <div class="max-w-7xl mx-auto px-4 py-3 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <a href="index.html" class="text-cyan-400 hover:text-cyan-300 transition-colors">
+                    ← Volver
+                </a>
+                <h1 class="text-xl font-light">Campo <span class="text-cyan-400">Vectorial</span></h1>
+            </div>
+            <div class="text-cyan-400/60 text-sm">
+                Partículas siguiendo ecuaciones diferenciales
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="pt-16 flex h-screen">
+        <!-- Canvas Container -->
+        <div class="flex-1 relative">
+            <canvas id="canvas"></canvas>
+
+            <!-- Info Overlay -->
+            <div class="absolute top-4 left-4 control-group text-sm">
+                <div class="text-cyan-400/60">Partículas</div>
+                <div id="particleCount" class="text-2xl font-light text-cyan-300">0</div>
+                <div class="text-cyan-400/60 mt-2">Campo</div>
+                <div id="fieldName" class="text-lg text-cyan-300">-</div>
+            </div>
+
+            <!-- Formula Display -->
+            <div class="absolute bottom-4 left-4 control-group">
+                <div class="text-cyan-400/60 text-sm mb-1">Ecuaciones</div>
+                <div id="formulaX" class="text-lg formula text-cyan-300">dx/dt = -y</div>
+                <div id="formulaY" class="text-lg formula text-cyan-300">dy/dt = x</div>
+            </div>
+
+            <!-- Click instruction -->
+            <div class="absolute bottom-4 right-96 text-cyan-400/50 text-sm">
+                Click para añadir partículas
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 bg-black/50 border-l border-cyan-900/50 p-4 overflow-y-auto">
+            <div class="space-y-4">
+                <!-- Field Selection -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">Campo vectorial</label>
+                    <select id="field" class="w-full">
+                        <option value="rotation">Rotación (vórtice)</option>
+                        <option value="sink">Sumidero</option>
+                        <option value="source">Fuente</option>
+                        <option value="saddle">Punto silla</option>
+                        <option value="spiral-in">Espiral entrante</option>
+                        <option value="spiral-out">Espiral saliente</option>
+                        <option value="dipole">Dipolo</option>
+                        <option value="lorenz2d">Lorenz 2D</option>
+                        <option value="pendulum">Péndulo</option>
+                        <option value="vanderpol">Van der Pol</option>
+                        <option value="lotka">Lotka-Volterra</option>
+                        <option value="custom">Personalizado</option>
+                    </select>
+                </div>
+
+                <!-- Custom Field Inputs -->
+                <div id="customGroup" class="control-group hidden">
+                    <label class="block text-cyan-400/80 text-sm mb-2">dx/dt = f(x,y)</label>
+                    <input type="text" id="customDx" value="-y"
+                        class="w-full bg-cyan-950 border border-cyan-700 rounded px-2 py-1 text-cyan-100 font-mono text-sm">
+                    <label class="block text-cyan-400/80 text-sm mb-2 mt-2">dy/dt = g(x,y)</label>
+                    <input type="text" id="customDy" value="x"
+                        class="w-full bg-cyan-950 border border-cyan-700 rounded px-2 py-1 text-cyan-100 font-mono text-sm">
+                    <button id="applyCustom" class="w-full mt-2">Aplicar</button>
+                    <p class="text-xs text-cyan-400/50 mt-2">Usa: x, y, sin, cos, exp, sqrt, abs, pow</p>
+                </div>
+
+                <!-- Particle Settings -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">
+                        Partículas: <span id="particlesValue" class="text-cyan-300">100</span>
+                    </label>
+                    <input type="range" id="particles" min="10" max="500" value="100" class="w-full">
+                </div>
+
+                <!-- Speed -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">
+                        Velocidad: <span id="speedValue" class="text-cyan-300">1.0</span>x
+                    </label>
+                    <input type="range" id="speed" min="0.1" max="3" step="0.1" value="1" class="w-full">
+                </div>
+
+                <!-- Trail Length -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">
+                        Estela: <span id="trailValue" class="text-cyan-300">50</span>
+                    </label>
+                    <input type="range" id="trail" min="0" max="200" value="50" class="w-full">
+                </div>
+
+                <!-- Particle Size -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">
+                        Tamaño: <span id="sizeValue" class="text-cyan-300">3</span>px
+                    </label>
+                    <input type="range" id="size" min="1" max="8" value="3" class="w-full">
+                </div>
+
+                <!-- Display Options -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">Mostrar</label>
+                    <div class="space-y-2">
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showField" checked class="accent-cyan-500">
+                            <span class="text-sm">Flechas del campo</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showParticles" checked class="accent-cyan-500">
+                            <span class="text-sm">Partículas</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showTrails" checked class="accent-cyan-500">
+                            <span class="text-sm">Estelas</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showGrid" class="accent-cyan-500">
+                            <span class="text-sm">Cuadrícula</span>
+                        </label>
+                        <label class="flex items-center gap-2 cursor-pointer">
+                            <input type="checkbox" id="showNullclines" class="accent-cyan-500">
+                            <span class="text-sm">Nulclinas</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- Color Scheme -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">Colores</label>
+                    <select id="colorScheme" class="w-full">
+                        <option value="velocity">Por velocidad</option>
+                        <option value="direction">Por dirección</option>
+                        <option value="mono">Cian monocromático</option>
+                        <option value="rainbow">Arcoíris</option>
+                    </select>
+                </div>
+
+                <!-- Arrow Density -->
+                <div class="control-group">
+                    <label class="block text-cyan-400/80 text-sm mb-2">
+                        Densidad flechas: <span id="densityValue" class="text-cyan-300">20</span>
+                    </label>
+                    <input type="range" id="density" min="8" max="40" value="20" class="w-full">
+                </div>
+
+                <!-- Actions -->
+                <div class="flex gap-2">
+                    <button id="playPause" class="flex-1">
+                        ⏸ Pausar
+                    </button>
+                    <button id="reset" class="flex-1">
+                        ↻ Reiniciar
+                    </button>
+                </div>
+
+                <button id="clearTrails" class="w-full">
+                    Limpiar estelas
+                </button>
+
+                <!-- Info -->
+                <div class="control-group">
+                    <h3 class="text-cyan-400 font-medium mb-2">Campos clásicos</h3>
+                    <ul class="text-sm text-cyan-300/70 space-y-1">
+                        <li><strong>Vórtice:</strong> órbitas cerradas</li>
+                        <li><strong>Sumidero:</strong> punto atractor</li>
+                        <li><strong>Silla:</strong> punto inestable</li>
+                        <li><strong>Van der Pol:</strong> ciclo límite</li>
+                        <li><strong>Lotka-Volterra:</strong> depredador-presa</li>
+                    </ul>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Field definitions
+        const fields = {
+            'rotation': {
+                dx: (x, y) => -y,
+                dy: (x, y) => x,
+                name: 'Rotación',
+                formulaX: 'dx/dt = -y',
+                formulaY: 'dy/dt = x'
+            },
+            'sink': {
+                dx: (x, y) => -x,
+                dy: (x, y) => -y,
+                name: 'Sumidero',
+                formulaX: 'dx/dt = -x',
+                formulaY: 'dy/dt = -y'
+            },
+            'source': {
+                dx: (x, y) => x,
+                dy: (x, y) => y,
+                name: 'Fuente',
+                formulaX: 'dx/dt = x',
+                formulaY: 'dy/dt = y'
+            },
+            'saddle': {
+                dx: (x, y) => x,
+                dy: (x, y) => -y,
+                name: 'Punto silla',
+                formulaX: 'dx/dt = x',
+                formulaY: 'dy/dt = -y'
+            },
+            'spiral-in': {
+                dx: (x, y) => -x - y,
+                dy: (x, y) => x - y,
+                name: 'Espiral entrante',
+                formulaX: 'dx/dt = -x - y',
+                formulaY: 'dy/dt = x - y'
+            },
+            'spiral-out': {
+                dx: (x, y) => x - y,
+                dy: (x, y) => x + y,
+                name: 'Espiral saliente',
+                formulaX: 'dx/dt = x - y',
+                formulaY: 'dy/dt = x + y'
+            },
+            'dipole': {
+                dx: (x, y) => {
+                    const r = Math.sqrt(x*x + y*y) + 0.1;
+                    return 2*x*y / (r*r*r*r);
+                },
+                dy: (x, y) => {
+                    const r = Math.sqrt(x*x + y*y) + 0.1;
+                    return (y*y - x*x) / (r*r*r*r);
+                },
+                name: 'Dipolo',
+                formulaX: 'dx/dt = 2xy/r⁴',
+                formulaY: 'dy/dt = (y²-x²)/r⁴'
+            },
+            'lorenz2d': {
+                dx: (x, y) => 10 * (y - x),
+                dy: (x, y) => x * (28 - 1) - y,
+                name: 'Lorenz 2D',
+                formulaX: 'dx/dt = 10(y - x)',
+                formulaY: 'dy/dt = 27x - y'
+            },
+            'pendulum': {
+                dx: (x, y) => y,
+                dy: (x, y) => -Math.sin(x) - 0.2 * y,
+                name: 'Péndulo amortiguado',
+                formulaX: 'dθ/dt = ω',
+                formulaY: 'dω/dt = -sin(θ) - 0.2ω'
+            },
+            'vanderpol': {
+                dx: (x, y) => y,
+                dy: (x, y) => 2 * (1 - x*x) * y - x,
+                name: 'Van der Pol',
+                formulaX: 'dx/dt = y',
+                formulaY: 'dy/dt = μ(1-x²)y - x'
+            },
+            'lotka': {
+                dx: (x, y) => x * (1 - 0.1 * y),
+                dy: (x, y) => y * (-0.5 + 0.05 * x),
+                name: 'Lotka-Volterra',
+                formulaX: 'dx/dt = x(1 - 0.1y)',
+                formulaY: 'dy/dt = y(-0.5 + 0.05x)'
+            },
+            'custom': {
+                dx: (x, y) => -y,
+                dy: (x, y) => x,
+                name: 'Personalizado',
+                formulaX: 'dx/dt = -y',
+                formulaY: 'dy/dt = x'
+            }
+        };
+
+        let particles = [];
+        let running = true;
+        let currentField = fields['rotation'];
+
+        // View bounds
+        const view = {
+            xMin: -5,
+            xMax: 5,
+            yMin: -5,
+            yMax: 5
+        };
+
+        function resize() {
+            const container = canvas.parentElement;
+            canvas.width = container.clientWidth;
+            canvas.height = container.clientHeight;
+
+            // Adjust view to maintain aspect ratio
+            const aspect = canvas.width / canvas.height;
+            const range = 5;
+            view.xMin = -range * aspect;
+            view.xMax = range * aspect;
+            view.yMin = -range;
+            view.yMax = range;
+        }
+
+        function worldToScreen(x, y) {
+            const sx = (x - view.xMin) / (view.xMax - view.xMin) * canvas.width;
+            const sy = (view.yMax - y) / (view.yMax - view.yMin) * canvas.height;
+            return { x: sx, y: sy };
+        }
+
+        function screenToWorld(sx, sy) {
+            const x = view.xMin + (sx / canvas.width) * (view.xMax - view.xMin);
+            const y = view.yMax - (sy / canvas.height) * (view.yMax - view.yMin);
+            return { x, y };
+        }
+
+        function initParticles() {
+            const n = parseInt(document.getElementById('particles').value);
+            particles = [];
+
+            for (let i = 0; i < n; i++) {
+                particles.push(createParticle());
+            }
+        }
+
+        function createParticle(x, y) {
+            return {
+                x: x !== undefined ? x : view.xMin + Math.random() * (view.xMax - view.xMin),
+                y: y !== undefined ? y : view.yMin + Math.random() * (view.yMax - view.yMin),
+                trail: [],
+                hue: Math.random() * 360
+            };
+        }
+
+        function updateParticle(p, dt) {
+            const speed = parseFloat(document.getElementById('speed').value);
+            const trailLength = parseInt(document.getElementById('trail').value);
+
+            // RK4 integration
+            const k1x = currentField.dx(p.x, p.y);
+            const k1y = currentField.dy(p.x, p.y);
+
+            const k2x = currentField.dx(p.x + dt/2 * k1x, p.y + dt/2 * k1y);
+            const k2y = currentField.dy(p.x + dt/2 * k1x, p.y + dt/2 * k1y);
+
+            const k3x = currentField.dx(p.x + dt/2 * k2x, p.y + dt/2 * k2y);
+            const k3y = currentField.dy(p.x + dt/2 * k2x, p.y + dt/2 * k2y);
+
+            const k4x = currentField.dx(p.x + dt * k3x, p.y + dt * k3y);
+            const k4y = currentField.dy(p.x + dt * k3x, p.y + dt * k3y);
+
+            // Store trail point
+            if (trailLength > 0) {
+                p.trail.push({ x: p.x, y: p.y });
+                if (p.trail.length > trailLength) {
+                    p.trail.shift();
+                }
+            }
+
+            // Update position
+            p.x += speed * dt * (k1x + 2*k2x + 2*k3x + k4x) / 6;
+            p.y += speed * dt * (k1y + 2*k2y + 2*k3y + k4y) / 6;
+
+            // Wrap or respawn if out of bounds
+            if (p.x < view.xMin * 1.5 || p.x > view.xMax * 1.5 ||
+                p.y < view.yMin * 1.5 || p.y > view.yMax * 1.5 ||
+                !isFinite(p.x) || !isFinite(p.y)) {
+                const newP = createParticle();
+                p.x = newP.x;
+                p.y = newP.y;
+                p.trail = [];
+            }
+        }
+
+        function getColor(vx, vy, scheme) {
+            const speed = Math.sqrt(vx*vx + vy*vy);
+            const angle = Math.atan2(vy, vx);
+
+            switch (scheme) {
+                case 'velocity':
+                    const t = Math.min(speed / 3, 1);
+                    return `hsl(${180 + t * 60}, 80%, ${50 + t * 20}%)`;
+                case 'direction':
+                    const hue = ((angle + Math.PI) / (2 * Math.PI)) * 360;
+                    return `hsl(${hue}, 80%, 60%)`;
+                case 'mono':
+                    return '#22d3ee';
+                case 'rainbow':
+                    const h = ((angle + Math.PI) / (2 * Math.PI)) * 360;
+                    return `hsl(${h}, 90%, 60%)`;
+                default:
+                    return '#22d3ee';
+            }
+        }
+
+        function drawArrow(x, y, dx, dy, scale) {
+            const p = worldToScreen(x, y);
+            const len = Math.sqrt(dx*dx + dy*dy);
+            if (len < 0.001) return;
+
+            const nx = dx / len;
+            const ny = dy / len;
+
+            const arrowLen = Math.min(len * scale * 10, 20);
+            const headLen = arrowLen * 0.3;
+
+            const ex = p.x + nx * arrowLen;
+            const ey = p.y - ny * arrowLen;
+
+            const scheme = document.getElementById('colorScheme').value;
+            ctx.strokeStyle = getColor(dx, dy, scheme);
+            ctx.lineWidth = 1;
+
+            // Line
+            ctx.beginPath();
+            ctx.moveTo(p.x, p.y);
+            ctx.lineTo(ex, ey);
+            ctx.stroke();
+
+            // Arrowhead
+            const angle = Math.atan2(-ny, nx);
+            ctx.beginPath();
+            ctx.moveTo(ex, ey);
+            ctx.lineTo(ex - headLen * Math.cos(angle - 0.4), ey - headLen * Math.sin(angle - 0.4));
+            ctx.moveTo(ex, ey);
+            ctx.lineTo(ex - headLen * Math.cos(angle + 0.4), ey - headLen * Math.sin(angle + 0.4));
+            ctx.stroke();
+        }
+
+        function draw() {
+            ctx.fillStyle = 'rgba(0, 0, 0, 0.1)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Full clear for field arrows
+            if (document.getElementById('showField').checked) {
+                ctx.fillStyle = '#000';
+                ctx.fillRect(0, 0, canvas.width, canvas.height);
+            }
+
+            // Draw grid
+            if (document.getElementById('showGrid').checked) {
+                ctx.strokeStyle = 'rgba(34, 211, 238, 0.1)';
+                ctx.lineWidth = 1;
+
+                for (let x = Math.ceil(view.xMin); x <= view.xMax; x++) {
+                    const p = worldToScreen(x, 0);
+                    ctx.beginPath();
+                    ctx.moveTo(p.x, 0);
+                    ctx.lineTo(p.x, canvas.height);
+                    ctx.stroke();
+                }
+
+                for (let y = Math.ceil(view.yMin); y <= view.yMax; y++) {
+                    const p = worldToScreen(0, y);
+                    ctx.beginPath();
+                    ctx.moveTo(0, p.y);
+                    ctx.lineTo(canvas.width, p.y);
+                    ctx.stroke();
+                }
+
+                // Axes
+                ctx.strokeStyle = 'rgba(34, 211, 238, 0.3)';
+                const origin = worldToScreen(0, 0);
+                ctx.beginPath();
+                ctx.moveTo(0, origin.y);
+                ctx.lineTo(canvas.width, origin.y);
+                ctx.moveTo(origin.x, 0);
+                ctx.lineTo(origin.x, canvas.height);
+                ctx.stroke();
+            }
+
+            // Draw nullclines
+            if (document.getElementById('showNullclines').checked) {
+                const resolution = 200;
+
+                // dx/dt = 0 nullcline (pink)
+                ctx.strokeStyle = '#f472b6';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+                ctx.beginPath();
+                let started = false;
+
+                for (let i = 0; i < resolution; i++) {
+                    const x = view.xMin + (i / resolution) * (view.xMax - view.xMin);
+                    for (let j = 0; j < resolution; j++) {
+                        const y = view.yMin + (j / resolution) * (view.yMax - view.yMin);
+                        const dx = currentField.dx(x, y);
+                        if (Math.abs(dx) < 0.1) {
+                            const p = worldToScreen(x, y);
+                            if (!started) {
+                                ctx.moveTo(p.x, p.y);
+                                started = true;
+                            } else {
+                                ctx.lineTo(p.x, p.y);
+                            }
+                        }
+                    }
+                }
+                ctx.stroke();
+                ctx.setLineDash([]);
+            }
+
+            // Draw field arrows
+            if (document.getElementById('showField').checked) {
+                const density = parseInt(document.getElementById('density').value);
+                const stepX = (view.xMax - view.xMin) / density;
+                const stepY = (view.yMax - view.yMin) / density;
+
+                for (let x = view.xMin + stepX/2; x < view.xMax; x += stepX) {
+                    for (let y = view.yMin + stepY/2; y < view.yMax; y += stepY) {
+                        const dx = currentField.dx(x, y);
+                        const dy = currentField.dy(x, y);
+                        drawArrow(x, y, dx, dy, stepX);
+                    }
+                }
+            }
+
+            // Draw trails
+            if (document.getElementById('showTrails').checked) {
+                const scheme = document.getElementById('colorScheme').value;
+
+                for (const p of particles) {
+                    if (p.trail.length < 2) continue;
+
+                    ctx.beginPath();
+                    const start = worldToScreen(p.trail[0].x, p.trail[0].y);
+                    ctx.moveTo(start.x, start.y);
+
+                    for (let i = 1; i < p.trail.length; i++) {
+                        const pt = worldToScreen(p.trail[i].x, p.trail[i].y);
+                        ctx.lineTo(pt.x, pt.y);
+                    }
+
+                    const alpha = 0.6;
+                    const dx = currentField.dx(p.x, p.y);
+                    const dy = currentField.dy(p.x, p.y);
+
+                    ctx.strokeStyle = scheme === 'rainbow' ?
+                        `hsla(${p.hue}, 80%, 60%, ${alpha})` :
+                        getColor(dx, dy, scheme).replace(')', `, ${alpha})`).replace('hsl', 'hsla');
+                    ctx.lineWidth = 1;
+                    ctx.stroke();
+                }
+            }
+
+            // Draw particles
+            if (document.getElementById('showParticles').checked) {
+                const size = parseInt(document.getElementById('size').value);
+                const scheme = document.getElementById('colorScheme').value;
+
+                for (const p of particles) {
+                    const sp = worldToScreen(p.x, p.y);
+                    const dx = currentField.dx(p.x, p.y);
+                    const dy = currentField.dy(p.x, p.y);
+
+                    ctx.beginPath();
+                    ctx.arc(sp.x, sp.y, size, 0, Math.PI * 2);
+                    ctx.fillStyle = scheme === 'rainbow' ?
+                        `hsl(${p.hue}, 80%, 60%)` :
+                        getColor(dx, dy, scheme);
+                    ctx.fill();
+                }
+            }
+
+            // Update count
+            document.getElementById('particleCount').textContent = particles.length;
+        }
+
+        function update() {
+            if (!running) return;
+
+            const dt = 0.02;
+            for (const p of particles) {
+                updateParticle(p, dt);
+            }
+        }
+
+        function animate() {
+            update();
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        function setField(name) {
+            currentField = fields[name];
+            document.getElementById('fieldName').textContent = currentField.name;
+            document.getElementById('formulaX').textContent = currentField.formulaX;
+            document.getElementById('formulaY').textContent = currentField.formulaY;
+
+            // Clear trails
+            for (const p of particles) {
+                p.trail = [];
+            }
+        }
+
+        function parseCustomFunction(expr) {
+            // Replace math functions
+            expr = expr.replace(/sin/g, 'Math.sin');
+            expr = expr.replace(/cos/g, 'Math.cos');
+            expr = expr.replace(/tan/g, 'Math.tan');
+            expr = expr.replace(/exp/g, 'Math.exp');
+            expr = expr.replace(/sqrt/g, 'Math.sqrt');
+            expr = expr.replace(/abs/g, 'Math.abs');
+            expr = expr.replace(/pow/g, 'Math.pow');
+            expr = expr.replace(/log/g, 'Math.log');
+            expr = expr.replace(/PI/g, 'Math.PI');
+            expr = expr.replace(/E/g, 'Math.E');
+
+            return new Function('x', 'y', `return ${expr};`);
+        }
+
+        // Event listeners
+        document.getElementById('field').addEventListener('change', (e) => {
+            const isCustom = e.target.value === 'custom';
+            document.getElementById('customGroup').classList.toggle('hidden', !isCustom);
+            setField(e.target.value);
+        });
+
+        document.getElementById('applyCustom').addEventListener('click', () => {
+            try {
+                const dxExpr = document.getElementById('customDx').value;
+                const dyExpr = document.getElementById('customDy').value;
+
+                fields.custom.dx = parseCustomFunction(dxExpr);
+                fields.custom.dy = parseCustomFunction(dyExpr);
+                fields.custom.formulaX = `dx/dt = ${dxExpr}`;
+                fields.custom.formulaY = `dy/dt = ${dyExpr}`;
+
+                setField('custom');
+            } catch (e) {
+                alert('Error en la expresión: ' + e.message);
+            }
+        });
+
+        document.getElementById('particles').addEventListener('input', (e) => {
+            document.getElementById('particlesValue').textContent = e.target.value;
+            initParticles();
+        });
+
+        document.getElementById('speed').addEventListener('input', (e) => {
+            document.getElementById('speedValue').textContent = parseFloat(e.target.value).toFixed(1);
+        });
+
+        document.getElementById('trail').addEventListener('input', (e) => {
+            document.getElementById('trailValue').textContent = e.target.value;
+        });
+
+        document.getElementById('size').addEventListener('input', (e) => {
+            document.getElementById('sizeValue').textContent = e.target.value;
+        });
+
+        document.getElementById('density').addEventListener('input', (e) => {
+            document.getElementById('densityValue').textContent = e.target.value;
+        });
+
+        document.getElementById('playPause').addEventListener('click', () => {
+            running = !running;
+            document.getElementById('playPause').textContent =
+                running ? '⏸ Pausar' : '▶ Reanudar';
+        });
+
+        document.getElementById('reset').addEventListener('click', () => {
+            initParticles();
+        });
+
+        document.getElementById('clearTrails').addEventListener('click', () => {
+            for (const p of particles) {
+                p.trail = [];
+            }
+        });
+
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const sx = e.clientX - rect.left;
+            const sy = e.clientY - rect.top;
+            const { x, y } = screenToWorld(sx, sy);
+
+            // Add cluster of particles
+            for (let i = 0; i < 5; i++) {
+                particles.push(createParticle(
+                    x + (Math.random() - 0.5) * 0.2,
+                    y + (Math.random() - 0.5) * 0.2
+                ));
+            }
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+        setField('rotation');
+        initParticles();
+        animate();
+    </script>
+</body>
+</html>

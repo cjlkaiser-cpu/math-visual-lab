@@ -701,6 +701,90 @@
                     trail: []
                 };
             }
+
+            // Poincaré Disk
+            const poincare = document.getElementById('preview-poincare');
+            if (poincare) {
+                previews.poincare = {
+                    ctx: poincare.getContext('2d'),
+                    w: poincare.width = poincare.offsetWidth * 2,
+                    h: poincare.height = poincare.offsetHeight * 2,
+                    rendered: false
+                };
+                renderMiniPoincare(previews.poincare);
+            }
+
+            // Domain Coloring
+            const domain = document.getElementById('preview-domain');
+            if (domain) {
+                previews.domain = {
+                    ctx: domain.getContext('2d'),
+                    w: domain.width = domain.offsetWidth * 2,
+                    h: domain.height = domain.offsetHeight * 2,
+                    rendered: false
+                };
+                renderMiniDomain(previews.domain);
+            }
+
+            // Autómatas Elementales
+            const automata = document.getElementById('preview-automata');
+            if (automata) {
+                previews.automata = {
+                    ctx: automata.getContext('2d'),
+                    w: automata.width = automata.offsetWidth * 2,
+                    h: automata.height = automata.offsetHeight * 2,
+                    rendered: false
+                };
+                renderMiniAutomata(previews.automata);
+            }
+
+            // Three Body
+            const threebody = document.getElementById('preview-threebody');
+            if (threebody) {
+                previews.threebody = {
+                    ctx: threebody.getContext('2d'),
+                    w: threebody.width = threebody.offsetWidth * 2,
+                    h: threebody.height = threebody.offsetHeight * 2,
+                    bodies: [
+                        { x: -0.97000436, y: 0.24308753, vx: 0.466203685, vy: 0.43236573 },
+                        { x: 0.97000436, y: -0.24308753, vx: 0.466203685, vy: 0.43236573 },
+                        { x: 0, y: 0, vx: -0.93240737, vy: -0.86473146 }
+                    ],
+                    trails: [[], [], []]
+                };
+            }
+
+            // Möbius Strip
+            const mobius = document.getElementById('preview-mobius');
+            if (mobius) {
+                previews.mobius = {
+                    ctx: mobius.getContext('2d'),
+                    w: mobius.width = mobius.offsetWidth * 2,
+                    h: mobius.height = mobius.offsetHeight * 2
+                };
+            }
+
+            // Knots
+            const knots = document.getElementById('preview-knots');
+            if (knots) {
+                previews.knots = {
+                    ctx: knots.getContext('2d'),
+                    w: knots.width = knots.offsetWidth * 2,
+                    h: knots.height = knots.offsetHeight * 2
+                };
+            }
+
+            // Symmetry Groups
+            const symmetry = document.getElementById('preview-symmetry');
+            if (symmetry) {
+                previews.symmetry = {
+                    ctx: symmetry.getContext('2d'),
+                    w: symmetry.width = symmetry.offsetWidth * 2,
+                    h: symmetry.height = symmetry.offsetHeight * 2,
+                    rendered: false
+                };
+                renderMiniSymmetry(previews.symmetry);
+            }
         }
 
         function renderMiniMandelbrot(m) {
@@ -797,6 +881,136 @@
                 }
                 c.ctx.stroke();
             }
+        }
+
+        function renderMiniPoincare(p) {
+            p.ctx.fillStyle = '#000';
+            p.ctx.fillRect(0, 0, p.w, p.h);
+
+            const cx = p.w / 2, cy = p.h / 2;
+            const R = Math.min(p.w, p.h) / 2 - 10;
+
+            // Disk boundary
+            p.ctx.strokeStyle = '#f9731640';
+            p.ctx.lineWidth = 2;
+            p.ctx.beginPath();
+            p.ctx.arc(cx, cy, R, 0, Math.PI * 2);
+            p.ctx.stroke();
+
+            // Hyperbolic lines (geodesics as arcs)
+            p.ctx.strokeStyle = '#f97316';
+            p.ctx.lineWidth = 1;
+            for (let i = 0; i < 12; i++) {
+                const angle = (i / 12) * Math.PI * 2;
+                const r = R * 0.8;
+                p.ctx.beginPath();
+                p.ctx.arc(cx + Math.cos(angle) * r * 1.5, cy + Math.sin(angle) * r * 1.5, r, 0, Math.PI * 2);
+                p.ctx.stroke();
+            }
+
+            // Clip to disk
+            p.ctx.globalCompositeOperation = 'destination-in';
+            p.ctx.beginPath();
+            p.ctx.arc(cx, cy, R, 0, Math.PI * 2);
+            p.ctx.fill();
+            p.ctx.globalCompositeOperation = 'source-over';
+
+            p.rendered = true;
+        }
+
+        function renderMiniDomain(d) {
+            const imgData = d.ctx.createImageData(d.w, d.h);
+
+            for (let py = 0; py < d.h; py++) {
+                for (let px = 0; px < d.w; px++) {
+                    const x = (px / d.w - 0.5) * 4;
+                    const y = (py / d.h - 0.5) * 4;
+
+                    // z^2 function
+                    const re = x * x - y * y;
+                    const im = 2 * x * y;
+
+                    const arg = Math.atan2(im, re);
+                    const mag = Math.sqrt(re * re + im * im);
+
+                    const hue = ((arg + Math.PI) / (2 * Math.PI)) * 360;
+                    const sat = 0.8;
+                    const val = 1 - 1 / (1 + mag * 0.3);
+
+                    const [r, g, b] = hsvToRgb(hue, sat, val);
+                    const idx = (py * d.w + px) * 4;
+                    imgData.data[idx] = r;
+                    imgData.data[idx + 1] = g;
+                    imgData.data[idx + 2] = b;
+                    imgData.data[idx + 3] = 255;
+                }
+            }
+            d.ctx.putImageData(imgData, 0, 0);
+            d.rendered = true;
+        }
+
+        function renderMiniAutomata(a) {
+            a.ctx.fillStyle = '#000';
+            a.ctx.fillRect(0, 0, a.w, a.h);
+
+            const rule = 110;
+            const cellSize = 4;
+            const cols = Math.floor(a.w / cellSize);
+            const rows = Math.floor(a.h / cellSize);
+
+            let current = new Array(cols).fill(0);
+            current[Math.floor(cols / 2)] = 1;
+
+            a.ctx.fillStyle = '#a3e635';
+
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    if (current[col] === 1) {
+                        a.ctx.fillRect(col * cellSize, row * cellSize, cellSize - 1, cellSize - 1);
+                    }
+                }
+
+                const next = new Array(cols).fill(0);
+                for (let col = 0; col < cols; col++) {
+                    const left = current[(col - 1 + cols) % cols];
+                    const center = current[col];
+                    const right = current[(col + 1) % cols];
+                    const pattern = (left << 2) | (center << 1) | right;
+                    next[col] = (rule >> pattern) & 1;
+                }
+                current = next;
+            }
+            a.rendered = true;
+        }
+
+        function renderMiniSymmetry(s) {
+            s.ctx.fillStyle = '#000';
+            s.ctx.fillRect(0, 0, s.w, s.h);
+
+            const cellSize = 30;
+            const cols = Math.ceil(s.w / cellSize);
+            const rows = Math.ceil(s.h / cellSize);
+
+            // p4m wallpaper group
+            s.ctx.fillStyle = '#facc15';
+            for (let row = 0; row < rows; row++) {
+                for (let col = 0; col < cols; col++) {
+                    const cx = col * cellSize + cellSize / 2;
+                    const cy = row * cellSize + cellSize / 2;
+
+                    // Draw motif with 4-fold rotational symmetry
+                    for (let r = 0; r < 4; r++) {
+                        const angle = (r / 4) * Math.PI * 2;
+                        s.ctx.beginPath();
+                        s.ctx.moveTo(cx, cy);
+                        s.ctx.lineTo(cx + Math.cos(angle) * 10, cy + Math.sin(angle) * 10);
+                        s.ctx.lineTo(cx + Math.cos(angle + 0.3) * 6, cy + Math.sin(angle + 0.3) * 6);
+                        s.ctx.closePath();
+                        s.ctx.fill();
+                    }
+                }
+            }
+            s.rendered = true;
         }
 
         function isPrime(n) {
@@ -1355,6 +1569,167 @@
                 p.ctx.beginPath();
                 p.ctx.arc(x2, y2, 8, 0, Math.PI * 2);
                 p.ctx.fill();
+            }
+
+            // Three Body Problem
+            if (previews.threebody) {
+                const t = previews.threebody;
+                t.ctx.fillStyle = 'rgba(0,0,0,0.05)';
+                t.ctx.fillRect(0, 0, t.w, t.h);
+
+                const G = 1;
+                const dt = 0.01;
+                const scale = 60;
+                const cx = t.w / 2, cy = t.h / 2;
+
+                // Update physics
+                for (let step = 0; step < 3; step++) {
+                    for (let i = 0; i < 3; i++) {
+                        let ax = 0, ay = 0;
+                        for (let j = 0; j < 3; j++) {
+                            if (i !== j) {
+                                const dx = t.bodies[j].x - t.bodies[i].x;
+                                const dy = t.bodies[j].y - t.bodies[i].y;
+                                const r = Math.sqrt(dx * dx + dy * dy) + 0.01;
+                                ax += G * dx / (r * r * r);
+                                ay += G * dy / (r * r * r);
+                            }
+                        }
+                        t.bodies[i].vx += ax * dt;
+                        t.bodies[i].vy += ay * dt;
+                    }
+                    for (let i = 0; i < 3; i++) {
+                        t.bodies[i].x += t.bodies[i].vx * dt;
+                        t.bodies[i].y += t.bodies[i].vy * dt;
+                        t.trails[i].push({ x: t.bodies[i].x, y: t.bodies[i].y });
+                        if (t.trails[i].length > 300) t.trails[i].shift();
+                    }
+                }
+
+                // Draw trails
+                const colors = ['#ef4444', '#22c55e', '#3b82f6'];
+                for (let i = 0; i < 3; i++) {
+                    if (t.trails[i].length > 1) {
+                        t.ctx.beginPath();
+                        for (let j = 0; j < t.trails[i].length; j++) {
+                            const pt = t.trails[i][j];
+                            const px = cx + pt.x * scale;
+                            const py = cy + pt.y * scale;
+                            if (j === 0) t.ctx.moveTo(px, py);
+                            else t.ctx.lineTo(px, py);
+                        }
+                        t.ctx.strokeStyle = colors[i];
+                        t.ctx.lineWidth = 1;
+                        t.ctx.stroke();
+                    }
+
+                    // Draw body
+                    t.ctx.fillStyle = colors[i];
+                    t.ctx.beginPath();
+                    t.ctx.arc(cx + t.bodies[i].x * scale, cy + t.bodies[i].y * scale, 5, 0, Math.PI * 2);
+                    t.ctx.fill();
+                }
+            }
+
+            // Möbius Strip
+            if (previews.mobius) {
+                const m = previews.mobius;
+                m.ctx.fillStyle = '#000';
+                m.ctx.fillRect(0, 0, m.w, m.h);
+
+                const cx = m.w / 2, cy = m.h / 2;
+                const R = 50, w = 20;
+                const rotY = time * 0.5;
+                const rotX = 0.3;
+
+                const points = [];
+                const uSteps = 60, vSteps = 10;
+
+                for (let ui = 0; ui <= uSteps; ui++) {
+                    for (let vi = 0; vi <= vSteps; vi++) {
+                        const u = (ui / uSteps) * Math.PI * 2;
+                        const v = (vi / vSteps - 0.5) * w;
+
+                        // Möbius parametric equations
+                        const x = (R + v * Math.cos(u / 2)) * Math.cos(u);
+                        const y = (R + v * Math.cos(u / 2)) * Math.sin(u);
+                        const z = v * Math.sin(u / 2);
+
+                        // Rotate
+                        const x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
+                        const z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
+                        const y1 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+
+                        points.push({ x: cx + x1, y: cy + y1, z: z1 });
+                    }
+                }
+
+                // Draw wireframe
+                m.ctx.strokeStyle = '#f9731660';
+                m.ctx.lineWidth = 1;
+                for (let ui = 0; ui < uSteps; ui++) {
+                    for (let vi = 0; vi < vSteps; vi++) {
+                        const i = ui * (vSteps + 1) + vi;
+                        const p1 = points[i];
+                        const p2 = points[i + 1];
+                        const p3 = points[i + vSteps + 1];
+
+                        m.ctx.beginPath();
+                        m.ctx.moveTo(p1.x, p1.y);
+                        m.ctx.lineTo(p2.x, p2.y);
+                        m.ctx.stroke();
+
+                        m.ctx.beginPath();
+                        m.ctx.moveTo(p1.x, p1.y);
+                        m.ctx.lineTo(p3.x, p3.y);
+                        m.ctx.stroke();
+                    }
+                }
+            }
+
+            // Mathematical Knots (Trefoil)
+            if (previews.knots) {
+                const k = previews.knots;
+                k.ctx.fillStyle = '#000';
+                k.ctx.fillRect(0, 0, k.w, k.h);
+
+                const cx = k.w / 2, cy = k.h / 2;
+                const scale = 25;
+                const rotY = time * 0.3;
+                const rotX = 0.5;
+
+                const points = [];
+                const steps = 100;
+
+                for (let i = 0; i <= steps; i++) {
+                    const t = (i / steps) * Math.PI * 2;
+
+                    // Trefoil knot parametric equations
+                    const x = Math.sin(t) + 2 * Math.sin(2 * t);
+                    const y = Math.cos(t) - 2 * Math.cos(2 * t);
+                    const z = -Math.sin(3 * t);
+
+                    // Rotate
+                    const x1 = x * Math.cos(rotY) - z * Math.sin(rotY);
+                    const z1 = x * Math.sin(rotY) + z * Math.cos(rotY);
+                    const y1 = y * Math.cos(rotX) - z1 * Math.sin(rotX);
+
+                    points.push({ x: cx + x1 * scale, y: cy + y1 * scale, z: z1 });
+                }
+
+                // Draw with depth shading
+                for (let i = 0; i < points.length - 1; i++) {
+                    const p1 = points[i];
+                    const p2 = points[i + 1];
+                    const brightness = Math.floor(((p1.z + 3) / 6) * 100 + 50);
+
+                    k.ctx.strokeStyle = `hsl(30, 80%, ${brightness}%)`;
+                    k.ctx.lineWidth = 3;
+                    k.ctx.beginPath();
+                    k.ctx.moveTo(p1.x, p1.y);
+                    k.ctx.lineTo(p2.x, p2.y);
+                    k.ctx.stroke();
+                }
             }
 
             requestAnimationFrame(animate);

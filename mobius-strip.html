@@ -1,0 +1,506 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Banda de Möbius - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        #canvas { cursor: grab; }
+        #canvas:active { cursor: grabbing; }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Banda de Möbius</span>
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Giros: <span id="twists-display" class="text-violet-400">1</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <div class="flex-1 relative bg-gray-950">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Controles</h2>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Número de Giros: <span id="twists-value" class="text-violet-400 mono">1</span>
+                </label>
+                <input type="range" id="twists-slider" min="0" max="5" value="1" class="w-full">
+                <p class="text-xs text-gray-600 mt-1">0 = cilindro, 1 = Möbius, 2+ = variantes</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Ancho: <span id="width-value" class="text-violet-400 mono">0.4</span>
+                </label>
+                <input type="range" id="width-slider" min="0.1" max="0.8" step="0.05" value="0.4" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Resolución: <span id="resolution-value" class="text-violet-400 mono">60</span>
+                </label>
+                <input type="range" id="resolution-slider" min="20" max="100" step="10" value="60" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Superficie</label>
+                <select id="surface-select" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="mobius">Banda de Möbius</option>
+                    <option value="klein">Botella de Klein (parcial)</option>
+                    <option value="torus">Toro</option>
+                    <option value="crosscap">Cross-cap</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Visualización</label>
+                <select id="render-mode" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="solid">Sólido</option>
+                    <option value="wireframe">Wireframe</option>
+                    <option value="points">Puntos</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Esquema de Color</label>
+                <select id="color-scheme" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="gradient">Gradiente por posición</option>
+                    <option value="normal">Por normal</option>
+                    <option value="checkerboard">Ajedrezado</option>
+                    <option value="rainbow">Arcoíris</option>
+                </select>
+            </div>
+
+            <div class="mb-6 space-y-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="auto-rotate" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Rotación automática</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-axis" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar ejes</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-ant" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Hormiga caminando</span>
+                </label>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Propiedades Topológicas</h3>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• <strong>No orientable:</strong> tiene un solo lado</li>
+                    <li>• <strong>Un solo borde:</strong> no tiene "dentro/fuera"</li>
+                    <li>• <strong>χ = 0:</strong> característica de Euler</li>
+                    <li>• Cortar por el centro → cinta con 2 giros</li>
+                </ul>
+            </div>
+
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-violet-400 mb-3">Parametrización</h3>
+                <div class="mono text-xs text-cyan-400 space-y-1 mb-3">
+                    <div>x = (1 + v·cos(u/2))·cos(u)</div>
+                    <div>y = (1 + v·cos(u/2))·sin(u)</div>
+                    <div>z = v·sin(u/2)</div>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Donde u ∈ [0, 2π] recorre la banda y v ∈ [-w, w] da el ancho. El factor u/2 en sin y cos produce el medio giro característico.
+                </p>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let twists = 1;
+        let stripWidth = 0.4;
+        let resolution = 60;
+        let surfaceType = 'mobius';
+        let renderMode = 'solid';
+        let colorScheme = 'gradient';
+        let autoRotate = true;
+        let showAxis = false;
+        let showAnt = false;
+
+        let rotationX = 0.3;
+        let rotationY = 0;
+        let rotationZ = 0;
+        let isDragging = false;
+        let lastMouseX, lastMouseY;
+        let antPosition = 0;
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        // 3D to 2D projection
+        function project(x, y, z) {
+            // Apply rotations
+            let x1 = x;
+            let y1 = y * Math.cos(rotationX) - z * Math.sin(rotationX);
+            let z1 = y * Math.sin(rotationX) + z * Math.cos(rotationX);
+
+            let x2 = x1 * Math.cos(rotationY) + z1 * Math.sin(rotationY);
+            let y2 = y1;
+            let z2 = -x1 * Math.sin(rotationY) + z1 * Math.cos(rotationY);
+
+            let x3 = x2 * Math.cos(rotationZ) - y2 * Math.sin(rotationZ);
+            let y3 = x2 * Math.sin(rotationZ) + y2 * Math.cos(rotationZ);
+            let z3 = z2;
+
+            // Perspective projection
+            const scale = Math.min(canvas.width, canvas.height) / 4;
+            const perspective = 4;
+            const factor = perspective / (perspective + z3);
+
+            return {
+                x: canvas.width / 2 + x3 * scale * factor,
+                y: canvas.height / 2 - y3 * scale * factor,
+                z: z3
+            };
+        }
+
+        // Surface parametrizations
+        function getMobiusPoint(u, v) {
+            const halfTwists = twists / 2;
+            const x = (1 + v * Math.cos(halfTwists * u)) * Math.cos(u);
+            const y = (1 + v * Math.cos(halfTwists * u)) * Math.sin(u);
+            const z = v * Math.sin(halfTwists * u);
+            return { x, y, z };
+        }
+
+        function getKleinPoint(u, v) {
+            // Partial Klein bottle (figure-8 immersion)
+            const r = 2;
+            const x = (r + Math.cos(u/2) * Math.sin(v) - Math.sin(u/2) * Math.sin(2*v)) * Math.cos(u);
+            const y = (r + Math.cos(u/2) * Math.sin(v) - Math.sin(u/2) * Math.sin(2*v)) * Math.sin(u);
+            const z = Math.sin(u/2) * Math.sin(v) + Math.cos(u/2) * Math.sin(2*v);
+            return { x: x/3, y: y/3, z: z/3 };
+        }
+
+        function getTorusPoint(u, v) {
+            const R = 1;
+            const r = 0.4;
+            const x = (R + r * Math.cos(v)) * Math.cos(u);
+            const y = (R + r * Math.cos(v)) * Math.sin(u);
+            const z = r * Math.sin(v);
+            return { x, y, z };
+        }
+
+        function getCrosscapPoint(u, v) {
+            const x = Math.cos(u) * Math.sin(2*v);
+            const y = Math.sin(u) * Math.sin(2*v);
+            const z = Math.cos(v) * Math.cos(v) - Math.cos(u) * Math.cos(u) * Math.sin(v) * Math.sin(v);
+            return { x: x * 0.8, y: y * 0.8, z: z * 0.8 };
+        }
+
+        function getSurfacePoint(u, v) {
+            switch (surfaceType) {
+                case 'mobius': return getMobiusPoint(u, v);
+                case 'klein': return getKleinPoint(u, v);
+                case 'torus': return getTorusPoint(u, v);
+                case 'crosscap': return getCrosscapPoint(u, v);
+                default: return getMobiusPoint(u, v);
+            }
+        }
+
+        // Compute normal for shading
+        function computeNormal(u, v) {
+            const eps = 0.01;
+            const p = getSurfacePoint(u, v);
+            const pu = getSurfacePoint(u + eps, v);
+            const pv = getSurfacePoint(u, v + eps);
+
+            const du = { x: pu.x - p.x, y: pu.y - p.y, z: pu.z - p.z };
+            const dv = { x: pv.x - p.x, y: pv.y - p.y, z: pv.z - p.z };
+
+            // Cross product
+            return {
+                x: du.y * dv.z - du.z * dv.y,
+                y: du.z * dv.x - du.x * dv.z,
+                z: du.x * dv.y - du.y * dv.x
+            };
+        }
+
+        function getColor(u, v, normal) {
+            switch (colorScheme) {
+                case 'gradient':
+                    const hue = (u / (2 * Math.PI)) * 360;
+                    return `hsl(${hue}, 70%, 50%)`;
+
+                case 'normal':
+                    const len = Math.sqrt(normal.x**2 + normal.y**2 + normal.z**2);
+                    const r = Math.floor(128 + 127 * normal.x / len);
+                    const g = Math.floor(128 + 127 * normal.y / len);
+                    const b = Math.floor(128 + 127 * normal.z / len);
+                    return `rgb(${r},${g},${b})`;
+
+                case 'checkerboard':
+                    const cu = Math.floor(u * 6 / Math.PI);
+                    const cv = Math.floor((v + stripWidth) * 4);
+                    return (cu + cv) % 2 === 0 ? '#a855f7' : '#22d3ee';
+
+                case 'rainbow':
+                    const h = ((u + v) / (2 * Math.PI + 2 * stripWidth)) * 360;
+                    return `hsl(${h % 360}, 80%, 55%)`;
+
+                default:
+                    return '#a855f7';
+            }
+        }
+
+        function draw() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            // Generate mesh
+            const uSteps = resolution;
+            const vSteps = Math.max(10, Math.floor(resolution / 3));
+            const polygons = [];
+
+            for (let i = 0; i < uSteps; i++) {
+                for (let j = 0; j < vSteps; j++) {
+                    const u1 = (i / uSteps) * 2 * Math.PI;
+                    const u2 = ((i + 1) / uSteps) * 2 * Math.PI;
+                    const v1 = -stripWidth + (j / vSteps) * 2 * stripWidth;
+                    const v2 = -stripWidth + ((j + 1) / vSteps) * 2 * stripWidth;
+
+                    const p1 = getSurfacePoint(u1, v1);
+                    const p2 = getSurfacePoint(u2, v1);
+                    const p3 = getSurfacePoint(u2, v2);
+                    const p4 = getSurfacePoint(u1, v2);
+
+                    const proj1 = project(p1.x, p1.y, p1.z);
+                    const proj2 = project(p2.x, p2.y, p2.z);
+                    const proj3 = project(p3.x, p3.y, p3.z);
+                    const proj4 = project(p4.x, p4.y, p4.z);
+
+                    const avgZ = (proj1.z + proj2.z + proj3.z + proj4.z) / 4;
+                    const normal = computeNormal((u1 + u2) / 2, (v1 + v2) / 2);
+                    const color = getColor((u1 + u2) / 2, (v1 + v2) / 2, normal);
+
+                    polygons.push({
+                        points: [proj1, proj2, proj3, proj4],
+                        z: avgZ,
+                        color,
+                        u: (u1 + u2) / 2,
+                        v: (v1 + v2) / 2
+                    });
+                }
+            }
+
+            // Sort by depth (painter's algorithm)
+            polygons.sort((a, b) => a.z - b.z);
+
+            // Draw polygons
+            polygons.forEach(poly => {
+                ctx.beginPath();
+                ctx.moveTo(poly.points[0].x, poly.points[0].y);
+                poly.points.forEach(p => ctx.lineTo(p.x, p.y));
+                ctx.closePath();
+
+                if (renderMode === 'solid' || renderMode === 'wireframe') {
+                    if (renderMode === 'solid') {
+                        ctx.fillStyle = poly.color;
+                        ctx.fill();
+                    }
+                    ctx.strokeStyle = renderMode === 'wireframe' ? poly.color : 'rgba(0,0,0,0.3)';
+                    ctx.lineWidth = renderMode === 'wireframe' ? 1 : 0.5;
+                    ctx.stroke();
+                } else if (renderMode === 'points') {
+                    poly.points.forEach(p => {
+                        ctx.beginPath();
+                        ctx.arc(p.x, p.y, 2, 0, Math.PI * 2);
+                        ctx.fillStyle = poly.color;
+                        ctx.fill();
+                    });
+                }
+            });
+
+            // Draw axes
+            if (showAxis) {
+                const origin = project(0, 0, 0);
+                const axes = [
+                    { end: project(1.5, 0, 0), color: '#ef4444', label: 'X' },
+                    { end: project(0, 1.5, 0), color: '#22c55e', label: 'Y' },
+                    { end: project(0, 0, 1.5), color: '#3b82f6', label: 'Z' }
+                ];
+
+                axes.forEach(axis => {
+                    ctx.beginPath();
+                    ctx.moveTo(origin.x, origin.y);
+                    ctx.lineTo(axis.end.x, axis.end.y);
+                    ctx.strokeStyle = axis.color;
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+
+                    ctx.fillStyle = axis.color;
+                    ctx.font = '12px JetBrains Mono';
+                    ctx.fillText(axis.label, axis.end.x + 5, axis.end.y);
+                });
+            }
+
+            // Draw ant walking on surface
+            if (showAnt && surfaceType === 'mobius') {
+                const antU = antPosition;
+                const antV = 0;
+                const antPt = getSurfacePoint(antU, antV);
+                const antProj = project(antPt.x, antPt.y, antPt.z);
+
+                // Ant body
+                ctx.beginPath();
+                ctx.arc(antProj.x, antProj.y, 8, 0, Math.PI * 2);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fill();
+                ctx.strokeStyle = '#000';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                // Ant direction indicator
+                const nextU = antPosition + 0.1;
+                const nextPt = getSurfacePoint(nextU, antV);
+                const nextProj = project(nextPt.x, nextPt.y, nextPt.z);
+                const angle = Math.atan2(nextProj.y - antProj.y, nextProj.x - antProj.x);
+
+                ctx.beginPath();
+                ctx.moveTo(antProj.x, antProj.y);
+                ctx.lineTo(antProj.x + 15 * Math.cos(angle), antProj.y + 15 * Math.sin(angle));
+                ctx.strokeStyle = '#fbbf24';
+                ctx.lineWidth = 3;
+                ctx.stroke();
+            }
+        }
+
+        function animate() {
+            if (autoRotate) {
+                rotationY += 0.01;
+            }
+
+            if (showAnt) {
+                antPosition += 0.02;
+                if (antPosition > 4 * Math.PI) {
+                    antPosition = 0;
+                }
+            }
+
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        // Mouse controls
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
+                rotationY += dx * 0.01;
+                rotationX += dy * 0.01;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => isDragging = false);
+        canvas.addEventListener('mouseleave', () => isDragging = false);
+
+        // Event listeners
+        document.getElementById('twists-slider').addEventListener('input', (e) => {
+            twists = parseInt(e.target.value);
+            document.getElementById('twists-value').textContent = twists;
+            document.getElementById('twists-display').textContent = twists;
+        });
+
+        document.getElementById('width-slider').addEventListener('input', (e) => {
+            stripWidth = parseFloat(e.target.value);
+            document.getElementById('width-value').textContent = stripWidth.toFixed(2);
+        });
+
+        document.getElementById('resolution-slider').addEventListener('input', (e) => {
+            resolution = parseInt(e.target.value);
+            document.getElementById('resolution-value').textContent = resolution;
+        });
+
+        document.getElementById('surface-select').addEventListener('change', (e) => {
+            surfaceType = e.target.value;
+        });
+
+        document.getElementById('render-mode').addEventListener('change', (e) => {
+            renderMode = e.target.value;
+        });
+
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            colorScheme = e.target.value;
+        });
+
+        document.getElementById('auto-rotate').addEventListener('change', (e) => {
+            autoRotate = e.target.checked;
+        });
+
+        document.getElementById('show-axis').addEventListener('change', (e) => {
+            showAxis = e.target.checked;
+        });
+
+        document.getElementById('show-ant').addEventListener('change', (e) => {
+            showAnt = e.target.checked;
+            antPosition = 0;
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+        animate();
+    </script>
+</body>
+</html>

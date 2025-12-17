@@ -1,0 +1,577 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Problema de los 3 Cuerpos - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Problema de 3 Cuerpos</span>
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">E = <span id="energy-display" class="text-cyan-400">0.00</span></span>
+                    <span class="text-gray-500">t = <span id="time-display" class="text-violet-400">0.00</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <div class="flex-1 relative bg-gray-950">
+            <canvas id="canvas"></canvas>
+            <div id="status" class="absolute top-4 left-4 text-xs mono text-gray-500">
+                <span id="play-status">▶ Ejecutando</span>
+            </div>
+        </div>
+
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Controles</h2>
+
+            <div class="mb-6 flex gap-2">
+                <button id="play-btn" onclick="togglePlay()" class="flex-1 px-4 py-2 bg-violet-600 hover:bg-violet-700 rounded-lg text-sm font-medium transition">
+                    ⏸ Pausar
+                </button>
+                <button onclick="reset()" class="flex-1 px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm font-medium transition">
+                    ↺ Reiniciar
+                </button>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Configuración Inicial</label>
+                <select id="preset-select" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="figure8">Figura 8 (Chenciner-Montgomery)</option>
+                    <option value="lagrange">Triángulo de Lagrange</option>
+                    <option value="euler">Configuración de Euler</option>
+                    <option value="butterfly1">Mariposa I</option>
+                    <option value="butterfly2">Mariposa II</option>
+                    <option value="moth">Polilla</option>
+                    <option value="bumblebee">Abejorro</option>
+                    <option value="random">Aleatorio</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Velocidad: <span id="speed-value" class="text-violet-400 mono">1.0x</span>
+                </label>
+                <input type="range" id="speed-slider" min="0.1" max="3" step="0.1" value="1" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Longitud de Estela: <span id="trail-value" class="text-violet-400 mono">500</span>
+                </label>
+                <input type="range" id="trail-slider" min="100" max="2000" step="100" value="500" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-cm" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar centro de masa</span>
+                </label>
+            </div>
+
+            <div class="mb-6">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="follow-cm" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Seguir centro de masa</span>
+                </label>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-3">Masas</h3>
+                <div class="space-y-2">
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <span class="text-xs text-gray-400 flex-1">Cuerpo 1:</span>
+                        <span id="mass1" class="text-xs mono text-red-400">1.00</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                        <span class="text-xs text-gray-400 flex-1">Cuerpo 2:</span>
+                        <span id="mass2" class="text-xs mono text-green-400">1.00</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <div class="w-3 h-3 rounded-full bg-blue-500"></div>
+                        <span class="text-xs text-gray-400 flex-1">Cuerpo 3:</span>
+                        <span id="mass3" class="text-xs mono text-blue-400">1.00</span>
+                    </div>
+                </div>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Órbitas Periódicas</h3>
+                <p class="text-xs text-gray-500">
+                    En 2000, Chenciner y Montgomery descubrieron la órbita en "figura 8". Desde entonces se han encontrado miles de soluciones periódicas.
+                </p>
+            </div>
+
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-violet-400 mb-3">La Matemática</h3>
+                <div class="mono text-xs text-center mb-3 text-cyan-400">
+                    m<sub>i</sub>r̈<sub>i</sub> = Σ Gm<sub>i</sub>m<sub>j</sub>(r<sub>j</sub>-r<sub>i</sub>)/|r<sub>j</sub>-r<sub>i</sub>|³
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    El problema de N-cuerpos no tiene solución analítica general para N≥3. El sistema es caótico: pequeños cambios en condiciones iniciales producen trayectorias muy diferentes.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        Henri Poincaré demostró que el problema de 3 cuerpos no es integrable, iniciando la teoría del caos.
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let isPlaying = true;
+        let speed = 1;
+        let trailLength = 500;
+        let showCM = false;
+        let followCM = false;
+        let time = 0;
+
+        const G = 1; // Gravitational constant
+
+        // Bodies: [x, y, vx, vy, mass, trail]
+        let bodies = [];
+
+        // Famous periodic orbits
+        const presets = {
+            figure8: {
+                // Chenciner-Montgomery figure-8
+                positions: [
+                    [-0.97000436, 0.24308753],
+                    [0.97000436, -0.24308753],
+                    [0, 0]
+                ],
+                velocities: [
+                    [0.4662036850, 0.4323657300],
+                    [0.4662036850, 0.4323657300],
+                    [-0.93240737, -0.86473146]
+                ],
+                masses: [1, 1, 1]
+            },
+            lagrange: {
+                // Equilateral triangle (Lagrange)
+                positions: [
+                    [1, 0],
+                    [-0.5, Math.sqrt(3)/2],
+                    [-0.5, -Math.sqrt(3)/2]
+                ],
+                velocities: [
+                    [0, 0.5],
+                    [-0.5 * Math.sqrt(3)/2, -0.25],
+                    [0.5 * Math.sqrt(3)/2, -0.25]
+                ],
+                masses: [1, 1, 1]
+            },
+            euler: {
+                // Collinear (Euler)
+                positions: [
+                    [-1, 0],
+                    [0, 0],
+                    [1, 0]
+                ],
+                velocities: [
+                    [0, -0.5],
+                    [0, 1],
+                    [0, -0.5]
+                ],
+                masses: [1, 1, 1]
+            },
+            butterfly1: {
+                positions: [
+                    [-1, 0],
+                    [1, 0],
+                    [0, 0]
+                ],
+                velocities: [
+                    [0.30689, 0.12551],
+                    [0.30689, 0.12551],
+                    [-0.61378, -0.25102]
+                ],
+                masses: [1, 1, 1]
+            },
+            butterfly2: {
+                positions: [
+                    [-1, 0],
+                    [1, 0],
+                    [0, 0]
+                ],
+                velocities: [
+                    [0.39295, 0.09758],
+                    [0.39295, 0.09758],
+                    [-0.7859, -0.19516]
+                ],
+                masses: [1, 1, 1]
+            },
+            moth: {
+                positions: [
+                    [-1, 0],
+                    [1, 0],
+                    [0, 0]
+                ],
+                velocities: [
+                    [0.46444, 0.39606],
+                    [0.46444, 0.39606],
+                    [-0.92888, -0.79212]
+                ],
+                masses: [1, 1, 1]
+            },
+            bumblebee: {
+                positions: [
+                    [-1, 0],
+                    [1, 0],
+                    [0, 0]
+                ],
+                velocities: [
+                    [0.18428, 0.58719],
+                    [0.18428, 0.58719],
+                    [-0.36856, -1.17438]
+                ],
+                masses: [1, 1, 1]
+            },
+            random: null
+        };
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        function initBodies(preset) {
+            time = 0;
+
+            if (preset === 'random' || !presets[preset]) {
+                // Random initial conditions
+                bodies = [];
+                for (let i = 0; i < 3; i++) {
+                    bodies.push({
+                        x: (Math.random() - 0.5) * 2,
+                        y: (Math.random() - 0.5) * 2,
+                        vx: (Math.random() - 0.5) * 0.5,
+                        vy: (Math.random() - 0.5) * 0.5,
+                        mass: 0.5 + Math.random(),
+                        trail: []
+                    });
+                }
+            } else {
+                const p = presets[preset];
+                bodies = [];
+                for (let i = 0; i < 3; i++) {
+                    bodies.push({
+                        x: p.positions[i][0],
+                        y: p.positions[i][1],
+                        vx: p.velocities[i][0],
+                        vy: p.velocities[i][1],
+                        mass: p.masses[i],
+                        trail: []
+                    });
+                }
+            }
+
+            // Ensure zero total momentum
+            let px = 0, py = 0, totalMass = 0;
+            bodies.forEach(b => {
+                px += b.mass * b.vx;
+                py += b.mass * b.vy;
+                totalMass += b.mass;
+            });
+            bodies.forEach(b => {
+                b.vx -= px / totalMass;
+                b.vy -= py / totalMass;
+            });
+
+            updateMassDisplay();
+        }
+
+        function updateMassDisplay() {
+            document.getElementById('mass1').textContent = bodies[0].mass.toFixed(2);
+            document.getElementById('mass2').textContent = bodies[1].mass.toFixed(2);
+            document.getElementById('mass3').textContent = bodies[2].mass.toFixed(2);
+        }
+
+        // RK4 integration
+        function computeAccelerations(positions) {
+            const acc = positions.map(() => ({ ax: 0, ay: 0 }));
+
+            for (let i = 0; i < 3; i++) {
+                for (let j = i + 1; j < 3; j++) {
+                    const dx = positions[j].x - positions[i].x;
+                    const dy = positions[j].y - positions[i].y;
+                    const r2 = dx * dx + dy * dy + 0.0001; // Softening
+                    const r = Math.sqrt(r2);
+                    const r3 = r2 * r;
+
+                    const fx = G * dx / r3;
+                    const fy = G * dy / r3;
+
+                    acc[i].ax += bodies[j].mass * fx;
+                    acc[i].ay += bodies[j].mass * fy;
+                    acc[j].ax -= bodies[i].mass * fx;
+                    acc[j].ay -= bodies[i].mass * fy;
+                }
+            }
+
+            return acc;
+        }
+
+        function step(dt) {
+            // RK4 integration
+            const pos0 = bodies.map(b => ({ x: b.x, y: b.y }));
+            const vel0 = bodies.map(b => ({ vx: b.vx, vy: b.vy }));
+
+            // k1
+            const acc1 = computeAccelerations(pos0);
+
+            // k2
+            const pos2 = pos0.map((p, i) => ({
+                x: p.x + vel0[i].vx * dt/2,
+                y: p.y + vel0[i].vy * dt/2
+            }));
+            const vel2 = vel0.map((v, i) => ({
+                vx: v.vx + acc1[i].ax * dt/2,
+                vy: v.vy + acc1[i].ay * dt/2
+            }));
+            const acc2 = computeAccelerations(pos2);
+
+            // k3
+            const pos3 = pos0.map((p, i) => ({
+                x: p.x + vel2[i].vx * dt/2,
+                y: p.y + vel2[i].vy * dt/2
+            }));
+            const vel3 = vel0.map((v, i) => ({
+                vx: v.vx + acc2[i].ax * dt/2,
+                vy: v.vy + acc2[i].ay * dt/2
+            }));
+            const acc3 = computeAccelerations(pos3);
+
+            // k4
+            const pos4 = pos0.map((p, i) => ({
+                x: p.x + vel3[i].vx * dt,
+                y: p.y + vel3[i].vy * dt
+            }));
+            const vel4 = vel0.map((v, i) => ({
+                vx: v.vx + acc3[i].ax * dt,
+                vy: v.vy + acc3[i].ay * dt
+            }));
+            const acc4 = computeAccelerations(pos4);
+
+            // Update
+            bodies.forEach((b, i) => {
+                b.x = pos0[i].x + (vel0[i].vx + 2*vel2[i].vx + 2*vel3[i].vx + vel4[i].vx) * dt / 6;
+                b.y = pos0[i].y + (vel0[i].vy + 2*vel2[i].vy + 2*vel3[i].vy + vel4[i].vy) * dt / 6;
+                b.vx = vel0[i].vx + (acc1[i].ax + 2*acc2[i].ax + 2*acc3[i].ax + acc4[i].ax) * dt / 6;
+                b.vy = vel0[i].ay + (acc1[i].ay + 2*acc2[i].ay + 2*acc3[i].ay + acc4[i].ay) * dt / 6;
+
+                // Store trail
+                b.trail.push({ x: b.x, y: b.y });
+                if (b.trail.length > trailLength) {
+                    b.trail.shift();
+                }
+            });
+
+            time += dt;
+        }
+
+        function computeEnergy() {
+            let KE = 0, PE = 0;
+
+            bodies.forEach(b => {
+                KE += 0.5 * b.mass * (b.vx * b.vx + b.vy * b.vy);
+            });
+
+            for (let i = 0; i < 3; i++) {
+                for (let j = i + 1; j < 3; j++) {
+                    const dx = bodies[j].x - bodies[i].x;
+                    const dy = bodies[j].y - bodies[i].y;
+                    const r = Math.sqrt(dx * dx + dy * dy);
+                    PE -= G * bodies[i].mass * bodies[j].mass / r;
+                }
+            }
+
+            return KE + PE;
+        }
+
+        function getCenterOfMass() {
+            let cx = 0, cy = 0, totalMass = 0;
+            bodies.forEach(b => {
+                cx += b.mass * b.x;
+                cy += b.mass * b.y;
+                totalMass += b.mass;
+            });
+            return { x: cx / totalMass, y: cy / totalMass };
+        }
+
+        function draw() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const cm = getCenterOfMass();
+            const offsetX = followCM ? cm.x : 0;
+            const offsetY = followCM ? cm.y : 0;
+
+            const scale = Math.min(canvas.width, canvas.height) / 5;
+            const centerX = canvas.width / 2;
+            const centerY = canvas.height / 2;
+
+            const toScreen = (x, y) => ({
+                x: centerX + (x - offsetX) * scale,
+                y: centerY - (y - offsetY) * scale
+            });
+
+            const colors = ['#ef4444', '#22c55e', '#3b82f6'];
+            const trailColors = ['rgba(239, 68, 68, 0.3)', 'rgba(34, 197, 94, 0.3)', 'rgba(59, 130, 246, 0.3)'];
+
+            // Draw trails
+            bodies.forEach((b, i) => {
+                if (b.trail.length > 1) {
+                    ctx.beginPath();
+                    const start = toScreen(b.trail[0].x, b.trail[0].y);
+                    ctx.moveTo(start.x, start.y);
+
+                    for (let j = 1; j < b.trail.length; j++) {
+                        const pt = toScreen(b.trail[j].x, b.trail[j].y);
+                        ctx.lineTo(pt.x, pt.y);
+                    }
+
+                    ctx.strokeStyle = trailColors[i];
+                    ctx.lineWidth = 2;
+                    ctx.stroke();
+                }
+            });
+
+            // Draw center of mass
+            if (showCM) {
+                const cmScreen = toScreen(cm.x, cm.y);
+                ctx.beginPath();
+                ctx.arc(cmScreen.x, cmScreen.y, 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#fbbf24';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(251, 191, 36, 0.5)';
+                ctx.lineWidth = 8;
+                ctx.stroke();
+            }
+
+            // Draw bodies
+            bodies.forEach((b, i) => {
+                const pos = toScreen(b.x, b.y);
+                const radius = 8 + b.mass * 4;
+
+                // Glow effect
+                const gradient = ctx.createRadialGradient(pos.x, pos.y, 0, pos.x, pos.y, radius * 3);
+                gradient.addColorStop(0, colors[i]);
+                gradient.addColorStop(0.5, colors[i] + '40');
+                gradient.addColorStop(1, 'transparent');
+                ctx.fillStyle = gradient;
+                ctx.fillRect(pos.x - radius * 3, pos.y - radius * 3, radius * 6, radius * 6);
+
+                // Body
+                ctx.beginPath();
+                ctx.arc(pos.x, pos.y, radius, 0, Math.PI * 2);
+                ctx.fillStyle = colors[i];
+                ctx.fill();
+            });
+
+            // Update displays
+            document.getElementById('energy-display').textContent = computeEnergy().toFixed(4);
+            document.getElementById('time-display').textContent = time.toFixed(2);
+        }
+
+        function animate() {
+            if (isPlaying) {
+                const dt = 0.01 * speed;
+                for (let i = 0; i < 5; i++) {
+                    step(dt);
+                }
+            }
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        function togglePlay() {
+            isPlaying = !isPlaying;
+            const btn = document.getElementById('play-btn');
+            btn.textContent = isPlaying ? '⏸ Pausar' : '▶ Reproducir';
+            document.getElementById('play-status').textContent = isPlaying ? '▶ Ejecutando' : '⏸ Pausado';
+        }
+
+        function reset() {
+            const preset = document.getElementById('preset-select').value;
+            initBodies(preset);
+        }
+
+        // Event listeners
+        document.getElementById('preset-select').addEventListener('change', (e) => {
+            initBodies(e.target.value);
+        });
+
+        document.getElementById('speed-slider').addEventListener('input', (e) => {
+            speed = parseFloat(e.target.value);
+            document.getElementById('speed-value').textContent = speed.toFixed(1) + 'x';
+        });
+
+        document.getElementById('trail-slider').addEventListener('input', (e) => {
+            trailLength = parseInt(e.target.value);
+            document.getElementById('trail-value').textContent = trailLength;
+        });
+
+        document.getElementById('show-cm').addEventListener('change', (e) => {
+            showCM = e.target.checked;
+        });
+
+        document.getElementById('follow-cm').addEventListener('change', (e) => {
+            followCM = e.target.checked;
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+        initBodies('figure8');
+        animate();
+    </script>
+</body>
+</html>

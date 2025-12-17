@@ -1,0 +1,579 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Nudos Matemáticos - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        #canvas { cursor: grab; }
+        #canvas:active { cursor: grabbing; }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Nudos Matemáticos</span>
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Nudo: <span id="knot-display" class="text-violet-400">Trefoil 3₁</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <div class="flex-1 relative bg-gray-950">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Controles</h2>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Tipo de Nudo</label>
+                <select id="knot-select" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="unknot">Unknot (0₁) - Círculo</option>
+                    <option value="trefoil" selected>Trefoil (3₁)</option>
+                    <option value="figure8">Figura 8 (4₁)</option>
+                    <option value="cinquefoil">Cinquefoil (5₁)</option>
+                    <option value="threetwist">Three-Twist (5₂)</option>
+                    <option value="stevedore">Stevedore (6₁)</option>
+                    <option value="torus23">Torus (2,3)</option>
+                    <option value="torus25">Torus (2,5)</option>
+                    <option value="torus34">Torus (3,4)</option>
+                    <option value="granny">Granny Knot</option>
+                    <option value="square">Square Knot</option>
+                    <option value="borromean">Anillos Borromeos</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Grosor del Tubo: <span id="tube-value" class="text-violet-400 mono">0.15</span>
+                </label>
+                <input type="range" id="tube-slider" min="0.05" max="0.4" step="0.01" value="0.15" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Resolución: <span id="resolution-value" class="text-violet-400 mono">100</span>
+                </label>
+                <input type="range" id="resolution-slider" min="50" max="200" step="10" value="100" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Esquema de Color</label>
+                <select id="color-scheme" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="rainbow">Arcoíris</option>
+                    <option value="gradient">Gradiente Violeta-Cyan</option>
+                    <option value="solid">Sólido</option>
+                    <option value="depth">Por Profundidad</option>
+                </select>
+            </div>
+
+            <div class="mb-6 space-y-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="auto-rotate" checked class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Rotación automática</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-centerline" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar línea central</span>
+                </label>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg" id="knot-info">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Información del Nudo</h3>
+                <div class="text-xs text-gray-500 space-y-1">
+                    <div>Cruces: <span id="crossings" class="text-cyan-400">3</span></div>
+                    <div>Notación: <span id="notation" class="text-violet-400">3₁</span></div>
+                    <div>Tipo: <span id="knot-type" class="text-green-400">Primo</span></div>
+                </div>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Teoría de Nudos</h3>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• Dos nudos son equivalentes si uno puede transformarse en otro sin cortar</li>
+                    <li>• El Unknot es el nudo trivial (círculo)</li>
+                    <li>• Los invariantes distinguen nudos diferentes</li>
+                </ul>
+            </div>
+
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-violet-400 mb-3">Nudo Toro (p,q)</h3>
+                <div class="mono text-xs text-cyan-400 space-y-1 mb-3">
+                    <div>x = cos(pt)(2 + cos(qt))</div>
+                    <div>y = sin(pt)(2 + cos(qt))</div>
+                    <div>z = sin(qt)</div>
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    Un nudo toro (p,q) envuelve p veces alrededor del eje de simetría del toro mientras hace q vueltas alrededor del tubo. El trefoil es el nudo toro (2,3).
+                </p>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let currentKnot = 'trefoil';
+        let tubeRadius = 0.15;
+        let resolution = 100;
+        let colorScheme = 'rainbow';
+        let autoRotate = true;
+        let showCenterline = false;
+
+        let rotationX = 0.3;
+        let rotationY = 0;
+        let isDragging = false;
+        let lastMouseX, lastMouseY;
+
+        const knotInfo = {
+            unknot: { crossings: 0, notation: '0₁', type: 'Trivial' },
+            trefoil: { crossings: 3, notation: '3₁', type: 'Primo' },
+            figure8: { crossings: 4, notation: '4₁', type: 'Primo' },
+            cinquefoil: { crossings: 5, notation: '5₁', type: 'Primo' },
+            threetwist: { crossings: 5, notation: '5₂', type: 'Primo' },
+            stevedore: { crossings: 6, notation: '6₁', type: 'Primo' },
+            torus23: { crossings: 3, notation: 'T(2,3)', type: 'Toro' },
+            torus25: { crossings: 5, notation: 'T(2,5)', type: 'Toro' },
+            torus34: { crossings: 8, notation: 'T(3,4)', type: 'Toro' },
+            granny: { crossings: 6, notation: '3₁#3₁', type: 'Compuesto' },
+            square: { crossings: 6, notation: '3₁#3₁*', type: 'Compuesto' },
+            borromean: { crossings: 6, notation: 'L6a4', type: 'Enlace (3 componentes)' }
+        };
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        // Knot parametrizations
+        function getKnotPoint(t, knotType) {
+            const tau = t * 2 * Math.PI;
+
+            switch (knotType) {
+                case 'unknot':
+                    return {
+                        x: Math.cos(tau),
+                        y: Math.sin(tau),
+                        z: 0
+                    };
+
+                case 'trefoil':
+                case 'torus23':
+                    return {
+                        x: Math.sin(tau) + 2 * Math.sin(2 * tau),
+                        y: Math.cos(tau) - 2 * Math.cos(2 * tau),
+                        z: -Math.sin(3 * tau)
+                    };
+
+                case 'figure8':
+                    return {
+                        x: (2 + Math.cos(2 * tau)) * Math.cos(3 * tau),
+                        y: (2 + Math.cos(2 * tau)) * Math.sin(3 * tau),
+                        z: Math.sin(4 * tau)
+                    };
+
+                case 'cinquefoil':
+                case 'torus25':
+                    return {
+                        x: Math.cos(tau) * (2 + Math.cos(2.5 * tau)),
+                        y: Math.sin(tau) * (2 + Math.cos(2.5 * tau)),
+                        z: Math.sin(2.5 * tau)
+                    };
+
+                case 'threetwist':
+                    return {
+                        x: (2 + Math.cos(2 * tau)) * Math.cos(3 * tau),
+                        y: (2 + Math.cos(2 * tau)) * Math.sin(3 * tau),
+                        z: Math.sin(5 * tau)
+                    };
+
+                case 'stevedore':
+                    return {
+                        x: (2 + Math.cos(3 * tau)) * Math.cos(2 * tau),
+                        y: (2 + Math.cos(3 * tau)) * Math.sin(2 * tau),
+                        z: Math.sin(5 * tau)
+                    };
+
+                case 'torus34':
+                    return {
+                        x: Math.cos(3 * tau) * (2 + Math.cos(4 * tau)),
+                        y: Math.sin(3 * tau) * (2 + Math.cos(4 * tau)),
+                        z: Math.sin(4 * tau)
+                    };
+
+                case 'granny':
+                    // Two trefoils connected
+                    if (t < 0.5) {
+                        const s = t * 2;
+                        const tau2 = s * 2 * Math.PI;
+                        return {
+                            x: (Math.sin(tau2) + 2 * Math.sin(2 * tau2)) * 0.5 - 1.5,
+                            y: (Math.cos(tau2) - 2 * Math.cos(2 * tau2)) * 0.5,
+                            z: -Math.sin(3 * tau2) * 0.5
+                        };
+                    } else {
+                        const s = (t - 0.5) * 2;
+                        const tau2 = s * 2 * Math.PI;
+                        return {
+                            x: (Math.sin(tau2) + 2 * Math.sin(2 * tau2)) * 0.5 + 1.5,
+                            y: (Math.cos(tau2) - 2 * Math.cos(2 * tau2)) * 0.5,
+                            z: -Math.sin(3 * tau2) * 0.5
+                        };
+                    }
+
+                case 'square':
+                    if (t < 0.5) {
+                        const s = t * 2;
+                        const tau2 = s * 2 * Math.PI;
+                        return {
+                            x: (Math.sin(tau2) + 2 * Math.sin(2 * tau2)) * 0.5 - 1.5,
+                            y: (Math.cos(tau2) - 2 * Math.cos(2 * tau2)) * 0.5,
+                            z: -Math.sin(3 * tau2) * 0.5
+                        };
+                    } else {
+                        const s = (t - 0.5) * 2;
+                        const tau2 = s * 2 * Math.PI;
+                        return {
+                            x: (-Math.sin(tau2) - 2 * Math.sin(2 * tau2)) * 0.5 + 1.5,
+                            y: (Math.cos(tau2) - 2 * Math.cos(2 * tau2)) * 0.5,
+                            z: Math.sin(3 * tau2) * 0.5
+                        };
+                    }
+
+                case 'borromean':
+                    // Three interlocked rings
+                    const ring = Math.floor(t * 3);
+                    const s = (t * 3) % 1;
+                    const tau2 = s * 2 * Math.PI;
+                    const offset = ring * 2 * Math.PI / 3;
+
+                    if (ring === 0) {
+                        return {
+                            x: 1.5 * Math.cos(tau2),
+                            y: 1.5 * Math.sin(tau2) + 0.3 * Math.sin(2 * tau2),
+                            z: 0.3 * Math.cos(2 * tau2)
+                        };
+                    } else if (ring === 1) {
+                        return {
+                            x: 1.5 * Math.sin(tau2) + 0.3 * Math.sin(2 * tau2),
+                            y: 0.3 * Math.cos(2 * tau2),
+                            z: 1.5 * Math.cos(tau2)
+                        };
+                    } else {
+                        return {
+                            x: 0.3 * Math.cos(2 * tau2),
+                            y: 1.5 * Math.cos(tau2),
+                            z: 1.5 * Math.sin(tau2) + 0.3 * Math.sin(2 * tau2)
+                        };
+                    }
+
+                default:
+                    return { x: Math.cos(tau), y: Math.sin(tau), z: 0 };
+            }
+        }
+
+        // 3D transformations
+        function rotate(point) {
+            let { x, y, z } = point;
+
+            // Rotate around X
+            let y1 = y * Math.cos(rotationX) - z * Math.sin(rotationX);
+            let z1 = y * Math.sin(rotationX) + z * Math.cos(rotationX);
+
+            // Rotate around Y
+            let x2 = x * Math.cos(rotationY) + z1 * Math.sin(rotationY);
+            let z2 = -x * Math.sin(rotationY) + z1 * Math.cos(rotationY);
+
+            return { x: x2, y: y1, z: z2 };
+        }
+
+        function project(point) {
+            const scale = Math.min(canvas.width, canvas.height) / 8;
+            const perspective = 5;
+            const factor = perspective / (perspective + point.z);
+
+            return {
+                x: canvas.width / 2 + point.x * scale * factor,
+                y: canvas.height / 2 - point.y * scale * factor,
+                z: point.z
+            };
+        }
+
+        function getColor(t, z) {
+            switch (colorScheme) {
+                case 'rainbow':
+                    return `hsl(${t * 360}, 80%, 55%)`;
+                case 'gradient':
+                    return `hsl(${270 + t * 90}, 70%, 50%)`;
+                case 'solid':
+                    return '#a855f7';
+                case 'depth':
+                    const lightness = 30 + (z + 2) * 15;
+                    return `hsl(270, 70%, ${Math.min(70, Math.max(20, lightness))}%)`;
+                default:
+                    return '#a855f7';
+            }
+        }
+
+        // Compute tangent and normal for tube
+        function computeFrame(t, knotType) {
+            const eps = 0.001;
+            const p0 = getKnotPoint(t - eps, knotType);
+            const p1 = getKnotPoint(t, knotType);
+            const p2 = getKnotPoint(t + eps, knotType);
+
+            // Tangent
+            const T = {
+                x: p2.x - p0.x,
+                y: p2.y - p0.y,
+                z: p2.z - p0.z
+            };
+            const Tlen = Math.sqrt(T.x*T.x + T.y*T.y + T.z*T.z);
+            T.x /= Tlen; T.y /= Tlen; T.z /= Tlen;
+
+            // Approximate normal using second derivative
+            const d2 = {
+                x: p2.x - 2*p1.x + p0.x,
+                y: p2.y - 2*p1.y + p0.y,
+                z: p2.z - 2*p1.z + p0.z
+            };
+
+            // Normal (Gram-Schmidt)
+            const dot = d2.x*T.x + d2.y*T.y + d2.z*T.z;
+            let N = {
+                x: d2.x - dot*T.x,
+                y: d2.y - dot*T.y,
+                z: d2.z - dot*T.z
+            };
+            let Nlen = Math.sqrt(N.x*N.x + N.y*N.y + N.z*N.z);
+            if (Nlen < 0.0001) {
+                // Fallback normal
+                N = { x: -T.y, y: T.x, z: 0 };
+                Nlen = Math.sqrt(N.x*N.x + N.y*N.y + N.z*N.z);
+            }
+            N.x /= Nlen; N.y /= Nlen; N.z /= Nlen;
+
+            // Binormal
+            const B = {
+                x: T.y*N.z - T.z*N.y,
+                y: T.z*N.x - T.x*N.z,
+                z: T.x*N.y - T.y*N.x
+            };
+
+            return { T, N, B, center: p1 };
+        }
+
+        function draw() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const segments = [];
+            const tubeSegments = 12;
+
+            // Generate tube mesh
+            for (let i = 0; i < resolution; i++) {
+                const t = i / resolution;
+                const frame = computeFrame(t, currentKnot);
+
+                for (let j = 0; j < tubeSegments; j++) {
+                    const theta = (j / tubeSegments) * 2 * Math.PI;
+                    const cosT = Math.cos(theta);
+                    const sinT = Math.sin(theta);
+
+                    const x = frame.center.x + tubeRadius * (cosT * frame.N.x + sinT * frame.B.x);
+                    const y = frame.center.y + tubeRadius * (cosT * frame.N.y + sinT * frame.B.y);
+                    const z = frame.center.z + tubeRadius * (cosT * frame.N.z + sinT * frame.B.z);
+
+                    const rotated = rotate({ x, y, z });
+                    const projected = project(rotated);
+
+                    segments.push({
+                        x: projected.x,
+                        y: projected.y,
+                        z: rotated.z,
+                        t,
+                        theta: j / tubeSegments
+                    });
+                }
+            }
+
+            // Create quads and sort by depth
+            const quads = [];
+            for (let i = 0; i < resolution; i++) {
+                const i2 = (i + 1) % resolution;
+                for (let j = 0; j < tubeSegments; j++) {
+                    const j2 = (j + 1) % tubeSegments;
+
+                    const idx1 = i * tubeSegments + j;
+                    const idx2 = i * tubeSegments + j2;
+                    const idx3 = i2 * tubeSegments + j2;
+                    const idx4 = i2 * tubeSegments + j;
+
+                    const p1 = segments[idx1];
+                    const p2 = segments[idx2];
+                    const p3 = segments[idx3];
+                    const p4 = segments[idx4];
+
+                    const avgZ = (p1.z + p2.z + p3.z + p4.z) / 4;
+                    const avgT = (p1.t + p4.t) / 2;
+
+                    quads.push({
+                        points: [p1, p2, p3, p4],
+                        z: avgZ,
+                        t: avgT
+                    });
+                }
+            }
+
+            // Sort by depth
+            quads.sort((a, b) => a.z - b.z);
+
+            // Draw quads
+            quads.forEach(quad => {
+                ctx.beginPath();
+                ctx.moveTo(quad.points[0].x, quad.points[0].y);
+                quad.points.forEach(p => ctx.lineTo(p.x, p.y));
+                ctx.closePath();
+
+                const color = getColor(quad.t, quad.z);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(0,0,0,0.2)';
+                ctx.lineWidth = 0.5;
+                ctx.stroke();
+            });
+
+            // Draw centerline
+            if (showCenterline) {
+                ctx.beginPath();
+                for (let i = 0; i <= resolution; i++) {
+                    const t = i / resolution;
+                    const p = getKnotPoint(t, currentKnot);
+                    const rotated = rotate(p);
+                    const projected = project(rotated);
+
+                    if (i === 0) {
+                        ctx.moveTo(projected.x, projected.y);
+                    } else {
+                        ctx.lineTo(projected.x, projected.y);
+                    }
+                }
+                ctx.strokeStyle = 'rgba(255,255,255,0.5)';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+        }
+
+        function updateKnotInfo() {
+            const info = knotInfo[currentKnot];
+            document.getElementById('crossings').textContent = info.crossings;
+            document.getElementById('notation').textContent = info.notation;
+            document.getElementById('knot-type').textContent = info.type;
+            document.getElementById('knot-display').textContent = info.notation;
+        }
+
+        function animate() {
+            if (autoRotate) {
+                rotationY += 0.01;
+            }
+            draw();
+            requestAnimationFrame(animate);
+        }
+
+        // Mouse controls
+        canvas.addEventListener('mousedown', (e) => {
+            isDragging = true;
+            lastMouseX = e.clientX;
+            lastMouseY = e.clientY;
+        });
+
+        canvas.addEventListener('mousemove', (e) => {
+            if (isDragging) {
+                const dx = e.clientX - lastMouseX;
+                const dy = e.clientY - lastMouseY;
+                rotationY += dx * 0.01;
+                rotationX += dy * 0.01;
+                lastMouseX = e.clientX;
+                lastMouseY = e.clientY;
+            }
+        });
+
+        canvas.addEventListener('mouseup', () => isDragging = false);
+        canvas.addEventListener('mouseleave', () => isDragging = false);
+
+        // Event listeners
+        document.getElementById('knot-select').addEventListener('change', (e) => {
+            currentKnot = e.target.value;
+            updateKnotInfo();
+        });
+
+        document.getElementById('tube-slider').addEventListener('input', (e) => {
+            tubeRadius = parseFloat(e.target.value);
+            document.getElementById('tube-value').textContent = tubeRadius.toFixed(2);
+        });
+
+        document.getElementById('resolution-slider').addEventListener('input', (e) => {
+            resolution = parseInt(e.target.value);
+            document.getElementById('resolution-value').textContent = resolution;
+        });
+
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            colorScheme = e.target.value;
+        });
+
+        document.getElementById('auto-rotate').addEventListener('change', (e) => {
+            autoRotate = e.target.checked;
+        });
+
+        document.getElementById('show-centerline').addEventListener('change', (e) => {
+            showCenterline = e.target.checked;
+        });
+
+        window.addEventListener('resize', resize);
+
+        // Initialize
+        resize();
+        updateKnotInfo();
+        animate();
+    </script>
+</body>
+</html>

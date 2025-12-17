@@ -1,0 +1,597 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Disco de Poincaré - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Disco de Poincaré</span>
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Teselación: <span id="tessellation-display" class="text-violet-400">{7,3}</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <div class="flex-1 flex items-center justify-center bg-gray-950">
+            <canvas id="canvas" width="800" height="800"></canvas>
+        </div>
+
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Controles</h2>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Teselación {p, q}</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-gray-500">p (lados): <span id="p-value" class="text-violet-400">7</span></label>
+                        <input type="range" id="p-slider" min="3" max="12" value="7" class="w-full">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">q (vértice): <span id="q-value" class="text-violet-400">3</span></label>
+                        <input type="range" id="q-slider" min="3" max="12" value="3" class="w-full">
+                    </div>
+                </div>
+                <p class="text-xs text-gray-600 mt-2">Válido si (p-2)(q-2) > 4</p>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Profundidad: <span id="depth-value" class="text-violet-400 mono">4</span>
+                </label>
+                <input type="range" id="depth-slider" min="1" max="7" value="4" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Presets</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button onclick="setTessellation(7,3)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">{7,3} Heptágonos</button>
+                    <button onclick="setTessellation(5,4)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">{5,4} Pentágonos</button>
+                    <button onclick="setTessellation(4,5)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">{4,5} Cuadrados</button>
+                    <button onclick="setTessellation(3,7)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">{3,7} Triángulos</button>
+                    <button onclick="setTessellation(6,4)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">{6,4} Hexágonos</button>
+                    <button onclick="setTessellation(8,3)" class="px-3 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">{8,3} Octógonos</button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Esquema de Color</label>
+                <select id="color-scheme" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="rainbow">Arcoíris</option>
+                    <option value="fire">Fuego</option>
+                    <option value="ocean">Océano</option>
+                    <option value="monochrome">Monocromático</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-geodesics" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar geodésicas</span>
+                </label>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Geometría Hiperbólica</h3>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li>• Las líneas rectas son arcos de círculo</li>
+                    <li>• La suma de ángulos de un triángulo < 180°</li>
+                    <li>• Infinitas paralelas por un punto</li>
+                    <li>• El borde del disco está "infinitamente lejos"</li>
+                </ul>
+            </div>
+
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-violet-400 mb-3">La Matemática</h3>
+                <div class="mono text-sm text-center mb-3 text-cyan-400">
+                    ds² = 4(dx² + dy²)/(1 - x² - y²)²
+                </div>
+                <p class="text-xs text-gray-400 leading-relaxed">
+                    El disco de Poincaré representa el plano hiperbólico dentro de un círculo unitario. La métrica hiperbólica hace que las distancias aumenten hacia el borde, permitiendo "infinito espacio" en un disco finito.
+                </p>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        Usado por M.C. Escher en sus grabados "Circle Limit" para crear patrones que se repiten infinitamente hacia el borde.
+                    </p>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let p = 7, q = 3, depth = 4;
+        let colorScheme = 'rainbow';
+        let showGeodesics = false;
+
+        const cx = canvas.width / 2;
+        const cy = canvas.height / 2;
+        const radius = Math.min(cx, cy) - 20;
+
+        // Complex number operations in Poincaré disk model
+        function complexMult(a, b) {
+            return { re: a.re * b.re - a.im * b.im, im: a.re * b.im + a.im * b.re };
+        }
+
+        function complexDiv(a, b) {
+            const denom = b.re * b.re + b.im * b.im;
+            return { re: (a.re * b.re + a.im * b.im) / denom, im: (a.im * b.re - a.re * b.im) / denom };
+        }
+
+        function complexConj(a) {
+            return { re: a.re, im: -a.im };
+        }
+
+        function complexAbs(a) {
+            return Math.sqrt(a.re * a.re + a.im * a.im);
+        }
+
+        // Möbius transformation for hyperbolic translation
+        function mobiusTransform(z, center) {
+            // T(z) = (z - center) / (1 - conj(center) * z)
+            const num = { re: z.re - center.re, im: z.im - center.im };
+            const conjCenter = complexConj(center);
+            const denom = { re: 1 - conjCenter.re * z.re + conjCenter.im * z.im,
+                           im: -conjCenter.re * z.im - conjCenter.im * z.re };
+            return complexDiv(num, denom);
+        }
+
+        // Hyperbolic reflection across a geodesic
+        function reflectAcrossGeodesic(z, geodesicCenter, geodesicRadius) {
+            // Reflect z across the circle defining the geodesic
+            const dx = z.re - geodesicCenter.re;
+            const dy = z.im - geodesicCenter.im;
+            const dist2 = dx * dx + dy * dy;
+            const scale = (geodesicRadius * geodesicRadius) / dist2;
+            return {
+                re: geodesicCenter.re + dx * scale,
+                im: geodesicCenter.im + dy * scale
+            };
+        }
+
+        // Get color based on depth level
+        function getColor(level, maxLevel) {
+            const t = level / maxLevel;
+            switch (colorScheme) {
+                case 'rainbow':
+                    return `hsl(${t * 360}, 70%, 50%)`;
+                case 'fire':
+                    return `hsl(${t * 60}, 100%, ${30 + t * 40}%)`;
+                case 'ocean':
+                    return `hsl(${180 + t * 60}, 70%, ${30 + t * 30}%)`;
+                case 'monochrome':
+                    return `hsl(270, 60%, ${20 + t * 50}%)`;
+                default:
+                    return `hsl(${t * 360}, 70%, 50%)`;
+            }
+        }
+
+        // Calculate the vertices of a regular p-gon centered at origin
+        function getRegularPolygon(p, q) {
+            // Calculate the radius of the central polygon in hyperbolic space
+            const angleP = Math.PI / p;
+            const angleQ = Math.PI / q;
+
+            // Using the hyperbolic law of cosines
+            const cosAngle = Math.cos(angleP) / Math.sin(angleQ);
+            const r = Math.sqrt((cosAngle - 1) / (cosAngle + 1));
+
+            const vertices = [];
+            for (let i = 0; i < p; i++) {
+                const angle = (2 * Math.PI * i) / p - Math.PI / 2;
+                vertices.push({
+                    re: r * Math.cos(angle),
+                    im: r * Math.sin(angle)
+                });
+            }
+            return vertices;
+        }
+
+        // Check if tessellation is valid (hyperbolic)
+        function isValidTessellation(p, q) {
+            return (p - 2) * (q - 2) > 4;
+        }
+
+        // Draw a hyperbolic polygon
+        function drawHyperbolicPolygon(vertices, level) {
+            ctx.beginPath();
+
+            for (let i = 0; i < vertices.length; i++) {
+                const v1 = vertices[i];
+                const v2 = vertices[(i + 1) % vertices.length];
+
+                // Convert to screen coordinates
+                const x1 = cx + v1.re * radius;
+                const y1 = cy + v1.im * radius;
+                const x2 = cx + v2.re * radius;
+                const y2 = cy + v2.im * radius;
+
+                if (i === 0) {
+                    ctx.moveTo(x1, y1);
+                }
+
+                // Draw geodesic (arc of circle orthogonal to boundary)
+                // For simplicity, we approximate with straight lines for inner polygons
+                // and use arcs for edges near the boundary
+                const midRe = (v1.re + v2.re) / 2;
+                const midIm = (v1.im + v2.im) / 2;
+                const midDist = Math.sqrt(midRe * midRe + midIm * midIm);
+
+                if (midDist > 0.7) {
+                    // Calculate geodesic arc
+                    const geodesic = calculateGeodesicArc(v1, v2);
+                    if (geodesic) {
+                        const startAngle = Math.atan2(y1 - geodesic.cy, x1 - geodesic.cx);
+                        const endAngle = Math.atan2(y2 - geodesic.cy, x2 - geodesic.cx);
+                        ctx.arc(geodesic.cx, geodesic.cy, geodesic.r, startAngle, endAngle, geodesic.counterclockwise);
+                    } else {
+                        ctx.lineTo(x2, y2);
+                    }
+                } else {
+                    ctx.lineTo(x2, y2);
+                }
+            }
+
+            ctx.closePath();
+            ctx.fillStyle = getColor(level, depth);
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.lineWidth = 0.5;
+            ctx.stroke();
+        }
+
+        // Calculate geodesic arc between two points
+        function calculateGeodesicArc(p1, p2) {
+            // A geodesic in the Poincaré disk is an arc of a circle orthogonal to the boundary
+            const x1 = p1.re, y1 = p1.im;
+            const x2 = p2.re, y2 = p2.im;
+
+            // Check if points are nearly collinear with origin (diameter case)
+            const cross = x1 * y2 - x2 * y1;
+            if (Math.abs(cross) < 0.001) {
+                return null; // Use straight line
+            }
+
+            // Find the circle orthogonal to unit circle passing through both points
+            // Using the formula for inverse points
+            const inv1 = { re: x1 / (x1*x1 + y1*y1), im: y1 / (x1*x1 + y1*y1) };
+            const inv2 = { re: x2 / (x2*x2 + y2*y2), im: y2 / (x2*x2 + y2*y2) };
+
+            // Center of the geodesic circle
+            const d = 2 * (x1 * (y2 - inv1.im) + x2 * (inv1.im - y1) + inv1.re * (y1 - y2));
+            if (Math.abs(d) < 0.0001) return null;
+
+            const centerX = ((x1*x1 + y1*y1) * (y2 - inv1.im) + (x2*x2 + y2*y2) * (inv1.im - y1) + (inv1.re*inv1.re + inv1.im*inv1.im) * (y1 - y2)) / d;
+            const centerY = ((x1*x1 + y1*y1) * (inv1.re - x2) + (x2*x2 + y2*y2) * (x1 - inv1.re) + (inv1.re*inv1.re + inv1.im*inv1.im) * (x2 - x1)) / d;
+
+            const r = Math.sqrt((x1 - centerX) * (x1 - centerX) + (y1 - centerY) * (y1 - centerY));
+
+            // Determine arc direction
+            const angle1 = Math.atan2(y1 - centerY, x1 - centerX);
+            const angle2 = Math.atan2(y2 - centerY, x2 - centerX);
+            const angleMid = Math.atan2((y1 + y2)/2 - centerY, (x1 + x2)/2 - centerX);
+
+            let counterclockwise = false;
+            const diff1 = ((angle2 - angle1) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
+            const diffMid = ((angleMid - angle1) + 3 * Math.PI) % (2 * Math.PI) - Math.PI;
+            if ((diff1 > 0 && diffMid < 0) || (diff1 < 0 && diffMid > 0)) {
+                counterclockwise = diff1 > 0;
+            } else {
+                counterclockwise = diff1 < 0;
+            }
+
+            return {
+                cx: cx + centerX * radius,
+                cy: cy + centerY * radius,
+                r: r * radius,
+                counterclockwise
+            };
+        }
+
+        // Transform polygon by Möbius transformation
+        function transformPolygon(vertices, center) {
+            return vertices.map(v => mobiusTransform(v, center));
+        }
+
+        // Recursive tessellation
+        function tessellate(vertices, level, visited = new Set()) {
+            if (level > depth) return;
+
+            // Check if polygon is too small or outside disk
+            const center = vertices.reduce((acc, v) => ({ re: acc.re + v.re / vertices.length, im: acc.im + v.im / vertices.length }), { re: 0, im: 0 });
+            const centerDist = complexAbs(center);
+
+            if (centerDist > 0.99) return;
+
+            // Create a key for this polygon to avoid duplicates
+            const key = vertices.map(v => `${v.re.toFixed(4)},${v.im.toFixed(4)}`).sort().join('|');
+            if (visited.has(key)) return;
+            visited.add(key);
+
+            // Check if polygon is too small on screen
+            const screenSize = vertices.reduce((max, v) => {
+                const dist = complexAbs(v) * radius;
+                return Math.max(max, dist);
+            }, 0);
+
+            const avgDist = complexAbs(center);
+            const apparentSize = (1 - avgDist) * radius * (2 * Math.PI / p);
+            if (apparentSize < 2) return;
+
+            drawHyperbolicPolygon(vertices, level);
+
+            // Generate adjacent polygons by reflection
+            if (level < depth) {
+                for (let i = 0; i < p; i++) {
+                    const v1 = vertices[i];
+                    const v2 = vertices[(i + 1) % p];
+
+                    // Reflect all vertices across this edge
+                    const newVertices = [];
+
+                    // Calculate the geodesic circle for this edge
+                    const mx = (v1.re + v2.re) / 2;
+                    const my = (v1.im + v2.im) / 2;
+
+                    // Simple reflection approximation for the center polygon
+                    const edgeAngle = Math.atan2(v2.im - v1.im, v2.re - v1.re);
+                    const normalAngle = edgeAngle + Math.PI / 2;
+
+                    // Move center across the edge
+                    const dist = 0.02 + (1 - centerDist) * 0.1;
+                    const newCenter = {
+                        re: mx + Math.cos(normalAngle) * dist,
+                        im: my + Math.sin(normalAngle) * dist
+                    };
+
+                    if (complexAbs(newCenter) < 0.99) {
+                        // Generate new polygon at this location
+                        const basePolygon = getRegularPolygon(p, q);
+                        const transformed = basePolygon.map(v => {
+                            // Rotate and translate
+                            const rotAngle = edgeAngle + Math.PI;
+                            const rotated = {
+                                re: v.re * Math.cos(rotAngle) - v.im * Math.sin(rotAngle),
+                                im: v.re * Math.sin(rotAngle) + v.im * Math.cos(rotAngle)
+                            };
+                            return mobiusTransform(rotated, { re: -newCenter.re, im: -newCenter.im });
+                        });
+
+                        tessellate(transformed, level + 1, visited);
+                    }
+                }
+            }
+        }
+
+        // Simple tessellation using transformation matrices
+        function simpleTessellation() {
+            if (!isValidTessellation(p, q)) {
+                ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+                // Draw boundary circle
+                ctx.beginPath();
+                ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                ctx.fillStyle = '#111';
+                ctx.fill();
+                ctx.strokeStyle = '#a855f7';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+
+                ctx.fillStyle = '#ef4444';
+                ctx.font = '16px Inter';
+                ctx.textAlign = 'center';
+                ctx.fillText('Teselación no válida: (p-2)(q-2) debe ser > 4', cx, cy);
+                ctx.fillStyle = '#888';
+                ctx.font = '14px Inter';
+                ctx.fillText('Esta condición garantiza geometría hiperbólica', cx, cy + 25);
+                return;
+            }
+
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+
+            // Draw boundary circle (representing infinity)
+            ctx.beginPath();
+            ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+            ctx.fillStyle = '#0a0a0a';
+            ctx.fill();
+            ctx.strokeStyle = '#a855f7';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+
+            // Draw central polygon and tessellation
+            const centralPolygon = getRegularPolygon(p, q);
+
+            // BFS-like tessellation
+            const queue = [{ vertices: centralPolygon, level: 0 }];
+            const visited = new Set();
+
+            while (queue.length > 0) {
+                const { vertices, level } = queue.shift();
+
+                if (level > depth) continue;
+
+                const center = vertices.reduce((acc, v) => ({
+                    re: acc.re + v.re / vertices.length,
+                    im: acc.im + v.im / vertices.length
+                }), { re: 0, im: 0 });
+
+                const centerDist = complexAbs(center);
+                if (centerDist > 0.98) continue;
+
+                const key = Math.round(center.re * 1000) + ',' + Math.round(center.im * 1000);
+                if (visited.has(key)) continue;
+                visited.add(key);
+
+                drawHyperbolicPolygon(vertices, level);
+
+                if (level < depth) {
+                    // Add neighbors
+                    for (let i = 0; i < p; i++) {
+                        const v1 = vertices[i];
+                        const v2 = vertices[(i + 1) % p];
+
+                        const edgeMid = { re: (v1.re + v2.re) / 2, im: (v1.im + v2.im) / 2 };
+                        const edgeAngle = Math.atan2(v2.im - v1.im, v2.re - v1.re);
+                        const outwardAngle = edgeAngle + Math.PI / 2;
+
+                        // Check direction away from center
+                        const toCenterAngle = Math.atan2(-center.im, -center.re);
+                        const angleDiff = Math.abs(((outwardAngle - toCenterAngle + Math.PI) % (2 * Math.PI)) - Math.PI);
+                        const direction = angleDiff < Math.PI / 2 ? 1 : -1;
+
+                        const stepSize = 0.05 * (1 - complexAbs(edgeMid));
+                        const newCenterApprox = {
+                            re: edgeMid.re + Math.cos(outwardAngle) * stepSize * direction,
+                            im: edgeMid.im + Math.sin(outwardAngle) * stepSize * direction
+                        };
+
+                        if (complexAbs(newCenterApprox) < 0.98) {
+                            const basePolygon = getRegularPolygon(p, q);
+                            const rotAngle = edgeAngle + Math.PI / 2 + Math.PI;
+
+                            const rotated = basePolygon.map(v => ({
+                                re: v.re * Math.cos(rotAngle) - v.im * Math.sin(rotAngle),
+                                im: v.re * Math.sin(rotAngle) + v.im * Math.cos(rotAngle)
+                            }));
+
+                            const transformed = rotated.map(v => {
+                                const c = { re: -newCenterApprox.re * 0.9, im: -newCenterApprox.im * 0.9 };
+                                return mobiusTransform(v, c);
+                            });
+
+                            queue.push({ vertices: transformed, level: level + 1 });
+                        }
+                    }
+                }
+            }
+
+            // Draw geodesics if enabled
+            if (showGeodesics) {
+                drawGeodesicGrid();
+            }
+        }
+
+        // Draw some geodesics
+        function drawGeodesicGrid() {
+            ctx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+            ctx.lineWidth = 1;
+
+            // Draw radial geodesics (diameters)
+            for (let i = 0; i < 12; i++) {
+                const angle = (i * Math.PI) / 6;
+                ctx.beginPath();
+                ctx.moveTo(cx - radius * Math.cos(angle), cy - radius * Math.sin(angle));
+                ctx.lineTo(cx + radius * Math.cos(angle), cy + radius * Math.sin(angle));
+                ctx.stroke();
+            }
+
+            // Draw circular geodesics
+            for (let d = 0.2; d < 1; d += 0.2) {
+                for (let a = 0; a < Math.PI * 2; a += Math.PI / 3) {
+                    const centerX = cx + (1 / d) * radius * Math.cos(a);
+                    const centerY = cy + (1 / d) * radius * Math.sin(a);
+                    const r = Math.sqrt((1 / d) * (1 / d) - 1) * radius;
+
+                    ctx.beginPath();
+                    const startAngle = Math.atan2(cy - centerY, cx - centerX) - Math.asin(radius / Math.sqrt((centerX - cx) ** 2 + (centerY - cy) ** 2));
+                    const endAngle = Math.atan2(cy - centerY, cx - centerX) + Math.asin(radius / Math.sqrt((centerX - cx) ** 2 + (centerY - cy) ** 2));
+                    ctx.arc(centerX, centerY, r, startAngle, endAngle);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function draw() {
+            simpleTessellation();
+        }
+
+        function setTessellation(newP, newQ) {
+            p = newP;
+            q = newQ;
+            document.getElementById('p-slider').value = p;
+            document.getElementById('q-slider').value = q;
+            document.getElementById('p-value').textContent = p;
+            document.getElementById('q-value').textContent = q;
+            document.getElementById('tessellation-display').textContent = `{${p},${q}}`;
+            draw();
+        }
+
+        // Event listeners
+        document.getElementById('p-slider').addEventListener('input', (e) => {
+            p = parseInt(e.target.value);
+            document.getElementById('p-value').textContent = p;
+            document.getElementById('tessellation-display').textContent = `{${p},${q}}`;
+            draw();
+        });
+
+        document.getElementById('q-slider').addEventListener('input', (e) => {
+            q = parseInt(e.target.value);
+            document.getElementById('q-value').textContent = q;
+            document.getElementById('tessellation-display').textContent = `{${p},${q}}`;
+            draw();
+        });
+
+        document.getElementById('depth-slider').addEventListener('input', (e) => {
+            depth = parseInt(e.target.value);
+            document.getElementById('depth-value').textContent = depth;
+            draw();
+        });
+
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            colorScheme = e.target.value;
+            draw();
+        });
+
+        document.getElementById('show-geodesics').addEventListener('change', (e) => {
+            showGeodesics = e.target.checked;
+            draw();
+        });
+
+        // Initial draw
+        draw();
+    </script>
+</body>
+</html>

@@ -67,6 +67,11 @@
         <div class="max-w-6xl mx-auto px-6 py-4">
             <div class="flex justify-between items-center">
                 <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Math Visual Lab</span>
+                    </nav>
                     <h1 class="text-2xl font-light">
                         <span class="text-violet-400 font-medium glow-text">Math</span> Visual Lab
                     </h1>
@@ -92,8 +97,8 @@
                 Matemáticas <span class="text-violet-400 font-medium glow-text">visuales</span>
             </h2>
             <p class="text-gray-500 max-w-2xl mx-auto">
-                15 experiencias interactivas donde los algoritmos cobran vida.
-                Fractales, caos, cálculo y geometría computacional.
+                22 experiencias interactivas donde los algoritmos cobran vida.
+                Fractales, caos, cálculo, topología y geometría computacional.
             </p>
         </section>
 
@@ -355,6 +360,125 @@
                 </div>
             </a>
 
+            <!-- Disco de Poincaré -->
+            <a href="poincare-disk.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-poincare" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-orange-500/20 text-orange-400">Geometría Hiperbólica</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Disco de Poincaré</h3>
+                        <p class="text-gray-500 text-sm mb-3">Explora el plano hiperbólico donde hay infinitas paralelas. Teselaciones {p,q} como las de M.C. Escher.</p>
+                        <div class="equation text-orange-400/70 text-sm mb-4">ds² = 4(dx²+dy²)/(1-r²)²</div>
+                        <span class="block w-full text-center py-2 bg-orange-500/10 text-orange-400 rounded-lg hover:bg-orange-500/20 transition text-sm font-medium">
+                            Teselar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Domain Coloring -->
+            <a href="domain-coloring.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-domain" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-pink-500/20 text-pink-400">Análisis Complejo</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Domain Coloring</h3>
+                        <p class="text-gray-500 text-sm mb-3">Visualiza funciones complejas con colores. Ceros, polos y estructuras de z², sin(z), Γ(z) y más.</p>
+                        <div class="equation text-pink-400/70 text-sm mb-4">f(z) = u(x,y) + iv(x,y)</div>
+                        <span class="block w-full text-center py-2 bg-pink-500/10 text-pink-400 rounded-lg hover:bg-pink-500/20 transition text-sm font-medium">
+                            Colorear →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Autómatas Elementales -->
+            <a href="automatas-elementales.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-automata" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-lime-500/20 text-lime-400">Autómatas</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Autómatas Elementales</h3>
+                        <p class="text-gray-500 text-sm mb-3">Las 256 reglas de Wolfram. La Regla 110 es Turing-completa. Caos, periodicidad y complejidad emergente.</p>
+                        <div class="equation text-lime-400/70 text-sm mb-4">a[i]' = f(a[i-1], a[i], a[i+1])</div>
+                        <span class="block w-full text-center py-2 bg-lime-500/10 text-lime-400 rounded-lg hover:bg-lime-500/20 transition text-sm font-medium">
+                            Generar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Problema de 3 Cuerpos -->
+            <a href="three-body.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-threebody" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Problema de 3 Cuerpos</h3>
+                        <p class="text-gray-500 text-sm mb-3">Gravitación newtoniana sin solución analítica. Órbitas periódicas: Figura 8, Lagrange, Mariposa y más.</p>
+                        <div class="equation text-violet-400/70 text-sm mb-4">F = Gm₁m₂/r², sistema caótico</div>
+                        <span class="block w-full text-center py-2 bg-violet-500/10 text-violet-400 rounded-lg hover:bg-violet-500/20 transition text-sm font-medium">
+                            Orbitar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Banda de Möbius -->
+            <a href="mobius-strip.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-mobius" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-orange-500/20 text-orange-400">Topología</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Banda de Möbius</h3>
+                        <p class="text-gray-500 text-sm mb-3">Superficie no orientable con un solo lado y un solo borde. Explora también Klein y el Toro en 3D.</p>
+                        <div class="equation text-orange-400/70 text-sm mb-4">x = (1+v·cos(u/2))·cos(u)</div>
+                        <span class="block w-full text-center py-2 bg-orange-500/10 text-orange-400 rounded-lg hover:bg-orange-500/20 transition text-sm font-medium">
+                            Rotar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Nudos Matemáticos -->
+            <a href="mathematical-knots.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-knots" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-orange-500/20 text-orange-400">Topología</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Nudos Matemáticos</h3>
+                        <p class="text-gray-500 text-sm mb-3">Trefoil, Figura 8, Cinquefoil y más. Teoría de nudos en 3D con tubos renderizados y rotación interactiva.</p>
+                        <div class="equation text-orange-400/70 text-sm mb-4">3₁, 4₁, 5₁... invariantes topológicos</div>
+                        <span class="block w-full text-center py-2 bg-orange-500/10 text-orange-400 rounded-lg hover:bg-orange-500/20 transition text-sm font-medium">
+                            Anudar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
+            <!-- Grupos de Simetría -->
+            <a href="symmetry-groups.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-symmetry" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-yellow-500/20 text-yellow-400">Geometría</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Grupos de Simetría</h3>
+                        <p class="text-gray-500 text-sm mb-3">Los 17 grupos de wallpaper. Rotaciones, reflexiones y deslizamientos. El arte islámico y Escher.</p>
+                        <div class="equation text-yellow-400/70 text-sm mb-4">p1, p4m, p6m... 17 grupos</div>
+                        <span class="block w-full text-center py-2 bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition text-sm font-medium">
+                            Simetrizar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
         </section>
 
         <!-- Tech Stack -->
@@ -364,10 +488,11 @@
                 <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Canvas 2D</span>
                 <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">ImageData</span>
                 <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">DFT</span>
-                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Runge-Kutta</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">RK4</span>
                 <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">HSV Mapping</span>
-                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Recursión</span>
-                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Monte Carlo</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">3D Projection</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Möbius Transform</span>
+                <span class="px-3 py-1.5 bg-gray-900 rounded-full text-sm text-gray-400 mono">Wolfram Rules</span>
             </div>
         </section>
     </main>

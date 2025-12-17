@@ -1,0 +1,662 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Grupos de Simetría - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .group-btn {
+            transition: all 0.2s;
+        }
+        .group-btn.active {
+            background: rgba(168, 85, 247, 0.3);
+            border-color: #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Grupos de Simetría</span>
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Grupo: <span id="group-display" class="text-violet-400">p4m</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <div class="flex-1 relative bg-gray-950">
+            <canvas id="canvas"></canvas>
+        </div>
+
+        <aside class="w-96 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Grupos de Wallpaper</h2>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Los 17 Grupos Cristalográficos</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p1">p1</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p2">p2</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="pm">pm</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="pg">pg</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="cm">cm</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="pmm">pmm</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="pmg">pmg</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="pgg">pgg</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="cmm">cmm</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p4">p4</button>
+                    <button class="group-btn active px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p4m">p4m</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p4g">p4g</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p3">p3</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p3m1">p3m1</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p31m">p31m</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p6">p6</button>
+                    <button class="group-btn px-2 py-1.5 bg-gray-900 border border-gray-700 hover:bg-gray-800 rounded text-xs font-mono" data-group="p6m">p6m</button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Motivo Base</label>
+                <select id="motif-select" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="f">Letra F</option>
+                    <option value="arrow">Flecha</option>
+                    <option value="fish">Pez</option>
+                    <option value="spiral">Espiral</option>
+                    <option value="star">Estrella</option>
+                    <option value="flower">Flor</option>
+                </select>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Tamaño de Celda: <span id="cell-value" class="text-violet-400 mono">80</span>
+                </label>
+                <input type="range" id="cell-slider" min="40" max="150" value="80" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Esquema de Color</label>
+                <select id="color-scheme" class="w-full bg-gray-900 border border-gray-800 rounded-lg px-3 py-2 text-sm focus:border-violet-500 focus:outline-none">
+                    <option value="violet">Violeta</option>
+                    <option value="rainbow">Arcoíris</option>
+                    <option value="warm">Cálido</option>
+                    <option value="cool">Frío</option>
+                    <option value="mono">Monocromático</option>
+                </select>
+            </div>
+
+            <div class="mb-6 space-y-2">
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-grid" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar celda unidad</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-axes" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar ejes de simetría</span>
+                </label>
+                <label class="flex items-center gap-3 cursor-pointer">
+                    <input type="checkbox" id="show-centers" class="w-4 h-4 rounded bg-gray-900 border-gray-700 text-violet-500">
+                    <span class="text-sm text-gray-400">Mostrar centros de rotación</span>
+                </label>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg" id="group-info">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Información del Grupo</h3>
+                <div class="text-xs text-gray-500 space-y-1">
+                    <div>Sistema: <span id="lattice" class="text-cyan-400">Cuadrado</span></div>
+                    <div>Rotaciones: <span id="rotations" class="text-violet-400">4-fold</span></div>
+                    <div>Reflexiones: <span id="reflections" class="text-green-400">Sí</span></div>
+                    <div>Deslizamientos: <span id="glides" class="text-yellow-400">No</span></div>
+                </div>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Clasificación</h3>
+                <ul class="text-xs text-gray-500 space-y-1">
+                    <li><span class="text-violet-400">p</span> = primitivo, <span class="text-cyan-400">c</span> = centrado</li>
+                    <li><span class="text-green-400">m</span> = espejo, <span class="text-yellow-400">g</span> = deslizamiento</li>
+                    <li>Número = orden de rotación máximo</li>
+                </ul>
+            </div>
+
+            <div class="math-box rounded-xl p-4">
+                <h3 class="text-sm font-medium text-violet-400 mb-3">Teorema de Clasificación</h3>
+                <p class="text-xs text-gray-400 leading-relaxed mb-2">
+                    Existen exactamente <strong>17</strong> grupos de simetría del plano (grupos de wallpaper). Esto fue probado por Fedorov (1891) y Pólya (1924).
+                </p>
+                <p class="text-xs text-gray-500">
+                    Cada patrón periódico en el plano pertenece a uno de estos 17 grupos. Los encontramos en mosaicos islámicos, pavimentos romanos y arte de Escher.
+                </p>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        let currentGroup = 'p4m';
+        let motif = 'f';
+        let cellSize = 80;
+        let colorScheme = 'violet';
+        let showGrid = false;
+        let showAxes = false;
+        let showCenters = false;
+
+        const groupInfo = {
+            p1: { lattice: 'Oblicuo', rotations: 'Ninguna', reflections: 'No', glides: 'No' },
+            p2: { lattice: 'Oblicuo', rotations: '2-fold', reflections: 'No', glides: 'No' },
+            pm: { lattice: 'Rectangular', rotations: 'Ninguna', reflections: 'Sí (paralelas)', glides: 'No' },
+            pg: { lattice: 'Rectangular', rotations: 'Ninguna', reflections: 'No', glides: 'Sí' },
+            cm: { lattice: 'Romboidal', rotations: 'Ninguna', reflections: 'Sí', glides: 'Sí' },
+            pmm: { lattice: 'Rectangular', rotations: '2-fold', reflections: 'Sí (perpendiculares)', glides: 'No' },
+            pmg: { lattice: 'Rectangular', rotations: '2-fold', reflections: 'Sí', glides: 'Sí' },
+            pgg: { lattice: 'Rectangular', rotations: '2-fold', reflections: 'No', glides: 'Sí' },
+            cmm: { lattice: 'Romboidal', rotations: '2-fold', reflections: 'Sí', glides: 'Sí' },
+            p4: { lattice: 'Cuadrado', rotations: '4-fold', reflections: 'No', glides: 'No' },
+            p4m: { lattice: 'Cuadrado', rotations: '4-fold', reflections: 'Sí', glides: 'Sí' },
+            p4g: { lattice: 'Cuadrado', rotations: '4-fold', reflections: 'Sí', glides: 'Sí' },
+            p3: { lattice: 'Hexagonal', rotations: '3-fold', reflections: 'No', glides: 'No' },
+            p3m1: { lattice: 'Hexagonal', rotations: '3-fold', reflections: 'Sí', glides: 'No' },
+            p31m: { lattice: 'Hexagonal', rotations: '3-fold', reflections: 'Sí', glides: 'No' },
+            p6: { lattice: 'Hexagonal', rotations: '6-fold', reflections: 'No', glides: 'No' },
+            p6m: { lattice: 'Hexagonal', rotations: '6-fold', reflections: 'Sí', glides: 'Sí' }
+        };
+
+        function resize() {
+            canvas.width = canvas.parentElement.clientWidth;
+            canvas.height = canvas.parentElement.clientHeight;
+        }
+
+        function getColor(index) {
+            switch (colorScheme) {
+                case 'violet':
+                    return index % 2 === 0 ? '#a855f7' : '#22d3ee';
+                case 'rainbow':
+                    return `hsl(${(index * 47) % 360}, 70%, 50%)`;
+                case 'warm':
+                    return `hsl(${(index * 30) % 60}, 80%, 50%)`;
+                case 'cool':
+                    return `hsl(${180 + (index * 30) % 60}, 70%, 50%)`;
+                case 'mono':
+                    return index % 2 === 0 ? '#a855f7' : '#6b21a8';
+                default:
+                    return '#a855f7';
+            }
+        }
+
+        // Draw motifs
+        function drawMotif(x, y, scale, rotation, mirror, colorIndex) {
+            ctx.save();
+            ctx.translate(x, y);
+            ctx.rotate(rotation);
+            if (mirror) ctx.scale(-1, 1);
+            ctx.scale(scale, scale);
+
+            ctx.fillStyle = getColor(colorIndex);
+            ctx.strokeStyle = 'rgba(0,0,0,0.3)';
+            ctx.lineWidth = 1 / scale;
+
+            switch (motif) {
+                case 'f':
+                    // Letter F
+                    ctx.beginPath();
+                    ctx.moveTo(-8, -15);
+                    ctx.lineTo(-8, 15);
+                    ctx.lineTo(-4, 15);
+                    ctx.lineTo(-4, 2);
+                    ctx.lineTo(6, 2);
+                    ctx.lineTo(6, -2);
+                    ctx.lineTo(-4, -2);
+                    ctx.lineTo(-4, -11);
+                    ctx.lineTo(8, -11);
+                    ctx.lineTo(8, -15);
+                    ctx.closePath();
+                    break;
+
+                case 'arrow':
+                    ctx.beginPath();
+                    ctx.moveTo(0, -15);
+                    ctx.lineTo(10, 5);
+                    ctx.lineTo(4, 5);
+                    ctx.lineTo(4, 15);
+                    ctx.lineTo(-4, 15);
+                    ctx.lineTo(-4, 5);
+                    ctx.lineTo(-10, 5);
+                    ctx.closePath();
+                    break;
+
+                case 'fish':
+                    ctx.beginPath();
+                    ctx.moveTo(15, 0);
+                    ctx.quadraticCurveTo(5, -10, -10, -5);
+                    ctx.lineTo(-15, -10);
+                    ctx.lineTo(-15, 10);
+                    ctx.lineTo(-10, 5);
+                    ctx.quadraticCurveTo(5, 10, 15, 0);
+                    ctx.closePath();
+                    // Eye
+                    ctx.moveTo(8, -2);
+                    ctx.arc(6, -2, 2, 0, Math.PI * 2);
+                    break;
+
+                case 'spiral':
+                    ctx.beginPath();
+                    for (let t = 0; t < 4 * Math.PI; t += 0.1) {
+                        const r = 2 + t * 1.5;
+                        const px = r * Math.cos(t);
+                        const py = r * Math.sin(t);
+                        if (t === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.lineWidth = 3 / scale;
+                    ctx.stroke();
+                    ctx.restore();
+                    return;
+
+                case 'star':
+                    ctx.beginPath();
+                    for (let i = 0; i < 5; i++) {
+                        const angle = (i * 4 * Math.PI / 5) - Math.PI / 2;
+                        const r = 12;
+                        const px = r * Math.cos(angle);
+                        const py = r * Math.sin(angle);
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    break;
+
+                case 'flower':
+                    // Petals
+                    for (let i = 0; i < 5; i++) {
+                        const angle = (i * 2 * Math.PI / 5);
+                        ctx.beginPath();
+                        ctx.ellipse(
+                            8 * Math.cos(angle),
+                            8 * Math.sin(angle),
+                            6, 3,
+                            angle, 0, Math.PI * 2
+                        );
+                        ctx.fill();
+                        ctx.stroke();
+                    }
+                    // Center
+                    ctx.beginPath();
+                    ctx.arc(0, 0, 4, 0, Math.PI * 2);
+                    ctx.fillStyle = '#fbbf24';
+                    ctx.fill();
+                    ctx.stroke();
+                    ctx.restore();
+                    return;
+            }
+
+            ctx.fill();
+            ctx.stroke();
+            ctx.restore();
+        }
+
+        // Apply symmetry operations based on wallpaper group
+        function getTransforms(group) {
+            const transforms = [];
+
+            switch (group) {
+                case 'p1':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    break;
+
+                case 'p2':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: Math.PI, mirrorX: false, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    break;
+
+                case 'pm':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: true, mirrorY: false, dx: 0.5, dy: 0 });
+                    break;
+
+                case 'pg':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: true, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    break;
+
+                case 'cm':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: true, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    transforms.push({ rot: 0, mirrorX: true, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    break;
+
+                case 'pmm':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: true, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: true, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: true, mirrorY: true, dx: 0, dy: 0 });
+                    break;
+
+                case 'pmg':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: 0, mirrorX: true, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: Math.PI, mirrorX: false, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    transforms.push({ rot: Math.PI, mirrorX: true, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    break;
+
+                case 'pgg':
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    transforms.push({ rot: Math.PI, mirrorX: false, mirrorY: false, dx: 0.5, dy: 0 });
+                    transforms.push({ rot: Math.PI, mirrorX: false, mirrorY: false, dx: 0, dy: 0.5 });
+                    transforms.push({ rot: 0, mirrorX: false, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    break;
+
+                case 'cmm':
+                    for (let mx of [false, true]) {
+                        for (let my of [false, true]) {
+                            transforms.push({ rot: 0, mirrorX: mx, mirrorY: my, dx: 0, dy: 0 });
+                            transforms.push({ rot: 0, mirrorX: mx, mirrorY: my, dx: 0.5, dy: 0.5 });
+                        }
+                    }
+                    break;
+
+                case 'p4':
+                    for (let r = 0; r < 4; r++) {
+                        transforms.push({ rot: r * Math.PI / 2, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                    }
+                    break;
+
+                case 'p4m':
+                    for (let r = 0; r < 4; r++) {
+                        transforms.push({ rot: r * Math.PI / 2, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                        transforms.push({ rot: r * Math.PI / 2, mirrorX: true, mirrorY: false, dx: 0, dy: 0 });
+                    }
+                    break;
+
+                case 'p4g':
+                    for (let r = 0; r < 4; r++) {
+                        transforms.push({ rot: r * Math.PI / 2, mirrorX: false, mirrorY: false, dx: 0, dy: 0 });
+                        transforms.push({ rot: r * Math.PI / 2 + Math.PI / 4, mirrorX: true, mirrorY: false, dx: 0.5, dy: 0.5 });
+                    }
+                    break;
+
+                case 'p3':
+                    for (let r = 0; r < 3; r++) {
+                        transforms.push({ rot: r * 2 * Math.PI / 3, mirrorX: false, mirrorY: false, dx: 0, dy: 0, hex: true });
+                    }
+                    break;
+
+                case 'p3m1':
+                    for (let r = 0; r < 3; r++) {
+                        transforms.push({ rot: r * 2 * Math.PI / 3, mirrorX: false, mirrorY: false, dx: 0, dy: 0, hex: true });
+                        transforms.push({ rot: r * 2 * Math.PI / 3, mirrorX: true, mirrorY: false, dx: 0, dy: 0, hex: true });
+                    }
+                    break;
+
+                case 'p31m':
+                    for (let r = 0; r < 3; r++) {
+                        transforms.push({ rot: r * 2 * Math.PI / 3, mirrorX: false, mirrorY: false, dx: 0, dy: 0, hex: true });
+                        transforms.push({ rot: r * 2 * Math.PI / 3 + Math.PI / 3, mirrorX: true, mirrorY: false, dx: 0, dy: 0, hex: true });
+                    }
+                    break;
+
+                case 'p6':
+                    for (let r = 0; r < 6; r++) {
+                        transforms.push({ rot: r * Math.PI / 3, mirrorX: false, mirrorY: false, dx: 0, dy: 0, hex: true });
+                    }
+                    break;
+
+                case 'p6m':
+                    for (let r = 0; r < 6; r++) {
+                        transforms.push({ rot: r * Math.PI / 3, mirrorX: false, mirrorY: false, dx: 0, dy: 0, hex: true });
+                        transforms.push({ rot: r * Math.PI / 3, mirrorX: true, mirrorY: false, dx: 0, dy: 0, hex: true });
+                    }
+                    break;
+            }
+
+            return transforms;
+        }
+
+        function draw() {
+            ctx.fillStyle = '#050505';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+            const transforms = getTransforms(currentGroup);
+            const isHex = transforms.some(t => t.hex);
+
+            // Calculate grid
+            const cols = Math.ceil(canvas.width / cellSize) + 2;
+            const rows = Math.ceil(canvas.height / cellSize) + 2;
+
+            // Draw pattern
+            for (let row = -1; row < rows; row++) {
+                for (let col = -1; col < cols; col++) {
+                    let baseX, baseY;
+
+                    if (isHex) {
+                        baseX = col * cellSize * 1.5;
+                        baseY = row * cellSize * Math.sqrt(3) + (col % 2) * cellSize * Math.sqrt(3) / 2;
+                    } else {
+                        baseX = col * cellSize;
+                        baseY = row * cellSize;
+                    }
+
+                    transforms.forEach((t, i) => {
+                        const x = baseX + t.dx * cellSize;
+                        const y = baseY + t.dy * cellSize;
+
+                        let effectiveScale = cellSize / 40;
+                        let effectiveRot = t.rot;
+                        let effectiveMirror = t.mirrorX;
+
+                        if (t.mirrorY) {
+                            effectiveRot += Math.PI;
+                            effectiveMirror = !effectiveMirror;
+                        }
+
+                        drawMotif(x, y, effectiveScale, effectiveRot, effectiveMirror, i + col + row);
+                    });
+                }
+            }
+
+            // Draw grid
+            if (showGrid) {
+                ctx.strokeStyle = 'rgba(168, 85, 247, 0.3)';
+                ctx.lineWidth = 1;
+
+                if (isHex) {
+                    for (let row = 0; row < rows; row++) {
+                        for (let col = 0; col < cols; col++) {
+                            const x = col * cellSize * 1.5;
+                            const y = row * cellSize * Math.sqrt(3) + (col % 2) * cellSize * Math.sqrt(3) / 2;
+                            drawHexagon(x, y, cellSize * 0.8);
+                        }
+                    }
+                } else {
+                    for (let i = 0; i <= cols; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(i * cellSize, 0);
+                        ctx.lineTo(i * cellSize, canvas.height);
+                        ctx.stroke();
+                    }
+                    for (let i = 0; i <= rows; i++) {
+                        ctx.beginPath();
+                        ctx.moveTo(0, i * cellSize);
+                        ctx.lineTo(canvas.width, i * cellSize);
+                        ctx.stroke();
+                    }
+                }
+            }
+
+            // Draw axes of symmetry
+            if (showAxes && groupInfo[currentGroup].reflections !== 'No') {
+                ctx.strokeStyle = 'rgba(34, 211, 238, 0.5)';
+                ctx.lineWidth = 2;
+                ctx.setLineDash([5, 5]);
+
+                // Simplified - draw main reflection axes through center
+                const cx = canvas.width / 2;
+                const cy = canvas.height / 2;
+
+                ctx.beginPath();
+                ctx.moveTo(0, cy);
+                ctx.lineTo(canvas.width, cy);
+                ctx.stroke();
+
+                ctx.beginPath();
+                ctx.moveTo(cx, 0);
+                ctx.lineTo(cx, canvas.height);
+                ctx.stroke();
+
+                if (currentGroup.includes('4') || currentGroup.includes('m')) {
+                    ctx.beginPath();
+                    ctx.moveTo(0, 0);
+                    ctx.lineTo(canvas.width, canvas.height);
+                    ctx.stroke();
+
+                    ctx.beginPath();
+                    ctx.moveTo(canvas.width, 0);
+                    ctx.lineTo(0, canvas.height);
+                    ctx.stroke();
+                }
+
+                ctx.setLineDash([]);
+            }
+
+            // Draw rotation centers
+            if (showCenters && groupInfo[currentGroup].rotations !== 'Ninguna') {
+                const order = currentGroup.includes('6') ? 6 :
+                              currentGroup.includes('4') ? 4 :
+                              currentGroup.includes('3') ? 3 : 2;
+
+                ctx.fillStyle = '#fbbf24';
+
+                for (let row = 0; row < rows; row++) {
+                    for (let col = 0; col < cols; col++) {
+                        const x = col * cellSize + cellSize / 2;
+                        const y = row * cellSize + cellSize / 2;
+
+                        ctx.beginPath();
+                        ctx.arc(x, y, 4, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Draw rotation order indicator
+                        ctx.font = '10px JetBrains Mono';
+                        ctx.fillText(order.toString(), x + 6, y - 6);
+                    }
+                }
+            }
+        }
+
+        function drawHexagon(cx, cy, size) {
+            ctx.beginPath();
+            for (let i = 0; i < 6; i++) {
+                const angle = i * Math.PI / 3;
+                const x = cx + size * Math.cos(angle);
+                const y = cy + size * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            ctx.stroke();
+        }
+
+        function updateGroupInfo() {
+            const info = groupInfo[currentGroup];
+            document.getElementById('lattice').textContent = info.lattice;
+            document.getElementById('rotations').textContent = info.rotations;
+            document.getElementById('reflections').textContent = info.reflections;
+            document.getElementById('glides').textContent = info.glides;
+            document.getElementById('group-display').textContent = currentGroup;
+
+            // Update button states
+            document.querySelectorAll('.group-btn').forEach(btn => {
+                btn.classList.toggle('active', btn.dataset.group === currentGroup);
+            });
+        }
+
+        // Event listeners
+        document.querySelectorAll('.group-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                currentGroup = btn.dataset.group;
+                updateGroupInfo();
+                draw();
+            });
+        });
+
+        document.getElementById('motif-select').addEventListener('change', (e) => {
+            motif = e.target.value;
+            draw();
+        });
+
+        document.getElementById('cell-slider').addEventListener('input', (e) => {
+            cellSize = parseInt(e.target.value);
+            document.getElementById('cell-value').textContent = cellSize;
+            draw();
+        });
+
+        document.getElementById('color-scheme').addEventListener('change', (e) => {
+            colorScheme = e.target.value;
+            draw();
+        });
+
+        document.getElementById('show-grid').addEventListener('change', (e) => {
+            showGrid = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('show-axes').addEventListener('change', (e) => {
+            showAxes = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('show-centers').addEventListener('change', (e) => {
+            showCenters = e.target.checked;
+            draw();
+        });
+
+        window.addEventListener('resize', () => {
+            resize();
+            draw();
+        });
+
+        // Initialize
+        resize();
+        updateGroupInfo();
+        draw();
+    </script>
+</body>
+</html>

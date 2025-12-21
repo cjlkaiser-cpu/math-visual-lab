@@ -1,0 +1,723 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Diagrama de Voronoi | Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #141420;
+            --bg-tertiary: #1e1e2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #facc15;
+            --accent-dim: rgba(250, 204, 21, 0.3);
+            --accent-glow: rgba(250, 204, 21, 0.15);
+            --accent-secondary: #22d3ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--accent-dim);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        h1 .accent {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 3rem 0 1.5rem 0;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.2em;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem 0;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .intro {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        .observation-box ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .observation-box li {
+            margin-bottom: 0.75rem;
+        }
+
+        .equation-block {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1rem;
+            overflow-x: auto;
+        }
+
+        .equation-block .equation-main {
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .equation-block .equation-desc {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            text-align: left;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .experiment-section h3 {
+            margin-top: 0;
+        }
+
+        .steps {
+            counter-reset: step;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step;
+            padding-left: 3rem;
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .historical-note {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .historical-note::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--accent-dim);
+            position: absolute;
+            top: -0.5rem;
+            left: 1rem;
+            font-family: Georgia, serif;
+        }
+
+        .historical-note p {
+            margin-left: 2rem;
+        }
+
+        .timeline {
+            border-left: 2px solid var(--accent-dim);
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.45rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .connection-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .connection-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .connection-item .field {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .connection-item .topic {
+            font-weight: 500;
+        }
+
+        .further-reading {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+        }
+
+        .further-reading ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .further-reading li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--accent-dim);
+        }
+
+        .further-reading li:last-child {
+            border-bottom: none;
+        }
+
+        .further-reading a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .further-reading a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--accent-dim);
+            text-align: center;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .dual-box {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .dual-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .dual-item.voronoi {
+            border-color: var(--accent);
+        }
+
+        .dual-item.delaunay {
+            border-color: var(--accent-secondary);
+        }
+
+        .dual-item h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.1rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .dual-item.voronoi h4 {
+            color: var(--accent);
+        }
+
+        .dual-item.delaunay h4 {
+            color: var(--accent-secondary);
+        }
+
+        .dual-item p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+            text-align: center;
+        }
+
+        .application-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .application-item {
+            background: var(--bg-tertiary);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .application-icon {
+            font-size: 1.8rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .application-name {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .application-desc {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-top: 0.3rem;
+        }
+
+        @media (max-width: 600px) {
+            .dual-box {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> &raquo; Guía: Diagrama de Voronoi
+        </nav>
+        <h1>Diagrama de <span class="accent">Voronoi</span></h1>
+        <p class="subtitle">Partición del espacio por proximidad</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            Un diagrama de Voronoi divide el plano en regiones donde cada punto pertenece al sitio generador más cercano. Esta partición aparece naturalmente en territorios animales, estructuras celulares, cristales y redes de telecomunicaciones. Es una de las estructuras geométricas más ubicuas en la naturaleza.
+        </p>
+
+        <div class="observation-box">
+            <h3>Lo que observarás en esta simulación</h3>
+            <ul>
+                <li><strong>Celdas coloreadas:</strong> cada región contiene todos los puntos más cercanos a su semilla</li>
+                <li><strong>Bordes de Voronoi:</strong> equidistantes de exactamente dos semillas (mediatrices)</li>
+                <li><strong>Vértices:</strong> equidistantes de exactamente tres semillas (circuncentros)</li>
+                <li><strong>Triangulación de Delaunay:</strong> el grafo dual que conecta semillas vecinas</li>
+                <li><strong>Circuncentros:</strong> centros de circuncírculos que definen los vértices de Voronoi</li>
+            </ul>
+        </div>
+
+        <h2>Conceptos Fundamentales</h2>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Celda de Voronoi</h4>
+                <p>V(p) = {x : d(x,p) ≤ d(x,q) para todo q}. La región de puntos más cercanos al sitio p que a cualquier otro sitio.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Mediatriz</h4>
+                <p>Cada borde de Voronoi yace sobre la mediatriz de dos sitios vecinos: la línea donde ambas distancias son iguales.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Triangulación de Delaunay</h4>
+                <p>El grafo dual: conecta sitios cuyas celdas comparten borde. Maximiza el ángulo mínimo de todos los triángulos.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Circuncírculo Vacío</h4>
+                <p>Propiedad clave de Delaunay: ningún otro sitio cae dentro del circuncírculo de cualquier triángulo.</p>
+            </div>
+        </div>
+
+        <h2>La Dualidad</h2>
+
+        <div class="dual-box">
+            <div class="dual-item voronoi">
+                <h4>Voronoi</h4>
+                <p>Vértices ↔ Triángulos</p>
+                <p>Aristas ↔ Aristas</p>
+                <p>Celdas ↔ Vértices</p>
+            </div>
+            <div class="dual-item delaunay">
+                <h4>Delaunay</h4>
+                <p>Triángulos ↔ Vértices</p>
+                <p>Aristas ↔ Aristas</p>
+                <p>Vértices ↔ Celdas</p>
+            </div>
+        </div>
+
+        <p>
+            Los <strong>vértices de Voronoi</strong> son exactamente los <strong>circuncentros de los triángulos de Delaunay</strong>. Esta dualidad permite calcular uno a partir del otro eficientemente.
+        </p>
+
+        <h2>Definición Matemática</h2>
+
+        <div class="equation-block">
+            <div class="equation-main">V(pᵢ) = { x ∈ ℝ² : ||x - pᵢ|| ≤ ||x - pⱼ|| ∀j ≠ i }</div>
+            <div class="equation-desc">Celda de Voronoi del sitio pᵢ usando distancia euclidiana</div>
+        </div>
+
+        <p>
+            La simulación usa el <strong>algoritmo de Bowyer-Watson</strong> para construir la triangulación de Delaunay incrementalmente, y luego deriva el diagrama de Voronoi conectando los circuncentros.
+        </p>
+
+        <div class="equation-block">
+            <div class="equation-main">Circuncentro: (ux, uy)</div>
+            <div class="equation-desc">ux = [(a²)(by-cy) + (b²)(cy-ay) + (c²)(ay-by)] / D</div>
+            <div class="equation-desc">donde D = 2[ax(by-cy) + bx(cy-ay) + cx(ay-by)]</div>
+        </div>
+
+        <h2>Experimento 1: Construcción Interactiva</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Entender cómo se forman las celdas</h3>
+
+            <ol class="steps">
+                <li>Haz clic en "Limpiar Todo" para empezar con un canvas vacío.</li>
+                <li>Añade un solo punto. No hay diagrama con un solo sitio (toda el área le pertenece).</li>
+                <li>Añade un segundo punto. Aparece una línea recta: la mediatriz entre ambos sitios.</li>
+                <li>Añade un tercer punto. Ahora hay un vértice de Voronoi donde convergen tres mediatrices.</li>
+                <li>Continúa añadiendo puntos y observa cómo cada celda es un polígono convexo.</li>
+                <li>Arrastra un punto existente y observa cómo se recalcula todo el diagrama en tiempo real.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> Las celdas de Voronoi son siempre polígonos convexos. Las celdas del borde son infinitas (se extienden hasta el límite del canvas).</p>
+        </div>
+
+        <h2>Experimento 2: La Dualidad Voronoi-Delaunay</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Visualizar la relación dual</h3>
+
+            <ol class="steps">
+                <li>Carga el preset "10 Aleatorios" para tener suficientes puntos.</li>
+                <li>Activa "Mostrar triangulación Delaunay" (aparece en azul cyan).</li>
+                <li>Observa que cada triángulo de Delaunay tiene exactamente un vértice de Voronoi en su centro.</li>
+                <li>Activa "Mostrar circuncentros" para ver estos puntos en morado.</li>
+                <li>Cada arista de Delaunay (conectando dos sitios) es perpendicular a la arista de Voronoi correspondiente.</li>
+                <li>Mueve un punto y observa cómo ambas estructuras se actualizan manteniendo la dualidad.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> Voronoi y Delaunay son dos caras de la misma moneda. Calcular uno te da el otro.</p>
+        </div>
+
+        <h2>Experimento 3: Configuraciones Especiales</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Explorar patrones de simetría</h3>
+
+            <ol class="steps">
+                <li>Carga el preset "Grilla". Observa que las celdas son cuadrados perfectos debido a la simetría.</li>
+                <li>Carga "Círculo". Los 12 puntos en círculo crean celdas triangulares/trapezoidales, con el punto central teniendo una celda dodecagonal.</li>
+                <li>Carga "Espiral". Las celdas se alargan siguiendo la curva, más estrechas hacia el centro.</li>
+                <li>Carga "Clusters". Los grupos de puntos compiten por espacio, creando fronteras complejas entre clusters.</li>
+                <li>En cada configuración, activa la triangulación de Delaunay para ver cómo conecta los puntos.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> La distribución de los sitios determina completamente la estructura del diagrama. Patrones regulares producen celdas regulares.</p>
+        </div>
+
+        <h2>Experimento 4: Animación y Dinámicas</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Ver cómo evoluciona el diagrama</h3>
+
+            <ol class="steps">
+                <li>Carga "50 Aleatorios" para tener un diagrama complejo.</li>
+                <li>Activa "Animar puntos" y ajusta la velocidad a 1.0x.</li>
+                <li>Observa cómo las celdas cambian de forma continuamente a medida que los puntos se mueven.</li>
+                <li>Los puntos rebotan en los bordes. Nota cómo los vecinos topológicos pueden cambiar.</li>
+                <li>Desactiva "Mostrar celdas coloreadas" y activa solo los bordes para ver mejor la estructura.</li>
+                <li>Pausa la animación cuando veas una configuración interesante.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> El diagrama de Voronoi cambia continuamente, pero la topología (qué celdas son vecinas) solo cambia cuando tres circuncentros se alinean.</p>
+        </div>
+
+        <h2>Aplicaciones</h2>
+
+        <div class="application-grid">
+            <div class="application-item">
+                <div class="application-icon">📱</div>
+                <div class="application-name">Redes Celulares</div>
+                <div class="application-desc">Cobertura de antenas</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">🔬</div>
+                <div class="application-name">Biología</div>
+                <div class="application-desc">Territorios celulares</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">💎</div>
+                <div class="application-name">Cristalografía</div>
+                <div class="application-desc">Dominios de Wigner-Seitz</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">🌦️</div>
+                <div class="application-name">Meteorología</div>
+                <div class="application-desc">Interpolación espacial</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">🎮</div>
+                <div class="application-name">Videojuegos</div>
+                <div class="application-desc">Generación procedural</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">🗺️</div>
+                <div class="application-name">SIG</div>
+                <div class="application-desc">Análisis de proximidad</div>
+            </div>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="historical-note">
+            <p>
+                René Descartes usó diagramas similares en 1644 para describir la estructura del sistema solar en su teoría de vórtices. Pero fue Georgy Voronoi quien formalizó el concepto matemáticamente a principios del siglo XX, estudiándolo en dimensiones arbitrarias.
+            </p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <span class="timeline-year">1644</span>
+                <p><strong>Descartes:</strong> Usa particiones similares en "Principia Philosophiae" para modelar vórtices cósmicos.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">1850</span>
+                <p><strong>Dirichlet:</strong> Estudia dominios de puntos más cercanos en el contexto de formas cuadráticas.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">1908</span>
+                <p><strong>Voronoi:</strong> Generaliza a n dimensiones en su trabajo sobre formas cuadráticas positivas.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">1934</span>
+                <p><strong>Delaunay:</strong> Introduce la triangulación dual que maximiza ángulos mínimos.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">1981</span>
+                <p><strong>Bowyer y Watson:</strong> Publican independientemente el algoritmo incremental que usa esta simulación.</p>
+            </div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-item">
+                <div class="field">Biología</div>
+                <div class="topic">Células epiteliales</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Física</div>
+                <div class="topic">Celdas de Wigner-Seitz</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Geografía</div>
+                <div class="topic">Polígonos de Thiessen</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Robótica</div>
+                <div class="topic">Planificación de rutas</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Arte</div>
+                <div class="topic">Mosaicos generativos</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Ecología</div>
+                <div class="topic">Territorios animales</div>
+            </div>
+        </div>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Aurenhammer, F. (1991)</strong> - "Voronoi Diagrams - A Survey of a Fundamental Geometric Data Structure"</li>
+                <li><strong>Fortune, S. (1987)</strong> - "A Sweepline Algorithm for Voronoi Diagrams" - algoritmo O(n log n)</li>
+                <li><strong>Simulación: Juego del Caos</strong> - <a href="../juego-caos.html">Fractales por iteración</a></li>
+                <li><strong>Simulación: Grupos de Simetría</strong> - <a href="../symmetry-groups.html">Patrones periódicos en el plano</a></li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            <a href="../voronoi.html">Volver a la simulación de Voronoi</a>
+        </p>
+        <p style="margin-top: 1rem;">
+            Math Visual Lab — EigenLab
+        </p>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,772 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Autómatas Elementales | Math Visual Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #141414;
+            --color-surface-elevated: #1a1a1a;
+            --color-border: #262626;
+            --color-text: #e5e5e5;
+            --color-text-secondary: #a3a3a3;
+            --color-accent: #a855f7;
+            --color-accent-dim: rgba(168, 85, 247, 0.1);
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            font-size: 19px;
+            line-height: 1.7;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .breadcrumb {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.15rem;
+            color: var(--color-text-secondary);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .concept-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .concept-card h4 {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-accent);
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            color: var(--color-text-secondary);
+        }
+
+        .equation-block {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: var(--font-mono);
+            font-size: 1.4rem;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .equation-label {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        .rule-demo {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+        }
+
+        .rule-demo .pattern {
+            display: flex;
+            gap: 2rem;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-bottom: 1rem;
+        }
+
+        .rule-demo .pattern-item {
+            text-align: center;
+        }
+
+        .rule-demo .cells {
+            display: flex;
+            gap: 2px;
+            margin-bottom: 4px;
+        }
+
+        .rule-demo .cell {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+        }
+
+        .rule-demo .cell.on { background: var(--color-accent); }
+        .rule-demo .cell.off { background: #333; }
+
+        .rule-demo .output {
+            width: 20px;
+            height: 20px;
+            border-radius: 3px;
+            margin: 0 auto;
+        }
+
+        .classes-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .class-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .class-card h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+        }
+
+        .class-card.class-i h4 { color: #ef4444; }
+        .class-card.class-ii h4 { color: #fbbf24; }
+        .class-card.class-iii h4 { color: #22c55e; }
+        .class-card.class-iv h4 { color: #06b6d4; }
+
+        .class-card p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 0.5rem;
+        }
+
+        .class-card .examples {
+            font-family: var(--font-mono);
+            font-size: 0.8rem;
+            color: var(--color-text);
+        }
+
+        .rules-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .rules-table th {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            background: var(--color-surface);
+            border-bottom: 2px solid var(--color-accent);
+        }
+
+        .rules-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .rules-table tr:hover {
+            background: var(--color-surface);
+        }
+
+        .rule-number {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        .experiment-block {
+            background: var(--color-surface-elevated);
+            border-radius: 8px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--color-accent);
+        }
+
+        .experiment-block h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .experiment-block ol {
+            margin-left: 1.25rem;
+            color: var(--color-text-secondary);
+        }
+
+        .experiment-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        .key-insight {
+            background: var(--color-accent-dim);
+            border: 1px solid var(--color-accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .key-insight strong {
+            color: var(--color-accent);
+        }
+
+        .timeline {
+            border-left: 2px solid var(--color-border);
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-event {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--color-accent);
+        }
+
+        .timeline-text {
+            color: var(--color-text-secondary);
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-text);
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .connection-item:hover {
+            border-color: var(--color-accent);
+            background: var(--color-surface-elevated);
+        }
+
+        .connection-icon {
+            font-size: 1.5rem;
+        }
+
+        .connection-text {
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+        }
+
+        ul {
+            margin-left: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .btn-launch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 1rem 2rem;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-launch:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+                font-size: 17px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .equation {
+                font-size: 1.1rem;
+            }
+
+            .classes-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía
+        </nav>
+        <h1>Autómatas Elementales</h1>
+        <p class="subtitle">Universos computacionales en una dimensión</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            De reglas absurdamente simples emergen patrones de complejidad asombrosa.
+            Los autómatas celulares elementales demuestran que no necesitas ecuaciones
+            complicadas para generar comportamiento rico: solo una línea de celdas,
+            un vecindario de 3, y una tabla de 8 entradas.
+        </p>
+
+        <h2>¿Qué Observarás?</h2>
+        <p>
+            La simulación muestra la evolución temporal de un autómata celular unidimensional.
+            El eje horizontal representa el espacio (las celdas) y el vertical el tiempo
+            (generaciones sucesivas). Lo que ves es la "historia" completa del sistema
+            desde su condición inicial.
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Patrón de la regla</h4>
+                <p>Los 8 cuadros muestran qué salida produce cada combinación de 3 celdas vecinas.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Número de regla</h4>
+                <p>Un número 0-255 que codifica las 8 salidas como un byte (sistema Wolfram).</p>
+            </div>
+            <div class="concept-card">
+                <h4>Condición inicial</h4>
+                <p>El estado de la primera fila: una célula, aleatorio, alternado o bloques.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Clase de Wolfram</h4>
+                <p>Clasificación del comportamiento: homogéneo, periódico, caótico o complejo.</p>
+            </div>
+        </div>
+
+        <h2>La Regla Como Tabla de Verdad</h2>
+
+        <p>
+            Cada celda mira a su vecina izquierda, a sí misma y a su vecina derecha.
+            Estas 3 celdas binarias forman un número de 3 bits (0-7). La "regla" especifica
+            qué valor tomará la celda central en la siguiente generación para cada caso.
+        </p>
+
+        <div class="rule-demo">
+            <p style="text-align: center; margin-bottom: 1rem; color: var(--color-text-secondary);">
+                Ejemplo: Regla 110
+            </p>
+            <div class="pattern">
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell on"></div>
+                        <div class="cell on"></div>
+                        <div class="cell on"></div>
+                    </div>
+                    <div>111→</div>
+                    <div class="output off"></div>
+                </div>
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell on"></div>
+                        <div class="cell on"></div>
+                        <div class="cell off"></div>
+                    </div>
+                    <div>110→</div>
+                    <div class="output on"></div>
+                </div>
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell on"></div>
+                        <div class="cell off"></div>
+                        <div class="cell on"></div>
+                    </div>
+                    <div>101→</div>
+                    <div class="output on"></div>
+                </div>
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell on"></div>
+                        <div class="cell off"></div>
+                        <div class="cell off"></div>
+                    </div>
+                    <div>100→</div>
+                    <div class="output off"></div>
+                </div>
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell off"></div>
+                        <div class="cell on"></div>
+                        <div class="cell on"></div>
+                    </div>
+                    <div>011→</div>
+                    <div class="output on"></div>
+                </div>
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell off"></div>
+                        <div class="cell on"></div>
+                        <div class="cell off"></div>
+                    </div>
+                    <div>010→</div>
+                    <div class="output on"></div>
+                </div>
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell off"></div>
+                        <div class="cell off"></div>
+                        <div class="cell on"></div>
+                    </div>
+                    <div>001→</div>
+                    <div class="output on"></div>
+                </div>
+                <div class="pattern-item">
+                    <div class="cells">
+                        <div class="cell off"></div>
+                        <div class="cell off"></div>
+                        <div class="cell off"></div>
+                    </div>
+                    <div>000→</div>
+                    <div class="output off"></div>
+                </div>
+            </div>
+            <p style="text-align: center; color: var(--color-text-secondary); font-size: 0.85rem;">
+                Salidas: 0·1·1·0·1·1·1·0 = 01101110₂ = 110₁₀
+            </p>
+        </div>
+
+        <div class="equation-block">
+            <div class="equation">a<sub>i</sub><sup>t+1</sup> = f(a<sub>i-1</sub><sup>t</sup>, a<sub>i</sub><sup>t</sup>, a<sub>i+1</sub><sup>t</sup>)</div>
+            <div class="equation-label">El estado de cada celda depende solo de sus 3 vecinas en el paso anterior</div>
+        </div>
+
+        <h2>Las Cuatro Clases de Wolfram</h2>
+
+        <div class="classes-grid">
+            <div class="class-card class-i">
+                <h4>Clase I: Homogénea</h4>
+                <p>Evoluciona hacia un estado uniforme. Toda la información inicial se pierde.</p>
+                <div class="examples">Ejemplos: 0, 8, 32, 128, 255</div>
+            </div>
+            <div class="class-card class-ii">
+                <h4>Clase II: Periódica</h4>
+                <p>Genera estructuras estables o que se repiten. Predecible a largo plazo.</p>
+                <div class="examples">Ejemplos: 4, 50, 108, 132</div>
+            </div>
+            <div class="class-card class-iii">
+                <h4>Clase III: Caótica</h4>
+                <p>Produce patrones aparentemente aleatorios. Sensible a condiciones iniciales.</p>
+                <div class="examples">Ejemplos: 30, 45, 60, 90, 150</div>
+            </div>
+            <div class="class-card class-iv">
+                <h4>Clase IV: Compleja</h4>
+                <p>En el borde del caos: estructuras localizadas que interactúan. Computacionalmente universal.</p>
+                <div class="examples">Ejemplos: 54, 110, 124</div>
+            </div>
+        </div>
+
+        <div class="key-insight">
+            <strong>La Regla 110 es Turing-completa:</strong> Matthew Cook demostró en 2004 que
+            la Regla 110 puede simular cualquier máquina de Turing. Esto significa que este
+            sistema aparentemente trivial puede, en principio, ejecutar cualquier programa
+            de computadora. La complejidad universal emerge de reglas mínimas.
+        </div>
+
+        <h2>Reglas Famosas</h2>
+
+        <table class="rules-table">
+            <thead>
+                <tr>
+                    <th>Regla</th>
+                    <th>Clase</th>
+                    <th>Comportamiento</th>
+                    <th>Nota</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="rule-number">30</span></td>
+                    <td>III</td>
+                    <td>Caos determinista</td>
+                    <td>Usada como generador de números aleatorios en Mathematica</td>
+                </tr>
+                <tr>
+                    <td><span class="rule-number">90</span></td>
+                    <td>III</td>
+                    <td>Triángulo de Sierpiński</td>
+                    <td>Equivalente a XOR de vecinos; genera fractal</td>
+                </tr>
+                <tr>
+                    <td><span class="rule-number">110</span></td>
+                    <td>IV</td>
+                    <td>Complejidad emergente</td>
+                    <td>Turing-completa; partículas que colisionan</td>
+                </tr>
+                <tr>
+                    <td><span class="rule-number">184</span></td>
+                    <td>II</td>
+                    <td>Modelo de tráfico</td>
+                    <td>Simula autos en una carretera de un carril</td>
+                </tr>
+                <tr>
+                    <td><span class="rule-number">54</span></td>
+                    <td>IV</td>
+                    <td>Estructuras complejas</td>
+                    <td>Similar a 110 en comportamiento</td>
+                </tr>
+                <tr>
+                    <td><span class="rule-number">150</span></td>
+                    <td>III</td>
+                    <td>XOR de los tres</td>
+                    <td>Patrones fractales regulares</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Experimentos Sugeridos</h2>
+
+        <div class="experiment-block">
+            <h4>1. De Sierpiński a caos</h4>
+            <ol>
+                <li>Comienza con la Regla 90 y condición inicial "célula única"</li>
+                <li>Observa el triángulo de Sierpiński que emerge</li>
+                <li>Cambia a Regla 30 con la misma condición inicial</li>
+                <li>Compara: ¿por qué una es ordenada y otra caótica?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>2. Sensibilidad al estado inicial</h4>
+            <ol>
+                <li>Selecciona la Regla 30</li>
+                <li>Ejecuta con "célula única central"</li>
+                <li>Ahora ejecuta con "aleatorio (50%)"</li>
+                <li>¿El borde izquierdo de la regla 30 sigue siendo "aleatorio"?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>3. Buscar estructuras en la Regla 110</h4>
+            <ol>
+                <li>Configura la Regla 110 con condición aleatoria</li>
+                <li>Reduce el tamaño de celda a 1px para ver más detalle</li>
+                <li>Busca "partículas" (estructuras que se mueven diagonalmente)</li>
+                <li>¿Puedes ver colisiones entre partículas?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>4. Construir reglas manualmente</h4>
+            <ol>
+                <li>En el patrón de regla, haz clic para activar/desactivar salidas</li>
+                <li>Crea una regla donde solo 111 y 000 produzcan 1</li>
+                <li>¿Qué número de regla resulta? ¿Qué clase es?</li>
+                <li>Experimenta hasta encontrar comportamiento Clase IV</li>
+            </ol>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="timeline">
+            <div class="timeline-event">
+                <div class="timeline-year">1940s</div>
+                <div class="timeline-text">
+                    <strong>John von Neumann</strong> y <strong>Stanislaw Ulam</strong> conciben
+                    los primeros autómatas celulares como modelos de auto-reproducción.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1970</div>
+                <div class="timeline-text">
+                    <strong>John Conway</strong> crea el "Juego de la Vida", un autómata celular
+                    2D que captura la imaginación popular.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1983</div>
+                <div class="timeline-text">
+                    <strong>Stephen Wolfram</strong> comienza el estudio sistemático de los
+                    autómatas elementales (1D), clasificándolos en 4 clases.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">2002</div>
+                <div class="timeline-text">
+                    Wolfram publica "A New Kind of Science", proponiendo que los autómatas
+                    celulares son fundamentales para entender la naturaleza.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">2004</div>
+                <div class="timeline-text">
+                    <strong>Matthew Cook</strong> demuestra que la Regla 110 es Turing-completa,
+                    el sistema más simple conocido con esta propiedad.
+                </div>
+            </div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <a href="game-of-life.html" class="connection-item">
+                <span class="connection-icon">🔲</span>
+                <span class="connection-text">Game of Life<br><small>Autómata 2D</small></span>
+            </a>
+            <a href="lorenz-attractor.html" class="connection-item">
+                <span class="connection-icon">🦋</span>
+                <span class="connection-text">Atractor de Lorenz<br><small>Caos determinista</small></span>
+            </a>
+            <a href="juego-caos.html" class="connection-item">
+                <span class="connection-icon">🎲</span>
+                <span class="connection-text">Juego del Caos<br><small>Fractales iterativos</small></span>
+            </a>
+            <a href="../../Computation/Computation Lab/guides/finite-automata.html" class="connection-item">
+                <span class="connection-icon">🔄</span>
+                <span class="connection-text">Autómatas finitos<br><small>Teoría de computación</small></span>
+            </a>
+        </div>
+
+        <h2>Para Explorar Más</h2>
+        <ul>
+            <li><strong>Regla 30 y criptografía:</strong> Su imprevisibilidad la hace útil para generación de números aleatorios</li>
+            <li><strong>Autómatas totalistícos:</strong> Generalizaciones donde importa la suma de vecinos, no su posición</li>
+            <li><strong>Bordes:</strong> La simulación usa condiciones de frontera periódicas (toroide)</li>
+            <li><strong>Reversibilidad:</strong> Algunas reglas tienen inversas; otras destruyen información</li>
+            <li><strong>Conus textilis:</strong> La Regla 30 aparece naturalmente en los patrones de conchas marinas</li>
+        </ul>
+    </main>
+
+    <footer>
+        <a href="../automatas-elementales.html" class="btn-launch">
+            ▦ Abrir Simulación
+        </a>
+    </footer>
+</body>
+</html>

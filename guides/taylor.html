@@ -1,0 +1,824 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Series de Taylor - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e4e4e8;
+            --text-secondary: #9999a8;
+            --accent: #a855f7;
+            --accent-dim: rgba(168, 85, 247, 0.15);
+            --pink: #f472b6;
+            --cyan: #22d3ee;
+            --lime: #a3e635;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .breadcrumb a {
+            color: var(--pink);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--pink);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 3rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--pink);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--pink);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--cyan);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--accent-dim), transparent);
+            border-left: 3px solid var(--pink);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .equation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--pink);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.02em;
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--cyan);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+            transition: border-color 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--pink);
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--pink);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .experiment-section h3 {
+            color: var(--cyan);
+            margin-top: 0;
+        }
+
+        ol, ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        .history-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 3px solid var(--pink);
+        }
+
+        .history-box h3 {
+            margin-top: 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--bg-tertiary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--pink);
+            transform: translateX(-4px);
+        }
+
+        .timeline-year {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--pink);
+            font-weight: 500;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .further-reading {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .further-reading li::before {
+            content: '→ ';
+            color: var(--pink);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--pink);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .series-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .series-table th, .series-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .series-table th {
+            color: var(--pink);
+            font-weight: 500;
+        }
+
+        .series-table td {
+            color: var(--text-secondary);
+        }
+
+        .series-table .formula {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            color: var(--cyan);
+        }
+
+        .convergence-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .convergence-box h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--lime);
+            margin-bottom: 1rem;
+        }
+
+        .derivation-steps {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .derivation-step {
+            display: flex;
+            align-items: flex-start;
+            gap: 1rem;
+            margin: 1rem 0;
+            padding: 0.75rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .step-num {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            background: var(--pink);
+            color: var(--bg-primary);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .step-content {
+            flex: 1;
+        }
+
+        .step-eq {
+            font-family: 'Fira Code', monospace;
+            color: var(--cyan);
+            font-size: 0.9rem;
+        }
+
+        .step-desc {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.25rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía Pedagógica
+        </nav>
+        <h1>Series de Taylor</h1>
+        <p class="intro">
+            Una de las ideas más poderosas del cálculo: aproximar cualquier función
+            suave con polinomios. Cada término añadido captura un poco más de la
+            "personalidad" de la función original.
+        </p>
+    </header>
+
+    <main>
+        <section class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li>La curva <span style="color: #f472b6;">rosa</span> es la función real</li>
+                <li>La curva <span style="color: #22d3ee;">cian</span> es la aproximación de Taylor</li>
+                <li>Con pocos términos, la aproximación solo es buena cerca del centro</li>
+                <li>Añadir términos extiende el rango de buena aproximación</li>
+                <li>Algunas funciones divergen fuera de cierto radio</li>
+            </ul>
+        </section>
+
+        <h2>La Fórmula Fundamental</h2>
+
+        <p>
+            La serie de Taylor expresa una función como una suma infinita de potencias
+            de (x - a), donde "a" es el punto central de la expansión:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">f(x) = Σₙ₌₀^∞ [f⁽ⁿ⁾(a) / n!] · (x - a)ⁿ</div>
+            <div class="equation-label">Serie de Taylor de f centrada en a</div>
+        </div>
+
+        <p>
+            Cuando a = 0, se llama <em>serie de Maclaurin</em>. La simulación usa este
+            caso por defecto.
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>f⁽ⁿ⁾(a)</h4>
+                <p>La n-ésima derivada de f evaluada en el punto central a</p>
+            </div>
+            <div class="concept-card">
+                <h4>n!</h4>
+                <p>Factorial de n. Crece muy rápido, haciendo que los términos disminuyan</p>
+            </div>
+            <div class="concept-card">
+                <h4>(x - a)ⁿ</h4>
+                <p>Potencia de la distancia al centro. Pequeño cerca de a, grande lejos</p>
+            </div>
+            <div class="concept-card">
+                <h4>Truncamiento</h4>
+                <p>Usar solo los primeros N términos da un polinomio aproximante</p>
+            </div>
+        </div>
+
+        <h2>Las Series Clásicas</h2>
+
+        <table class="series-table">
+            <tr>
+                <th>Función</th>
+                <th>Serie de Maclaurin</th>
+                <th>Convergencia</th>
+            </tr>
+            <tr>
+                <td>sin(x)</td>
+                <td class="formula">x - x³/3! + x⁵/5! - x⁷/7! + ...</td>
+                <td>Todo ℝ</td>
+            </tr>
+            <tr>
+                <td>cos(x)</td>
+                <td class="formula">1 - x²/2! + x⁴/4! - x⁶/6! + ...</td>
+                <td>Todo ℝ</td>
+            </tr>
+            <tr>
+                <td>eˣ</td>
+                <td class="formula">1 + x + x²/2! + x³/3! + x⁴/4! + ...</td>
+                <td>Todo ℝ</td>
+            </tr>
+            <tr>
+                <td>ln(1+x)</td>
+                <td class="formula">x - x²/2 + x³/3 - x⁴/4 + ...</td>
+                <td>|x| ≤ 1</td>
+            </tr>
+            <tr>
+                <td>arctan(x)</td>
+                <td class="formula">x - x³/3 + x⁵/5 - x⁷/7 + ...</td>
+                <td>|x| ≤ 1</td>
+            </tr>
+            <tr>
+                <td>sinh(x)</td>
+                <td class="formula">x + x³/3! + x⁵/5! + x⁷/7! + ...</td>
+                <td>Todo ℝ</td>
+            </tr>
+            <tr>
+                <td>cosh(x)</td>
+                <td class="formula">1 + x²/2! + x⁴/4! + x⁶/6! + ...</td>
+                <td>Todo ℝ</td>
+            </tr>
+            <tr>
+                <td>√(1+x)</td>
+                <td class="formula">1 + x/2 - x²/8 + x³/16 - ...</td>
+                <td>|x| ≤ 1</td>
+            </tr>
+        </table>
+
+        <div class="key-concept">
+            <strong>Patrones:</strong> Nota que sin(x) solo tiene potencias impares (es función
+            impar) y cos(x) solo tiene potencias pares (es función par). Los signos alternantes
+            en sin, cos, ln(1+x) y arctan reflejan la alternancia de sus derivadas.
+        </div>
+
+        <h2>Derivación de la Serie del Seno</h2>
+
+        <div class="derivation-steps">
+            <h4 style="color: var(--pink); margin-bottom: 1rem;">¿De Dónde Sale sin(x) = x - x³/3! + x⁵/5! - ...?</h4>
+
+            <div class="derivation-step">
+                <span class="step-num">1</span>
+                <div class="step-content">
+                    <div class="step-eq">f(x) = sin(x), f(0) = 0</div>
+                    <div class="step-desc">La función y su valor en el centro</div>
+                </div>
+            </div>
+
+            <div class="derivation-step">
+                <span class="step-num">2</span>
+                <div class="step-content">
+                    <div class="step-eq">f'(x) = cos(x), f'(0) = 1</div>
+                    <div class="step-desc">Primera derivada → coeficiente de x</div>
+                </div>
+            </div>
+
+            <div class="derivation-step">
+                <span class="step-num">3</span>
+                <div class="step-content">
+                    <div class="step-eq">f''(x) = -sin(x), f''(0) = 0</div>
+                    <div class="step-desc">Segunda derivada = 0 → no hay término x²</div>
+                </div>
+            </div>
+
+            <div class="derivation-step">
+                <span class="step-num">4</span>
+                <div class="step-content">
+                    <div class="step-eq">f'''(x) = -cos(x), f'''(0) = -1</div>
+                    <div class="step-desc">Tercera derivada → coeficiente de x³ es -1/3!</div>
+                </div>
+            </div>
+
+            <div class="derivation-step">
+                <span class="step-num">5</span>
+                <div class="step-content">
+                    <div class="step-eq">Las derivadas ciclan: sin → cos → -sin → -cos → sin ...</div>
+                    <div class="step-desc">El patrón determina todos los coeficientes</div>
+                </div>
+            </div>
+        </div>
+
+        <h2>Radio de Convergencia</h2>
+
+        <p>
+            No todas las series de Taylor convergen para todo x. El <em>radio de convergencia</em>
+            R indica hasta dónde la serie da resultados finitos:
+        </p>
+
+        <div class="convergence-box">
+            <h4>Criterios de Convergencia</h4>
+            <ul>
+                <li><strong>|x - a| < R:</strong> La serie converge absolutamente</li>
+                <li><strong>|x - a| > R:</strong> La serie diverge</li>
+                <li><strong>|x - a| = R:</strong> Se debe analizar caso por caso</li>
+            </ul>
+            <p style="margin-top: 1rem; margin-bottom: 0;">
+                Para ln(1+x) centrado en 0, R = 1. Si intentas evaluar ln(3) usando esta
+                serie (x = 2), ¡la suma diverge!
+            </p>
+        </div>
+
+        <div class="equation-box">
+            <div class="equation">R = lim |aₙ / aₙ₊₁|</div>
+            <div class="equation-label">Fórmula del radio de convergencia (prueba de la razón)</div>
+        </div>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment-section">
+            <h3>Experimento 1: Convergencia de sin(x)</h3>
+            <ol>
+                <li>Selecciona sin(x) y comienza con 1 término</li>
+                <li>La aproximación es simplemente y = x (una línea recta)</li>
+                <li>Añade términos uno por uno hasta llegar a 5</li>
+                <li>Observa cómo la curva cian se "pega" progresivamente a la rosa</li>
+                <li>Con 10 términos, ¿hasta qué valor de x es la aproximación buena?</li>
+            </ol>
+            <p>
+                <strong>Insight:</strong> Para sin(x) en [-π, π], unos 7-8 términos dan
+                una aproximación visualmente indistinguible. El error es exponencialmente
+                pequeño.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 2: Límites de ln(1+x)</h3>
+            <ol>
+                <li>Selecciona ln(1+x) y ajusta el rango X a ±2</li>
+                <li>Observa que la función solo está definida para x > -1</li>
+                <li>Con pocos términos, la aproximación diverge rápidamente para x > 1</li>
+                <li>Añade más términos. ¿Mejora para x = 1.5? ¿Y para x = 2?</li>
+            </ol>
+            <p>
+                <strong>Concepto clave:</strong> Aunque ln(2) existe (≈ 0.693), la serie
+                de Maclaurin de ln(1+x) no converge para x = 1. Para calcular ln(2) se
+                necesitan trucos como ln(2) = -ln(1/2).
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 3: Animación de Términos</h3>
+            <ol>
+                <li>Selecciona eˣ y activa "Animar términos"</li>
+                <li>Observa cómo cada término añade una "ondulación" más a la curva</li>
+                <li>El término n-ésimo es xⁿ/n!, que crece/decrece según x</li>
+                <li>Para x negativo grande, los signos alternantes causan oscilaciones</li>
+            </ol>
+            <p>
+                <strong>Visualización:</strong> La animación revela cómo los términos
+                sucesivos "moldean" el polinomio para que imite a la función objetivo.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 4: Expansión No Centrada</h3>
+            <ol>
+                <li>Selecciona sin(x) y mueve el centro a a = 1</li>
+                <li>Observa el punto verde que marca el centro</li>
+                <li>La aproximación ahora es perfecta en x = 1, no en x = 0</li>
+                <li>Para aproximar sin(100), ¿sería mejor centrar cerca de 100?</li>
+            </ol>
+            <p>
+                <strong>Aplicación:</strong> En cálculo numérico, a menudo se centra
+                la serie en el punto de interés para minimizar el error.
+            </p>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="history-box">
+            <h3>El Desarrollo de las Series</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">~1400</div>
+                    <p>
+                        <strong>Escuela de Kerala (India):</strong> Madhava descubre las
+                        series de sin, cos y arctan, tres siglos antes que Europa.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1669</div>
+                    <p>
+                        <strong>Isaac Newton:</strong> Desarrolla series de potencias como
+                        parte de su "método de fluxiones" (cálculo).
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1715</div>
+                    <p>
+                        <strong>Brook Taylor:</strong> Publica la fórmula general que
+                        lleva su nombre, con resto explícito.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1742</div>
+                    <p>
+                        <strong>Colin Maclaurin:</strong> Populariza el caso a = 0 en su
+                        tratado, dando nombre a las "series de Maclaurin".
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1821</div>
+                    <p>
+                        <strong>Augustin-Louis Cauchy:</strong> Formaliza las condiciones
+                        de convergencia con rigor moderno.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2>El Término de Error</h2>
+
+        <p>
+            Al truncar la serie en N términos, cometemos un error. La fórmula de Lagrange
+            cuantifica este error:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">Rₙ(x) = f⁽ⁿ⁺¹⁾(ξ) / (n+1)! · (x-a)^(n+1)</div>
+            <div class="equation-label">Resto de Lagrange: ξ está entre a y x</div>
+        </div>
+
+        <p>
+            Para sin(x) y cos(x), las derivadas están acotadas por 1, así que:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">|Rₙ(x)| ≤ |x|^(n+1) / (n+1)!</div>
+            <div class="equation-label">Cota del error para sin(x) y cos(x) centradas en 0</div>
+        </div>
+
+        <p>
+            El factorial en el denominador crece mucho más rápido que cualquier potencia,
+            garantizando que el error tienda a cero si la serie converge.
+        </p>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-card">
+                <h4>Física</h4>
+                <p>
+                    La aproximación del péndulo simple usa sin(θ) ≈ θ (primer término).
+                    Términos adicionales dan correcciones para oscilaciones grandes.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Ingeniería</h4>
+                <p>
+                    Los procesadores calculan sin, cos, exp usando polinomios de Taylor
+                    optimizados (o aproximaciones similares como Chebyshev).
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Relatividad</h4>
+                <p>
+                    El factor gamma γ = 1/√(1-v²/c²) se aproxima como 1 + v²/2c² + ...
+                    para velocidades pequeñas.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Finanzas</h4>
+                <p>
+                    Las "greeks" (delta, gamma, theta) son términos de Taylor del
+                    precio de una opción respecto a sus parámetros.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Machine Learning</h4>
+                <p>
+                    El descenso de gradiente usa la aproximación f(x+h) ≈ f(x) + hf'(x),
+                    el primer término no constante de Taylor.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Sumas de Riemann</h4>
+                <p>
+                    Las fórmulas de integración numérica (trapezoidal, Simpson) derivan
+                    de expandir f en Taylor y luego integrar.
+                </p>
+            </div>
+        </div>
+
+        <h2>Funciones Analíticas vs No Analíticas</h2>
+
+        <p>
+            No toda función tiene una serie de Taylor útil. El ejemplo clásico:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">f(x) = e^(-1/x²) para x ≠ 0, f(0) = 0</div>
+            <div class="equation-label">Una función suave cuya serie de Taylor en 0 es... 0</div>
+        </div>
+
+        <p>
+            Esta función es infinitamente diferenciable, y todas sus derivadas en x = 0
+            son cero. Su serie de Taylor es la función constante 0, que no representa
+            a f excepto en x = 0. Se dice que f no es "analítica" en 0.
+        </p>
+
+        <div class="key-concept">
+            <strong>Funciones Analíticas:</strong> Una función es analítica en un punto
+            si su serie de Taylor converge a la función en un entorno de ese punto.
+            Sin, cos, exp, polinomios son analíticas en todo ℝ. Ln(x) es analítica
+            excepto en x = 0.
+        </div>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Series de Laurent:</strong> Extensión para funciones con singularidades</li>
+                <li><strong>Aproximantes de Padé:</strong> Cocientes de polinomios, a veces mejores que Taylor</li>
+                <li><strong>Polinomios de Chebyshev:</strong> Alternativa óptima para aproximación uniforme</li>
+                <li><strong>Fórmula de Euler:</strong> e^(ix) = cos(x) + i·sin(x) combina tres series</li>
+                <li><strong>Series de Fourier:</strong> Otra forma de representar funciones periódicas</li>
+            </ul>
+        </div>
+
+        <div class="key-concept">
+            <strong>Reflexión Final:</strong> Las series de Taylor son la base del cálculo
+            computacional moderno. Cada vez que tu calculadora evalúa sin(1), está usando
+            (una variante optimizada de) una serie de Taylor. La idea de que funciones
+            complicadas se pueden representar como polinomios infinitos es uno de los
+            insights más profundos del análisis matemático.
+        </div>
+    </main>
+
+    <footer>
+        <a href="../taylor.html">← Volver a la Simulación</a>
+    </footer>
+</body>
+</html>

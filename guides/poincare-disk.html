@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Disco de Poincaré - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e4e4e8;
+            --text-secondary: #9999a8;
+            --accent: #a855f7;
+            --accent-dim: rgba(168, 85, 247, 0.15);
+            --accent-glow: rgba(168, 85, 247, 0.4);
+            --cyan: #22d3ee;
+            --orange: #f97316;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 3rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--cyan);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--accent-dim), transparent);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .equation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.02em;
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+            transition: border-color 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .experiment-section h3 {
+            color: var(--cyan);
+            margin-top: 0;
+        }
+
+        ol, ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        .history-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .history-box h3 {
+            margin-top: 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--bg-tertiary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateX(-4px);
+        }
+
+        .timeline-year {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .further-reading {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .further-reading li::before {
+            content: '→ ';
+            color: var(--accent);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .geometry-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .geometry-table th, .geometry-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .geometry-table th {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .geometry-table td {
+            color: var(--text-secondary);
+        }
+
+        .tessellation-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .tessellation-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .tessellation-card .notation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.2rem;
+            color: var(--accent);
+        }
+
+        .tessellation-card .name {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .comparison-box {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .geometry-type {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            text-align: center;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .geometry-type h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .geometry-type.euclidean h4 { color: #22c55e; }
+        .geometry-type.hyperbolic h4 { color: var(--accent); }
+        .geometry-type.spherical h4 { color: var(--orange); }
+
+        .geometry-type p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .escher-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15), rgba(34, 211, 238, 0.1));
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--accent);
+        }
+
+        .escher-box h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía Pedagógica
+        </nav>
+        <h1>El Disco de Poincaré</h1>
+        <p class="intro">
+            Una ventana a un universo donde las líneas rectas son curvas, los triángulos
+            tienen menos de 180°, y el infinito cabe dentro de un círculo. Bienvenido a
+            la geometría hiperbólica.
+        </p>
+    </header>
+
+    <main>
+        <section class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li>Polígonos regulares teselando el disco sin huecos ni solapamientos</li>
+                <li>Los polígonos se hacen visualmente más pequeños hacia el borde</li>
+                <li>Todos los polígonos son idénticos en tamaño <em>hiperbólico</em></li>
+                <li>Infinitos polígonos caben dentro del disco finito</li>
+                <li>Las "líneas rectas" (geodésicas) son arcos de círculo</li>
+            </ul>
+        </section>
+
+        <h2>Tres Geometrías</h2>
+
+        <p>
+            Durante más de dos mil años, los matemáticos asumieron que solo existía una
+            geometría: la de Euclides. Pero al cuestionar un solo axioma (el quinto postulado,
+            sobre las paralelas), surgieron dos geometrías alternativas igualmente válidas.
+        </p>
+
+        <div class="comparison-box">
+            <div class="geometry-type spherical">
+                <h4>Esférica</h4>
+                <p>Suma de ángulos > 180°</p>
+                <p>Sin paralelas</p>
+                <p>Curvatura positiva</p>
+            </div>
+            <div class="geometry-type euclidean">
+                <h4>Euclidiana</h4>
+                <p>Suma de ángulos = 180°</p>
+                <p>Una paralela</p>
+                <p>Curvatura cero</p>
+            </div>
+            <div class="geometry-type hyperbolic">
+                <h4>Hiperbólica</h4>
+                <p>Suma de ángulos < 180°</p>
+                <p>Infinitas paralelas</p>
+                <p>Curvatura negativa</p>
+            </div>
+        </div>
+
+        <div class="key-concept">
+            <strong>El Quinto Postulado de Euclides:</strong> "Por un punto exterior a una recta,
+            pasa una única paralela." En geometría hiperbólica, pasan <em>infinitas</em> paralelas.
+            Este cambio aparentemente menor transforma toda la geometría.
+        </div>
+
+        <h2>La Métrica de Poincaré</h2>
+
+        <p>
+            El disco de Poincaré representa todo el plano hiperbólico infinito dentro de un
+            círculo unitario. ¿Cómo es posible? La clave está en la <em>métrica</em>: la forma
+            de medir distancias.
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">ds² = 4(dx² + dy²) / (1 - x² - y²)²</div>
+            <div class="equation-label">Métrica de Poincaré: las distancias aumentan hacia el borde</div>
+        </div>
+
+        <p>
+            A medida que te acercas al borde del disco (donde x² + y² → 1), el denominador
+            tiende a cero, haciendo que las distancias tiendan a infinito. Por eso los
+            polígonos cerca del borde parecen pequeños: están igual de lejos unos de otros
+            en términos hiperbólicos, pero nuestra visualización los comprime.
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>El Centro</h4>
+                <p>En el origen, la métrica es casi euclidiana. Los polígonos se ven "normales".</p>
+            </div>
+            <div class="concept-card">
+                <h4>El Borde</h4>
+                <p>Representa el infinito. Nunca se puede alcanzar: siempre hay más espacio.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Geodésicas</h4>
+                <p>Las líneas más cortas son arcos de círculo perpendiculares al borde.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Isometrías</h4>
+                <p>Las transformaciones de Möbius preservan distancias hiperbólicas.</p>
+            </div>
+        </div>
+
+        <h2>Notación de Schläfli: {p, q}</h2>
+
+        <p>
+            Las teselaciones regulares se describen con la notación {p, q}:
+        </p>
+
+        <ul>
+            <li><strong>p</strong>: número de lados de cada polígono</li>
+            <li><strong>q</strong>: número de polígonos que se encuentran en cada vértice</li>
+        </ul>
+
+        <div class="equation-box">
+            <div class="equation">(p - 2)(q - 2) > 4 → Hiperbólica</div>
+            <div class="equation">(p - 2)(q - 2) = 4 → Euclidiana</div>
+            <div class="equation">(p - 2)(q - 2) < 4 → Esférica</div>
+            <div class="equation-label">Condición que determina el tipo de geometría</div>
+        </div>
+
+        <h3>Teselaciones Disponibles</h3>
+
+        <div class="tessellation-grid">
+            <div class="tessellation-card">
+                <div class="notation">{7, 3}</div>
+                <div class="name">Heptágonos<br>3 por vértice</div>
+            </div>
+            <div class="tessellation-card">
+                <div class="notation">{5, 4}</div>
+                <div class="name">Pentágonos<br>4 por vértice</div>
+            </div>
+            <div class="tessellation-card">
+                <div class="notation">{4, 5}</div>
+                <div class="name">Cuadrados<br>5 por vértice</div>
+            </div>
+            <div class="tessellation-card">
+                <div class="notation">{3, 7}</div>
+                <div class="name">Triángulos<br>7 por vértice</div>
+            </div>
+            <div class="tessellation-card">
+                <div class="notation">{6, 4}</div>
+                <div class="name">Hexágonos<br>4 por vértice</div>
+            </div>
+            <div class="tessellation-card">
+                <div class="notation">{8, 3}</div>
+                <div class="name">Octógonos<br>3 por vértice</div>
+            </div>
+        </div>
+
+        <h3>Comparación con Euclides</h3>
+
+        <table class="geometry-table">
+            <tr>
+                <th>Teselación</th>
+                <th>Tipo</th>
+                <th>(p-2)(q-2)</th>
+            </tr>
+            <tr>
+                <td>{4, 4} - Cuadrados, 4 por vértice</td>
+                <td>Euclidiana</td>
+                <td>= 4</td>
+            </tr>
+            <tr>
+                <td>{6, 3} - Hexágonos, 3 por vértice</td>
+                <td>Euclidiana</td>
+                <td>= 4</td>
+            </tr>
+            <tr>
+                <td>{3, 6} - Triángulos, 6 por vértice</td>
+                <td>Euclidiana</td>
+                <td>= 4</td>
+            </tr>
+            <tr>
+                <td>{5, 4} - Pentágonos, 4 por vértice</td>
+                <td>Hiperbólica</td>
+                <td>= 6 > 4</td>
+            </tr>
+            <tr>
+                <td>{7, 3} - Heptágonos, 3 por vértice</td>
+                <td>Hiperbólica</td>
+                <td>= 5 > 4</td>
+            </tr>
+        </table>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment-section">
+            <h3>Experimento 1: Violando Euclides</h3>
+            <ol>
+                <li>Selecciona la teselación <code>{4, 4}</code> (cuadrados euclidianos)</li>
+                <li>La simulación mostrará "Teselación no válida"</li>
+                <li>Cambia a <code>{4, 5}</code>: ahora 5 cuadrados caben en cada vértice</li>
+                <li>Observa cómo los cuadrados se "curvan" para encajar</li>
+            </ol>
+            <p>
+                <strong>Insight:</strong> En el plano euclidiano, 4 cuadrados de 90° llenan 360°.
+                En el hiperbólico, los ángulos suman menos de 90°, permitiendo que quepan 5.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 2: Hacia el Infinito</h3>
+            <ol>
+                <li>Selecciona <code>{7, 3}</code> con profundidad 4</li>
+                <li>Aumenta la profundidad a 5, luego 6, luego 7</li>
+                <li>Observa cómo aparecen más y más heptágonos cerca del borde</li>
+                <li>Nota: no importa cuánto aumentes, nunca llegarás al borde</li>
+            </ol>
+            <p>
+                <strong>Reflexión:</strong> El borde representa el infinito. Cada nivel de
+                profundidad adicional añade exponencialmente más polígonos, pero todos
+                caben en el espacio "infinito" cerca del borde.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 3: Geodésicas</h3>
+            <ol>
+                <li>Activa "Mostrar geodésicas" en los controles</li>
+                <li>Observa los arcos de círculo que cruzan el disco</li>
+                <li>Nota que todos cortan el borde en ángulos de 90°</li>
+                <li>Estas son las "líneas rectas" de la geometría hiperbólica</li>
+            </ol>
+            <p>
+                <strong>Concepto:</strong> En el modelo de Poincaré, las geodésicas son
+                arcos de círculos ortogonales al borde, o diámetros que pasan por el centro.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 4: Comparación de Teselaciones</h3>
+            <ol>
+                <li>Prueba cada preset: {7,3}, {5,4}, {4,5}, {3,7}, {6,4}, {8,3}</li>
+                <li>Observa cómo polígonos con más lados parecen "más curvados"</li>
+                <li>Compara los esquemas de color para ver la estructura</li>
+                <li>¿Cuál teselación genera más polígonos por nivel de profundidad?</li>
+            </ol>
+            <p>
+                <strong>Análisis:</strong> Teselaciones con mayor q (más polígonos por vértice)
+                se ramifican más rápidamente, generando más polígonos en cada nivel.
+            </p>
+        </div>
+
+        <div class="escher-box">
+            <h3>El Arte de M.C. Escher</h3>
+            <p>
+                El artista holandés M.C. Escher (1898-1972) creó su serie "Circle Limit"
+                usando teselaciones hiperbólicas. En estas obras, figuras como ángeles,
+                demonios, peces y pájaros se repiten infinitamente hacia el borde del disco.
+            </p>
+            <p>
+                Escher trabajó con el matemático H.S.M. Coxeter, quien le explicó la
+                geometría del disco de Poincaré. El resultado fue una de las colaboraciones
+                más famosas entre arte y matemáticas.
+            </p>
+            <p style="margin-bottom: 0;">
+                <strong>Circle Limit III (1959)</strong> muestra peces que nadan en cuatro
+                direcciones, con líneas geodésicas visibles como arcos. Cada pez tiene el
+                mismo "tamaño hiperbólico", aunque los del borde parecen diminutos.
+            </p>
+        </div>
+
+        <h2>Propiedades de la Geometría Hiperbólica</h2>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Triángulos</h4>
+                <p>La suma de ángulos es siempre menor que 180°. El "defecto angular" es proporcional al área.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Circunferencia</h4>
+                <p>C = 2π sinh(r), crece exponencialmente con el radio, no linealmente.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Área</h4>
+                <p>A = 4π sinh²(r/2), también crece exponencialmente con el radio.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Paralelas</h4>
+                <p>Por un punto exterior pasan infinitas rectas que no cortan a una dada.</p>
+            </div>
+        </div>
+
+        <div class="equation-box">
+            <div class="equation">Defecto = π - (α + β + γ) = Área / K</div>
+            <div class="equation-label">El defecto angular de un triángulo es proporcional a su área (K = curvatura)</div>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="history-box">
+            <h3>El Descubrimiento de las Geometrías No Euclidianas</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">~300 a.C.</div>
+                    <p>
+                        <strong>Euclides</strong> escribe los Elementos, estableciendo 5 postulados.
+                        El quinto (paralelas) siempre pareció diferente a los demás.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1829-1832</div>
+                    <p>
+                        <strong>Lobachevsky y Bolyai</strong>, independientemente, desarrollan la
+                        geometría hiperbólica negando el quinto postulado.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1868</div>
+                    <p>
+                        <strong>Beltrami</strong> demuestra que la geometría hiperbólica es
+                        consistente usando la "pseudoesfera".
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1882</div>
+                    <p>
+                        <strong>Henri Poincaré</strong> introduce el modelo del disco, donde
+                        todo el plano hiperbólico cabe en un círculo finito.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1915</div>
+                    <p>
+                        <strong>Einstein</strong> usa geometría no euclidiana en la Relatividad
+                        General: el espacio-tiempo se curva por la masa.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Transformaciones de Möbius</h2>
+
+        <p>
+            Las isometrías (transformaciones que preservan distancias) del disco de Poincaré
+            son transformaciones de Möbius de la forma:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">T(z) = e^(iθ) · (z - a) / (1 - ā·z)</div>
+            <div class="equation-label">Transformación de Möbius en el disco (θ = rotación, a = traslación)</div>
+        </div>
+
+        <p>
+            Estas transformaciones permiten "mover" la teselación por el disco. Lo que
+            vemos en el centro podría estar en cualquier parte; el disco se puede rotar
+            y trasladar manteniendo todas las distancias hiperbólicas.
+        </p>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-card">
+                <h4>Relatividad Especial</h4>
+                <p>
+                    El espacio de velocidades en relatividad es hiperbólico. La "velocidad"
+                    de la luz es el borde inalcanzable.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Teoría de Cuerdas</h4>
+                <p>
+                    Espacios Anti-de Sitter (AdS) tienen geometría hiperbólica, cruciales
+                    en la correspondencia AdS/CFT.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Redes Complejas</h4>
+                <p>
+                    Internet y redes sociales tienen estructura "hiperbólica": muchos nodos
+                    en la "periferia", pocos hubs centrales.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Biología</h4>
+                <p>
+                    Estructuras como la lechuga de mar o corales tienen geometría hiperbólica
+                    intrínseca (curvatura negativa).
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Topología de Superficies</h4>
+                <p>
+                    Superficies de género g ≥ 2 (dos o más agujeros) admiten métricas
+                    hiperbólicas.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Criptografía</h4>
+                <p>
+                    Algunos protocolos criptográficos propuestos usan grupos hiperbólicos
+                    por su complejidad computacional.
+                </p>
+            </div>
+        </div>
+
+        <h2>El Modelo del Semiplano</h2>
+
+        <p>
+            Además del disco, existe otro modelo equivalente: el semiplano superior de
+            Poincaré, donde el plano hiperbólico se representa como {z : Im(z) > 0}.
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">ds² = (dx² + dy²) / y²</div>
+            <div class="equation-label">Métrica del semiplano: las geodésicas son semicírculos verticales o líneas verticales</div>
+        </div>
+
+        <p>
+            Ambos modelos son equivalentes vía una transformación conforme. La elección
+            depende de qué propiedades se quieran visualizar mejor.
+        </p>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>"Circle Limit" de Escher:</strong> Arte hiperbólico icónico</li>
+                <li><strong>Geometría de Lobachevsky:</strong> Los fundamentos originales</li>
+                <li><strong>Teselaciones de Coxeter:</strong> Clasificación completa</li>
+                <li><strong>Grupos Fuchsianos:</strong> Simetrías del disco</li>
+                <li><strong>HyperRogue:</strong> Videojuego en el plano hiperbólico</li>
+            </ul>
+        </div>
+
+        <div class="key-concept">
+            <strong>Reflexión Final:</strong> El disco de Poincaré demuestra que nuestras
+            intuiciones geométricas, formadas en un mundo aproximadamente euclidiano, no
+            son universales. Existen universos matemáticos igualmente coherentes donde el
+            espacio se comporta de formas radicalmente diferentes. Esta flexibilidad
+            conceptual es exactamente lo que Einstein necesitó para formular la Relatividad
+            General, donde el espacio mismo se curva.
+        </div>
+    </main>
+
+    <footer>
+        <a href="../poincare-disk.html">← Volver a la Simulación</a>
+    </footer>
+</body>
+</html>

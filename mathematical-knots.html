@@ -30,6 +30,37 @@
         }
         #canvas { cursor: grab; }
         #canvas:active { cursor: grabbing; }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #a855f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="bg-black text-gray-100 min-h-screen">
@@ -145,6 +176,11 @@
                     Un nudo toro (p,q) envuelve p veces alrededor del eje de simetría del toro mientras hace q vueltas alrededor del tubo. El trefoil es el nudo toro (2,3).
                 </p>
             </div>
+
+            <a href="guides/mathematical-knots.html" class="guide-link">
+                <span class="guide-icon">?</span>
+                Guía completa: teoría de nudos, invariantes, topología
+            </a>
         </aside>
     </main>
 

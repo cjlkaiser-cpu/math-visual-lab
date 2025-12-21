@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Péndulo Doble | Math Visual Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #141414;
+            --color-surface-elevated: #1a1a1a;
+            --color-border: #262626;
+            --color-text: #e5e5e5;
+            --color-text-secondary: #a3a3a3;
+            --color-accent: #a855f7;
+            --color-accent-dim: rgba(168, 85, 247, 0.1);
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            font-size: 19px;
+            line-height: 1.7;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .breadcrumb {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.15rem;
+            color: var(--color-text-secondary);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .concept-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .concept-card h4 {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-accent);
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            color: var(--color-text-secondary);
+        }
+
+        .equation-block {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: var(--font-mono);
+            font-size: 1.1rem;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+            line-height: 1.8;
+        }
+
+        .equation-label {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        .chaos-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .chaos-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .chaos-card h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .chaos-card.sensitive h4 { color: #ef4444; }
+        .chaos-card.deterministic h4 { color: #22c55e; }
+
+        .chaos-card p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+
+        .experiment-block {
+            background: var(--color-surface-elevated);
+            border-radius: 8px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--color-accent);
+        }
+
+        .experiment-block h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .experiment-block ol {
+            margin-left: 1.25rem;
+            color: var(--color-text-secondary);
+        }
+
+        .experiment-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        .key-insight {
+            background: var(--color-accent-dim);
+            border: 1px solid var(--color-accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .key-insight strong {
+            color: var(--color-accent);
+        }
+
+        .phase-space-info {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .phase-space-info h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .timeline {
+            border-left: 2px solid var(--color-border);
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-event {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--color-accent);
+        }
+
+        .timeline-text {
+            color: var(--color-text-secondary);
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-text);
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .connection-item:hover {
+            border-color: var(--color-accent);
+            background: var(--color-surface-elevated);
+        }
+
+        .connection-icon {
+            font-size: 1.5rem;
+        }
+
+        .connection-text {
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+        }
+
+        ul {
+            margin-left: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .btn-launch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 1rem 2rem;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-launch:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+                font-size: 17px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .chaos-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .equation {
+                font-size: 0.9rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía
+        </nav>
+        <h1>Péndulo Doble</h1>
+        <p class="subtitle">Caos determinista en acción</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            Un péndulo colgando de otro péndulo. Parece simple, pero su movimiento es
+            impredecible a largo plazo. El péndulo doble es el ejemplo más accesible de
+            caos determinista: las ecuaciones son exactas, pero dos condiciones iniciales
+            casi idénticas divergen exponencialmente.
+        </p>
+
+        <h2>¿Qué Observarás?</h2>
+        <p>
+            La simulación muestra el péndulo en movimiento, dejando una estela que revela
+            su trayectoria. Puedes comparar dos péndulos que comienzan casi igual (uno
+            "fantasma") y ver cómo sus caminos se separan dramáticamente.
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Estela de trayectoria</h4>
+                <p>El rastro del segundo bob muestra patrones complejos y nunca repetidos exactamente.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Péndulo fantasma</h4>
+                <p>Un segundo péndulo con θ₁ diferente en solo 0.001°. Observa cómo divergen.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Espacio de fases</h4>
+                <p>Gráfica de (θ₂, ω₂) que muestra la dinámica del sistema en forma geométrica.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Energía total</h4>
+                <p>Suma de energía cinética y potencial. Debe conservarse (verificación numérica).</p>
+            </div>
+        </div>
+
+        <h2>La Física del Sistema</h2>
+
+        <p>
+            El péndulo doble tiene 2 grados de libertad (θ₁ y θ₂) y se describe mediante
+            ecuaciones diferenciales acopladas derivadas del Lagrangiano. La simulación
+            usa el método de Runge-Kutta de 4º orden para integrarlas numéricamente.
+        </p>
+
+        <div class="equation-block">
+            <div class="equation">
+                L = T - V = ½m₁v₁² + ½m₂v₂² + m₁gy₁ + m₂gy₂
+            </div>
+            <div class="equation-label">Lagrangiano del sistema</div>
+        </div>
+
+        <div class="equation-block">
+            <div class="equation">
+                d/dt(∂L/∂θ̇ᵢ) - ∂L/∂θᵢ = 0
+            </div>
+            <div class="equation-label">Ecuaciones de Euler-Lagrange para i = 1, 2</div>
+        </div>
+
+        <h2>¿Por Qué Es Caótico?</h2>
+
+        <div class="chaos-grid">
+            <div class="chaos-card sensitive">
+                <h4>Sensibilidad a condiciones iniciales</h4>
+                <p>
+                    Una diferencia de 0.001° en el ángulo inicial produce trayectorias
+                    completamente diferentes después de unos segundos. La separación
+                    crece exponencialmente: δ(t) ~ e<sup>λt</sup>.
+                </p>
+            </div>
+            <div class="chaos-card deterministic">
+                <h4>Pero completamente determinista</h4>
+                <p>
+                    No hay aleatoriedad. Dado el estado exacto, el futuro está completamente
+                    determinado. El "caos" surge de nuestra incapacidad de conocer las
+                    condiciones iniciales con precisión infinita.
+                </p>
+            </div>
+        </div>
+
+        <div class="key-insight">
+            <strong>Exponente de Lyapunov:</strong> Mide qué tan rápido divergen trayectorias cercanas.
+            Para el péndulo doble, λ > 0, confirmando caos. Esto significa que para predecir
+            el estado en el tiempo t, necesitas conocer las condiciones iniciales con precisión
+            que crece exponencialmente con t.
+        </p>
+        </div>
+
+        <h2>El Espacio de Fases</h2>
+
+        <div class="phase-space-info">
+            <h4>Visualizando la dinámica</h4>
+            <p>
+                El espacio de fases tiene 4 dimensiones (θ₁, θ₂, ω₁, ω₂). La simulación
+                proyecta a 2D mostrando (θ₂, ω₂). Cada punto representa el estado del
+                sistema en un instante.
+            </p>
+            <ul style="margin-top: 1rem; margin-bottom: 0;">
+                <li><strong>Órbitas cerradas:</strong> Movimiento periódico (no ocurre en caos)</li>
+                <li><strong>Curvas que no se cruzan:</strong> Unicidad de soluciones</li>
+                <li><strong>Patrones densos:</strong> El sistema explora el espacio disponible</li>
+            </ul>
+        </div>
+
+        <h2>Experimentos Sugeridos</h2>
+
+        <div class="experiment-block">
+            <h4>1. Ver la divergencia en acción</h4>
+            <ol>
+                <li>Configura θ₁ = 90°, θ₂ = 90° (preset "Simétrico")</li>
+                <li>Activa "Péndulo fantasma"</li>
+                <li>Observa: al principio se mueven juntos</li>
+                <li>Después de ~5-10 segundos, las trayectorias divergen completamente</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>2. Comparar caída libre vs horizontal</h4>
+            <ol>
+                <li>Usa preset "Caída libre" (θ₁ = θ₂ = 180°)</li>
+                <li>Observa: movimiento casi vertical al principio</li>
+                <li>Pequeñas perturbaciones numéricas crecen</li>
+                <li>Compara con "Simétrico": ¿cuál se vuelve caótico más rápido?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>3. Efecto de las masas</h4>
+            <ol>
+                <li>Usa preset "Masa desigual" (m₁ = 2, m₂ = 0.5)</li>
+                <li>¿El segundo bob se mueve más rápido o más lento?</li>
+                <li>Invierte las masas (m₁ = 0.5, m₂ = 2)</li>
+                <li>¿Cómo cambia el carácter del movimiento?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>4. Verificar conservación de energía</h4>
+            <ol>
+                <li>Observa el valor de "Energía total" durante la simulación</li>
+                <li>Debería permanecer constante (sistema conservativo)</li>
+                <li>Pequeñas variaciones indican error numérico del integrador</li>
+                <li>¿El error crece con el tiempo o se mantiene acotado?</li>
+            </ol>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="timeline">
+            <div class="timeline-event">
+                <div class="timeline-year">1889</div>
+                <div class="timeline-text">
+                    <strong>Henri Poincaré</strong> estudia el problema de los tres cuerpos y
+                    descubre que pequeñas perturbaciones pueden tener efectos enormes. Nace
+                    la teoría del caos.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1963</div>
+                <div class="timeline-text">
+                    <strong>Edward Lorenz</strong> descubre sensibilidad a condiciones iniciales
+                    en modelos meteorológicos. Acuña el término "efecto mariposa".
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1970s</div>
+                <div class="timeline-text">
+                    El péndulo doble se establece como el sistema caótico canónico para
+                    enseñanza por su simplicidad mecánica y riqueza dinámica.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1980s</div>
+                <div class="timeline-text">
+                    <strong>Feigenbaum</strong> descubre constantes universales en la transición
+                    al caos. La teoría del caos madura como disciplina.
+                </div>
+            </div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <a href="lorenz-attractor.html" class="connection-item">
+                <span class="connection-icon">🦋</span>
+                <span class="connection-text">Atractor de Lorenz<br><small>Caos en 3D</small></span>
+            </a>
+            <a href="three-body.html" class="connection-item">
+                <span class="connection-icon">🌍</span>
+                <span class="connection-text">Problema de 3 cuerpos<br><small>Caos gravitacional</small></span>
+            </a>
+            <a href="../../Physics/Physics Visual Lab/guides/pendulo-simple.html" class="connection-item">
+                <span class="connection-icon">🔔</span>
+                <span class="connection-text">Péndulo simple<br><small>Caso integrable</small></span>
+            </a>
+            <a href="automatas-elementales.html" class="connection-item">
+                <span class="connection-icon">▦</span>
+                <span class="connection-text">Autómatas celulares<br><small>Caos discreto</small></span>
+            </a>
+        </div>
+
+        <h2>Para Explorar Más</h2>
+        <ul>
+            <li><strong>Secciones de Poincaré:</strong> Cortes del espacio de fases que revelan estructura</li>
+            <li><strong>Diagrama de bifurcación:</strong> Cómo cambia el comportamiento con la energía inicial</li>
+            <li><strong>Péndulo triple:</strong> Aún más caótico, con 6 grados de libertad</li>
+            <li><strong>Hamiltoniano:</strong> Formulación alternativa que preserva la estructura simpléctica</li>
+            <li><strong>Integradores simplécticos:</strong> Métodos numéricos que conservan energía exactamente</li>
+        </ul>
+    </main>
+
+    <footer>
+        <a href="../double-pendulum.html" class="btn-launch">
+            🔮 Abrir Simulación
+        </a>
+    </footer>
+</body>
+</html>

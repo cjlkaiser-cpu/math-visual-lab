@@ -45,6 +45,37 @@
             font-family: 'Times New Roman', serif;
             font-style: italic;
         }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            color: #a5f3fc;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(34, 211, 238, 0.2);
+            border-color: #22d3ee;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #22d3ee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="min-h-screen text-cyan-100 overflow-hidden">
@@ -227,6 +258,11 @@
                         <li><strong>Lotka-Volterra:</strong> depredador-presa</li>
                     </ul>
                 </div>
+
+                <a href="guides/vector-field.html" class="guide-link">
+                    <span class="guide-icon">?</span>
+                    Guía completa: campos vectoriales, EDOs, retrato de fases, puntos críticos
+                </a>
             </div>
         </aside>
     </main>

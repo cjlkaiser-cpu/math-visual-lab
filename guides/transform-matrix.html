@@ -1,0 +1,734 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Transformaciones Matriciales - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e4e4e8;
+            --text-secondary: #9999a8;
+            --accent: #facc15;
+            --accent-dim: rgba(250, 204, 21, 0.15);
+            --cyan: #22d3ee;
+            --red: #f87171;
+            --green: #4ade80;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 3rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--cyan);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--accent-dim), transparent);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .equation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.3rem;
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.02em;
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+            transition: border-color 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .experiment-section h3 {
+            color: var(--cyan);
+            margin-top: 0;
+        }
+
+        ol, ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .further-reading {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .further-reading li::before {
+            content: '→ ';
+            color: var(--accent);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .matrix-display {
+            font-family: 'Fira Code', monospace;
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin: 0.5rem 0;
+        }
+
+        .matrix-bracket {
+            font-size: 2rem;
+            color: var(--accent);
+        }
+
+        .matrix-content {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 0.25rem 0.75rem;
+            color: var(--cyan);
+        }
+
+        .transform-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .transform-table th, .transform-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .transform-table th {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .transform-table td {
+            color: var(--text-secondary);
+        }
+
+        .transform-table .matrix-cell {
+            font-family: 'Fira Code', monospace;
+            color: var(--cyan);
+        }
+
+        .determinant-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .determinant-box h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .det-cases {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+        }
+
+        .det-case {
+            background: var(--bg-tertiary);
+            padding: 0.75rem;
+            border-radius: 8px;
+        }
+
+        .det-case strong {
+            color: var(--cyan);
+            font-family: 'Fira Code', monospace;
+        }
+
+        .eigen-box {
+            background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(250, 204, 21, 0.1));
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid var(--cyan);
+        }
+
+        .eigen-box h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--cyan);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía Pedagógica
+        </nav>
+        <h1>Transformaciones Matriciales</h1>
+        <p class="intro">
+            Una matriz 2×2 es más que cuatro números: es una máquina que transforma
+            el plano. Estirar, rotar, reflejar, cizallar... toda la geometría de las
+            transformaciones lineales cabe en cuatro coeficientes.
+        </p>
+    </header>
+
+    <main>
+        <section class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li>Una cuadrícula o forma original (amarillo) y su versión transformada (cian)</li>
+                <li>Los vectores base <span style="color: #f87171;">e₁</span> y <span style="color: #4ade80;">e₂</span> mostrando hacia dónde se mapean (1,0) y (0,1)</li>
+                <li>El determinante indicando cómo cambia el área</li>
+                <li>Valores propios revelando la estructura intrínseca de la transformación</li>
+                <li>Vectores propios (direcciones que solo se escalan, no rotan)</li>
+            </ul>
+        </section>
+
+        <h2>La Ecuación Fundamental</h2>
+
+        <p>
+            Una transformación lineal lleva cada punto (x, y) a un nuevo punto (x', y')
+            mediante multiplicación matricial:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">[x']   [a  b] [x]</div>
+            <div class="equation">[y'] = [c  d] [y]</div>
+            <div class="equation-label">x' = ax + by, y' = cx + dy</div>
+        </div>
+
+        <p>
+            Los cuatro números a, b, c, d determinan completamente la transformación.
+            La primera columna [a, c] es donde termina el vector (1, 0). La segunda
+            columna [b, d] es donde termina (0, 1).
+        </p>
+
+        <div class="key-concept">
+            <strong>Interpretación Geométrica:</strong> Las columnas de la matriz son las
+            imágenes de los vectores base. Si conoces dónde van e₁ = (1,0) y e₂ = (0,1),
+            conoces toda la transformación: cualquier vector v = xe₁ + ye₂ va a
+            xT(e₁) + yT(e₂).
+        </div>
+
+        <h2>Transformaciones Fundamentales</h2>
+
+        <table class="transform-table">
+            <tr>
+                <th>Transformación</th>
+                <th>Matriz</th>
+                <th>Efecto</th>
+            </tr>
+            <tr>
+                <td>Identidad</td>
+                <td class="matrix-cell">[1 0; 0 1]</td>
+                <td>Ninguno: el plano no cambia</td>
+            </tr>
+            <tr>
+                <td>Escala k×</td>
+                <td class="matrix-cell">[k 0; 0 k]</td>
+                <td>Expandir (k>1) o contraer (k<1) uniformemente</td>
+            </tr>
+            <tr>
+                <td>Escala anisotrópica</td>
+                <td class="matrix-cell">[a 0; 0 b]</td>
+                <td>Escalar diferente en X (×a) e Y (×b)</td>
+            </tr>
+            <tr>
+                <td>Rotación θ</td>
+                <td class="matrix-cell">[cosθ -sinθ; sinθ cosθ]</td>
+                <td>Girar θ radianes antihorario</td>
+            </tr>
+            <tr>
+                <td>Reflejo en X</td>
+                <td class="matrix-cell">[-1 0; 0 1]</td>
+                <td>Espejo respecto al eje Y</td>
+            </tr>
+            <tr>
+                <td>Reflejo en Y</td>
+                <td class="matrix-cell">[1 0; 0 -1]</td>
+                <td>Espejo respecto al eje X</td>
+            </tr>
+            <tr>
+                <td>Reflejo en y=x</td>
+                <td class="matrix-cell">[0 1; 1 0]</td>
+                <td>Intercambiar coordenadas x ↔ y</td>
+            </tr>
+            <tr>
+                <td>Cizalla X</td>
+                <td class="matrix-cell">[1 k; 0 1]</td>
+                <td>Inclinar horizontalmente</td>
+            </tr>
+            <tr>
+                <td>Cizalla Y</td>
+                <td class="matrix-cell">[1 0; k 1]</td>
+                <td>Inclinar verticalmente</td>
+            </tr>
+            <tr>
+                <td>Proyección en X</td>
+                <td class="matrix-cell">[1 0; 0 0]</td>
+                <td>Colapsar sobre el eje X</td>
+            </tr>
+        </table>
+
+        <h2>El Determinante</h2>
+
+        <p>
+            El determinante det(A) = ad - bc cuantifica cómo la transformación afecta
+            las áreas:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">det[a b; c d] = ad - bc</div>
+            <div class="equation-label">El área de cualquier región se multiplica por |det|</div>
+        </div>
+
+        <div class="determinant-box">
+            <h4>Casos del Determinante</h4>
+            <div class="det-cases">
+                <div class="det-case">
+                    <strong>det > 0</strong><br>
+                    Preserva orientación
+                </div>
+                <div class="det-case">
+                    <strong>det < 0</strong><br>
+                    Invierte orientación (reflejo)
+                </div>
+                <div class="det-case">
+                    <strong>|det| = 1</strong><br>
+                    Preserva área exactamente
+                </div>
+                <div class="det-case">
+                    <strong>det = 0</strong><br>
+                    Colapsa a línea o punto (singular)
+                </div>
+            </div>
+        </div>
+
+        <p>
+            Una matriz con determinante cero no tiene inversa: pierde información al
+            aplastar el plano a una dimensión menor.
+        </p>
+
+        <h2>Valores y Vectores Propios</h2>
+
+        <div class="eigen-box">
+            <h4>¿Qué Son?</h4>
+            <p style="margin: 0;">
+                Un <strong>vector propio</strong> v es una dirección especial que la
+                transformación solo escala, sin rotar: Av = λv. El factor de escala
+                λ es el <strong>valor propio</strong> asociado.
+            </p>
+        </div>
+
+        <p>
+            Para encontrar los valores propios, resolvemos:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">det(A - λI) = 0</div>
+            <div class="equation">λ² - (a+d)λ + (ad-bc) = 0</div>
+            <div class="equation-label">Ecuación característica para matriz 2×2</div>
+        </div>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>λ reales distintos</h4>
+                <p>Dos direcciones propias independientes. Estiramiento/contracción en esas direcciones.</p>
+            </div>
+            <div class="concept-card">
+                <h4>λ reales iguales</h4>
+                <p>Puede ser escala uniforme o matriz defectiva (no diagonalizable).</p>
+            </div>
+            <div class="concept-card">
+                <h4>λ complejos</h4>
+                <p>La transformación incluye rotación. No hay direcciones propias reales.</p>
+            </div>
+            <div class="concept-card">
+                <h4>λ = 0</h4>
+                <p>Existe un subespacio que colapsa al origen. Matriz singular.</p>
+            </div>
+        </div>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment-section">
+            <h3>Experimento 1: Los Vectores Base</h3>
+            <ol>
+                <li>Selecciona la forma "Cuadrícula" y activa "Vectores base"</li>
+                <li>Comienza con la identidad [1 0; 0 1]</li>
+                <li>Cambia solo m00 a 2. Observa cómo e₁ (rojo) se estira</li>
+                <li>Vuelve a identidad. Ahora cambia m01 a 1</li>
+                <li>Observa: e₂ (verde) sigue igual, pero e₁ ahora "empuja" hacia la derecha</li>
+            </ol>
+            <p>
+                <strong>Insight:</strong> Cada columna de la matriz es literalmente
+                donde termina el vector base correspondiente.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 2: Rotación</h3>
+            <ol>
+                <li>Usa el preset "Rotación 45°"</li>
+                <li>Selecciona la forma "Letra F" para ver claramente la orientación</li>
+                <li>Activa la animación y reproduce</li>
+                <li>Observa cómo la F gira sin cambiar de tamaño</li>
+                <li>Verifica: det = 1 (preserva área y orientación)</li>
+            </ol>
+            <p>
+                <strong>Nota:</strong> cos(45°) ≈ 0.707 aparece en la diagonal;
+                sin(45°) ≈ 0.707 aparece fuera de la diagonal con signo opuesto.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 3: Reflejo y Determinante</h3>
+            <ol>
+                <li>Usa el preset "Reflejo X" (matriz [-1 0; 0 1])</li>
+                <li>Observa que det = -1: preserva área pero invierte orientación</li>
+                <li>La F aparece "espejada" horizontalmente</li>
+                <li>Prueba "Reflejo y=x": intercambia x e y</li>
+            </ol>
+            <p>
+                <strong>Concepto:</strong> El signo del determinante indica si la
+                transformación es una reflexión (impares) o una rotación/escala (pares).
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 4: Valores Propios</h3>
+            <ol>
+                <li>Activa "Vectores propios" en la visualización</li>
+                <li>Usa la matriz de escala [2 0; 0 0.5]</li>
+                <li>Los vectores propios son horizontal y vertical</li>
+                <li>λ₁ = 2 (estira horizontalmente), λ₂ = 0.5 (contrae verticalmente)</li>
+                <li>Ahora usa la matriz de rotación. ¿Hay vectores propios?</li>
+            </ol>
+            <p>
+                <strong>Observación:</strong> La rotación pura no tiene vectores propios
+                reales: ninguna dirección permanece fija (excepto 0° o 180°).
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 5: Matriz Singular</h3>
+            <ol>
+                <li>Ingresa la matriz [1 2; 2 4]</li>
+                <li>Observa: det = 1×4 - 2×2 = 0</li>
+                <li>La cuadrícula colapsa a una línea</li>
+                <li>Toda la información de una dimensión se pierde</li>
+            </ol>
+            <p>
+                <strong>Implicación:</strong> No hay inversa. No puedes "deshacer" esta
+                transformación porque infinitos puntos se mapean al mismo lugar.
+            </p>
+        </div>
+
+        <h2>Composición de Transformaciones</h2>
+
+        <p>
+            Aplicar dos transformaciones sucesivas equivale a multiplicar sus matrices
+            (en orden inverso):
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">T₂(T₁(v)) = (A₂ · A₁) · v</div>
+            <div class="equation-label">Primero T₁ (A₁), luego T₂ (A₂): multiplica A₂ × A₁</div>
+        </div>
+
+        <p>
+            El orden importa: rotar y luego escalar generalmente no da lo mismo que
+            escalar y luego rotar (la multiplicación de matrices no es conmutativa).
+        </p>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-card">
+                <h4>Gráficos por Computadora</h4>
+                <p>
+                    Cada sprite, cada modelo 3D se transforma con matrices.
+                    Las GPU son máquinas de multiplicación matricial masiva.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Machine Learning</h4>
+                <p>
+                    Las capas de una red neuronal son transformaciones matriciales
+                    seguidas de no linealidades.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Física Cuántica</h4>
+                <p>
+                    Los estados cuánticos son vectores; las observables y evoluciones
+                    son matrices (operadores).
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Robótica</h4>
+                <p>
+                    Las transformaciones de coordenadas entre articulaciones de un
+                    robot se expresan como matrices homogéneas.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Economía</h4>
+                <p>
+                    Los modelos de Leontief (input-output) usan matrices para
+                    representar relaciones entre sectores económicos.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Procesamiento de Imágenes</h4>
+                <p>
+                    Los filtros de convolución son operaciones matriciales.
+                    La PCA comprime imágenes encontrando valores propios.
+                </p>
+            </div>
+        </div>
+
+        <h2>Coordenadas Homogéneas</h2>
+
+        <p>
+            Las matrices 2×2 no pueden representar traslaciones (desplazamientos).
+            Para incluir traslaciones, se usan matrices 3×3 en coordenadas homogéneas:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">[x']   [a b tx] [x]</div>
+            <div class="equation">[y'] = [c d ty] [y]</div>
+            <div class="equation">[1 ]   [0 0  1] [1]</div>
+            <div class="equation-label">Transformación afín: lineal + traslación</div>
+        </div>
+
+        <p>
+            Esta extensión permite componer rotaciones, escalas, reflejos Y traslaciones
+            en una sola multiplicación matricial, fundamental para gráficos 2D y 3D.
+        </p>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Descomposición SVD:</strong> Cualquier matriz = rotación × escala × rotación</li>
+                <li><strong>Diagonalización:</strong> Simplificar matrices usando valores propios</li>
+                <li><strong>Matrices ortogonales:</strong> Transformaciones que preservan distancias</li>
+                <li><strong>Grupos de Lie:</strong> Matrices como puntos en espacios curvos</li>
+                <li><strong>Álgebra lineal numérica:</strong> El corazón de la computación científica</li>
+            </ul>
+        </div>
+
+        <div class="key-concept">
+            <strong>Reflexión Final:</strong> Una matriz 2×2 es un universo comprimido:
+            cuatro números que codifican rotación, escala, reflexión, cizalla. Entender
+            cómo estos coeficientes se traducen en geometría es fundamental para casi
+            cualquier campo técnico moderno. La próxima vez que veas una imagen rotada
+            en pantalla, recuerda: detrás hay una matriz haciendo el trabajo.
+        </div>
+    </main>
+
+    <footer>
+        <a href="../transform-matrix.html">← Volver a la Simulación</a>
+    </footer>
+</body>
+</html>

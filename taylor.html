@@ -37,6 +37,37 @@
             background: rgba(244, 114, 182, 0.3);
             border-color: rgba(244, 114, 182, 0.6);
         }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(244, 114, 182, 0.1);
+            border: 1px solid rgba(244, 114, 182, 0.3);
+            border-radius: 8px;
+            color: #fbcfe8;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(244, 114, 182, 0.2);
+            border-color: #f472b6;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #f472b6;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="bg-black text-gray-100 min-h-screen">
@@ -200,6 +231,11 @@
                     sin(x) y cos(x) convergen para todo x real. El error disminuye como O(xⁿ⁺¹/(n+1)!).
                 </div>
             </div>
+
+            <a href="guides/taylor.html" class="guide-link">
+                <span class="guide-icon">?</span>
+                Guía completa: series de Taylor, aproximaciones polinómicas, radio de convergencia
+            </a>
         </aside>
     </main>
 

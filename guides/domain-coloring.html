@@ -1,0 +1,663 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Domain Coloring | Math Visual Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #141414;
+            --color-surface-elevated: #1a1a1a;
+            --color-border: #262626;
+            --color-text: #e5e5e5;
+            --color-text-secondary: #a3a3a3;
+            --color-accent: #a855f7;
+            --color-accent-dim: rgba(168, 85, 247, 0.1);
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            font-size: 19px;
+            line-height: 1.7;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .breadcrumb {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.15rem;
+            color: var(--color-text-secondary);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .concept-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .concept-card h4 {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-accent);
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            color: var(--color-text-secondary);
+        }
+
+        .color-legend {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .color-bar {
+            height: 30px;
+            border-radius: 4px;
+            background: linear-gradient(to right,
+                hsl(0, 100%, 50%),
+                hsl(60, 100%, 50%),
+                hsl(120, 100%, 50%),
+                hsl(180, 100%, 50%),
+                hsl(240, 100%, 50%),
+                hsl(300, 100%, 50%),
+                hsl(360, 100%, 50%));
+            margin-bottom: 0.5rem;
+        }
+
+        .color-labels {
+            display: flex;
+            justify-content: space-between;
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        .equation-block {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: var(--font-mono);
+            font-size: 1.3rem;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .equation-label {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        .functions-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-size: 0.9rem;
+        }
+
+        .functions-table th {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            text-align: left;
+            padding: 1rem;
+            background: var(--color-surface);
+            border-bottom: 2px solid var(--color-accent);
+        }
+
+        .functions-table td {
+            padding: 0.75rem 1rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .functions-table tr:hover {
+            background: var(--color-surface);
+        }
+
+        .func-name {
+            font-family: var(--font-mono);
+            font-weight: 600;
+            color: var(--color-accent);
+        }
+
+        .experiment-block {
+            background: var(--color-surface-elevated);
+            border-radius: 8px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--color-accent);
+        }
+
+        .experiment-block h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .experiment-block ol {
+            margin-left: 1.25rem;
+            color: var(--color-text-secondary);
+        }
+
+        .experiment-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        .key-insight {
+            background: var(--color-accent-dim);
+            border: 1px solid var(--color-accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .key-insight strong {
+            color: var(--color-accent);
+        }
+
+        .singularity-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .singularity-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            text-align: center;
+        }
+
+        .singularity-card h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+        }
+
+        .singularity-card.zero h4 { color: #22c55e; }
+        .singularity-card.pole h4 { color: #ef4444; }
+
+        .singularity-card .visual {
+            font-size: 3rem;
+            margin-bottom: 0.75rem;
+        }
+
+        .singularity-card p {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+
+        .timeline {
+            border-left: 2px solid var(--color-border);
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-event {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--color-accent);
+        }
+
+        .timeline-text {
+            color: var(--color-text-secondary);
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-text);
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .connection-item:hover {
+            border-color: var(--color-accent);
+            background: var(--color-surface-elevated);
+        }
+
+        .connection-icon {
+            font-size: 1.5rem;
+        }
+
+        .connection-text {
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+        }
+
+        ul {
+            margin-left: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .btn-launch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 1rem 2rem;
+            background: var(--color-accent);
+            color: white;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-launch:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+                font-size: 17px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .singularity-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía
+        </nav>
+        <h1>Domain Coloring</h1>
+        <p class="subtitle">Visualizando funciones complejas con color</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            Una función compleja f: ℂ → ℂ toma un número complejo y devuelve otro.
+            ¿Cómo visualizar una transformación de 4 dimensiones (2 de entrada, 2 de salida)?
+            Domain coloring resuelve el problema: el color codifica el argumento (ángulo)
+            y el brillo codifica el módulo (magnitud) del valor de salida.
+        </p>
+
+        <h2>¿Qué Observarás?</h2>
+        <p>
+            Cada punto del plano complejo se colorea según el valor de f(z) en ese punto.
+            Los patrones de color revelan la estructura de la función: sus ceros, polos,
+            periodicidad y comportamiento asintótico.
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Color = Argumento</h4>
+                <p>El tono (hue) representa el ángulo de f(z) en el plano complejo, de 0° a 360°.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Brillo = Módulo</h4>
+                <p>Valores pequeños son oscuros, valores grandes son brillantes (escala logarítmica).</p>
+            </div>
+            <div class="concept-card">
+                <h4>Líneas de nivel</h4>
+                <p>Opcional: contornos donde |f(z)| = constante o arg(f(z)) = constante.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Tracking interactivo</h4>
+                <p>Mueve el cursor para ver z y f(z) en tiempo real.</p>
+            </div>
+        </div>
+
+        <h2>El Código de Colores</h2>
+
+        <div class="color-legend">
+            <div class="color-bar"></div>
+            <div class="color-labels">
+                <span>0° (→)</span>
+                <span>90° (↑)</span>
+                <span>180° (←)</span>
+                <span>270° (↓)</span>
+                <span>360°</span>
+            </div>
+            <p style="margin-top: 1rem; font-size: 0.9rem; color: var(--color-text-secondary);">
+                Rojo = positivo real, Cian = negativo real, Verde = positivo imaginario, Magenta = negativo imaginario
+            </p>
+        </div>
+
+        <div class="equation-block">
+            <div class="equation">f(z) = |f(z)| · e<sup>i·arg(f(z))</sup></div>
+            <div class="equation-label">Forma polar: magnitud × dirección</div>
+        </div>
+
+        <h2>Reconociendo Singularidades</h2>
+
+        <div class="singularity-grid">
+            <div class="singularity-card zero">
+                <h4>Cero (f(z₀) = 0)</h4>
+                <div class="visual">⚫</div>
+                <p>Punto oscuro donde <em>todos los colores convergen</em>. Los colores giran alrededor n veces si es un cero de orden n.</p>
+            </div>
+            <div class="singularity-card pole">
+                <h4>Polo (f(z₀) = ∞)</h4>
+                <div class="visual">💥</div>
+                <p>Punto brillante donde <em>todos los colores convergen</em>. Los colores giran en sentido opuesto a los ceros.</p>
+            </div>
+        </div>
+
+        <div class="key-insight">
+            <strong>Contando multiplicidad:</strong> El número de veces que los colores hacen un ciclo
+            completo alrededor de un punto indica el orden del cero o polo. Un cero simple (orden 1)
+            muestra un arcoíris completo; un cero doble (orden 2) muestra dos arcoíris.
+        </div>
+
+        <h2>Funciones Disponibles</h2>
+
+        <table class="functions-table">
+            <thead>
+                <tr>
+                    <th>Función</th>
+                    <th>Qué observar</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><span class="func-name">z²</span></td>
+                    <td>Los colores giran 2 veces alrededor del origen (cero de orden 2)</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">1/z</span></td>
+                    <td>Polo en el origen; colores invertidos respecto a z</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">z³ - 1</span></td>
+                    <td>Tres raíces cúbicas de la unidad, equiespaciadas 120°</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">e<sup>z</sup></span></td>
+                    <td>Periódica en dirección imaginaria (período 2πi); nunca es cero</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">sin(z)</span></td>
+                    <td>Ceros en z = nπ; crece exponencialmente en dirección imaginaria</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">tan(z)</span></td>
+                    <td>Polos en z = π/2 + nπ, ceros en z = nπ</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">log(z)</span></td>
+                    <td>Singularidad de rama en el origen; discontinuidad en eje real negativo</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">Γ(z)</span></td>
+                    <td>Polos en 0, -1, -2, -3...; generaliza el factorial</td>
+                </tr>
+                <tr>
+                    <td><span class="func-name">ζ(z)</span></td>
+                    <td>Función zeta de Riemann; polos, ceros no triviales en la franja crítica</td>
+                </tr>
+            </tbody>
+        </table>
+
+        <h2>Experimentos Sugeridos</h2>
+
+        <div class="experiment-block">
+            <h4>1. Contar ceros y polos</h4>
+            <ol>
+                <li>Selecciona f(z) = z³ - 1</li>
+                <li>Localiza los 3 puntos donde todos los colores convergen (oscuros)</li>
+                <li>Verifica: están en e<sup>0</sup>, e<sup>2πi/3</sup>, e<sup>4πi/3</sup></li>
+                <li>¿Cuántas veces giran los colores alrededor de cada cero?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>2. Comparar z² con √z</h4>
+            <ol>
+                <li>Visualiza z²: colores giran 2 veces</li>
+                <li>Ahora visualiza √z: colores giran ½ vez</li>
+                <li>La raíz cuadrada tiene una "rama cortada" - ¿dónde está?</li>
+                <li>¿Por qué √z no puede ser continua en todo el plano?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>3. La periodicidad de e<sup>z</sup></h4>
+            <ol>
+                <li>Selecciona e<sup>z</sup> y expande el rango a ±5</li>
+                <li>Observa: el patrón se repite verticalmente cada 2π</li>
+                <li>¿Por qué? Porque e<sup>z+2πi</sup> = e<sup>z</sup></li>
+                <li>¿Hay ceros? ¿Por qué no?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>4. Los polos de la función Gamma</h4>
+            <ol>
+                <li>Selecciona Γ(z) y ajusta rango a ±5</li>
+                <li>Localiza los polos: puntos brillantes donde todos los colores convergen</li>
+                <li>Están en 0, -1, -2, -3... ¿Por qué ahí?</li>
+                <li>Activa "líneas de nivel" para ver la estructura</li>
+            </ol>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="timeline">
+            <div class="timeline-event">
+                <div class="timeline-year">1797</div>
+                <div class="timeline-text">
+                    <strong>Caspar Wessel</strong> introduce la representación geométrica de números
+                    complejos como puntos en el plano.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1821</div>
+                <div class="timeline-text">
+                    <strong>Cauchy</strong> desarrolla la teoría de funciones complejas, incluyendo
+                    el teorema de los residuos y las integrales de contorno.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1850s</div>
+                <div class="timeline-text">
+                    <strong>Riemann</strong> introduce las superficies de Riemann para manejar
+                    funciones multivaluadas como √z y log(z).
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1980s</div>
+                <div class="timeline-text">
+                    Con la computación gráfica, el <strong>domain coloring</strong> emerge como
+                    técnica de visualización. Larry Crone populariza el método.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1998</div>
+                <div class="timeline-text">
+                    <strong>Frank Farris</strong> publica técnicas refinadas de visualización
+                    usando esquemas de color perceptualmente uniformes.
+                </div>
+            </div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <a href="mandelbrot.html" class="connection-item">
+                <span class="connection-icon">🔮</span>
+                <span class="connection-text">Mandelbrot<br><small>Iteración compleja</small></span>
+            </a>
+            <a href="riemann.html" class="connection-item">
+                <span class="connection-icon">🌊</span>
+                <span class="connection-text">Sumas de Riemann<br><small>Integración</small></span>
+            </a>
+            <a href="fourier-epicycles.html" class="connection-item">
+                <span class="connection-icon">🔄</span>
+                <span class="connection-text">Fourier<br><small>Series complejas</small></span>
+            </a>
+            <a href="../../Physics/Physics Visual Lab/guides/campos.html" class="connection-item">
+                <span class="connection-icon">⚡</span>
+                <span class="connection-text">Campos eléctricos<br><small>Potencial complejo</small></span>
+            </a>
+        </div>
+
+        <h2>Para Explorar Más</h2>
+        <ul>
+            <li><strong>Funciones conformes:</strong> Preservan ángulos; las líneas de nivel son ortogonales</li>
+            <li><strong>Singularidades esenciales:</strong> e<sup>1/z</sup> cerca de z=0 muestra comportamiento caótico</li>
+            <li><strong>Hipótesis de Riemann:</strong> Los ceros no triviales de ζ(s) tienen parte real 1/2</li>
+            <li><strong>Transformaciones de Möbius:</strong> (az+b)/(cz+d) mapea círculos a círculos</li>
+            <li><strong>Superficies de Riemann:</strong> Para ver √z como función univaluada, necesitas dos "hojas"</li>
+        </ul>
+    </main>
+
+    <footer>
+        <a href="../domain-coloring.html" class="btn-launch">
+            🎨 Abrir Simulación
+        </a>
+    </footer>
+</body>
+</html>

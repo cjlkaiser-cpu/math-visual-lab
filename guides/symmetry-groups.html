@@ -1,0 +1,895 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Grupos de Simetría - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e4e4e8;
+            --text-secondary: #9999a8;
+            --accent: #a855f7;
+            --accent-dim: rgba(168, 85, 247, 0.15);
+            --cyan: #22d3ee;
+            --yellow: #fbbf24;
+            --green: #22c55e;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 3rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--cyan);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--accent-dim), transparent);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .equation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.02em;
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+            transition: border-color 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .experiment-section h3 {
+            color: var(--cyan);
+            margin-top: 0;
+        }
+
+        ol, ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        .history-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .history-box h3 {
+            margin-top: 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--bg-tertiary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateX(-4px);
+        }
+
+        .timeline-year {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .further-reading {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .further-reading li::before {
+            content: '→ ';
+            color: var(--accent);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .groups-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+        }
+
+        .groups-table th, .groups-table td {
+            padding: 0.6rem 0.8rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .groups-table th {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .groups-table td {
+            color: var(--text-secondary);
+        }
+
+        .groups-table code {
+            font-size: 1rem;
+            color: var(--cyan);
+        }
+
+        .lattice-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .lattice-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .lattice-card h5 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .lattice-card p {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .notation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .notation-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 0.75rem 0;
+        }
+
+        .notation-symbol {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.2rem;
+            color: var(--cyan);
+            width: 40px;
+            text-align: center;
+        }
+
+        .notation-meaning {
+            color: var(--text-secondary);
+            font-size: 0.95rem;
+        }
+
+        .transformation-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .transform-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .transform-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.95rem;
+            color: var(--yellow);
+            margin-bottom: 0.5rem;
+        }
+
+        .transform-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .family-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .family-section h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--green);
+            margin-bottom: 0.75rem;
+        }
+
+        .group-list {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin-top: 0.75rem;
+        }
+
+        .group-tag {
+            font-family: 'Fira Code', monospace;
+            background: var(--bg-tertiary);
+            padding: 0.25rem 0.5rem;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            color: var(--cyan);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía Pedagógica
+        </nav>
+        <h1>Los 17 Grupos de Simetría del Plano</h1>
+        <p class="intro">
+            Desde los mosaicos de la Alhambra hasta los cristales de nieve, la naturaleza
+            y el arte repiten patrones con una estructura matemática precisa. Descubre por
+            qué existen exactamente 17 formas de teselar el plano con simetría periódica.
+        </p>
+    </header>
+
+    <main>
+        <section class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li>Patrones periódicos que llenan el plano sin huecos</li>
+                <li>Un motivo base transformado por rotaciones, reflexiones y deslizamientos</li>
+                <li>La celda unidad: el "ladrillo" mínimo que se repite</li>
+                <li>Centros de rotación donde el patrón gira sobre sí mismo</li>
+                <li>Ejes de simetría donde el patrón se refleja</li>
+            </ul>
+        </section>
+
+        <h2>Las Cuatro Operaciones de Simetría</h2>
+
+        <p>
+            Todo grupo de wallpaper está construido a partir de combinaciones de cuatro
+            operaciones fundamentales que preservan distancias:
+        </p>
+
+        <div class="transformation-grid">
+            <div class="transform-card">
+                <h4>Traslación</h4>
+                <p>
+                    Mover el patrón en una dirección. Toda teselación periódica tiene
+                    al menos dos traslaciones independientes.
+                </p>
+            </div>
+            <div class="transform-card">
+                <h4>Rotación</h4>
+                <p>
+                    Girar alrededor de un punto. Solo son posibles rotaciones de 60°,
+                    90°, 120° y 180° (órdenes 6, 4, 3, 2).
+                </p>
+            </div>
+            <div class="transform-card">
+                <h4>Reflexión</h4>
+                <p>
+                    Espejo a través de una línea. Invierte la quiralidad: una "F"
+                    se convierte en su imagen especular.
+                </p>
+            </div>
+            <div class="transform-card">
+                <h4>Reflexión con deslizamiento</h4>
+                <p>
+                    Reflejar y trasladar a lo largo del eje de reflexión. Combina
+                    espejo con movimiento.
+                </p>
+            </div>
+        </div>
+
+        <div class="key-concept">
+            <strong>Restricción Cristalográfica:</strong> Solo las rotaciones de orden 2, 3, 4
+            y 6 son compatibles con una red periódica. Una rotación de 72° (5-fold) o 36°
+            no puede generar un patrón que llene el plano sin huecos. Por eso los cuasicristales
+            (descubiertos en 1984) fueron tan sorprendentes.
+        </div>
+
+        <h2>Los Cinco Sistemas de Redes</h2>
+
+        <p>
+            Las traslaciones definen una "red" o lattice que determina qué simetrías son
+            posibles:
+        </p>
+
+        <div class="lattice-grid">
+            <div class="lattice-card">
+                <h5>Oblicuo</h5>
+                <p>Sin restricciones. Solo permite rotación 2-fold o ninguna.</p>
+            </div>
+            <div class="lattice-card">
+                <h5>Rectangular</h5>
+                <p>Ángulos de 90°. Permite reflexiones paralelas o perpendiculares.</p>
+            </div>
+            <div class="lattice-card">
+                <h5>Romboidal</h5>
+                <p>Red centrada. Combina reflexiones con deslizamientos.</p>
+            </div>
+            <div class="lattice-card">
+                <h5>Cuadrado</h5>
+                <p>Permite rotación 4-fold. Base para patrones "checkerboard".</p>
+            </div>
+            <div class="lattice-card">
+                <h5>Hexagonal</h5>
+                <p>Permite rotaciones 3-fold y 6-fold. La más simétrica.</p>
+            </div>
+        </div>
+
+        <h2>Notación de los Grupos</h2>
+
+        <p>
+            Cada grupo tiene un nombre que codifica sus simetrías. La notación estándar
+            (cristalográfica) sigue este patrón:
+        </p>
+
+        <div class="notation-box">
+            <div class="notation-item">
+                <span class="notation-symbol">p</span>
+                <span class="notation-meaning">Red primitiva (celda simple)</span>
+            </div>
+            <div class="notation-item">
+                <span class="notation-symbol">c</span>
+                <span class="notation-meaning">Red centrada (punto adicional en el centro)</span>
+            </div>
+            <div class="notation-item">
+                <span class="notation-symbol">1</span>
+                <span class="notation-meaning">Sin simetría adicional en esa dirección</span>
+            </div>
+            <div class="notation-item">
+                <span class="notation-symbol">m</span>
+                <span class="notation-meaning">Reflexión (mirror) en esa dirección</span>
+            </div>
+            <div class="notation-item">
+                <span class="notation-symbol">g</span>
+                <span class="notation-meaning">Reflexión con deslizamiento (glide)</span>
+            </div>
+            <div class="notation-item">
+                <span class="notation-symbol">2,3,4,6</span>
+                <span class="notation-meaning">Orden de la rotación máxima</span>
+            </div>
+        </div>
+
+        <h2>Los 17 Grupos Clasificados</h2>
+
+        <div class="family-section">
+            <h4>Familia Oblicua (2 grupos)</h4>
+            <p>La red más general, sin simetrías especiales.</p>
+            <div class="group-list">
+                <span class="group-tag">p1</span>
+                <span class="group-tag">p2</span>
+            </div>
+        </div>
+
+        <div class="family-section">
+            <h4>Familia Rectangular (5 grupos)</h4>
+            <p>Red con ángulos rectos. Permite reflexiones paralelas o perpendiculares.</p>
+            <div class="group-list">
+                <span class="group-tag">pm</span>
+                <span class="group-tag">pg</span>
+                <span class="group-tag">pmm</span>
+                <span class="group-tag">pmg</span>
+                <span class="group-tag">pgg</span>
+            </div>
+        </div>
+
+        <div class="family-section">
+            <h4>Familia Romboidal (2 grupos)</h4>
+            <p>Red centrada. Combina espejos con deslizamientos.</p>
+            <div class="group-list">
+                <span class="group-tag">cm</span>
+                <span class="group-tag">cmm</span>
+            </div>
+        </div>
+
+        <div class="family-section">
+            <h4>Familia Cuadrada (3 grupos)</h4>
+            <p>Simetría rotacional de 90°. Base de muchos patrones geométricos.</p>
+            <div class="group-list">
+                <span class="group-tag">p4</span>
+                <span class="group-tag">p4m</span>
+                <span class="group-tag">p4g</span>
+            </div>
+        </div>
+
+        <div class="family-section">
+            <h4>Familia Hexagonal (5 grupos)</h4>
+            <p>Máxima simetría rotacional. Incluye los patrones más elegantes.</p>
+            <div class="group-list">
+                <span class="group-tag">p3</span>
+                <span class="group-tag">p3m1</span>
+                <span class="group-tag">p31m</span>
+                <span class="group-tag">p6</span>
+                <span class="group-tag">p6m</span>
+            </div>
+        </div>
+
+        <h3>Tabla de Referencia</h3>
+
+        <table class="groups-table">
+            <tr>
+                <th>Grupo</th>
+                <th>Rotaciones</th>
+                <th>Reflexiones</th>
+                <th>Deslizamientos</th>
+            </tr>
+            <tr><td><code>p1</code></td><td>Ninguna</td><td>No</td><td>No</td></tr>
+            <tr><td><code>p2</code></td><td>180°</td><td>No</td><td>No</td></tr>
+            <tr><td><code>pm</code></td><td>Ninguna</td><td>Paralelas</td><td>No</td></tr>
+            <tr><td><code>pg</code></td><td>Ninguna</td><td>No</td><td>Sí</td></tr>
+            <tr><td><code>cm</code></td><td>Ninguna</td><td>Sí</td><td>Sí</td></tr>
+            <tr><td><code>pmm</code></td><td>180°</td><td>Perpendiculares</td><td>No</td></tr>
+            <tr><td><code>pmg</code></td><td>180°</td><td>Sí</td><td>Sí</td></tr>
+            <tr><td><code>pgg</code></td><td>180°</td><td>No</td><td>Sí</td></tr>
+            <tr><td><code>cmm</code></td><td>180°</td><td>Sí</td><td>Sí</td></tr>
+            <tr><td><code>p4</code></td><td>90°</td><td>No</td><td>No</td></tr>
+            <tr><td><code>p4m</code></td><td>90°</td><td>Sí (diagonales)</td><td>Sí</td></tr>
+            <tr><td><code>p4g</code></td><td>90°</td><td>Sí</td><td>Sí</td></tr>
+            <tr><td><code>p3</code></td><td>120°</td><td>No</td><td>No</td></tr>
+            <tr><td><code>p3m1</code></td><td>120°</td><td>Sí (por centros)</td><td>No</td></tr>
+            <tr><td><code>p31m</code></td><td>120°</td><td>Sí (entre centros)</td><td>No</td></tr>
+            <tr><td><code>p6</code></td><td>60°</td><td>No</td><td>No</td></tr>
+            <tr><td><code>p6m</code></td><td>60°</td><td>Sí</td><td>Sí</td></tr>
+        </table>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment-section">
+            <h3>Experimento 1: Quiralidad</h3>
+            <ol>
+                <li>Selecciona el motivo "Letra F" y el grupo <code>p1</code></li>
+                <li>Observa: todas las F miran en la misma dirección</li>
+                <li>Cambia a <code>pm</code>: ahora hay F normales y reflejadas</li>
+                <li>Prueba con <code>p4</code> (rotaciones) vs <code>p4m</code> (rotaciones + espejos)</li>
+            </ol>
+            <p>
+                <strong>Concepto:</strong> Los grupos sin reflexión preservan la quiralidad
+                (mano izquierda ≠ mano derecha). Los grupos con reflexión mezclan ambas.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 2: Centros de Rotación</h3>
+            <ol>
+                <li>Activa "Mostrar centros de rotación"</li>
+                <li>Compara <code>p4</code> con <code>p2</code></li>
+                <li>En p4, los números 4 indican rotaciones de 90° (360°/4)</li>
+                <li>Observa que también hay puntos de rotación 2-fold entre los 4-fold</li>
+            </ol>
+            <p>
+                <strong>Insight:</strong> Los grupos con mayor simetría rotacional tienen
+                múltiples tipos de centros de rotación a diferentes órdenes.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 3: Celda Unidad</h3>
+            <ol>
+                <li>Activa "Mostrar celda unidad"</li>
+                <li>Compara las celdas de grupos rectangulares vs hexagonales</li>
+                <li>Para <code>p6m</code>, observa la celda hexagonal</li>
+                <li>¿Cuántos motivos caben en cada celda?</li>
+            </ol>
+            <p>
+                <strong>Análisis:</strong> La celda unidad es el "dominio fundamental":
+                la región mínima cuya repetición genera todo el patrón.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 4: Comparando p3m1 y p31m</h3>
+            <ol>
+                <li>Selecciona <code>p3m1</code> y activa ejes de simetría</li>
+                <li>Anota dónde están los ejes: ¿pasan por los centros de rotación?</li>
+                <li>Cambia a <code>p31m</code> y observa la diferencia</li>
+            </ol>
+            <p>
+                <strong>Diferencia sutil:</strong> En p3m1, los ejes de reflexión pasan por
+                los centros de rotación. En p31m, pasan entre ellos. Aunque ambos tienen
+                simetría 3-fold con espejos, la estructura es diferente.
+            </p>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="history-box">
+            <h3>De los Mosaicos a la Demostración</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">~700-1400</div>
+                    <p>
+                        <strong>Arte Islámico:</strong> Artesanos en España, Persia y el
+                        Magreb crean mosaicos que ejemplifican los 17 grupos, sin conocer
+                        la teoría subyacente.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1891</div>
+                    <p>
+                        <strong>Evgraf Fedorov</strong> (Rusia) clasifica los 17 grupos en
+                        el contexto de cristalografía, estudiando las simetrías de cristales.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1924</div>
+                    <p>
+                        <strong>George Pólya</strong> (Hungría) redescubre la clasificación
+                        de forma independiente, proporcionando una demostración elegante.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1936</div>
+                    <p>
+                        <strong>M.C. Escher</strong> visita la Alhambra y estudia los
+                        mosaicos, transformando su arte en exploraciones matemáticas.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1984</div>
+                    <p>
+                        <strong>Cuasicristales:</strong> Dan Shechtman descubre materiales
+                        con simetría 5-fold "prohibida", ganando el Nobel 2011.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Por Qué Solo 17</h2>
+
+        <p>
+            La demostración de que hay exactamente 17 grupos combina varios argumentos:
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Restricción de Rotaciones</h4>
+                <p>Solo órdenes 1, 2, 3, 4, 6 son compatibles con periodicidad.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Cinco Tipos de Red</h4>
+                <p>Las traslaciones forman oblicuo, rectangular, romboidal, cuadrado o hexagonal.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Combinaciones Limitadas</h4>
+                <p>Rotaciones y reflexiones interactúan de formas restringidas.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Cierre de Grupo</h4>
+                <p>Combinar dos simetrías genera una tercera; el grupo debe ser "cerrado".</p>
+            </div>
+        </div>
+
+        <div class="equation-box">
+            <div class="equation">17 = 2 + 5 + 2 + 3 + 5</div>
+            <div class="equation-label">Distribución: oblicuo + rectangular + romboidal + cuadrado + hexagonal</div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-card">
+                <h4>Cristalografía</h4>
+                <p>
+                    Los 17 grupos planos son un subconjunto de los 230 grupos espaciales
+                    que clasifican las simetrías de cristales 3D.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Física del Estado Sólido</h4>
+                <p>
+                    La estructura de bandas de un material depende de su grupo de simetría.
+                    Los semiconductores explotan simetrías cristalinas.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Química</h4>
+                <p>
+                    Las propiedades de moléculas y cristales se predicen a partir de sus
+                    grupos de simetría (teoría de grupos en espectroscopía).
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Arquitectura</h4>
+                <p>
+                    Desde la Alhambra hasta modernistas como Gaudí, los patrones de
+                    baldosas siguen estas simetrías.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Diseño Textil</h4>
+                <p>
+                    Los patrones de tela, papel tapiz y alfombras se basan en estos
+                    17 grupos.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Arte de Escher</h4>
+                <p>
+                    M.C. Escher usó sistemáticamente todos los grupos para crear sus
+                    famosos dibujos de teselaciones con figuras.
+                </p>
+            </div>
+        </div>
+
+        <h2>La Alhambra y los 17 Grupos</h2>
+
+        <div class="key-concept">
+            <strong>Un Logro Histórico:</strong> Los artesanos nazaríes de la Alhambra de
+            Granada (siglos XIII-XIV) crearon ejemplos de los 17 grupos de simetría del plano,
+            siglos antes de que los matemáticos los clasificaran formalmente. Esto se logró
+            a través de la intuición artística y la tradición geométrica islámica, no por
+            conocimiento matemático explícito.
+        </div>
+
+        <p>
+            La prohibición de representar figuras vivas en el arte islámico impulsó el
+            desarrollo de patrones geométricos abstractos de extraordinaria complejidad
+            y belleza. Los artesanos exploraron sistemáticamente todas las formas posibles
+            de llenar el plano con simetría.
+        </p>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Teoría de Grupos:</strong> La matemática detrás de las simetrías</li>
+                <li><strong>Los 230 Grupos Espaciales:</strong> Extensión a 3D</li>
+                <li><strong>Cuasicristales:</strong> Simetría "prohibida" en la naturaleza</li>
+                <li><strong>"Visions of Symmetry" (Schattschneider):</strong> El arte de Escher</li>
+                <li><strong>Teselaciones de Penrose:</strong> Patrones aperiódicos con simetría 5-fold</li>
+            </ul>
+        </div>
+
+        <div class="key-concept">
+            <strong>Reflexión Final:</strong> Que existan exactamente 17 grupos de simetría
+            del plano es un teorema profundo que conecta geometría, álgebra y arte. La
+            próxima vez que veas un patrón repetitivo, pregúntate: ¿a cuál de los 17 grupos
+            pertenece? Rotaciones, reflexiones, deslizamientos: cada detalle cuenta.
+        </div>
+    </main>
+
+    <footer>
+        <a href="../symmetry-groups.html">← Volver a la Simulación</a>
+    </footer>
+</body>
+</html>

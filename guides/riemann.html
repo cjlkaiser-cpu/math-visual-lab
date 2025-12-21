@@ -1,0 +1,883 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Sumas de Riemann - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e4e4e8;
+            --text-secondary: #9999a8;
+            --accent: #a855f7;
+            --accent-dim: rgba(168, 85, 247, 0.15);
+            --pink: #f472b6;
+            --cyan: #22d3ee;
+            --lime: #a3e635;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--pink);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 3rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--pink);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--cyan);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--accent-dim), transparent);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .equation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--pink);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.02em;
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--pink);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+            transition: border-color 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--pink);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .experiment-section h3 {
+            color: var(--cyan);
+            margin-top: 0;
+        }
+
+        ol, ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        .history-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 3px solid var(--pink);
+        }
+
+        .history-box h3 {
+            margin-top: 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--bg-tertiary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--pink);
+            transform: translateX(-4px);
+        }
+
+        .timeline-year {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--pink);
+            font-weight: 500;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .further-reading {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .further-reading li::before {
+            content: '→ ';
+            color: var(--pink);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--pink);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .method-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .method-table th, .method-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .method-table th {
+            color: var(--pink);
+            font-weight: 500;
+        }
+
+        .method-table td {
+            color: var(--text-secondary);
+        }
+
+        .method-table code {
+            background: transparent;
+            padding: 0;
+        }
+
+        .method-comparison {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(160px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .method-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .method-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--pink);
+            margin-bottom: 0.5rem;
+        }
+
+        .method-card .formula {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--cyan);
+            margin: 0.5rem 0;
+        }
+
+        .method-card .error {
+            font-size: 0.8rem;
+            color: var(--lime);
+        }
+
+        .function-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .function-card {
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            padding: 1rem;
+        }
+
+        .function-card .func {
+            font-family: 'Fira Code', monospace;
+            color: var(--cyan);
+        }
+
+        .function-card .integral {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 0.5rem;
+        }
+
+        .visual-comparison {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .visual-comparison h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--pink);
+            margin-bottom: 1rem;
+        }
+
+        .rect-visual {
+            display: flex;
+            gap: 0.5rem;
+            align-items: flex-end;
+            height: 100px;
+            margin: 1rem 0;
+            padding: 0.5rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+        }
+
+        .rect {
+            flex: 1;
+            background: var(--pink);
+            opacity: 0.6;
+            border-radius: 4px 4px 0 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía Pedagógica
+        </nav>
+        <h1>Sumas de Riemann</h1>
+        <p class="intro">
+            La integral no nació como símbolo ∫, sino como una suma de infinitos
+            rectángulos infinitesimales. Las sumas de Riemann revelan esta esencia:
+            aproximar el área bajo una curva dividiendo, midiendo, y sumando.
+        </p>
+    </header>
+
+    <main>
+        <section class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li>Rectángulos (o trapezoides) aproximando el área bajo la curva</li>
+                <li>La aproximación mejorando al aumentar el número de divisiones</li>
+                <li>El error disminuyendo según el método elegido</li>
+                <li>La convergencia hacia el valor exacto de la integral</li>
+                <li>Áreas negativas cuando la función está bajo el eje x</li>
+            </ul>
+        </section>
+
+        <h2>La Idea Fundamental</h2>
+
+        <p>
+            ¿Cómo calcular el área de una región con bordes curvos? La genialidad de
+            Riemann fue aproximar formas complicadas con formas simples: rectángulos.
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">∫ₐᵇ f(x) dx = lim(n→∞) Σᵢ₌₁ⁿ f(xᵢ*) · Δx</div>
+            <div class="equation-label">La integral definida como límite de sumas de Riemann</div>
+        </div>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Partición</h4>
+                <p>Dividir [a, b] en n subintervalos de ancho Δx = (b-a)/n</p>
+            </div>
+            <div class="concept-card">
+                <h4>Muestreo</h4>
+                <p>Elegir un punto xᵢ* en cada subintervalo para evaluar f</p>
+            </div>
+            <div class="concept-card">
+                <h4>Aproximación</h4>
+                <p>Área del rectángulo i = f(xᵢ*) × Δx</p>
+            </div>
+            <div class="concept-card">
+                <h4>Límite</h4>
+                <p>Al aumentar n, la suma converge al área exacta</p>
+            </div>
+        </div>
+
+        <h2>Los Cinco Métodos</h2>
+
+        <p>
+            La elección del punto de muestreo xᵢ* define diferentes métodos, cada uno
+            con sus propias características de precisión:
+        </p>
+
+        <div class="method-comparison">
+            <div class="method-card">
+                <h4>Izquierdo</h4>
+                <div class="formula">f(xᵢ)</div>
+                <div class="error">Error: O(Δx)</div>
+            </div>
+            <div class="method-card">
+                <h4>Derecho</h4>
+                <div class="formula">f(xᵢ₊₁)</div>
+                <div class="error">Error: O(Δx)</div>
+            </div>
+            <div class="method-card">
+                <h4>Punto Medio</h4>
+                <div class="formula">f((xᵢ+xᵢ₊₁)/2)</div>
+                <div class="error">Error: O(Δx²)</div>
+            </div>
+            <div class="method-card">
+                <h4>Trapezoidal</h4>
+                <div class="formula">(f(xᵢ)+f(xᵢ₊₁))/2</div>
+                <div class="error">Error: O(Δx²)</div>
+            </div>
+            <div class="method-card">
+                <h4>Simpson</h4>
+                <div class="formula">Parábolas</div>
+                <div class="error">Error: O(Δx⁴)</div>
+            </div>
+        </div>
+
+        <div class="key-concept">
+            <strong>Orden del Error:</strong> O(Δx) significa que el error disminuye
+            linealmente con el ancho. O(Δx²) significa que si divides el ancho a la mitad,
+            el error se reduce a una cuarta parte. Simpson con O(Δx⁴) es dramáticamente
+            más preciso para funciones suaves.
+        </div>
+
+        <h3>Detalles de Cada Método</h3>
+
+        <table class="method-table">
+            <tr>
+                <th>Método</th>
+                <th>Fórmula</th>
+                <th>Comportamiento</th>
+            </tr>
+            <tr>
+                <td>Izquierdo</td>
+                <td><code>Σ f(a + i·Δx) · Δx</code></td>
+                <td>Subestima si f crece, sobreestima si decrece</td>
+            </tr>
+            <tr>
+                <td>Derecho</td>
+                <td><code>Σ f(a + (i+1)·Δx) · Δx</code></td>
+                <td>Sobreestima si f crece, subestima si decrece</td>
+            </tr>
+            <tr>
+                <td>Punto Medio</td>
+                <td><code>Σ f(a + (i+½)·Δx) · Δx</code></td>
+                <td>Los errores se cancelan parcialmente</td>
+            </tr>
+            <tr>
+                <td>Trapezoidal</td>
+                <td><code>Δx/2 · [f(a) + 2Σf(xᵢ) + f(b)]</code></td>
+                <td>Usa líneas en vez de escalones</td>
+            </tr>
+            <tr>
+                <td>Simpson</td>
+                <td><code>Δx/3 · [f(x₀) + 4f(x₁) + 2f(x₂) + ...]</code></td>
+                <td>Exacto para polinomios hasta grado 3</td>
+            </tr>
+        </table>
+
+        <h2>Funciones Disponibles</h2>
+
+        <div class="function-grid">
+            <div class="function-card">
+                <div class="func">f(x) = x²</div>
+                <div class="integral">∫x²dx = x³/3</div>
+            </div>
+            <div class="function-card">
+                <div class="func">f(x) = x³</div>
+                <div class="integral">∫x³dx = x⁴/4</div>
+            </div>
+            <div class="function-card">
+                <div class="func">f(x) = sin(x)</div>
+                <div class="integral">∫sin(x)dx = -cos(x)</div>
+            </div>
+            <div class="function-card">
+                <div class="func">f(x) = cos(x)</div>
+                <div class="integral">∫cos(x)dx = sin(x)</div>
+            </div>
+            <div class="function-card">
+                <div class="func">f(x) = eˣ</div>
+                <div class="integral">∫eˣdx = eˣ</div>
+            </div>
+            <div class="function-card">
+                <div class="func">f(x) = √x</div>
+                <div class="integral">∫√x dx = (2/3)x^(3/2)</div>
+            </div>
+            <div class="function-card">
+                <div class="func">f(x) = 1/x</div>
+                <div class="integral">∫(1/x)dx = ln|x|</div>
+            </div>
+            <div class="function-card">
+                <div class="func">f(x) = e^(-x²)</div>
+                <div class="integral">Sin forma cerrada (√π erf)</div>
+            </div>
+        </div>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment-section">
+            <h3>Experimento 1: Convergencia Visual</h3>
+            <ol>
+                <li>Selecciona f(x) = x² con intervalo [0, 2]</li>
+                <li>Comienza con n = 4 rectángulos usando el método izquierdo</li>
+                <li>Aumenta gradualmente: 4 → 10 → 25 → 50 → 100</li>
+                <li>Observa cómo los escalones se "suavizan" hacia la curva</li>
+                <li>Compara el error en cada paso</li>
+            </ol>
+            <p>
+                <strong>Resultado esperado:</strong> La integral exacta de x² de 0 a 2 es
+                8/3 ≈ 2.6667. Con 100 rectángulos, el error debe ser menor al 1%.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 2: Comparación de Métodos</h3>
+            <ol>
+                <li>Usa f(x) = sin(x) en [0, π] con exactamente n = 10</li>
+                <li>Prueba cada método y anota los errores:</li>
+                <li>Izquierdo: _____ | Derecho: _____ | Punto medio: _____</li>
+                <li>Trapezoidal: _____ | Simpson: _____</li>
+                <li>¿Cuál es el más preciso? ¿Por cuántos órdenes de magnitud?</li>
+            </ol>
+            <p>
+                <strong>Insight:</strong> La integral de sin(x) de 0 a π es exactamente 2.
+                Simpson debería dar un error varios órdenes de magnitud menor que los
+                métodos básicos.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 3: Área Negativa</h3>
+            <ol>
+                <li>Selecciona f(x) = sin(x) en el intervalo [0, 2π]</li>
+                <li>Activa el esquema de color "Sobre/Bajo"</li>
+                <li>Observa los rectángulos verdes (positivos) y rosas (negativos)</li>
+                <li>¿Cuál es el valor de la suma? ¿Por qué?</li>
+            </ol>
+            <p>
+                <strong>Concepto:</strong> La integral "con signo" de sin(x) sobre un
+                período completo es 0: las áreas positiva y negativa se cancelan exactamente.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 4: Animación de Convergencia</h3>
+            <ol>
+                <li>Selecciona f(x) = e^(-x²) en [-2, 2]</li>
+                <li>Activa "Animar convergencia" con velocidad media (100ms)</li>
+                <li>Observa cómo la suma de Riemann se estabiliza</li>
+                <li>Nota: esta función no tiene integral cerrada</li>
+            </ol>
+            <p>
+                <strong>Reflexión:</strong> La gaussiana e^(-x²) es fundamental en
+                probabilidad. Su integral de -∞ a ∞ es √π ≈ 1.7725, pero se calcula
+                con trucos (coordenadas polares), no con antiderivadas.
+            </p>
+        </div>
+
+        <h2>La Regla de Simpson en Detalle</h2>
+
+        <p>
+            Simpson es especial porque en vez de rectángulos o trapezoides, usa <em>parábolas</em>
+            para aproximar la curva entre tres puntos consecutivos.
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">∫ₐᵇ f(x)dx ≈ (Δx/3)[f(x₀) + 4f(x₁) + 2f(x₂) + 4f(x₃) + ... + f(xₙ)]</div>
+            <div class="equation-label">Regla de Simpson: coeficientes 1-4-2-4-2-...-4-1 (n debe ser par)</div>
+        </div>
+
+        <p>
+            Los coeficientes 1, 4, 2, 4, 2, ... vienen de integrar el polinomio de Lagrange
+            de grado 2 que pasa por tres puntos. Este método es <em>exacto</em> para
+            polinomios de grado 3 o menor, lo cual explica su notable precisión.
+        </p>
+
+        <h2>Interpretación Geométrica</h2>
+
+        <div class="visual-comparison">
+            <h4>Izquierdo vs Derecho</h4>
+            <p>
+                Para funciones crecientes, el método izquierdo subestima (los rectángulos
+                quedan "por debajo" de la curva) mientras que el derecho sobreestima.
+                Para funciones decrecientes, ocurre lo opuesto.
+            </p>
+            <p>
+                El punto medio y el trapezoidal balancean estos errores, logrando
+                precisión O(Δx²) en vez de O(Δx).
+            </p>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="history-box">
+            <h3>De Arquímedes a Riemann</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">~250 a.C.</div>
+                    <p>
+                        <strong>Arquímedes</strong> calcula el área bajo una parábola usando
+                        el "método de exhaución": triángulos cada vez más pequeños.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1600s</div>
+                    <p>
+                        <strong>Cavalieri</strong> y <strong>Fermat</strong> desarrollan métodos
+                        de indivisibles, precursores del cálculo integral.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1665-1676</div>
+                    <p>
+                        <strong>Newton y Leibniz</strong> inventan el cálculo, conectando
+                        derivadas con integrales (Teorema Fundamental).
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1854</div>
+                    <p>
+                        <strong>Bernhard Riemann</strong> formaliza la integral usando sumas,
+                        permitiendo integrar funciones discontinuas.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1902</div>
+                    <p>
+                        <strong>Henri Lebesgue</strong> generaliza aún más la integral,
+                        midiendo "cuánto" en vez de "dónde".
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Errores de Truncamiento</h2>
+
+        <p>
+            La diferencia entre la suma de Riemann y la integral exacta se llama
+            <em>error de truncamiento</em>. Su comportamiento depende del método:
+        </p>
+
+        <table class="method-table">
+            <tr>
+                <th>Método</th>
+                <th>Error por intervalo</th>
+                <th>Error total</th>
+                <th>Para duplicar precisión</th>
+            </tr>
+            <tr>
+                <td>Izquierdo/Derecho</td>
+                <td>O(Δx²)</td>
+                <td>O(Δx) = O(1/n)</td>
+                <td>Duplicar n</td>
+            </tr>
+            <tr>
+                <td>Punto Medio</td>
+                <td>O(Δx³)</td>
+                <td>O(Δx²) = O(1/n²)</td>
+                <td>Multiplicar n por √2</td>
+            </tr>
+            <tr>
+                <td>Trapezoidal</td>
+                <td>O(Δx³)</td>
+                <td>O(Δx²) = O(1/n²)</td>
+                <td>Multiplicar n por √2</td>
+            </tr>
+            <tr>
+                <td>Simpson</td>
+                <td>O(Δx⁵)</td>
+                <td>O(Δx⁴) = O(1/n⁴)</td>
+                <td>Multiplicar n por 2^(1/4)</td>
+            </tr>
+        </table>
+
+        <div class="key-concept">
+            <strong>Implicación Práctica:</strong> Si tienes un presupuesto computacional
+            fijo (cantidad de evaluaciones de f), Simpson casi siempre es la mejor opción
+            para funciones suaves. Para funciones con discontinuidades o picos, los
+            métodos adaptativos son necesarios.
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-card">
+                <h4>Física</h4>
+                <p>
+                    Trabajo = ∫F·dx. La fuerza variable sobre un recorrido se calcula
+                    sumando pequeños trabajos F·Δx.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Probabilidad</h4>
+                <p>
+                    P(a ≤ X ≤ b) = ∫f(x)dx. El área bajo la curva de densidad da
+                    probabilidades.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Economía</h4>
+                <p>
+                    Excedente del consumidor = ∫(D(q) - p)dq. Área entre curva de
+                    demanda y precio de mercado.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Ingeniería</h4>
+                <p>
+                    Integración numérica de ecuaciones diferenciales: Euler, RK4,
+                    todos basados en sumas discretas.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Series de Taylor</h4>
+                <p>
+                    La integral del polinomio de Taylor da aproximaciones de
+                    antiderivadas.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Monte Carlo</h4>
+                <p>
+                    Otra forma de integrar numéricamente: muestreo aleatorio en
+                    vez de particiones regulares.
+                </p>
+            </div>
+        </div>
+
+        <h2>Cuándo Falla la Integral de Riemann</h2>
+
+        <p>
+            Algunas funciones son tan patológicas que no se pueden integrar con sumas
+            de Riemann. El ejemplo clásico:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">D(x) = { 1 si x es racional, 0 si x es irracional }</div>
+            <div class="equation-label">Función de Dirichlet: no Riemann-integrable</div>
+        </div>
+
+        <p>
+            Esta función salta infinitamente en cualquier intervalo. Las sumas de Riemann
+            oscilan entre 0 y 1 según dónde muestrées. Para estas funciones, se necesita
+            la integral de Lebesgue.
+        </p>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Cuadratura Gaussiana:</strong> Puntos de muestreo óptimos</li>
+                <li><strong>Integración Adaptativa:</strong> Refinamiento donde se necesita</li>
+                <li><strong>Regla de Romberg:</strong> Extrapolación de Richardson</li>
+                <li><strong>Monte Carlo:</strong> Integración probabilística</li>
+                <li><strong>Integral de Lebesgue:</strong> Generalización de Riemann</li>
+            </ul>
+        </div>
+
+        <div class="key-concept">
+            <strong>Reflexión Final:</strong> Las sumas de Riemann no son solo una curiosidad
+            histórica o una herramienta pedagógica. Son la base de toda integración numérica:
+            desde los algoritmos que calculan órbitas de satélites hasta los que renderizan
+            gráficos 3D. Entender sus limitaciones y optimizaciones es esencial para
+            cualquier aplicación científica o de ingeniería.
+        </div>
+    </main>
+
+    <footer>
+        <a href="../riemann.html">← Volver a la Simulación</a>
+    </footer>
+</body>
+</html>

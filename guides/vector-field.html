@@ -1,0 +1,642 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Campos Vectoriales | Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #141420;
+            --bg-tertiary: #1e1e2e;
+            --text-primary: #e0e0e0;
+            --text-secondary: #a0a0a0;
+            --accent: #22d3ee;
+            --accent-dim: rgba(34, 211, 238, 0.3);
+            --accent-glow: rgba(34, 211, 238, 0.15);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.1rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--accent-dim);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #ffffff;
+        }
+
+        h1 .accent {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 3rem 0 1.5rem 0;
+            color: #ffffff;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        h2::before {
+            content: '';
+            display: inline-block;
+            width: 4px;
+            height: 1.2em;
+            background: var(--accent);
+            border-radius: 2px;
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem 0;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+            text-align: justify;
+            hyphens: auto;
+        }
+
+        .intro {
+            font-size: 1.2rem;
+            color: var(--text-primary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--accent);
+        }
+
+        .observation-box ul {
+            margin: 1rem 0;
+            padding-left: 1.5rem;
+        }
+
+        .observation-box li {
+            margin-bottom: 0.75rem;
+        }
+
+        .equation-block {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem 2rem;
+            margin: 2rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 1.1rem;
+            overflow-x: auto;
+        }
+
+        .equation-block .equation-main {
+            font-size: 1.4rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .equation-block .equation-desc {
+            font-family: 'Crimson Pro', serif;
+            font-size: 1rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+            text-align: left;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .experiment-section h3 {
+            margin-top: 0;
+        }
+
+        .steps {
+            counter-reset: step;
+            padding-left: 0;
+            list-style: none;
+        }
+
+        .steps li {
+            counter-increment: step;
+            padding-left: 3rem;
+            position: relative;
+            margin-bottom: 1.25rem;
+        }
+
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 2rem;
+            height: 2rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: 'Inter', sans-serif;
+            font-weight: 600;
+            font-size: 0.9rem;
+        }
+
+        .historical-note {
+            background: linear-gradient(135deg, var(--bg-secondary), var(--bg-tertiary));
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.75rem;
+            margin: 2rem 0;
+            position: relative;
+        }
+
+        .historical-note::before {
+            content: '"';
+            font-size: 4rem;
+            color: var(--accent-dim);
+            position: absolute;
+            top: -0.5rem;
+            left: 1rem;
+            font-family: Georgia, serif;
+        }
+
+        .historical-note p {
+            margin-left: 2rem;
+        }
+
+        .timeline {
+            border-left: 2px solid var(--accent-dim);
+            padding-left: 2rem;
+            margin: 2rem 0;
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 2rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2.45rem;
+            top: 0.5rem;
+            width: 12px;
+            height: 12px;
+            background: var(--accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 2rem 0;
+        }
+
+        .connection-item {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 6px;
+            padding: 1rem;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .connection-item:hover {
+            border-color: var(--accent);
+            transform: translateY(-2px);
+        }
+
+        .connection-item .field {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 0.5rem;
+        }
+
+        .connection-item .topic {
+            font-weight: 500;
+        }
+
+        .further-reading {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+        }
+
+        .further-reading ul {
+            list-style: none;
+            padding: 0;
+        }
+
+        .further-reading li {
+            padding: 0.5rem 0;
+            border-bottom: 1px solid var(--accent-dim);
+        }
+
+        .further-reading li:last-child {
+            border-bottom: none;
+        }
+
+        .further-reading a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .further-reading a:hover {
+            text-decoration: underline;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--accent-dim);
+            text-align: center;
+            color: var(--text-secondary);
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .field-type {
+            display: inline-block;
+            background: var(--accent-dim);
+            color: var(--accent);
+            padding: 0.2rem 0.6rem;
+            border-radius: 4px;
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            margin: 0.2rem;
+        }
+
+        .phase-portrait {
+            display: flex;
+            justify-content: center;
+            gap: 1.5rem;
+            flex-wrap: wrap;
+            margin: 1.5rem 0;
+        }
+
+        .portrait-item {
+            text-align: center;
+        }
+
+        .portrait-symbol {
+            font-size: 2.5rem;
+            color: var(--accent);
+            margin-bottom: 0.5rem;
+        }
+
+        .portrait-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> &raquo; Guía: Campos Vectoriales
+        </nav>
+        <h1>Campos <span class="accent">Vectoriales</span></h1>
+        <p class="subtitle">Ecuaciones diferenciales visualizadas como flujos</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            Un campo vectorial asigna un vector a cada punto del espacio. En el contexto de ecuaciones diferenciales, este vector indica la dirección y velocidad del cambio. Las partículas que "flotan" en el campo nos muestran cómo evoluciona cualquier condición inicial, revelando atractores, ciclos límite y puntos de equilibrio.
+        </p>
+
+        <div class="observation-box">
+            <h3>Lo que observarás en esta simulación</h3>
+            <ul>
+                <li><strong>Flechas del campo:</strong> vectores que indican la dirección local del flujo</li>
+                <li><strong>Partículas:</strong> "trazadores" que siguen las trayectorias del sistema</li>
+                <li><strong>Estelas:</strong> historial de posiciones que revela el retrato de fases</li>
+                <li><strong>Puntos fijos:</strong> donde las partículas convergen, divergen o giran</li>
+                <li><strong>Ciclos límite:</strong> órbitas cerradas estables en sistemas no lineales</li>
+            </ul>
+        </div>
+
+        <h2>Conceptos Fundamentales</h2>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Sistema Autónomo</h4>
+                <p>Un sistema donde dx/dt y dy/dt dependen solo de (x,y), no del tiempo. Su comportamiento se representa completamente en el plano de fases.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Punto de Equilibrio</h4>
+                <p>Un punto donde dx/dt = 0 y dy/dt = 0. Las partículas permanecen inmóviles allí. Su estabilidad determina el comportamiento cercano.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Retrato de Fases</h4>
+                <p>El conjunto de todas las trayectorias posibles del sistema. Las estelas de las partículas revelan este retrato gradualmente.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Nulclina</h4>
+                <p>Curva donde dx/dt = 0 (nulclina de x) o dy/dt = 0 (nulclina de y). Su intersección marca puntos de equilibrio.</p>
+            </div>
+        </div>
+
+        <h2>Sistema de Ecuaciones</h2>
+
+        <div class="equation-block">
+            <div class="equation-main">dx/dt = f(x, y)</div>
+            <div class="equation-main">dy/dt = g(x, y)</div>
+            <div class="equation-desc">Sistema autónomo bidimensional general</div>
+        </div>
+
+        <p>
+            El campo vectorial es <strong>F(x,y) = (f(x,y), g(x,y))</strong>. En cada punto del plano, el vector F indica hacia dónde se mueve una partícula ubicada allí. La integración numérica (método RK4 en esta simulación) calcula las trayectorias.
+        </p>
+
+        <h3>Clasificación de Puntos Fijos</h3>
+
+        <p>
+            Para un punto fijo en el origen de un sistema lineal, la matriz jacobiana determina el comportamiento:
+        </p>
+
+        <div class="equation-block">
+            <div class="equation-main">J = [ ∂f/∂x  ∂f/∂y ]</div>
+            <div class="equation-main">    [ ∂g/∂x  ∂g/∂y ]</div>
+            <div class="equation-desc">Matriz jacobiana evaluada en el punto fijo</div>
+        </div>
+
+        <p>
+            Los valores propios λ₁, λ₂ de J clasifican el punto:
+        </p>
+
+        <div class="phase-portrait">
+            <div class="portrait-item">
+                <div class="portrait-symbol">⊙</div>
+                <div class="portrait-label">Centro<br>(λ imaginarios puros)</div>
+            </div>
+            <div class="portrait-item">
+                <div class="portrait-symbol">●</div>
+                <div class="portrait-label">Nodo estable<br>(λ₁, λ₂ < 0)</div>
+            </div>
+            <div class="portrait-item">
+                <div class="portrait-symbol">◎</div>
+                <div class="portrait-label">Nodo inestable<br>(λ₁, λ₂ > 0)</div>
+            </div>
+            <div class="portrait-item">
+                <div class="portrait-symbol">⊗</div>
+                <div class="portrait-label">Punto silla<br>(λ₁ > 0 > λ₂)</div>
+            </div>
+        </div>
+
+        <h2>Experimento 1: Campos Lineales Clásicos</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Identificar tipos de puntos de equilibrio</h3>
+
+            <ol class="steps">
+                <li>Selecciona el campo <span class="field-type">Rotación (vórtice)</span>. Las ecuaciones son dx/dt = -y, dy/dt = x. Observa cómo las partículas orbitan el origen sin acercarse ni alejarse.</li>
+                <li>Cambia a <span class="field-type">Sumidero</span> (dx/dt = -x, dy/dt = -y). Todas las partículas convergen hacia el origen exponencialmente. Este es un nodo estable.</li>
+                <li>Prueba <span class="field-type">Fuente</span>. Es el comportamiento opuesto: todas las trayectorias escapan del origen. Nodo inestable.</li>
+                <li>Selecciona <span class="field-type">Punto silla</span> (dx/dt = x, dy/dt = -y). Observa cómo las partículas se acercan por un eje y se alejan por otro. Este es un punto de equilibrio inestable.</li>
+                <li>Activa "Nulclinas" para visualizar dónde dx/dt = 0 (rosa). Nota que las nulclinas se cruzan en el origen.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> El signo de los valores propios determina si el flujo atrae o repele. Los valores imaginarios producen rotación.</p>
+        </div>
+
+        <h2>Experimento 2: Espirales y Estabilidad</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Explorar puntos focales</h3>
+
+            <ol class="steps">
+                <li>Selecciona <span class="field-type">Espiral entrante</span>. Las ecuaciones dx/dt = -x - y, dy/dt = x - y combinan rotación con contracción.</li>
+                <li>Aumenta la longitud de "Estela" a 150 para ver el patrón espiral claramente. Las partículas giran mientras convergen.</li>
+                <li>Cambia a <span class="field-type">Espiral saliente</span>. Ahora las partículas giran mientras se alejan del origen.</li>
+                <li>Compara con el vórtice puro: la espiral tiene una componente radial además de la rotacional.</li>
+                <li>Haz clic cerca del origen para añadir partículas. Observa cómo su distancia al centro cambia con el tiempo.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> Los valores propios complejos con parte real negativa producen espirales estables; con parte real positiva, inestables.</p>
+        </div>
+
+        <h2>Experimento 3: Van der Pol y Ciclos Límite</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Descubrir atractores periódicos</h3>
+
+            <ol class="steps">
+                <li>Selecciona <span class="field-type">Van der Pol</span>. Este es un oscilador no lineal: dx/dt = y, dy/dt = μ(1-x²)y - x.</li>
+                <li>Observa cómo las partículas cerca del origen son repelidas pero las lejanas son atraídas hacia una órbita cerrada.</li>
+                <li>Añade partículas tanto cerca del origen como lejos. Todas convergen al mismo ciclo límite.</li>
+                <li>Reduce la velocidad a 0.5x para apreciar mejor la dinámica. El ciclo no es un círculo perfecto debido a la no linealidad.</li>
+                <li>Este ciclo límite es un atractor: trayectorias cercanas convergen hacia él desde ambos lados.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> Los sistemas no lineales pueden tener comportamientos que no existen en sistemas lineales, como los ciclos límite estables.</p>
+        </div>
+
+        <h2>Experimento 4: Lotka-Volterra (Depredador-Presa)</h2>
+
+        <div class="experiment-section">
+            <h3>Objetivo: Modelar poblaciones en competencia</h3>
+
+            <ol class="steps">
+                <li>Selecciona <span class="field-type">Lotka-Volterra</span>. Las variables x e y representan poblaciones de presas y depredadores.</li>
+                <li>Las ecuaciones son dx/dt = x(1 - 0.1y), dy/dt = y(-0.5 + 0.05x). La presa crece pero es limitada por depredadores; el depredador muere sin presas.</li>
+                <li>Observa las órbitas cerradas. A diferencia de Van der Pol, aquí hay infinitas órbitas según la condición inicial.</li>
+                <li>Añade partículas en diferentes posiciones. Cada una sigue su propia órbita periódica.</li>
+                <li>Activa "Cuadrícula" para ver las escalas. Las órbitas representan ciclos de abundancia y escasez en la naturaleza.</li>
+            </ol>
+
+            <p><strong>Conclusión:</strong> Este sistema tiene un centro no lineal: infinitas órbitas cerradas que no son ni atractoras ni repulsoras. Es estructuralmente inestable.</p>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="historical-note">
+            <p>
+                Henri Poincaré revolucionó el estudio de ecuaciones diferenciales al mostrar que el análisis cualitativo de sus soluciones era tan importante como las fórmulas explícitas. Su trabajo sobre el problema de tres cuerpos reveló que muchos sistemas no tienen soluciones analíticas, pero su comportamiento global puede entenderse geométricamente.
+            </p>
+        </div>
+
+        <div class="timeline">
+            <div class="timeline-item">
+                <span class="timeline-year">1881-1886</span>
+                <p><strong>Poincaré:</strong> "Mémoire sur les courbes définies par une équation différentielle" introduce el análisis cualitativo y el retrato de fases.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">1920</span>
+                <p><strong>Lotka:</strong> Propone ecuaciones para reacciones químicas autocatalíticas que luego Volterra aplica a poblaciones biológicas.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">1926</span>
+                <p><strong>Van der Pol:</strong> Estudia oscilaciones en circuitos de válvulas de vacío, descubriendo el ciclo límite que lleva su nombre.</p>
+            </div>
+            <div class="timeline-item">
+                <span class="timeline-year">1963</span>
+                <p><strong>Lorenz:</strong> Descubre el atractor caótico, un nuevo tipo de comportamiento en sistemas de tres o más dimensiones.</p>
+            </div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-item">
+                <div class="field">Física</div>
+                <div class="topic">Péndulo amortiguado</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Física</div>
+                <div class="topic">Espacio de fases</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Biología</div>
+                <div class="topic">Dinámica de poblaciones</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Ingeniería</div>
+                <div class="topic">Teoría de control</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Economía</div>
+                <div class="topic">Modelos de mercado</div>
+            </div>
+            <div class="connection-item">
+                <div class="field">Matemáticas</div>
+                <div class="topic">Atractor de Lorenz</div>
+            </div>
+        </div>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Strogatz, S. (2015)</strong> - "Nonlinear Dynamics and Chaos" - El texto de referencia sobre análisis cualitativo</li>
+                <li><strong>Hirsch, M., Smale, S. (1974)</strong> - "Differential Equations, Dynamical Systems, and Linear Algebra"</li>
+                <li><strong>Simulación: Atractor de Lorenz</strong> - <a href="../lorenz-attractor.html">Extensión a tres dimensiones</a></li>
+                <li><strong>Simulación: Péndulo Doble</strong> - <a href="../double-pendulum.html">Caos en sistemas mecánicos</a></li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>
+            <a href="../vector-field.html">Volver a la simulación de Campos Vectoriales</a>
+        </p>
+        <p style="margin-top: 1rem;">
+            Math Visual Lab — EigenLab
+        </p>
+    </footer>
+</body>
+</html>

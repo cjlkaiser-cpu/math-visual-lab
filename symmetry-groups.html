@@ -35,6 +35,37 @@
             background: rgba(168, 85, 247, 0.3);
             border-color: #a855f7;
         }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #a855f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="bg-black text-gray-100 min-h-screen">
@@ -164,6 +195,11 @@
                     Cada patrón periódico en el plano pertenece a uno de estos 17 grupos. Los encontramos en mosaicos islámicos, pavimentos romanos y arte de Escher.
                 </p>
             </div>
+
+            <a href="guides/symmetry-groups.html" class="guide-link">
+                <span class="guide-icon">?</span>
+                Guía completa: teoría de grupos, simetrías, grupos de wallpaper, notación de Conway
+            </a>
         </aside>
     </main>
 

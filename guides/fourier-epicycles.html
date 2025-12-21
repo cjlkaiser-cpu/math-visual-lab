@@ -1,0 +1,632 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Series de Fourier | Math Visual Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #141414;
+            --color-surface-elevated: #1a1a1a;
+            --color-border: #262626;
+            --color-text: #e5e5e5;
+            --color-text-secondary: #a3a3a3;
+            --color-accent: #f472b6;
+            --color-accent-dim: rgba(244, 114, 182, 0.1);
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            font-size: 19px;
+            line-height: 1.7;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .breadcrumb {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.15rem;
+            color: var(--color-text-secondary);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .concept-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .concept-card h4 {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-accent);
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            color: var(--color-text-secondary);
+        }
+
+        .equation-block {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: var(--font-mono);
+            font-size: 1.2rem;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .equation-label {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+        }
+
+        .epicycle-visual {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .epicycle-visual h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+        }
+
+        .epicycle-description {
+            display: flex;
+            gap: 2rem;
+            align-items: center;
+        }
+
+        .epicycle-circles {
+            display: flex;
+            gap: 0.5rem;
+            align-items: center;
+        }
+
+        .circle-rep {
+            width: 40px;
+            height: 40px;
+            border: 2px solid var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-family: var(--font-mono);
+            font-size: 0.75rem;
+            color: var(--color-accent);
+        }
+
+        .circle-rep.small { width: 30px; height: 30px; }
+        .circle-rep.tiny { width: 20px; height: 20px; font-size: 0.6rem; }
+
+        .plus-sign {
+            color: var(--color-text-secondary);
+            font-size: 1.5rem;
+        }
+
+        .epicycle-description p {
+            flex: 1;
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+            margin: 0;
+        }
+
+        .experiment-block {
+            background: var(--color-surface-elevated);
+            border-radius: 8px;
+            padding: 1.75rem;
+            margin: 1.5rem 0;
+            border-left: 3px solid var(--color-accent);
+        }
+
+        .experiment-block h4 {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            margin-bottom: 1rem;
+        }
+
+        .experiment-block ol {
+            margin-left: 1.25rem;
+            color: var(--color-text-secondary);
+        }
+
+        .experiment-block li {
+            margin-bottom: 0.5rem;
+        }
+
+        .key-insight {
+            background: var(--color-accent-dim);
+            border: 1px solid var(--color-accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .key-insight strong {
+            color: var(--color-accent);
+        }
+
+        .applications-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .application-item {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.25rem;
+            text-align: center;
+        }
+
+        .application-icon {
+            font-size: 2rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .application-name {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .application-desc {
+            font-size: 0.8rem;
+            color: var(--color-text-secondary);
+        }
+
+        .timeline {
+            border-left: 2px solid var(--color-border);
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline-event {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-event::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .timeline-year {
+            font-family: var(--font-mono);
+            font-size: 0.9rem;
+            color: var(--color-accent);
+        }
+
+        .timeline-text {
+            color: var(--color-text-secondary);
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .connection-item {
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            padding: 1rem;
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            text-decoration: none;
+            color: var(--color-text);
+            transition: border-color 0.2s, background-color 0.2s;
+        }
+
+        .connection-item:hover {
+            border-color: var(--color-accent);
+            background: var(--color-surface-elevated);
+        }
+
+        .connection-icon {
+            font-size: 1.5rem;
+        }
+
+        .connection-text {
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+        }
+
+        ul {
+            margin-left: 1.25rem;
+            margin-bottom: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+        }
+
+        .btn-launch {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 500;
+            padding: 1rem 2rem;
+            background: var(--color-accent);
+            color: #000;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            text-decoration: none;
+            transition: opacity 0.2s;
+        }
+
+        .btn-launch:hover {
+            opacity: 0.9;
+        }
+
+        @media (max-width: 600px) {
+            body {
+                padding: 1rem;
+                font-size: 17px;
+            }
+
+            h1 {
+                font-size: 2rem;
+            }
+
+            .epicycle-description {
+                flex-direction: column;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía
+        </nav>
+        <h1>Series de Fourier con Epiciclos</h1>
+        <p class="subtitle">Dibujando con círculos giratorios</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            Cualquier forma cerrada puede ser dibujada por una serie de círculos girando
+            sobre otros círculos. Esta idea, que parece mágica, es el corazón de las
+            series de Fourier: toda señal periódica es una suma de senos y cosenos,
+            y cada uno es un círculo en el plano complejo.
+        </p>
+
+        <h2>¿Qué Observarás?</h2>
+        <p>
+            Dibuja cualquier forma con el mouse. La simulación calcula la Transformada
+            Discreta de Fourier (DFT) y representa cada coeficiente como un círculo
+            giratorio. La suma de todos los círculos recrea tu dibujo original.
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Epiciclos</h4>
+                <p>Cada círculo gira a una frecuencia diferente. Los más grandes capturan la forma general; los pequeños, los detalles.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Número de coeficientes</h4>
+                <p>Más círculos = mayor precisión. Con suficientes, puedes dibujar cualquier forma.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Amplitud y fase</h4>
+                <p>El radio del círculo es la amplitud; su posición inicial, la fase del armónico.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Formas predefinidas</h4>
+                <p>Prueba círculo, cuadrado, estrella, corazón, π o ∞ para ver cómo se descomponen.</p>
+            </div>
+        </div>
+
+        <h2>La Idea Central</h2>
+
+        <div class="epicycle-visual">
+            <h4>Sumando círculos</h4>
+            <div class="epicycle-description">
+                <div class="epicycle-circles">
+                    <div class="circle-rep">1</div>
+                    <span class="plus-sign">+</span>
+                    <div class="circle-rep small">2</div>
+                    <span class="plus-sign">+</span>
+                    <div class="circle-rep tiny">3</div>
+                    <span class="plus-sign">+</span>
+                    <span style="color: var(--color-text-secondary)">...</span>
+                </div>
+                <p>
+                    El círculo más grande (frecuencia 1) da la forma básica.
+                    Cada círculo adicional añade detalle. El punto final de la
+                    cadena de círculos traza la figura.
+                </p>
+            </div>
+        </div>
+
+        <div class="equation-block">
+            <div class="equation">f(t) = Σ cₙ · e<sup>2πint</sup></div>
+            <div class="equation-label">Serie de Fourier en forma compleja</div>
+        </div>
+
+        <div class="equation-block">
+            <div class="equation">cₙ = (1/N) Σ f(k) · e<sup>-2πink/N</sup></div>
+            <div class="equation-label">Transformada Discreta de Fourier (DFT)</div>
+        </div>
+
+        <div class="key-insight">
+            <strong>¿Por qué funciona?</strong> Los exponenciales complejos e<sup>iωt</sup>
+            forman una base ortogonal: cualquier función periódica puede expresarse como
+            combinación lineal de ellos. Geométricamente, e<sup>iωt</sup> es un punto que
+            gira en el plano complejo a frecuencia ω — un círculo.
+        </div>
+
+        <h2>Experimentos Sugeridos</h2>
+
+        <div class="experiment-block">
+            <h4>1. El cuadrado necesita muchos círculos</h4>
+            <ol>
+                <li>Carga el preset "Cuadrado"</li>
+                <li>Comienza con N = 5 coeficientes</li>
+                <li>Observa: las esquinas son redondeadas</li>
+                <li>Aumenta a N = 50, 100, 150... las esquinas se agudizan</li>
+                <li>¿Por qué las formas con esquinas necesitan más armónicos?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>2. El círculo es perfecto con uno</h4>
+            <ol>
+                <li>Carga el preset "Círculo"</li>
+                <li>Ajusta N = 1</li>
+                <li>¡El círculo se dibuja perfectamente con un solo epiciclo!</li>
+                <li>¿Por qué? Porque e<sup>it</sup> ya es un círculo</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>3. Dibuja tu firma</h4>
+            <ol>
+                <li>Dibuja tu nombre o una forma libre</li>
+                <li>Observa cómo los epiciclos recrean tu trazo</li>
+                <li>Activa "Mostrar dibujo original" para comparar</li>
+                <li>¿Cuántos coeficientes necesitas para que sea reconocible?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-block">
+            <h4>4. Compresión de datos</h4>
+            <ol>
+                <li>Dibuja una forma compleja</li>
+                <li>Nota cuántos puntos tiene el dibujo original</li>
+                <li>Reduce N hasta que la forma sea apenas reconocible</li>
+                <li>¿Cuántos coeficientes "codifican" la información esencial?</li>
+            </ol>
+        </div>
+
+        <h2>Aplicaciones en el Mundo Real</h2>
+
+        <div class="applications-grid">
+            <div class="application-item">
+                <div class="application-icon">🎵</div>
+                <div class="application-name">Audio</div>
+                <div class="application-desc">MP3, análisis de voz, síntesis de sonido</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">🖼️</div>
+                <div class="application-name">Imágenes</div>
+                <div class="application-desc">JPEG, procesamiento de señales 2D</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">📡</div>
+                <div class="application-name">Comunicaciones</div>
+                <div class="application-desc">Modulación, filtrado, WiFi, 5G</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">🩺</div>
+                <div class="application-name">Medicina</div>
+                <div class="application-desc">MRI, análisis de ECG, tomografía</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">🌊</div>
+                <div class="application-name">Física</div>
+                <div class="application-desc">Mecánica cuántica, óptica, acústica</div>
+            </div>
+            <div class="application-item">
+                <div class="application-icon">📈</div>
+                <div class="application-name">Finanzas</div>
+                <div class="application-desc">Análisis de ciclos, predicción de tendencias</div>
+            </div>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="timeline">
+            <div class="timeline-event">
+                <div class="timeline-year">~150 EC</div>
+                <div class="timeline-text">
+                    <strong>Ptolomeo</strong> usa epiciclos para modelar órbitas planetarias.
+                    Círculos sobre círculos, la idea es antigua.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1807</div>
+                <div class="timeline-text">
+                    <strong>Joseph Fourier</strong> presenta su trabajo sobre la conducción
+                    de calor, proponiendo que cualquier función puede expresarse como serie
+                    de senos y cosenos. La Academia lo rechaza inicialmente.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1822</div>
+                <div class="timeline-text">
+                    Fourier publica "Théorie analytique de la chaleur", estableciendo
+                    el análisis armónico como disciplina.
+                </div>
+            </div>
+            <div class="timeline-event">
+                <div class="timeline-year">1965</div>
+                <div class="timeline-text">
+                    <strong>Cooley y Tukey</strong> publican el algoritmo FFT (Fast Fourier
+                    Transform), reduciendo el cálculo de O(n²) a O(n log n).
+                </div>
+            </div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <a href="taylor.html" class="connection-item">
+                <span class="connection-icon">📐</span>
+                <span class="connection-text">Series de Taylor<br><small>Otra forma de aproximar</small></span>
+            </a>
+            <a href="domain-coloring.html" class="connection-item">
+                <span class="connection-icon">🎨</span>
+                <span class="connection-text">Domain coloring<br><small>Funciones complejas</small></span>
+            </a>
+            <a href="../../Physics/Physics Visual Lab/guides/ondas.html" class="connection-item">
+                <span class="connection-icon">🌊</span>
+                <span class="connection-text">Ondas<br><small>Superposición</small></span>
+            </a>
+            <a href="../../Physics/Physics Sound Lab/guides/sintesis.html" class="connection-item">
+                <span class="connection-icon">🎹</span>
+                <span class="connection-text">Síntesis de sonido<br><small>Armónicos</small></span>
+            </a>
+        </div>
+
+        <h2>Para Explorar Más</h2>
+        <ul>
+            <li><strong>Fenómeno de Gibbs:</strong> Las esquinas afiladas causan oscilaciones que no desaparecen al añadir armónicos</li>
+            <li><strong>FFT:</strong> Algoritmo que calcula la DFT en tiempo O(n log n) en lugar de O(n²)</li>
+            <li><strong>Transformada de Fourier continua:</strong> Para señales no periódicas, el espectro es continuo</li>
+            <li><strong>Principio de incertidumbre:</strong> No puedes tener precisión infinita en tiempo y frecuencia simultáneamente</li>
+            <li><strong>Convolución:</strong> Multiplicar en frecuencia = convolucionar en tiempo</li>
+        </ul>
+    </main>
+
+    <footer>
+        <a href="../fourier-epicycles.html" class="btn-launch">
+            🔄 Abrir Simulación
+        </a>
+    </footer>
+</body>
+</html>

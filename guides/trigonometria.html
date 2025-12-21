@@ -1,0 +1,646 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Trigonometría | Math Visual Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a;
+            --color-surface: #141414;
+            --color-surface-elevated: #1a1a1a;
+            --color-border: #262626;
+            --color-text: #e5e5e5;
+            --color-text-secondary: #a3a3a3;
+            --color-accent: #f97316;
+            --color-accent-dim: rgba(249, 115, 22, 0.1);
+            --font-serif: 'Crimson Pro', Georgia, serif;
+            --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: var(--font-serif);
+            font-size: 19px;
+            line-height: 1.7;
+            color: var(--color-text);
+            background-color: var(--color-bg);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .breadcrumb {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            color: var(--color-text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: var(--font-serif);
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--color-text);
+            letter-spacing: -0.02em;
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: var(--font-sans);
+            font-size: 0.85rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+            color: var(--color-accent);
+            margin-top: 3rem;
+            margin-bottom: 1.25rem;
+        }
+
+        h3 {
+            font-family: var(--font-serif);
+            font-size: 1.4rem;
+            font-weight: 600;
+            margin-top: 2rem;
+            margin-bottom: 0.75rem;
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.15rem;
+            color: var(--color-text-secondary);
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .concept-card {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 1.5rem;
+        }
+
+        .concept-card h4 {
+            font-family: var(--font-sans);
+            font-size: 1rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: var(--color-accent);
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            margin-bottom: 0;
+            color: var(--color-text-secondary);
+        }
+
+        .equation-block {
+            background: var(--color-surface);
+            border: 1px solid var(--color-border);
+            border-radius: 8px;
+            padding: 2rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: var(--font-mono);
+            font-size: 1.4rem;
+            color: var(--color-accent);
+            margin-bottom: 1rem;
+        }
+
+        .equation-note {
+            font-size: 0.9rem;
+            color: var(--color-text-secondary);
+        }
+
+        .experiment-box {
+            background: linear-gradient(135deg, var(--color-accent-dim), transparent);
+            border: 1px solid var(--color-accent);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .experiment-box h4 {
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--color-accent);
+            margin-bottom: 0.75rem;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .experiment-box ol {
+            margin-left: 1.5rem;
+            color: var(--color-text-secondary);
+        }
+
+        .experiment-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        ul, ol {
+            margin-left: 1.5rem;
+            margin-bottom: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        code {
+            font-family: var(--font-mono);
+            font-size: 0.9em;
+            background: var(--color-surface);
+            padding: 0.15em 0.4em;
+            border-radius: 4px;
+            color: var(--color-accent);
+        }
+
+        .highlight {
+            background: var(--color-accent-dim);
+            padding: 1rem 1.5rem;
+            border-radius: 8px;
+            margin: 1.5rem 0;
+        }
+
+        .connection-list {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .connection-list li {
+            display: flex;
+            align-items: flex-start;
+            gap: 0.75rem;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        .connection-list li:last-child {
+            border-bottom: none;
+        }
+
+        .connection-icon {
+            width: 24px;
+            height: 24px;
+            background: var(--color-accent);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.75rem;
+            flex-shrink: 0;
+            margin-top: 0.25rem;
+        }
+
+        .connection-text {
+            flex: 1;
+        }
+
+        .connection-text strong {
+            color: var(--color-text);
+        }
+
+        .connection-text a {
+            color: var(--color-accent);
+            text-decoration: none;
+        }
+
+        .connection-text a:hover {
+            text-decoration: underline;
+        }
+
+        blockquote {
+            border-left: 3px solid var(--color-accent);
+            padding-left: 1.5rem;
+            margin: 1.5rem 0;
+            color: var(--color-text-secondary);
+            font-style: italic;
+        }
+
+        .history-timeline {
+            border-left: 2px solid var(--color-border);
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .history-event {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .history-event::before {
+            content: '';
+            position: absolute;
+            left: -2.35rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background: var(--color-accent);
+            border-radius: 50%;
+        }
+
+        .history-date {
+            font-family: var(--font-mono);
+            font-size: 0.85rem;
+            color: var(--color-accent);
+        }
+
+        .back-button {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.5rem;
+            background: var(--color-accent);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-family: var(--font-sans);
+            font-size: 0.9rem;
+            font-weight: 500;
+            margin-top: 2rem;
+            transition: opacity 0.2s;
+        }
+
+        .back-button:hover {
+            opacity: 0.9;
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--color-border);
+            text-align: center;
+            color: var(--color-text-secondary);
+            font-size: 0.9rem;
+        }
+
+        .table-wrapper {
+            overflow-x: auto;
+            margin: 1.5rem 0;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            font-size: 0.95rem;
+        }
+
+        th, td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--color-border);
+        }
+
+        th {
+            font-family: var(--font-sans);
+            font-weight: 600;
+            color: var(--color-accent);
+            font-size: 0.85rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        td {
+            color: var(--color-text-secondary);
+        }
+
+        td code {
+            font-size: 0.85rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../../../_portal/index.html">EigenLab</a> /
+            <a href="../index.html">Math Visual Lab</a> /
+            <span>Trigonometría</span>
+        </nav>
+        <h1>Trigonometría</h1>
+        <p class="subtitle">El círculo unitario y las funciones que conectan ángulos con distancias</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            La trigonometría es el puente entre la geometría y el álgebra. Transforma la intuición de "cuánto he girado" en números precisos que describen ondas, órbitas, ciclos y vibración. Es el lenguaje matemático del movimiento periódico.
+        </p>
+
+        <h2>Por qué importa</h2>
+
+        <p>
+            Las funciones trigonométricas aparecen cada vez que algo gira, oscila o se repite. Un péndulo, una onda de sonido, la posición de un planeta, el voltaje en un circuito de corriente alterna, la luz como onda electromagnética — todos se describen con senos y cosenos.
+        </p>
+
+        <p>
+            El <strong>círculo unitario</strong> (un círculo de radio 1) es la piedra Rosetta de la trigonometría. En él, cada punto tiene coordenadas (cos θ, sin θ), donde θ es el ángulo desde el eje positivo x. Esta simple definición geométrica genera toda la teoría.
+        </p>
+
+        <h2>Conceptos Clave</h2>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Círculo Unitario</h4>
+                <p>Un círculo de radio 1 centrado en el origen. Cada punto sobre él tiene coordenadas que son exactamente (cos θ, sin θ). Es la definición más elegante de las funciones trigonométricas.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Radianes</h4>
+                <p>Medir ángulos por la longitud del arco que subtienden. Un círculo completo = 2π radianes. Es la unidad "natural" porque simplifica las fórmulas de cálculo.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Periodicidad</h4>
+                <p>Las funciones trigonométricas se repiten cada 360° (o 2π rad). Esta periodicidad es la razón por la que modelan fenómenos cíclicos.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Proyecciones</h4>
+                <p>Coseno es la proyección horizontal, seno es la proyección vertical. Tangente es la pendiente de la recta desde el origen al punto.</p>
+            </div>
+        </div>
+
+        <h2>Las Funciones</h2>
+
+        <div class="equation-block">
+            <div class="equation">cos(θ) = x/r = adyacente/hipotenusa</div>
+            <div class="equation">sin(θ) = y/r = opuesto/hipotenusa</div>
+            <div class="equation">tan(θ) = y/x = sin(θ)/cos(θ)</div>
+            <p class="equation-note">En el círculo unitario (r = 1), las coordenadas del punto son directamente (cos θ, sin θ)</p>
+        </div>
+
+        <h3>Valores Especiales</h3>
+
+        <div class="table-wrapper">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Ángulo</th>
+                        <th>Radianes</th>
+                        <th>sin(θ)</th>
+                        <th>cos(θ)</th>
+                        <th>tan(θ)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>0°</td>
+                        <td>0</td>
+                        <td><code>0</code></td>
+                        <td><code>1</code></td>
+                        <td><code>0</code></td>
+                    </tr>
+                    <tr>
+                        <td>30°</td>
+                        <td>π/6</td>
+                        <td><code>1/2</code></td>
+                        <td><code>√3/2</code></td>
+                        <td><code>1/√3</code></td>
+                    </tr>
+                    <tr>
+                        <td>45°</td>
+                        <td>π/4</td>
+                        <td><code>√2/2</code></td>
+                        <td><code>√2/2</code></td>
+                        <td><code>1</code></td>
+                    </tr>
+                    <tr>
+                        <td>60°</td>
+                        <td>π/3</td>
+                        <td><code>√3/2</code></td>
+                        <td><code>1/2</code></td>
+                        <td><code>√3</code></td>
+                    </tr>
+                    <tr>
+                        <td>90°</td>
+                        <td>π/2</td>
+                        <td><code>1</code></td>
+                        <td><code>0</code></td>
+                        <td><code>∞</code></td>
+                    </tr>
+                    <tr>
+                        <td>180°</td>
+                        <td>π</td>
+                        <td><code>0</code></td>
+                        <td><code>-1</code></td>
+                        <td><code>0</code></td>
+                    </tr>
+                    <tr>
+                        <td>270°</td>
+                        <td>3π/2</td>
+                        <td><code>-1</code></td>
+                        <td><code>0</code></td>
+                        <td><code>∞</code></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+
+        <h2>Identidades Fundamentales</h2>
+
+        <div class="equation-block">
+            <div class="equation">sin²(θ) + cos²(θ) = 1</div>
+            <p class="equation-note">La identidad pitagórica — se deriva directamente del teorema de Pitágoras aplicado al triángulo en el círculo unitario</p>
+        </div>
+
+        <p>
+            Esta identidad es verificable en la simulación: observa cómo sin²(θ) + cos²(θ) siempre suma 1.0000, sin importar el ángulo. Es consecuencia directa de que el punto siempre está a distancia 1 del origen.
+        </p>
+
+        <h3>Otras identidades importantes</h3>
+        <ul>
+            <li><code>1 + tan²(θ) = sec²(θ)</code> — dividir la identidad pitagórica por cos²(θ)</li>
+            <li><code>1 + cot²(θ) = csc²(θ)</code> — dividir por sin²(θ)</li>
+            <li><code>sin(θ + π/2) = cos(θ)</code> — el seno "adelanta" al coseno por 90°</li>
+            <li><code>cos(θ + π/2) = -sin(θ)</code> — el coseno "atrasa" al seno por 90°</li>
+        </ul>
+
+        <h2>Experimenta</h2>
+
+        <div class="experiment-box">
+            <h4>🔬 Experimento 1: La identidad pitagórica</h4>
+            <ol>
+                <li>Activa la animación automática</li>
+                <li>Observa el panel "Identidades Fundamentales" en el sidebar</li>
+                <li>Verifica que sin²(θ) + cos²(θ) siempre da 1.0000</li>
+                <li>Pausa en varios ángulos y confirma manualmente: ¿el punto está siempre a distancia 1?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-box">
+            <h4>🔬 Experimento 2: Signos por cuadrante</h4>
+            <ol>
+                <li>Desactiva la animación y usa el slider de ángulo</li>
+                <li>Mueve el ángulo lentamente de 0° a 360°</li>
+                <li>Observa cuándo sin, cos y tan cambian de signo</li>
+                <li>¿Por qué en el cuadrante III tanto sin como cos son negativos, pero tan es positivo?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-box">
+            <h4>🔬 Experimento 3: Tangente infinita</h4>
+            <ol>
+                <li>Mueve el ángulo hacia 90° observando el valor de tan(θ)</li>
+                <li>¿Qué pasa cuando te acercas a 90°? ¿Por qué el valor "explota"?</li>
+                <li>Activa "Mostrar tangente" y observa el segmento amarillo</li>
+                <li>¿Qué sucede geométricamente cuando cos(θ) se acerca a cero?</li>
+            </ol>
+        </div>
+
+        <div class="experiment-box">
+            <h4>🔬 Experimento 4: De círculo a onda</h4>
+            <ol>
+                <li>Activa la animación y observa la gráfica inferior</li>
+                <li>Nota cómo el movimiento circular genera ondas sinusoidales</li>
+                <li>¿Cuál onda (sin o cos) está "adelantada"?</li>
+                <li>Esta conexión es la base de cómo describimos ondas en física</li>
+            </ol>
+        </div>
+
+        <h2>Historia</h2>
+
+        <div class="history-timeline">
+            <div class="history-event">
+                <span class="history-date">~1900 a.C.</span>
+                <p>Los babilonios desarrollan tablas de "cuerdas" para astronomía — precursores de las tablas trigonométricas.</p>
+            </div>
+            <div class="history-event">
+                <span class="history-date">~150 a.C.</span>
+                <p><strong>Hiparco de Nicea</strong> crea la primera tabla trigonométrica sistemática para astronomía. Es considerado el padre de la trigonometría.</p>
+            </div>
+            <div class="history-event">
+                <span class="history-date">~150 d.C.</span>
+                <p><strong>Ptolomeo</strong> publica el Almagesto con tablas de cuerdas muy precisas. Su tabla servía para calcular posiciones planetarias.</p>
+            </div>
+            <div class="history-event">
+                <span class="history-date">~500</span>
+                <p>Matemáticos indios (Aryabhata, Brahmagupta) introducen el concepto de "medio-cuerda" — el seno moderno.</p>
+            </div>
+            <div class="history-event">
+                <span class="history-date">~800</span>
+                <p>Matemáticos árabes (Al-Battani, Al-Khwarizmi) traducen y extienden los trabajos indios. Introducen la tangente.</p>
+            </div>
+            <div class="history-event">
+                <span class="history-date">1533</span>
+                <p><strong>Regiomontanus</strong> publica De triangulis, el primer tratado europeo dedicado exclusivamente a la trigonometría.</p>
+            </div>
+            <div class="history-event">
+                <span class="history-date">1748</span>
+                <p><strong>Leonhard Euler</strong> define las funciones trigonométricas usando exponenciales complejas: e^(iθ) = cos(θ) + i·sin(θ). Unifica la trigonometría con el análisis complejo.</p>
+            </div>
+        </div>
+
+        <h2>Conexiones</h2>
+
+        <ul class="connection-list">
+            <li>
+                <span class="connection-icon">🌊</span>
+                <span class="connection-text">
+                    <strong><a href="../../Physics/Physics Visual Lab/ondas.html">Ondas</a></strong> — Las ondas se describen como y = A·sin(kx - ωt). El seno viene directamente del movimiento circular proyectado.
+                </span>
+            </li>
+            <li>
+                <span class="connection-icon">🔄</span>
+                <span class="connection-text">
+                    <strong><a href="fourier-epicycles.html">Epiciclos de Fourier</a></strong> — Cualquier forma se puede descomponer en sumas de senos y cosenos. Fourier demostró que las funciones trigonométricas son "ladrillos" universales.
+                </span>
+            </li>
+            <li>
+                <span class="connection-icon">🌙</span>
+                <span class="connection-text">
+                    <strong><a href="../../Astronomy/Astronomy Visual Lab/fases-lunares.html">Fases Lunares</a></strong> — La iluminación visible de la Luna sigue una función coseno del ángulo Sol-Tierra-Luna.
+                </span>
+            </li>
+            <li>
+                <span class="connection-icon">🎯</span>
+                <span class="connection-text">
+                    <strong><a href="../../Physics/Physics Visual Lab/pendulo-simple.html">Péndulo Simple</a></strong> — Para ángulos pequeños, el péndulo oscila como sin(ωt). Es movimiento armónico simple.
+                </span>
+            </li>
+            <li>
+                <span class="connection-icon">⚡</span>
+                <span class="connection-text">
+                    <strong><a href="../../Biology/Biology Visual Lab/neurona.html">Potencial de Acción</a></strong> — Los ritmos neuronales y circadianos se modelan con funciones periódicas basadas en senos.
+                </span>
+            </li>
+            <li>
+                <span class="connection-icon">🔢</span>
+                <span class="connection-text">
+                    <strong><a href="domain-coloring.html">Coloración de Dominio</a></strong> — Las funciones complejas involucran exponenciales de la forma e^(iθ) = cos(θ) + i·sin(θ), uniendo trigonometría y números complejos.
+                </span>
+            </li>
+        </ul>
+
+        <h2>Limitaciones del Modelo</h2>
+
+        <div class="highlight">
+            <ul>
+                <li><strong>Definición del círculo unitario</strong> — Esta simulación usa la definición basada en el círculo unitario. Históricamente, las funciones se definían con triángulos rectángulos, lo cual limita θ a (0°, 90°).</li>
+                <li><strong>Funciones recíprocas</strong> — No se muestran secante (1/cos), cosecante (1/sin) ni cotangente (1/tan), que completan las seis funciones trigonométricas clásicas.</li>
+                <li><strong>Funciones inversas</strong> — arcsin, arccos y arctan (que van de valor a ángulo) no están visualizadas. Tienen sus propias sutilezas con dominios restringidos.</li>
+                <li><strong>Grados vs radianes</strong> — La simulación usa grados para la interfaz por familiaridad, pero en matemáticas avanzadas y física, los radianes son esenciales.</li>
+            </ul>
+        </div>
+
+        <h2>Para Profundizar</h2>
+
+        <ul>
+            <li><strong>Identidades de suma</strong>: sin(α + β) = sin(α)cos(β) + cos(α)sin(β) — fundamentales para la síntesis de Fourier.</li>
+            <li><strong>Fórmula de Euler</strong>: e^(iθ) = cos(θ) + i·sin(θ) — la conexión más profunda entre exponenciales, trigonometría y números complejos.</li>
+            <li><strong>Funciones hiperbólicas</strong>: sinh y cosh son análogas trigonométricas para la hipérbola, cruciales en relatividad especial.</li>
+            <li><strong>Series de Taylor</strong>: sin(x) = x - x³/3! + x⁵/5! - ... permite calcular senos sin tablas ni calculadoras.</li>
+        </ul>
+
+        <a href="../trigonometria.html" class="back-button">
+            ← Volver a la simulación
+        </a>
+    </main>
+
+    <footer>
+        <p>Math Visual Lab — EigenLab</p>
+    </footer>
+</body>
+</html>

@@ -97,7 +97,7 @@
                 Matemáticas <span class="text-violet-400 font-medium glow-text">visuales</span>
             </h2>
             <p class="text-gray-500 max-w-2xl mx-auto">
-                22 experiencias interactivas donde los algoritmos cobran vida.
+                23 experiencias interactivas donde los algoritmos cobran vida.
                 Fractales, caos, cálculo, topología y geometría computacional.
             </p>
         </section>
@@ -479,6 +479,23 @@
                 </div>
             </a>
 
+            <!-- Trigonometría -->
+            <a href="trigonometria.html" class="card-link">
+                <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                    <div class="card-border"></div>
+                    <div class="p-4">
+                        <canvas id="preview-trig" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
+                        <span class="category-tag bg-orange-500/20 text-orange-400">Geometría</span>
+                        <h3 class="text-lg font-medium mb-1 mt-2">Trigonometría</h3>
+                        <p class="text-gray-500 text-sm mb-3">El círculo unitario y las funciones que conectan ángulos con distancias. Seno, coseno, tangente y ondas.</p>
+                        <div class="equation text-orange-400/70 text-sm mb-4">sin²θ + cos²θ = 1</div>
+                        <span class="block w-full text-center py-2 bg-orange-500/10 text-orange-400 rounded-lg hover:bg-orange-500/20 transition text-sm font-medium">
+                            Explorar →
+                        </span>
+                    </div>
+                </div>
+            </a>
+
         </section>
 
         <!-- Tech Stack -->
@@ -784,6 +801,17 @@
                     rendered: false
                 };
                 renderMiniSymmetry(previews.symmetry);
+            }
+
+            // Trigonometría
+            const trig = document.getElementById('preview-trig');
+            if (trig) {
+                previews.trig = {
+                    ctx: trig.getContext('2d'),
+                    w: trig.width = trig.offsetWidth * 2,
+                    h: trig.height = trig.offsetHeight * 2,
+                    angle: 0
+                };
             }
         }
 
@@ -1730,6 +1758,78 @@
                     k.ctx.lineTo(p2.x, p2.y);
                     k.ctx.stroke();
                 }
+            }
+
+            // Trigonometría
+            if (previews.trig) {
+                const t = previews.trig;
+                t.ctx.fillStyle = '#000';
+                t.ctx.fillRect(0, 0, t.w, t.h);
+
+                const cx = t.w / 2;
+                const cy = t.h / 2;
+                const radius = Math.min(t.w, t.h) * 0.35;
+
+                // Circle
+                t.ctx.strokeStyle = '#f97316';
+                t.ctx.lineWidth = 2;
+                t.ctx.beginPath();
+                t.ctx.arc(cx, cy, radius, 0, Math.PI * 2);
+                t.ctx.stroke();
+
+                // Axes
+                t.ctx.strokeStyle = '#374151';
+                t.ctx.lineWidth = 1;
+                t.ctx.beginPath();
+                t.ctx.moveTo(cx - radius * 1.2, cy);
+                t.ctx.lineTo(cx + radius * 1.2, cy);
+                t.ctx.moveTo(cx, cy - radius * 1.2);
+                t.ctx.lineTo(cx, cy + radius * 1.2);
+                t.ctx.stroke();
+
+                // Animate angle
+                t.angle += 0.02;
+                const cosA = Math.cos(t.angle);
+                const sinA = Math.sin(t.angle);
+                const px = cx + cosA * radius;
+                const py = cy - sinA * radius;
+
+                // Cos projection (horizontal)
+                t.ctx.strokeStyle = '#60a5fa';
+                t.ctx.lineWidth = 3;
+                t.ctx.beginPath();
+                t.ctx.moveTo(cx, cy);
+                t.ctx.lineTo(px, cy);
+                t.ctx.stroke();
+
+                // Sin projection (vertical)
+                t.ctx.strokeStyle = '#4ade80';
+                t.ctx.lineWidth = 3;
+                t.ctx.beginPath();
+                t.ctx.moveTo(px, cy);
+                t.ctx.lineTo(px, py);
+                t.ctx.stroke();
+
+                // Radius
+                t.ctx.strokeStyle = '#f97316';
+                t.ctx.lineWidth = 2;
+                t.ctx.beginPath();
+                t.ctx.moveTo(cx, cy);
+                t.ctx.lineTo(px, py);
+                t.ctx.stroke();
+
+                // Point
+                t.ctx.fillStyle = '#f97316';
+                t.ctx.beginPath();
+                t.ctx.arc(px, py, 6, 0, Math.PI * 2);
+                t.ctx.fill();
+
+                // Angle arc
+                t.ctx.strokeStyle = 'rgba(249, 115, 22, 0.5)';
+                t.ctx.lineWidth = 2;
+                t.ctx.beginPath();
+                t.ctx.arc(cx, cy, radius * 0.2, 0, -t.angle, t.angle > 0);
+                t.ctx.stroke();
             }
 
             requestAnimationFrame(animate);

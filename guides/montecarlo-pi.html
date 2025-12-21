@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Monte Carlo π - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e4e4e8;
+            --text-secondary: #9999a8;
+            --accent: #a855f7;
+            --accent-dim: rgba(168, 85, 247, 0.15);
+            --accent-glow: rgba(168, 85, 247, 0.4);
+            --lime: #a3e635;
+            --red: #ef4444;
+            --cyan: #22d3ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 3rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--lime);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--accent-dim), transparent);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .equation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            color: var(--cyan);
+            margin: 1rem 0;
+            letter-spacing: 0.02em;
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--lime);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+            transition: border-color 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .experiment-section h3 {
+            color: var(--lime);
+            margin-top: 0;
+        }
+
+        ol, ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        .history-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .history-box h3 {
+            margin-top: 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--bg-tertiary);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            background: var(--accent);
+            transform: translateX(-4px);
+        }
+
+        .timeline-year {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--cyan);
+            margin-bottom: 0.5rem;
+        }
+
+        .further-reading {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .further-reading li::before {
+            content: '→ ';
+            color: var(--accent);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .method-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .method-table th, .method-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .method-table th {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .method-table td {
+            color: var(--text-secondary);
+        }
+
+        .comparison-row {
+            display: grid;
+            grid-template-columns: 100px 1fr 1fr;
+            gap: 1rem;
+            padding: 1rem;
+            background: var(--bg-tertiary);
+            border-radius: 8px;
+            margin: 0.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .comparison-row .points {
+            font-family: 'Fira Code', monospace;
+            color: var(--lime);
+        }
+
+        .highlight-box {
+            background: linear-gradient(135deg, rgba(163, 230, 53, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(163, 230, 53, 0.3);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .formula-derivation {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+        }
+
+        .formula-derivation .step {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin: 1rem 0;
+        }
+
+        .formula-derivation .step-num {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .formula-derivation .step-eq {
+            font-family: 'Fira Code', monospace;
+            color: var(--cyan);
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía Pedagógica
+        </nav>
+        <h1>Monte Carlo: Estimación de π</h1>
+        <p class="intro">
+            Un elegante experimento que demuestra cómo el azar, con suficiente paciencia,
+            puede revelar verdades matemáticas exactas. Lanzando puntos al azar descubriremos
+            uno de los números más misteriosos de las matemáticas.
+        </p>
+    </header>
+
+    <main>
+        <section class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li>Puntos <span style="color: #a3e635;">verdes</span> cayendo dentro del círculo</li>
+                <li>Puntos <span style="color: #ef4444;">rojos</span> cayendo fuera del círculo</li>
+                <li>La estimación de π refinándose gradualmente</li>
+                <li>Dígitos correctos (verde) vs incorrectos (rojo) en el display</li>
+                <li>El gráfico de convergencia acercándose a π</li>
+                <li>El error disminuyendo con más puntos</li>
+            </ul>
+        </section>
+
+        <h2>La Idea Fundamental</h2>
+
+        <p>
+            Imagina un círculo de radio 1 inscrito en un cuadrado de lado 2. Si lanzamos
+            dardos aleatoriamente sobre el cuadrado, ¿qué fracción caerá dentro del círculo?
+            La respuesta está íntimamente ligada al valor de π.
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Área del Círculo</h4>
+                <p>Un círculo de radio r = 1 tiene área A = πr² = π</p>
+            </div>
+            <div class="concept-card">
+                <h4>Área del Cuadrado</h4>
+                <p>Un cuadrado de lado 2 tiene área A = 2² = 4</p>
+            </div>
+            <div class="concept-card">
+                <h4>La Proporción</h4>
+                <p>Círculo/Cuadrado = π/4 ≈ 0.7854</p>
+            </div>
+            <div class="concept-card">
+                <h4>Interpretación</h4>
+                <p>~78.5% de los puntos aleatorios caen dentro del círculo</p>
+            </div>
+        </div>
+
+        <div class="equation-box">
+            <div class="equation">π ≈ 4 × (puntos dentro / puntos totales)</div>
+            <div class="equation-label">Fórmula fundamental del método Monte Carlo para π</div>
+        </div>
+
+        <div class="formula-derivation">
+            <h3>Derivación Paso a Paso</h3>
+            <div class="step">
+                <span class="step-num">1</span>
+                <span class="step-eq">A_círculo / A_cuadrado = probabilidad de caer dentro</span>
+            </div>
+            <div class="step">
+                <span class="step-num">2</span>
+                <span class="step-eq">πr² / (2r)² = dentro / total</span>
+            </div>
+            <div class="step">
+                <span class="step-num">3</span>
+                <span class="step-eq">π / 4 = dentro / total</span>
+            </div>
+            <div class="step">
+                <span class="step-num">4</span>
+                <span class="step-eq">π = 4 × (dentro / total)</span>
+            </div>
+        </div>
+
+        <div class="key-concept">
+            <strong>Ley de los Grandes Números:</strong> A medida que el número de puntos
+            aumenta, la proporción observada (dentro/total) converge a la probabilidad
+            teórica (π/4). Esta es la base matemática del método Monte Carlo.
+        </div>
+
+        <h2>La Condición: ¿Dentro o Fuera?</h2>
+
+        <p>
+            Para cada punto (x, y) generado aleatoriamente en el cuadrado [-1, 1] × [-1, 1],
+            determinamos si cae dentro del círculo unitario usando la ecuación del círculo:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">x² + y² ≤ 1</div>
+            <div class="equation-label">Condición para estar dentro del círculo unitario centrado en el origen</div>
+        </div>
+
+        <p>
+            Si la suma de los cuadrados es menor o igual a 1, el punto está dentro (verde).
+            Si es mayor que 1, el punto está fuera (rojo).
+        </p>
+
+        <h2>Velocidad de Convergencia</h2>
+
+        <div class="highlight-box">
+            <h3 style="margin-top: 0; color: var(--lime);">La Regla del √n</h3>
+            <p style="margin-bottom: 0.5rem;">
+                El error en Monte Carlo disminuye proporcionalmente a 1/√n, donde n es el
+                número de puntos. Esto tiene implicaciones prácticas importantes:
+            </p>
+            <ul style="margin-bottom: 0;">
+                <li>Para reducir el error a la mitad, necesitas 4× más puntos</li>
+                <li>Para un dígito extra de precisión, necesitas ~100× más puntos</li>
+                <li>Después de un millón de puntos, solo tendrás ~3 dígitos correctos</li>
+            </ul>
+        </div>
+
+        <table class="method-table">
+            <tr>
+                <th>Puntos</th>
+                <th>Error Esperado</th>
+                <th>Dígitos Correctos (aprox)</th>
+            </tr>
+            <tr>
+                <td>100</td>
+                <td>~10%</td>
+                <td>1</td>
+            </tr>
+            <tr>
+                <td>10,000</td>
+                <td>~1%</td>
+                <td>2</td>
+            </tr>
+            <tr>
+                <td>1,000,000</td>
+                <td>~0.1%</td>
+                <td>3</td>
+            </tr>
+            <tr>
+                <td>100,000,000</td>
+                <td>~0.01%</td>
+                <td>4</td>
+            </tr>
+        </table>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment-section">
+            <h3>Experimento 1: Primeros Pasos</h3>
+            <ol>
+                <li>Reinicia la simulación con <code>Reiniciar</code></li>
+                <li>Haz clic manualmente dentro del cuadrado para añadir puntos uno por uno</li>
+                <li>Observa cómo la estimación de π salta erráticamente con pocos puntos</li>
+                <li>Añade 10 puntos manualmente y anota la estimación</li>
+                <li>¿Qué tan lejos está del valor real 3.14159...?</li>
+            </ol>
+            <p>
+                <strong>Observación:</strong> Con muy pocos puntos, las fluctuaciones aleatorias
+                dominan. Una estimación podría ser 2.8 o 3.6, muy lejos de π.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 2: Orden de Magnitud</h3>
+            <ol>
+                <li>Reinicia y añade exactamente 100 puntos con el botón <code>+100</code></li>
+                <li>Anota: estimación de π y número de dígitos correctos</li>
+                <li>Reinicia y repite el experimento 3 veces</li>
+                <li>Observa cómo cada ejecución da un resultado ligeramente diferente</li>
+            </ol>
+            <p>
+                <strong>Análisis:</strong> La naturaleza aleatoria significa que cada experimento
+                produce un resultado diferente. Esto es fundamental en Monte Carlo: trabajamos
+                con distribuciones de probabilidad, no certezas.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 3: Convergencia Visual</h3>
+            <ol>
+                <li>Reinicia y pulsa <code>Iniciar</code> con velocidad de 10 puntos/frame</li>
+                <li>Observa el gráfico de convergencia en tiempo real</li>
+                <li>Nota cómo la línea azul oscila alrededor de la línea punteada (π)</li>
+                <li>Deja correr hasta 10,000 puntos y observa las oscilaciones reducirse</li>
+                <li>Aumenta la velocidad a 100 y observa la convergencia acelerada</li>
+            </ol>
+            <p>
+                <strong>Insight:</strong> El gráfico de convergencia muestra la "memoria" del
+                proceso. Las estimaciones tempranas pueden ser muy erróneas, pero el sistema
+                "aprende" y se estabiliza.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 4: Los Límites del Método</h3>
+            <ol>
+                <li>Añade 100,000 puntos de golpe con el botón correspondiente</li>
+                <li>Observa cuántos dígitos correctos obtienes (típicamente 2-3)</li>
+                <li>Activa "Desvanecer puntos" y añade más</li>
+                <li>Reflexiona: ¿por qué la simulación no puede dar 10 dígitos de π?</li>
+            </ol>
+            <p>
+                <strong>Conclusión:</strong> Monte Carlo converge lentamente. Para calcular π
+                con alta precisión se usan algoritmos determinísticos (series de Ramanujan,
+                Chudnovsky), no métodos aleatorios.
+            </p>
+        </div>
+
+        <h2>¿Por Qué Se Llama "Monte Carlo"?</h2>
+
+        <div class="history-box">
+            <h3>Historia del Método</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1777</div>
+                    <p>
+                        <strong>Aguja de Buffon:</strong> El Conde de Buffon propone estimar π
+                        lanzando agujas sobre líneas paralelas. Primer método Monte Carlo
+                        "avant la lettre".
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1946</div>
+                    <p>
+                        <strong>Proyecto Manhattan:</strong> Stanislaw Ulam, mientras jugaba
+                        solitario durante una convalecencia, concibe usar aleatoriedad para
+                        simular difusión de neutrones.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1947</div>
+                    <p>
+                        <strong>El nombre:</strong> Nicholas Metropolis sugiere "Monte Carlo"
+                        en referencia al famoso casino de Mónaco, por el rol del azar en el método.
+                    </p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">Hoy</div>
+                    <p>
+                        Monte Carlo es fundamental en física, finanzas, machine learning,
+                        videojuegos (ray tracing) y cualquier problema donde la integración
+                        directa es imposible.
+                    </p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Método Geométrico vs Numérico</h2>
+
+        <p>
+            Hay dos formas de pensar en lo que hace esta simulación:
+        </p>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Interpretación Geométrica</h4>
+                <p>
+                    Estamos midiendo el área del círculo usando "muestreo". Cada punto
+                    que cae dentro "vota" por el área del círculo.
+                </p>
+            </div>
+            <div class="concept-card">
+                <h4>Interpretación Probabilística</h4>
+                <p>
+                    Estamos estimando la probabilidad de que un punto aleatorio en
+                    el cuadrado caiga dentro del círculo.
+                </p>
+            </div>
+        </div>
+
+        <p>
+            Ambas visiones son equivalentes matemáticamente, pero ilustran un principio
+            profundo: <em>el área bajo una curva puede interpretarse como una probabilidad</em>.
+            Esta conexión es la base de la integración de Monte Carlo.
+        </p>
+
+        <h2>Integración de Monte Carlo</h2>
+
+        <p>
+            El método para estimar π es un caso especial de un principio más general:
+            podemos calcular cualquier integral lanzando puntos aleatorios.
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">∫ f(x)dx ≈ (volumen) × promedio(f(xᵢ))</div>
+            <div class="equation-label">Integración de Monte Carlo en forma general</div>
+        </div>
+
+        <p>
+            Para nuestro problema de π, la función f(x,y) es 1 si x²+y² ≤ 1 y 0 en caso
+            contrario. El promedio de esta función sobre el cuadrado da π/4.
+        </p>
+
+        <h2>Variantes y Mejoras</h2>
+
+        <table class="method-table">
+            <tr>
+                <th>Técnica</th>
+                <th>Descripción</th>
+                <th>Mejora</th>
+            </tr>
+            <tr>
+                <td>Monte Carlo básico</td>
+                <td>Puntos uniformemente aleatorios</td>
+                <td>Referencia</td>
+            </tr>
+            <tr>
+                <td>Stratified Sampling</td>
+                <td>Dividir el espacio en celdas</td>
+                <td>~30% menos error</td>
+            </tr>
+            <tr>
+                <td>Quasi-Monte Carlo</td>
+                <td>Secuencias de baja discrepancia</td>
+                <td>Error ∝ 1/n (no 1/√n)</td>
+            </tr>
+            <tr>
+                <td>Importance Sampling</td>
+                <td>Muestrear más donde importa</td>
+                <td>Variable, puede ser 10×</td>
+            </tr>
+        </table>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-card">
+                <h4>Física de Partículas</h4>
+                <p>
+                    CERN usa Monte Carlo para simular colisiones. Cada experimento genera
+                    millones de eventos aleatorios para comparar con datos reales.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Finanzas Cuantitativas</h4>
+                <p>
+                    Valoración de opciones exóticas mediante simulación de trayectorias
+                    aleatorias del precio del activo subyacente.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Gráficos por Computadora</h4>
+                <p>
+                    Ray tracing en películas modernas usa Monte Carlo para calcular
+                    iluminación global. Cada rayo es un "punto aleatorio".
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Inteligencia Artificial</h4>
+                <p>
+                    Monte Carlo Tree Search (MCTS) impulsa AlphaGo y otros sistemas
+                    de IA para juegos.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Tablero de Galton</h4>
+                <p>
+                    Nuestra simulación del Tablero de Galton también usa aleatoriedad
+                    para demostrar la distribución normal.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Termodinámica</h4>
+                <p>
+                    El algoritmo de Metropolis (Monte Carlo) simula sistemas a
+                    temperatura finita en física estadística.
+                </p>
+            </div>
+        </div>
+
+        <h2>Números Aleatorios: El Corazón del Método</h2>
+
+        <div class="key-concept">
+            <strong>Generadores Pseudoaleatorios:</strong> Los computadores no generan
+            verdaderos números aleatorios, sino secuencias determinísticas que "parecen"
+            aleatorias. Para aplicaciones científicas serias, la calidad del generador
+            es crucial. La simulación usa <code>Math.random()</code> de JavaScript.
+        </div>
+
+        <p>
+            Un mal generador de números aleatorios puede sesgar los resultados de Monte
+            Carlo. Por ejemplo, si los puntos tienden a agruparse en patrones, la
+            estimación de π será incorrecta de forma sistemática.
+        </p>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Aguja de Buffon:</strong> Otro método clásico para estimar π</li>
+                <li><strong>Algoritmo de Metropolis:</strong> Monte Carlo para sistemas físicos</li>
+                <li><strong>Secuencias de Halton:</strong> Quasi-Monte Carlo en detalle</li>
+                <li><strong>Teorema del Límite Central:</strong> Por qué el error va como 1/√n</li>
+                <li><strong>Serie de Chudnovsky:</strong> Cómo se calcula π a billones de dígitos</li>
+            </ul>
+        </div>
+
+        <div class="key-concept">
+            <strong>Reflexión Final:</strong> Lo notable de Monte Carlo no es su eficiencia
+            (es lento), sino su universalidad. El mismo principio de "lanzar puntos al azar"
+            funciona en dimensiones arbitrariamente altas, donde los métodos determinísticos
+            fallan. En un espacio de 100 dimensiones, Monte Carlo sigue siendo viable;
+            la cuadratura numérica clásica es imposible.
+        </div>
+    </main>
+
+    <footer>
+        <a href="../montecarlo-pi.html">← Volver a la Simulación</a>
+    </footer>
+</body>
+</html>

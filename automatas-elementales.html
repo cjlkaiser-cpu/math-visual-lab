@@ -42,6 +42,37 @@
             height: 12px;
             display: inline-block;
         }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #a855f7;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="bg-black text-gray-100 min-h-screen">
@@ -170,6 +201,11 @@
                     </p>
                 </div>
             </div>
+
+            <a href="guides/automatas-elementales.html" class="guide-link">
+                <span class="guide-icon">?</span>
+                Guía completa: reglas de Wolfram, patrones emergentes, clase de complejidad
+            </a>
         </aside>
     </main>
 

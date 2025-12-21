@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Nudos Matemáticos | Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #030712;
+            --bg-secondary: #0f172a;
+            --bg-tertiary: #1e293b;
+            --text-primary: #f1f5f9;
+            --text-secondary: #94a3b8;
+            --accent: #a855f7;
+            --accent-dim: rgba(168, 85, 247, 0.15);
+            --accent-secondary: #22d3ee;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.7;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            border-bottom: 1px solid var(--accent-dim);
+            padding-bottom: 2rem;
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--text-secondary);
+            margin-bottom: 1rem;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 0.5rem;
+            color: var(--text-primary);
+        }
+
+        h1 span {
+            color: var(--accent);
+        }
+
+        .subtitle {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            font-style: italic;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 600;
+            margin: 2.5rem 0 1rem 0;
+            color: var(--accent);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 1.5rem 0 0.75rem 0;
+            color: var(--text-primary);
+        }
+
+        p {
+            margin-bottom: 1rem;
+        }
+
+        a {
+            color: var(--accent);
+        }
+
+        .intro {
+            font-size: 1.25rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+        }
+
+        .observation-box h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .observation-box ul {
+            margin-left: 1.5rem;
+            color: var(--text-secondary);
+        }
+
+        .observation-box li {
+            margin-bottom: 0.5rem;
+        }
+
+        .key-concept {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent-dim);
+            border-radius: 8px;
+            padding: 1.25rem;
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .concept-card p {
+            font-size: 1rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .equation-box {
+            background: var(--bg-tertiary);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            overflow-x: auto;
+        }
+
+        .equation-box .title {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        .equation-box code {
+            color: var(--text-primary);
+            display: block;
+            margin: 0.5rem 0;
+        }
+
+        .equation-explanation {
+            font-family: 'Crimson Pro', serif;
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin-top: 0.75rem;
+            font-style: italic;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border: 1px solid var(--accent-dim);
+        }
+
+        .experiment-section h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            margin-bottom: 1rem;
+        }
+
+        .steps {
+            counter-reset: step;
+        }
+
+        .steps li {
+            counter-increment: step;
+            margin-bottom: 1rem;
+            padding-left: 2.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .steps li::before {
+            content: counter(step);
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 1.75rem;
+            height: 1.75rem;
+            background: var(--accent);
+            color: var(--bg-primary);
+            border-radius: 50%;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.875rem;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .historical-note {
+            background: linear-gradient(135deg, var(--bg-secondary) 0%, var(--bg-tertiary) 100%);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border-left: 4px solid var(--accent-secondary);
+        }
+
+        .historical-note h3 {
+            color: var(--accent-secondary);
+            margin-top: 0;
+        }
+
+        .timeline {
+            position: relative;
+            padding-left: 2rem;
+            margin: 1.5rem 0;
+        }
+
+        .timeline::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 2px;
+            background: var(--accent-dim);
+        }
+
+        .timeline-item {
+            position: relative;
+            margin-bottom: 1.5rem;
+        }
+
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -2rem;
+            top: 0.5rem;
+            width: 10px;
+            height: 10px;
+            background: var(--accent);
+            border-radius: 50%;
+            transform: translateX(-4px);
+        }
+
+        .timeline-year {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .connections {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+            border: 1px solid transparent;
+            transition: border-color 0.3s;
+        }
+
+        .connection-card:hover {
+            border-color: var(--accent);
+        }
+
+        .connection-card .icon {
+            font-size: 1.75rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--text-primary);
+            margin-bottom: 0.25rem;
+        }
+
+        .connection-card p {
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .further-reading {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .further-reading h3 {
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin: 0;
+            padding: 0;
+        }
+
+        .further-reading li {
+            margin-bottom: 0.75rem;
+            padding-left: 1.5rem;
+            position: relative;
+            color: var(--text-secondary);
+        }
+
+        .further-reading li::before {
+            content: "→";
+            position: absolute;
+            left: 0;
+            color: var(--accent);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--accent-dim);
+            text-align: center;
+            color: var(--text-secondary);
+        }
+
+        .back-link {
+            display: inline-block;
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            text-decoration: none;
+            font-size: 0.9rem;
+            margin-top: 1rem;
+        }
+
+        .back-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Knots gallery */
+        .knots-gallery {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .knot-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1rem;
+            text-align: center;
+        }
+
+        .knot-card h5 {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            font-size: 0.9rem;
+            margin-bottom: 0.25rem;
+        }
+
+        .knot-notation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1rem;
+            color: var(--accent);
+            margin-bottom: 0.25rem;
+        }
+
+        .knot-info {
+            font-size: 0.75rem;
+            color: var(--text-secondary);
+        }
+
+        /* Invariants */
+        .invariants-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin: 1.5rem 0;
+        }
+
+        .invariant-card {
+            background: var(--bg-secondary);
+            border-radius: 8px;
+            padding: 1.25rem;
+            border-left: 3px solid var(--accent);
+        }
+
+        .invariant-card h5 {
+            font-family: 'Inter', sans-serif;
+            color: var(--text-primary);
+            font-size: 1rem;
+            margin-bottom: 0.5rem;
+        }
+
+        .invariant-card p {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .invariant-card .example {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.8rem;
+            color: var(--accent-secondary);
+            margin-top: 0.5rem;
+        }
+
+        /* Types table */
+        .types-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1rem 0;
+        }
+
+        .types-table th,
+        .types-table td {
+            padding: 0.75rem;
+            text-align: left;
+            border-bottom: 1px solid var(--accent-dim);
+        }
+
+        .types-table th {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            font-size: 0.9rem;
+        }
+
+        .types-table td {
+            font-size: 0.9rem;
+            color: var(--text-secondary);
+        }
+
+        .types-table .notation {
+            font-family: 'Fira Code', monospace;
+            color: var(--accent-secondary);
+        }
+
+        /* Question box */
+        .question-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.1));
+            border: 1px solid var(--accent-dim);
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            text-align: center;
+        }
+
+        .question-box h3 {
+            font-family: 'Inter', sans-serif;
+            color: var(--accent);
+            margin-top: 0;
+        }
+
+        .question-main {
+            font-size: 1.1rem;
+            color: var(--text-primary);
+            margin: 1rem 0;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> &rsaquo;
+            <a href="../mathematical-knots.html">Simulación</a> &rsaquo;
+            Guía
+        </nav>
+        <h1>Nudos <span>Matemáticos</span></h1>
+        <p class="subtitle">Topología en tres dimensiones</p>
+    </header>
+
+    <main>
+        <p class="intro">
+            Un nudo matemático es un círculo incrustado en el espacio tridimensional,
+            sin extremos sueltos. La teoría de nudos estudia cuándo dos nudos son
+            "el mismo"—es decir, cuándo uno puede transformarse en otro sin cortarlo.
+            Simple de enunciar, profundamente difícil de resolver.
+        </p>
+
+        <div class="question-box">
+            <h3>La Pregunta Fundamental</h3>
+            <p class="question-main">
+                Dados dos nudos, ¿son equivalentes?
+            </p>
+            <p style="font-size: 0.9rem; color: var(--text-secondary);">
+                Sorprendentemente, este problema aparentemente simple aún no tiene
+                un algoritmo completamente eficiente. Los invariantes de nudos
+                nos ayudan, pero ninguno es "completo".
+            </p>
+        </div>
+
+        <div class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li><strong>Estructura 3D:</strong> Cada nudo es un tubo cerrado sin extremos</li>
+                <li><strong>Cruces:</strong> Donde la cuerda "pasa por encima" o "por debajo"</li>
+                <li><strong>Nudos primos:</strong> No pueden descomponerse en nudos más simples</li>
+                <li><strong>Nudos compuestos:</strong> Combinación de dos nudos primos (Granny, Square)</li>
+                <li><strong>Enlaces:</strong> Múltiples componentes entrelazados (Borromean)</li>
+            </ul>
+        </div>
+
+        <h2>Galería de Nudos</h2>
+
+        <div class="knots-gallery">
+            <div class="knot-card">
+                <h5>Unknot</h5>
+                <div class="knot-notation">0₁</div>
+                <div class="knot-info">0 cruces • trivial</div>
+            </div>
+            <div class="knot-card">
+                <h5>Trefoil</h5>
+                <div class="knot-notation">3₁</div>
+                <div class="knot-info">3 cruces • primo</div>
+            </div>
+            <div class="knot-card">
+                <h5>Figura 8</h5>
+                <div class="knot-notation">4₁</div>
+                <div class="knot-info">4 cruces • primo</div>
+            </div>
+            <div class="knot-card">
+                <h5>Cinquefoil</h5>
+                <div class="knot-notation">5₁</div>
+                <div class="knot-info">5 cruces • primo</div>
+            </div>
+            <div class="knot-card">
+                <h5>Stevedore</h5>
+                <div class="knot-notation">6₁</div>
+                <div class="knot-info">6 cruces • primo</div>
+            </div>
+            <div class="knot-card">
+                <h5>Borromean</h5>
+                <div class="knot-notation">L6a4</div>
+                <div class="knot-info">6 cruces • enlace</div>
+            </div>
+        </div>
+
+        <h2>Conceptos Clave</h2>
+
+        <div class="key-concept">
+            <div class="concept-card">
+                <h4>Número de Cruces</h4>
+                <p>El mínimo número de cruces en cualquier proyección del nudo. El trefoil tiene 3, figura-8 tiene 4.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Nudo Primo</h4>
+                <p>No puede expresarse como suma conexa de dos nudos no triviales. Son los "átomos" de la teoría.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Equivalencia Ambiente</h4>
+                <p>Dos nudos son equivalentes si existe una deformación continua del espacio que lleva uno al otro.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Movimientos de Reidemeister</h4>
+                <p>Tres tipos de movimientos locales que preservan el tipo del nudo. Cualquier deformación se reduce a estos.</p>
+            </div>
+        </div>
+
+        <h2>Tipos de Nudos</h2>
+
+        <table class="types-table">
+            <tr>
+                <th>Tipo</th>
+                <th>Notación</th>
+                <th>Descripción</th>
+            </tr>
+            <tr>
+                <td>Nudos Toro</td>
+                <td class="notation">T(p,q)</td>
+                <td>Envuelven un toro p veces longitudinal y q meridionalmente</td>
+            </tr>
+            <tr>
+                <td>Nudos Primos</td>
+                <td class="notation">n<sub>k</sub></td>
+                <td>No descomponibles, clasificados por cruces (n) y orden (k)</td>
+            </tr>
+            <tr>
+                <td>Nudos Compuestos</td>
+                <td class="notation">K₁#K₂</td>
+                <td>Suma conexa de dos nudos</td>
+            </tr>
+            <tr>
+                <td>Enlaces</td>
+                <td class="notation">L</td>
+                <td>Múltiples componentes entrelazados</td>
+            </tr>
+        </table>
+
+        <h2>Las Ecuaciones: Nudos Toro</h2>
+
+        <div class="equation-box">
+            <div class="title">Parametrización Toro T(p,q)</div>
+            <code>x(t) = cos(pt) × (2 + cos(qt))</code>
+            <code>y(t) = sin(pt) × (2 + cos(qt))</code>
+            <code>z(t) = sin(qt)</code>
+            <div class="equation-explanation">
+                El trefoil es T(2,3): da 2 vueltas alrededor del eje mientras hace 3 vueltas alrededor del tubo.
+            </div>
+        </div>
+
+        <h2>Invariantes de Nudos</h2>
+
+        <div class="invariants-grid">
+            <div class="invariant-card">
+                <h5>Número de Cruces</h5>
+                <p>El más simple pero débil: muchos nudos diferentes tienen el mismo número</p>
+                <div class="example">5₁ y 5₂ ambos tienen 5 cruces</div>
+            </div>
+            <div class="invariant-card">
+                <h5>Tricolorabilidad</h5>
+                <p>¿Se pueden colorear los arcos con 3 colores siguiendo ciertas reglas?</p>
+                <div class="example">Trefoil: sí • Figura-8: no</div>
+            </div>
+            <div class="invariant-card">
+                <h5>Polinomio de Jones</h5>
+                <p>Un polinomio en q que distingue muchos pares de nudos</p>
+                <div class="example">V(trefoil) = q + q³ - q⁴</div>
+            </div>
+            <div class="invariant-card">
+                <h5>Género del Nudo</h5>
+                <p>El menor género de superficie con borde el nudo</p>
+                <div class="example">Unknot: 0 • Trefoil: 1</div>
+            </div>
+        </div>
+
+        <h2>Experimenta</h2>
+
+        <div class="experiment-section">
+            <h4>Experimento 1: Comparar Nudos Primos</h4>
+            <ol class="steps">
+                <li>Selecciona el Trefoil (3₁) y rótalo manualmente</li>
+                <li>Observa sus 3 cruces desde diferentes ángulos</li>
+                <li>Cambia a Figura-8 (4₁) y nota la simetría diferente</li>
+                <li>El trefoil es "quiral" (distinto de su reflejo), el figura-8 es "aquiral"</li>
+            </ol>
+        </div>
+
+        <div class="experiment-section">
+            <h4>Experimento 2: Nudos Toro</h4>
+            <ol class="steps">
+                <li>Compara T(2,3), T(2,5), y T(3,4)</li>
+                <li>Nota cómo T(2,3) = Trefoil y T(2,5) = Cinquefoil</li>
+                <li>El patrón: T(2,n) tiene n cruces</li>
+                <li>T(3,4) es más complejo: entrelazado triple</li>
+            </ol>
+        </div>
+
+        <div class="experiment-section">
+            <h4>Experimento 3: Granny vs Square</h4>
+            <ol class="steps">
+                <li>Selecciona el Granny Knot (3₁#3₁)</li>
+                <li>Ahora selecciona el Square Knot (3₁#3₁*)</li>
+                <li>Ambos tienen 6 cruces y son suma de dos trefoils</li>
+                <li>¡Pero son nudos diferentes! (uno es quiral, otro no)</li>
+            </ol>
+        </div>
+
+        <div class="experiment-section">
+            <h4>Experimento 4: Anillos Borromeos</h4>
+            <ol class="steps">
+                <li>Selecciona los Anillos Borromeos</li>
+                <li>Observa: son 3 anillos entrelazados</li>
+                <li>Ningún par de anillos está enlazado directamente</li>
+                <li>Pero los tres juntos no pueden separarse</li>
+                <li>Un ejemplo famoso de enlace no trivial con enlaces triviales por pares</li>
+            </ol>
+        </div>
+
+        <div class="historical-note">
+            <h3>Contexto Histórico</h3>
+            <div class="timeline">
+                <div class="timeline-item">
+                    <div class="timeline-year">1867</div>
+                    <p>Lord Kelvin propone que los átomos son nudos en el éter. Aunque incorrecto, motivó el estudio matemático de nudos.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1927</div>
+                    <p>Alexander introduce su polinomio, el primer invariante algebraico importante.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1932</div>
+                    <p>Reidemeister demuestra que tres movimientos locales son suficientes para toda equivalencia de nudos.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1984</div>
+                    <p>Vaughan Jones descubre su polinomio, revolucionando la teoría. Gana la Medalla Fields en 1990.</p>
+                </div>
+                <div class="timeline-item">
+                    <div class="timeline-year">1989</div>
+                    <p>Witten conecta el polinomio de Jones con la física cuántica (teoría de Chern-Simons).</p>
+                </div>
+            </div>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections">
+            <div class="connection-card">
+                <div class="icon">🧬</div>
+                <h4>ADN</h4>
+                <p>Las enzimas topoisomerasas desanudan el ADN para replicación</p>
+            </div>
+            <div class="connection-card">
+                <div class="icon">🔗</div>
+                <h4>Banda de Möbius</h4>
+                <p>Superficie de un solo lado, relacionada con nudos</p>
+            </div>
+            <div class="connection-card">
+                <div class="icon">⚛️</div>
+                <h4>Física Cuántica</h4>
+                <p>Teoría de Chern-Simons y computación topológica</p>
+            </div>
+            <div class="connection-card">
+                <div class="icon">🧶</div>
+                <h4>Textiles</h4>
+                <p>Teoría de trenzas aplicada a tejido y costura</p>
+            </div>
+            <div class="connection-card">
+                <div class="icon">🔬</div>
+                <h4>Química</h4>
+                <p>Moléculas con topología de nudos (catenanos, rotaxanos)</p>
+            </div>
+            <div class="connection-card">
+                <div class="icon">🪢</div>
+                <h4>Marinería</h4>
+                <p>Aplicaciones prácticas de nudos desde la antigüedad</p>
+            </div>
+        </div>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li>"The Knot Book" de Colin Adams - Introducción accesible</li>
+                <li>KnotInfo: base de datos de invariantes para miles de nudos</li>
+                <li>Polinomio de Jones y HOMFLY-PT: invariantes más potentes</li>
+                <li>Conjetura de la cinta: ¿todo nudo "slice" es "ribbon"?</li>
+                <li>Nudos virtuales: generalización a superficies de mayor género</li>
+            </ul>
+        </div>
+    </main>
+
+    <footer>
+        <p>Guía desarrollada para <strong>Math Visual Lab</strong> | EigenLab</p>
+        <a href="../mathematical-knots.html" class="back-link">← Volver a la simulación</a>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,657 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Trigonometría - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(249, 115, 22, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #f97316;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(249, 115, 22, 0.1), rgba(251, 146, 60, 0.05));
+            border: 1px solid rgba(249, 115, 22, 0.3);
+        }
+        .identity-card {
+            background: rgba(249, 115, 22, 0.05);
+            border: 1px solid rgba(249, 115, 22, 0.2);
+            border-radius: 8px;
+            padding: 8px 12px;
+            margin-bottom: 8px;
+        }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(249, 115, 22, 0.1);
+            border: 1px solid rgba(249, 115, 22, 0.3);
+            border-radius: 8px;
+            color: #fdba74;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(249, 115, 22, 0.2);
+            border-color: #f97316;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #f97316;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-orange-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-orange-400 font-medium glow-text">Trigonometría</span>
+                        <span class="text-gray-600 text-sm ml-2">Círculo Unitario</span>
+                    </h1>
+                </div>
+                <div class="flex items-center gap-6 text-sm mono">
+                    <span class="text-gray-500">θ = <span id="angle-display" class="text-orange-400">0.00</span>°</span>
+                    <span class="text-gray-500">(<span id="angle-rad" class="text-cyan-400">0.00</span> rad)</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <div class="flex-1 flex flex-col bg-gray-950">
+            <!-- Círculo unitario -->
+            <div class="flex-1 relative flex items-center justify-center overflow-hidden">
+                <canvas id="circle-canvas" class="max-w-full max-h-full"></canvas>
+
+                <!-- Leyenda -->
+                <div class="absolute top-4 left-4 bg-gray-950/90 border border-gray-800 rounded-lg p-3 text-xs">
+                    <div class="font-medium text-gray-300 mb-2">Funciones</div>
+                    <div class="space-y-1">
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-0.5 bg-blue-400"></span>
+                            <span class="text-blue-400">cos(θ)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-0.5 bg-green-400"></span>
+                            <span class="text-green-400">sin(θ)</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="w-8 h-0.5 bg-yellow-400"></span>
+                            <span class="text-yellow-400">tan(θ)</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Valores en tiempo real -->
+                <div class="absolute top-4 right-4 bg-gray-950/90 border border-gray-800 rounded-lg p-3">
+                    <div class="text-xs text-gray-500 mb-2">Valores</div>
+                    <div class="mono text-sm space-y-1">
+                        <div class="flex justify-between gap-4">
+                            <span class="text-blue-400">cos(θ)</span>
+                            <span id="cos-value" class="text-white">1.0000</span>
+                        </div>
+                        <div class="flex justify-between gap-4">
+                            <span class="text-green-400">sin(θ)</span>
+                            <span id="sin-value" class="text-white">0.0000</span>
+                        </div>
+                        <div class="flex justify-between gap-4">
+                            <span class="text-yellow-400">tan(θ)</span>
+                            <span id="tan-value" class="text-white">0.0000</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cuadrante actual -->
+                <div class="absolute bottom-4 left-4 bg-gray-950/90 border border-gray-800 rounded-lg px-3 py-2">
+                    <span class="text-xs text-gray-500">Cuadrante: </span>
+                    <span id="quadrant" class="text-orange-400 font-medium">I</span>
+                </div>
+            </div>
+
+            <!-- Gráfica de ondas -->
+            <div class="h-40 border-t border-gray-900 bg-gray-950">
+                <canvas id="wave-canvas" class="w-full h-full"></canvas>
+            </div>
+        </div>
+
+        <aside class="w-96 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-orange-400 glow-text">Controles</h2>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">
+                    Ángulo (θ): <span id="angle-value" class="text-orange-400 mono">0</span>°
+                </label>
+                <input type="range" id="angle-slider" min="0" max="360" value="0" step="1" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                    <input type="checkbox" id="animate-toggle" class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-orange-500 focus:ring-orange-500">
+                    Animar automáticamente
+                </label>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Velocidad de animación</label>
+                <input type="range" id="speed-slider" min="0.1" max="3" value="1" step="0.1" class="w-full">
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Ángulos especiales</label>
+                <div class="grid grid-cols-4 gap-2">
+                    <button onclick="setAngle(0)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">0°</button>
+                    <button onclick="setAngle(30)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">30°</button>
+                    <button onclick="setAngle(45)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">45°</button>
+                    <button onclick="setAngle(60)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">60°</button>
+                    <button onclick="setAngle(90)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">90°</button>
+                    <button onclick="setAngle(120)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">120°</button>
+                    <button onclick="setAngle(135)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">135°</button>
+                    <button onclick="setAngle(150)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">150°</button>
+                    <button onclick="setAngle(180)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">180°</button>
+                    <button onclick="setAngle(210)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">210°</button>
+                    <button onclick="setAngle(270)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">270°</button>
+                    <button onclick="setAngle(315)" class="px-2 py-2 bg-gray-900 hover:bg-gray-800 rounded-lg text-xs transition">315°</button>
+                </div>
+            </div>
+
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Visualización</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                        <input type="checkbox" id="show-tan" checked class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-orange-500">
+                        Mostrar tangente
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                        <input type="checkbox" id="show-projections" checked class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-orange-500">
+                        Mostrar proyecciones
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300 cursor-pointer">
+                        <input type="checkbox" id="show-triangle" checked class="w-4 h-4 rounded bg-gray-800 border-gray-700 text-orange-500">
+                        Mostrar triángulo
+                    </label>
+                </div>
+            </div>
+
+            <div class="mb-6 p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-3">Identidades Fundamentales</h3>
+                <div class="identity-card">
+                    <div class="mono text-xs text-center text-orange-300">
+                        sin²(θ) + cos²(θ) = 1
+                    </div>
+                    <div class="text-xs text-gray-500 text-center mt-1" id="pythagorean-check">
+                        <!-- Verificación en tiempo real -->
+                    </div>
+                </div>
+                <div class="identity-card">
+                    <div class="mono text-xs text-center text-orange-300">
+                        tan(θ) = sin(θ) / cos(θ)
+                    </div>
+                </div>
+                <div class="identity-card">
+                    <div class="mono text-xs text-center text-orange-300">
+                        1 + tan²(θ) = sec²(θ)
+                    </div>
+                </div>
+            </div>
+
+            <div class="math-box rounded-xl p-4 mb-6">
+                <h3 class="text-sm font-medium text-orange-400 mb-3">Definiciones</h3>
+                <div class="space-y-2 text-xs text-gray-400">
+                    <div class="flex items-center gap-2">
+                        <span class="text-blue-400 mono w-16">cos(θ)</span>
+                        <span>= x / r = adyacente / hipotenusa</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-green-400 mono w-16">sin(θ)</span>
+                        <span>= y / r = opuesto / hipotenusa</span>
+                    </div>
+                    <div class="flex items-center gap-2">
+                        <span class="text-yellow-400 mono w-16">tan(θ)</span>
+                        <span>= y / x = opuesto / adyacente</span>
+                    </div>
+                </div>
+                <div class="mt-3 pt-3 border-t border-gray-800">
+                    <p class="text-xs text-gray-500">
+                        En el <strong>círculo unitario</strong> (r = 1), las coordenadas del punto son directamente (cos θ, sin θ).
+                    </p>
+                </div>
+            </div>
+
+            <div class="p-4 bg-gray-900 rounded-lg">
+                <h3 class="text-sm font-medium text-gray-300 mb-2">Signos por Cuadrante</h3>
+                <div class="grid grid-cols-2 gap-2 text-xs">
+                    <div class="p-2 bg-gray-800 rounded text-center">
+                        <div class="text-orange-400 font-medium mb-1">I (0°-90°)</div>
+                        <div class="text-green-400">sin + cos + tan +</div>
+                    </div>
+                    <div class="p-2 bg-gray-800 rounded text-center">
+                        <div class="text-orange-400 font-medium mb-1">II (90°-180°)</div>
+                        <div><span class="text-green-400">sin +</span> <span class="text-red-400">cos - tan -</span></div>
+                    </div>
+                    <div class="p-2 bg-gray-800 rounded text-center">
+                        <div class="text-orange-400 font-medium mb-1">III (180°-270°)</div>
+                        <div><span class="text-red-400">sin - cos -</span> <span class="text-green-400">tan +</span></div>
+                    </div>
+                    <div class="p-2 bg-gray-800 rounded text-center">
+                        <div class="text-orange-400 font-medium mb-1">IV (270°-360°)</div>
+                        <div><span class="text-red-400">sin -</span> <span class="text-green-400">cos +</span> <span class="text-red-400">tan -</span></div>
+                    </div>
+                </div>
+            </div>
+
+            <a href="guides/trigonometria.html" class="guide-link">
+                <span class="guide-icon">?</span>
+                <span>Guía Pedagógica: Trigonometría</span>
+            </a>
+        </aside>
+    </main>
+
+    <script>
+        // Canvas setup
+        const circleCanvas = document.getElementById('circle-canvas');
+        const waveCanvas = document.getElementById('wave-canvas');
+        const circleCtx = circleCanvas.getContext('2d');
+        const waveCtx = waveCanvas.getContext('2d');
+
+        // Estado
+        let angle = 0; // en grados
+        let isAnimating = false;
+        let animationSpeed = 1;
+        let waveHistory = [];
+        const maxWaveHistory = 400;
+
+        // Elementos del DOM
+        const angleSlider = document.getElementById('angle-slider');
+        const angleValue = document.getElementById('angle-value');
+        const angleDisplay = document.getElementById('angle-display');
+        const angleRad = document.getElementById('angle-rad');
+        const cosValue = document.getElementById('cos-value');
+        const sinValue = document.getElementById('sin-value');
+        const tanValue = document.getElementById('tan-value');
+        const quadrantDisplay = document.getElementById('quadrant');
+        const pythagoreanCheck = document.getElementById('pythagorean-check');
+        const animateToggle = document.getElementById('animate-toggle');
+        const speedSlider = document.getElementById('speed-slider');
+        const showTan = document.getElementById('show-tan');
+        const showProjections = document.getElementById('show-projections');
+        const showTriangle = document.getElementById('show-triangle');
+
+        function resizeCanvases() {
+            const circleContainer = circleCanvas.parentElement;
+            const circleRect = circleContainer.getBoundingClientRect();
+            // Use the smaller dimension for a square canvas
+            const circleSize = Math.min(circleRect.width, circleRect.height) * 0.95;
+
+            circleCanvas.style.width = circleSize + 'px';
+            circleCanvas.style.height = circleSize + 'px';
+            circleCanvas.width = circleSize * 2;
+            circleCanvas.height = circleSize * 2;
+            circleCtx.setTransform(1, 0, 0, 1, 0, 0);
+            circleCtx.scale(2, 2);
+
+            const waveRect = waveCanvas.getBoundingClientRect();
+            waveCanvas.width = waveRect.width * 2;
+            waveCanvas.height = waveRect.height * 2;
+            waveCtx.setTransform(1, 0, 0, 1, 0, 0);
+            waveCtx.scale(2, 2);
+        }
+
+        function toRadians(deg) {
+            return deg * Math.PI / 180;
+        }
+
+        function getQuadrant(deg) {
+            const normalized = ((deg % 360) + 360) % 360;
+            if (normalized < 90) return 'I';
+            if (normalized < 180) return 'II';
+            if (normalized < 270) return 'III';
+            return 'IV';
+        }
+
+        function setAngle(deg) {
+            angle = deg;
+            angleSlider.value = deg;
+            updateDisplay();
+        }
+
+        function updateDisplay() {
+            const rad = toRadians(angle);
+            const cosA = Math.cos(rad);
+            const sinA = Math.sin(rad);
+            const tanA = Math.tan(rad);
+
+            angleValue.textContent = angle.toFixed(0);
+            angleDisplay.textContent = angle.toFixed(2);
+            angleRad.textContent = rad.toFixed(4);
+            cosValue.textContent = cosA.toFixed(4);
+            sinValue.textContent = sinA.toFixed(4);
+
+            // Manejar tangente cerca de 90° y 270°
+            if (Math.abs(cosA) < 0.001) {
+                tanValue.textContent = '∞';
+            } else {
+                tanValue.textContent = tanA.toFixed(4);
+            }
+
+            quadrantDisplay.textContent = getQuadrant(angle);
+
+            // Verificación de la identidad pitagórica
+            const check = sinA * sinA + cosA * cosA;
+            pythagoreanCheck.textContent = `${sinA.toFixed(3)}² + ${cosA.toFixed(3)}² = ${check.toFixed(6)}`;
+        }
+
+        function drawCircle() {
+            const width = circleCanvas.width / 2;
+            const height = circleCanvas.height / 2;
+            const cx = width / 2;
+            const cy = height / 2;
+            const radius = Math.min(width, height) * 0.35;
+
+            circleCtx.fillStyle = '#030712';
+            circleCtx.fillRect(0, 0, width, height);
+
+            // Cuadrícula
+            circleCtx.strokeStyle = '#1f2937';
+            circleCtx.lineWidth = 1;
+            for (let i = -5; i <= 5; i++) {
+                circleCtx.beginPath();
+                circleCtx.moveTo(cx + i * radius / 2, cy - radius * 1.5);
+                circleCtx.lineTo(cx + i * radius / 2, cy + radius * 1.5);
+                circleCtx.stroke();
+                circleCtx.beginPath();
+                circleCtx.moveTo(cx - radius * 1.5, cy + i * radius / 2);
+                circleCtx.lineTo(cx + radius * 1.5, cy + i * radius / 2);
+                circleCtx.stroke();
+            }
+
+            // Ejes
+            circleCtx.strokeStyle = '#374151';
+            circleCtx.lineWidth = 2;
+            circleCtx.beginPath();
+            circleCtx.moveTo(cx - radius * 1.4, cy);
+            circleCtx.lineTo(cx + radius * 1.4, cy);
+            circleCtx.moveTo(cx, cy - radius * 1.4);
+            circleCtx.lineTo(cx, cy + radius * 1.4);
+            circleCtx.stroke();
+
+            // Etiquetas de ejes
+            circleCtx.fillStyle = '#6b7280';
+            circleCtx.font = '12px Inter';
+            circleCtx.textAlign = 'center';
+            circleCtx.fillText('x', cx + radius * 1.35, cy + 15);
+            circleCtx.fillText('y', cx + 10, cy - radius * 1.3);
+            circleCtx.fillText('1', cx + radius + 10, cy + 15);
+            circleCtx.fillText('-1', cx - radius - 10, cy + 15);
+            circleCtx.fillText('1', cx + 10, cy - radius);
+            circleCtx.fillText('-1', cx + 10, cy + radius + 15);
+
+            // Círculo unitario
+            circleCtx.strokeStyle = '#f97316';
+            circleCtx.lineWidth = 2;
+            circleCtx.beginPath();
+            circleCtx.arc(cx, cy, radius, 0, Math.PI * 2);
+            circleCtx.stroke();
+
+            const rad = toRadians(angle);
+            const cosA = Math.cos(rad);
+            const sinA = Math.sin(rad);
+            const px = cx + cosA * radius;
+            const py = cy - sinA * radius;
+
+            // Arco del ángulo
+            circleCtx.strokeStyle = 'rgba(249, 115, 22, 0.5)';
+            circleCtx.lineWidth = 2;
+            circleCtx.beginPath();
+            circleCtx.arc(cx, cy, radius * 0.15, 0, -rad, rad > 0);
+            circleCtx.stroke();
+
+            // Etiqueta del ángulo
+            const labelRadius = radius * 0.22;
+            const labelAngle = -rad / 2;
+            circleCtx.fillStyle = '#f97316';
+            circleCtx.font = '11px JetBrains Mono';
+            circleCtx.textAlign = 'center';
+            circleCtx.fillText('θ', cx + Math.cos(labelAngle) * labelRadius, cy + Math.sin(labelAngle) * labelRadius + 4);
+
+            // Triángulo
+            if (showTriangle.checked) {
+                circleCtx.fillStyle = 'rgba(249, 115, 22, 0.1)';
+                circleCtx.beginPath();
+                circleCtx.moveTo(cx, cy);
+                circleCtx.lineTo(px, cy);
+                circleCtx.lineTo(px, py);
+                circleCtx.closePath();
+                circleCtx.fill();
+            }
+
+            // Proyecciones
+            if (showProjections.checked) {
+                // Proyección de cos (horizontal)
+                circleCtx.strokeStyle = '#60a5fa';
+                circleCtx.lineWidth = 3;
+                circleCtx.beginPath();
+                circleCtx.moveTo(cx, cy);
+                circleCtx.lineTo(px, cy);
+                circleCtx.stroke();
+
+                // Proyección de sin (vertical)
+                circleCtx.strokeStyle = '#4ade80';
+                circleCtx.lineWidth = 3;
+                circleCtx.beginPath();
+                circleCtx.moveTo(px, cy);
+                circleCtx.lineTo(px, py);
+                circleCtx.stroke();
+
+                // Etiquetas de proyecciones
+                circleCtx.font = '11px JetBrains Mono';
+                circleCtx.fillStyle = '#60a5fa';
+                circleCtx.textAlign = 'center';
+                circleCtx.fillText('cos θ', (cx + px) / 2, cy + 18);
+                circleCtx.fillStyle = '#4ade80';
+                circleCtx.save();
+                circleCtx.translate(px + 18, (cy + py) / 2);
+                circleCtx.rotate(-Math.PI / 2);
+                circleCtx.fillText('sin θ', 0, 0);
+                circleCtx.restore();
+            }
+
+            // Radio (hipotenusa)
+            circleCtx.strokeStyle = '#f97316';
+            circleCtx.lineWidth = 2;
+            circleCtx.beginPath();
+            circleCtx.moveTo(cx, cy);
+            circleCtx.lineTo(px, py);
+            circleCtx.stroke();
+
+            // Tangente
+            if (showTan.checked && Math.abs(cosA) > 0.01) {
+                const tanA = sinA / cosA;
+                const tanEndY = cy - tanA * radius;
+                const tanX = cx + radius;
+
+                // Línea tangente
+                circleCtx.strokeStyle = '#fbbf24';
+                circleCtx.lineWidth = 2;
+                circleCtx.setLineDash([4, 4]);
+                circleCtx.beginPath();
+                circleCtx.moveTo(px, py);
+                circleCtx.lineTo(tanX, tanEndY);
+                circleCtx.stroke();
+                circleCtx.setLineDash([]);
+
+                // Segmento de tangente en el eje
+                if (Math.abs(tanA) < 5) {
+                    circleCtx.strokeStyle = '#fbbf24';
+                    circleCtx.lineWidth = 3;
+                    circleCtx.beginPath();
+                    circleCtx.moveTo(tanX, cy);
+                    circleCtx.lineTo(tanX, tanEndY);
+                    circleCtx.stroke();
+
+                    circleCtx.fillStyle = '#fbbf24';
+                    circleCtx.font = '10px JetBrains Mono';
+                    circleCtx.textAlign = 'left';
+                    circleCtx.fillText('tan θ', tanX + 5, (cy + tanEndY) / 2);
+                }
+            }
+
+            // Punto en el círculo
+            circleCtx.fillStyle = '#f97316';
+            circleCtx.beginPath();
+            circleCtx.arc(px, py, 8, 0, Math.PI * 2);
+            circleCtx.fill();
+
+            // Coordenadas del punto
+            circleCtx.fillStyle = '#fff';
+            circleCtx.font = '11px JetBrains Mono';
+            circleCtx.textAlign = 'left';
+            circleCtx.fillText(`(${cosA.toFixed(2)}, ${sinA.toFixed(2)})`, px + 12, py - 8);
+        }
+
+        function drawWaves() {
+            const width = waveCanvas.width / 2;
+            const height = waveCanvas.height / 2;
+
+            waveCtx.fillStyle = '#030712';
+            waveCtx.fillRect(0, 0, width, height);
+
+            const rad = toRadians(angle);
+            const cosA = Math.cos(rad);
+            const sinA = Math.sin(rad);
+
+            // Añadir al historial
+            waveHistory.push({ sin: sinA, cos: cosA });
+            if (waveHistory.length > maxWaveHistory) {
+                waveHistory.shift();
+            }
+
+            // Ejes
+            waveCtx.strokeStyle = '#374151';
+            waveCtx.lineWidth = 1;
+            waveCtx.beginPath();
+            waveCtx.moveTo(0, height / 2);
+            waveCtx.lineTo(width, height / 2);
+            waveCtx.stroke();
+
+            // Etiquetas
+            waveCtx.fillStyle = '#6b7280';
+            waveCtx.font = '10px Inter';
+            circleCtx.textAlign = 'left';
+            waveCtx.fillText('1', 5, 15);
+            waveCtx.fillText('-1', 5, height - 5);
+            waveCtx.fillText('sin(θ)', width - 50, 15);
+            waveCtx.fillText('cos(θ)', width - 50, 25);
+
+            // Dibujar ondas
+            const amplitude = height * 0.4;
+            const centerY = height / 2;
+
+            // Onda de coseno
+            waveCtx.strokeStyle = '#60a5fa';
+            waveCtx.lineWidth = 2;
+            waveCtx.beginPath();
+            for (let i = 0; i < waveHistory.length; i++) {
+                const x = (i / maxWaveHistory) * width;
+                const y = centerY - waveHistory[i].cos * amplitude;
+                if (i === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+            }
+            waveCtx.stroke();
+
+            // Onda de seno
+            waveCtx.strokeStyle = '#4ade80';
+            waveCtx.lineWidth = 2;
+            waveCtx.beginPath();
+            for (let i = 0; i < waveHistory.length; i++) {
+                const x = (i / maxWaveHistory) * width;
+                const y = centerY - waveHistory[i].sin * amplitude;
+                if (i === 0) waveCtx.moveTo(x, y);
+                else waveCtx.lineTo(x, y);
+            }
+            waveCtx.stroke();
+
+            // Puntos actuales
+            const currentX = ((waveHistory.length - 1) / maxWaveHistory) * width;
+
+            waveCtx.fillStyle = '#60a5fa';
+            waveCtx.beginPath();
+            waveCtx.arc(currentX, centerY - cosA * amplitude, 5, 0, Math.PI * 2);
+            waveCtx.fill();
+
+            waveCtx.fillStyle = '#4ade80';
+            waveCtx.beginPath();
+            waveCtx.arc(currentX, centerY - sinA * amplitude, 5, 0, Math.PI * 2);
+            waveCtx.fill();
+        }
+
+        function animate() {
+            if (isAnimating) {
+                angle = (angle + animationSpeed) % 360;
+                angleSlider.value = angle;
+            }
+            updateDisplay();
+            drawCircle();
+            drawWaves();
+            requestAnimationFrame(animate);
+        }
+
+        // Event listeners
+        angleSlider.addEventListener('input', (e) => {
+            angle = parseFloat(e.target.value);
+        });
+
+        animateToggle.addEventListener('change', (e) => {
+            isAnimating = e.target.checked;
+            if (isAnimating) {
+                waveHistory = [];
+            }
+        });
+
+        speedSlider.addEventListener('input', (e) => {
+            animationSpeed = parseFloat(e.target.value);
+        });
+
+        window.addEventListener('resize', resizeCanvases);
+
+        // Inicialización
+        resizeCanvases();
+        animate();
+    </script>
+</body>
+</html>

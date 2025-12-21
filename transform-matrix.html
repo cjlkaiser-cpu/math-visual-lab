@@ -56,6 +56,37 @@
             color: #facc15;
             line-height: 1;
         }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(250, 204, 21, 0.1);
+            border: 1px solid rgba(250, 204, 21, 0.3);
+            border-radius: 8px;
+            color: #fef9c3;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(250, 204, 21, 0.2);
+            border-color: #facc15;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #facc15;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: #000;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="min-h-screen text-yellow-100 overflow-hidden">
@@ -220,6 +251,11 @@
                         <li><strong>det = 0:</strong> colapsa dimensión</li>
                     </ul>
                 </div>
+
+                <a href="guides/transform-matrix.html" class="guide-link">
+                    <span class="guide-icon">?</span>
+                    Guía completa: transformaciones lineales, matrices, determinantes, eigenvalores
+                </a>
             </div>
         </aside>
     </main>

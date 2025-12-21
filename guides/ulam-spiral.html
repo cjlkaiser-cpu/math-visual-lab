@@ -1,0 +1,658 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Espiral de Ulam - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,300;0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0a0a0f;
+            --bg-secondary: #12121a;
+            --bg-tertiary: #1a1a24;
+            --text-primary: #e4e4e8;
+            --text-secondary: #9999a8;
+            --accent: #22d3ee;
+            --accent-dim: rgba(34, 211, 238, 0.15);
+            --violet: #a855f7;
+            --pink: #f472b6;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Crimson Pro', Georgia, serif;
+            font-size: 1.125rem;
+            line-height: 1.75;
+            color: var(--text-primary);
+            background: var(--bg-primary);
+            padding: 2rem;
+            max-width: 900px;
+            margin: 0 auto;
+        }
+
+        header {
+            margin-bottom: 3rem;
+            padding-bottom: 2rem;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .breadcrumb {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+            margin-bottom: 1.5rem;
+            text-transform: uppercase;
+            letter-spacing: 0.1em;
+        }
+
+        .breadcrumb a {
+            color: var(--accent);
+            text-decoration: none;
+        }
+
+        .breadcrumb a:hover {
+            text-decoration: underline;
+        }
+
+        h1 {
+            font-family: 'Inter', sans-serif;
+            font-size: 2.5rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: var(--accent);
+            line-height: 1.2;
+        }
+
+        h2 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 3rem 0 1.5rem;
+            color: var(--text-primary);
+        }
+
+        h3 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1.2rem;
+            font-weight: 500;
+            margin: 2rem 0 1rem;
+            color: var(--accent);
+        }
+
+        p {
+            margin-bottom: 1.25rem;
+        }
+
+        .intro {
+            font-size: 1.3rem;
+            color: var(--text-secondary);
+            border-left: 3px solid var(--accent);
+            padding-left: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .observation-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .observation-box h3 {
+            margin-top: 0;
+            color: var(--violet);
+        }
+
+        .key-concept {
+            background: linear-gradient(135deg, var(--accent-dim), transparent);
+            border-left: 3px solid var(--accent);
+            padding: 1.5rem;
+            margin: 1.5rem 0;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .equation-box {
+            background: var(--bg-secondary);
+            border: 1px solid var(--accent);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            text-align: center;
+        }
+
+        .equation {
+            font-family: 'Fira Code', monospace;
+            font-size: 1.4rem;
+            color: var(--violet);
+            margin: 1rem 0;
+            letter-spacing: 0.02em;
+        }
+
+        .equation-label {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.85rem;
+            color: var(--text-secondary);
+            margin-top: 1rem;
+        }
+
+        code {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.9em;
+            background: var(--bg-tertiary);
+            padding: 0.2em 0.5em;
+            border-radius: 4px;
+            color: var(--accent);
+        }
+
+        .concept-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .concept-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+            transition: border-color 0.3s;
+        }
+
+        .concept-card:hover {
+            border-color: var(--accent);
+        }
+
+        .concept-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 1rem;
+            font-weight: 500;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+
+        .concept-card p {
+            font-size: 0.95rem;
+            color: var(--text-secondary);
+            margin: 0;
+        }
+
+        .experiment-section {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .experiment-section h3 {
+            color: var(--violet);
+            margin-top: 0;
+        }
+
+        ol, ul {
+            margin: 1rem 0 1rem 1.5rem;
+        }
+
+        li {
+            margin-bottom: 0.75rem;
+        }
+
+        .history-box {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 2rem 0;
+            border-left: 3px solid var(--accent);
+        }
+
+        .history-box h3 {
+            margin-top: 0;
+        }
+
+        .connections-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin: 2rem 0;
+        }
+
+        .connection-card {
+            background: var(--bg-secondary);
+            border-radius: 12px;
+            padding: 1.5rem;
+            border: 1px solid var(--bg-tertiary);
+        }
+
+        .connection-card h4 {
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+            color: var(--violet);
+            margin-bottom: 0.5rem;
+        }
+
+        .further-reading {
+            background: var(--bg-tertiary);
+            border-radius: 12px;
+            padding: 2rem;
+            margin: 3rem 0;
+        }
+
+        .further-reading h3 {
+            margin-top: 0;
+            color: var(--text-primary);
+        }
+
+        .further-reading ul {
+            list-style: none;
+            margin-left: 0;
+        }
+
+        .further-reading li::before {
+            content: '→ ';
+            color: var(--accent);
+        }
+
+        footer {
+            margin-top: 4rem;
+            padding-top: 2rem;
+            border-top: 1px solid var(--bg-tertiary);
+            text-align: center;
+        }
+
+        footer a {
+            color: var(--accent);
+            text-decoration: none;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        footer a:hover {
+            text-decoration: underline;
+        }
+
+        .spiral-example {
+            font-family: 'Fira Code', monospace;
+            font-size: 0.85rem;
+            background: var(--bg-tertiary);
+            padding: 1.5rem;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 1.5rem 0;
+            text-align: center;
+            line-height: 1.8;
+        }
+
+        .spiral-example .prime {
+            color: var(--accent);
+            font-weight: bold;
+        }
+
+        .polynomial-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 1.5rem 0;
+            font-family: 'Inter', sans-serif;
+            font-size: 0.9rem;
+        }
+
+        .polynomial-table th, .polynomial-table td {
+            padding: 0.75rem 1rem;
+            text-align: left;
+            border-bottom: 1px solid var(--bg-tertiary);
+        }
+
+        .polynomial-table th {
+            color: var(--accent);
+            font-weight: 500;
+        }
+
+        .polynomial-table td {
+            color: var(--text-secondary);
+        }
+
+        .polynomial-table .formula {
+            font-family: 'Fira Code', monospace;
+            color: var(--violet);
+        }
+
+        .twin-box {
+            background: linear-gradient(135deg, rgba(244, 114, 182, 0.15), rgba(168, 85, 247, 0.1));
+            border-radius: 12px;
+            padding: 1.5rem;
+            margin: 2rem 0;
+            border: 1px solid var(--pink);
+        }
+
+        .twin-box h4 {
+            font-family: 'Inter', sans-serif;
+            color: var(--pink);
+            margin-bottom: 1rem;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> → Guía Pedagógica
+        </nav>
+        <h1>La Espiral de Ulam</h1>
+        <p class="intro">
+            Un garabato en una reunión aburrida llevó a uno de los descubrimientos más
+            intrigantes sobre los números primos: cuando los naturales se disponen en
+            espiral, los primos forman patrones diagonales misteriosos.
+        </p>
+    </header>
+
+    <main>
+        <section class="observation-box">
+            <h3>¿Qué Observarás?</h3>
+            <ul>
+                <li>Números naturales dispuestos en espiral desde el centro</li>
+                <li>Primos brillantes formando líneas diagonales</li>
+                <li>Algunas diagonales tienen muchos más primos que otras</li>
+                <li>El patrón persiste incluso a escalas enormes</li>
+                <li>No es aleatorio: hay estructura oculta</li>
+            </ul>
+        </section>
+
+        <h2>La Construcción</h2>
+
+        <p>
+            La espiral de Ulam se construye colocando el 1 en el centro y escribiendo
+            los números naturales en espiral hacia afuera:
+        </p>
+
+        <div class="spiral-example">
+            37 ← 36 ← 35 ← 34 ← <span class="prime">33</span> ← 32 ← <span class="prime">31</span><br>
+            ↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↑<br>
+            38&nbsp;&nbsp;<span class="prime">17</span> ← 16 ← 15 ← 14 ← <span class="prime">13</span>&nbsp;&nbsp;30<br>
+            ↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↑&nbsp;&nbsp;&nbsp;↑<br>
+            39&nbsp;&nbsp;18&nbsp;&nbsp;&nbsp;<span class="prime">5</span> ← &nbsp;4 ← <span class="prime">3</span>&nbsp;&nbsp;12&nbsp;&nbsp;<span class="prime">29</span><br>
+            ↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↑&nbsp;&nbsp;&nbsp;↑&nbsp;&nbsp;&nbsp;↑<br>
+            40&nbsp;&nbsp;<span class="prime">19</span>&nbsp;&nbsp;&nbsp;6&nbsp;&nbsp;&nbsp;1 → <span class="prime">2</span>&nbsp;&nbsp;<span class="prime">11</span>&nbsp;&nbsp;28<br>
+            ↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↑<br>
+            <span class="prime">41</span>&nbsp;&nbsp;20&nbsp;&nbsp;&nbsp;<span class="prime">7</span> → &nbsp;8 → &nbsp;9 → 10&nbsp;&nbsp;27<br>
+            ↓&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;↑<br>
+            42 → <span class="prime">43</span> → 44 → 45 → 46 → <span class="prime">47</span> → 26
+        </div>
+
+        <p>
+            Si ahora coloreamos solo los primos y hacemos zoom out para ver miles de números,
+            aparecen líneas diagonales prominentes. Esto fue inesperado: los primos deberían
+            parecer "aleatorios", pero aquí muestran estructura.
+        </p>
+
+        <h2>¿Por Qué Diagonales?</h2>
+
+        <p>
+            Las diagonales en la espiral corresponden a sucesiones de números de la forma:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">f(n) = 4n² + bn + c</div>
+            <div class="equation-label">Polinomios cuadráticos que generan las diagonales</div>
+        </div>
+
+        <p>
+            Algunos polinomios cuadráticos producen una proporción inusualmente alta de primos.
+            El ejemplo más famoso es el polinomio de Euler:
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">P(n) = n² + n + 41</div>
+            <div class="equation-label">Produce primos para n = 0, 1, 2, ..., 39</div>
+        </div>
+
+        <div class="key-concept">
+            <strong>Nota:</strong> P(40) = 40² + 40 + 41 = 41 × 41 = 1681, no es primo. Ningún
+            polinomio puede producir solo primos, pero algunos producen una proporción
+            sorprendentemente alta.
+        </div>
+
+        <h3>Polinomios Productores de Primos</h3>
+
+        <table class="polynomial-table">
+            <tr>
+                <th>Polinomio</th>
+                <th>Primos consecutivos</th>
+                <th>Descubridor</th>
+            </tr>
+            <tr>
+                <td class="formula">n² + n + 41</td>
+                <td>40 (n = 0 a 39)</td>
+                <td>Euler (1772)</td>
+            </tr>
+            <tr>
+                <td class="formula">n² - n + 41</td>
+                <td>40 (n = 0 a 40)</td>
+                <td>Equivalente</td>
+            </tr>
+            <tr>
+                <td class="formula">n² + n + 17</td>
+                <td>16 (n = 0 a 15)</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td class="formula">2n² + 29</td>
+                <td>29 (n = 0 a 28)</td>
+                <td>-</td>
+            </tr>
+            <tr>
+                <td class="formula">n² - 79n + 1601</td>
+                <td>80 (n = 0 a 79)</td>
+                <td>Legendre</td>
+            </tr>
+        </table>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment-section">
+            <h3>Experimento 1: Ver las Diagonales</h3>
+            <ol>
+                <li>Configura el tamaño de espiral a 200</li>
+                <li>Activa "Resaltar diagonales" para ver las líneas guía</li>
+                <li>Observa que los primos se concentran a lo largo de ciertas diagonales</li>
+                <li>Aumenta el tamaño a 400. ¿Las mismas diagonales siguen siendo prominentes?</li>
+            </ol>
+            <p>
+                <strong>Insight:</strong> Las diagonales más densas en primos corresponden a
+                polinomios cuadráticos con alto "número de clase" en teoría algebraica de números.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 2: Primos Gemelos</h3>
+            <ol>
+                <li>Activa "Resaltar primos gemelos"</li>
+                <li>Los primos gemelos (p, p+2 ambos primos) aparecen en rosa</li>
+                <li>Observa que también forman patrones, pero diferentes</li>
+                <li>¿Hay diagonales con muchos primos gemelos?</li>
+            </ol>
+            <p>
+                <strong>Concepto:</strong> La conjetura de primos gemelos dice que hay infinitos
+                pares (p, p+2) de primos. Está sin demostrar, pero la evidencia numérica es abrumadora.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 3: Filtros por Residuo</h3>
+            <ol>
+                <li>Selecciona el filtro "4k+1"</li>
+                <li>Solo se muestran primos de la forma 4k+1 (5, 13, 17, 29...)</li>
+                <li>Cambia a "4k+3" (3, 7, 11, 19, 23...)</li>
+                <li>¿Hay diferencias en los patrones?</li>
+            </ol>
+            <p>
+                <strong>Teoría:</strong> Los primos 4k+1 son aquellos que pueden escribirse como
+                suma de dos cuadrados (Fermat). Los 4k+3 no pueden. Esta distinción tiene
+                consecuencias profundas en teoría de números.
+            </p>
+        </div>
+
+        <div class="experiment-section">
+            <h3>Experimento 4: Cambiar el Centro</h3>
+            <ol>
+                <li>Cambia "Número inicial" de 1 a 41</li>
+                <li>Ahora el centro de la espiral es 41 (un primo)</li>
+                <li>Observa cómo cambian los patrones diagonales</li>
+                <li>Prueba con centro = 2, luego = 17</li>
+            </ol>
+            <p>
+                <strong>Observación:</strong> Diferentes centros revelan diferentes polinomios
+                cuadráticos, algunos más ricos en primos que otros.
+            </p>
+        </div>
+
+        <div class="twin-box">
+            <h4>Los Primos Gemelos</h4>
+            <p style="margin: 0;">
+                Pares de primos que difieren en 2: (3,5), (5,7), (11,13), (17,19), (29,31)...
+                La conjetura de los primos gemelos afirma que hay infinitos. El récord actual
+                (2023) es un par con más de 380,000 dígitos cada uno.
+            </p>
+        </div>
+
+        <h2>Contexto Histórico</h2>
+
+        <div class="history-box">
+            <h3>El Descubrimiento Accidental</h3>
+            <p>
+                En 1963, el matemático polaco <strong>Stanisław Ulam</strong> asistía a una
+                conferencia científica particularmente aburrida. Para pasar el tiempo, empezó
+                a escribir números en espiral en su cuaderno y marcar los primos.
+            </p>
+            <p>
+                Para su sorpresa, los primos formaban líneas diagonales visibles. Publicó el
+                descubrimiento en 1963, y las primeras computaciones a gran escala confirmaron
+                que el patrón persistía.
+            </p>
+            <p style="margin-bottom: 0;">
+                El fenómeno sigue sin explicación completa. Aunque sabemos que los polinomios
+                cuadráticos están involucrados, por qué ciertos polinomios producen tantos
+                primos es un misterio profundo conectado con la aritmética de formas
+                cuadráticas y campos de números.
+            </p>
+        </div>
+
+        <h2>Densidad de Primos</h2>
+
+        <p>
+            El teorema de los números primos establece que la densidad de primos cerca de N es
+            aproximadamente 1/ln(N):
+        </p>
+
+        <div class="equation-box">
+            <div class="equation">π(N) ~ N / ln(N)</div>
+            <div class="equation-label">Donde π(N) es la cantidad de primos hasta N</div>
+        </div>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Hasta 100</h4>
+                <p>25 primos (25%)</p>
+            </div>
+            <div class="concept-card">
+                <h4>Hasta 1,000</h4>
+                <p>168 primos (16.8%)</p>
+            </div>
+            <div class="concept-card">
+                <h4>Hasta 10,000</h4>
+                <p>1,229 primos (12.3%)</p>
+            </div>
+            <div class="concept-card">
+                <h4>Hasta 1,000,000</h4>
+                <p>78,498 primos (7.8%)</p>
+            </div>
+        </div>
+
+        <p>
+            Los primos se vuelven más raros, pero nunca se acaban. Esta rarefacción hace que
+            los patrones de la espiral de Ulam sean aún más sorprendentes.
+        </p>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connections-grid">
+            <div class="connection-card">
+                <h4>Criptografía</h4>
+                <p>
+                    RSA depende de la dificultad de factorizar productos de primos grandes.
+                    Entender patrones en primos es crucial para la seguridad.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Hipótesis de Riemann</h4>
+                <p>
+                    La distribución de primos está conectada con los ceros de la función zeta.
+                    El problema del millón de dólares más famoso.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Teoría Cuántica</h4>
+                <p>
+                    Hay conexiones misteriosas entre la distribución de primos y los
+                    niveles de energía de matrices aleatorias.
+                </p>
+            </div>
+            <div class="connection-card">
+                <h4>Cigarras Periódicas</h4>
+                <p>
+                    Emergen cada 13 o 17 años (¡primos!) para evitar sincronización con
+                    depredadores de ciclos más cortos.
+                </p>
+            </div>
+        </div>
+
+        <h2>Variantes de la Espiral</h2>
+
+        <div class="concept-grid">
+            <div class="concept-card">
+                <h4>Espiral de Sacks</h4>
+                <p>Similar pero usando espiral de Arquímedes. Los primos forman curvas suaves.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Espiral de Vogel</h4>
+                <p>Basada en el ángulo dorado. Produce patrones de filotaxis.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Klauber Triangle</h4>
+                <p>Triangular en vez de cuadrada. También muestra patrones diagonales.</p>
+            </div>
+            <div class="concept-card">
+                <h4>Espiral Hexagonal</h4>
+                <p>Usar hexágonos en vez de cuadrados. Diferentes simetrías emergen.</p>
+            </div>
+        </div>
+
+        <div class="further-reading">
+            <h3>Para Explorar Más</h3>
+            <ul>
+                <li><strong>Polinomio de Euler:</strong> Por qué n² + n + 41 es tan especial</li>
+                <li><strong>Conjetura de Bunyakovsky:</strong> Generalización a todos los polinomios</li>
+                <li><strong>Criba de Eratóstenes:</strong> El algoritmo clásico para encontrar primos</li>
+                <li><strong>Teorema de Dirichlet:</strong> Infinitos primos en progresiones aritméticas</li>
+                <li><strong>El primo solitario 2:</strong> El único primo par, y sus consecuencias</li>
+            </ul>
+        </div>
+
+        <div class="key-concept">
+            <strong>Reflexión Final:</strong> La espiral de Ulam nos recuerda que incluso
+            los objetos matemáticos más estudiados (los primos se conocen desde los griegos)
+            pueden esconder sorpresas. Un garabato de un matemático aburrido reveló patrones
+            que aún no entendemos completamente. La matemática está llena de misterios
+            esperando ser descubiertos, a veces en los lugares más inesperados.
+        </div>
+    </main>
+
+    <footer>
+        <a href="../ulam-spiral.html">← Volver a la Simulación</a>
+    </footer>
+</body>
+</html>

@@ -33,6 +33,37 @@
             background: linear-gradient(135deg, rgba(34, 211, 238, 0.1), rgba(168, 85, 247, 0.05));
             border: 1px solid rgba(34, 211, 238, 0.3);
         }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(34, 211, 238, 0.1);
+            border: 1px solid rgba(34, 211, 238, 0.3);
+            border-radius: 8px;
+            color: #a5f3fc;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+            margin-top: 16px;
+        }
+        .guide-link:hover {
+            background: rgba(34, 211, 238, 0.2);
+            border-color: #22d3ee;
+        }
+        .guide-icon {
+            width: 18px;
+            height: 18px;
+            background: #22d3ee;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.7rem;
+            font-weight: bold;
+            color: white;
+            flex-shrink: 0;
+        }
     </style>
 </head>
 <body class="bg-black text-gray-100 min-h-screen">
@@ -187,6 +218,11 @@
                     2, 3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 41, 43, 47, 53, 59, 61, 67, 71
                 </div>
             </div>
+
+            <a href="guides/ulam-spiral.html" class="guide-link">
+                <span class="guide-icon">?</span>
+                Guía completa: espiral de Ulam, patrones en números primos, conjetura de Hardy-Littlewood
+            </a>
         </aside>
     </main>
 

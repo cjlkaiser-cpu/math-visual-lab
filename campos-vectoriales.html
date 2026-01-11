@@ -1,0 +1,604 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Campos Vectoriales - EigenLab WASM</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #030712;
+            --bg-secondary: #0f172a;
+            --bg-panel: #1e293b;
+            --accent: #f97316;
+            --accent-dim: rgba(249, 115, 22, 0.3);
+            --text-primary: #f8fafc;
+            --text-secondary: #94a3b8;
+            --text-dim: #64748b;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', sans-serif;
+            background: var(--bg-primary);
+            color: var(--text-primary);
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+        }
+        .header {
+            background: var(--bg-secondary);
+            border-bottom: 1px solid rgba(249, 115, 22, 0.2);
+            padding: 1rem 1.5rem;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        .header h1 {
+            font-size: 1.25rem;
+            font-weight: 500;
+            color: var(--accent);
+        }
+        .breadcrumb {
+            font-size: 0.75rem;
+            color: var(--text-dim);
+        }
+        .breadcrumb a {
+            color: var(--text-secondary);
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { color: var(--accent); }
+        .main {
+            flex: 1;
+            display: flex;
+            gap: 1rem;
+            padding: 1rem;
+        }
+        .canvas-container {
+            flex: 1;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            overflow: hidden;
+            position: relative;
+        }
+        #canvas {
+            width: 100%;
+            height: 100%;
+            display: block;
+        }
+        .controls {
+            width: 320px;
+            background: var(--bg-secondary);
+            border-radius: 0.5rem;
+            padding: 1rem;
+            display: flex;
+            flex-direction: column;
+            gap: 1rem;
+            overflow-y: auto;
+        }
+        .control-group {
+            background: var(--bg-panel);
+            border-radius: 0.5rem;
+            padding: 1rem;
+        }
+        .control-group h3 {
+            font-size: 0.75rem;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--accent);
+            margin-bottom: 0.75rem;
+        }
+        .control-row {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+        .control-row:last-child { margin-bottom: 0; }
+        .control-row label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        .control-row span {
+            font-size: 0.8rem;
+            color: var(--accent);
+            font-weight: 500;
+        }
+        input[type="range"] {
+            width: 100%;
+            margin-top: 0.25rem;
+            accent-color: var(--accent);
+        }
+        .btn {
+            background: var(--accent);
+            color: var(--text-primary);
+            border: none;
+            padding: 0.6rem 1rem;
+            border-radius: 0.375rem;
+            font-size: 0.85rem;
+            font-weight: 500;
+            cursor: pointer;
+            transition: opacity 0.2s;
+        }
+        .btn:hover { opacity: 0.9; }
+        .btn-secondary {
+            background: var(--bg-panel);
+            color: var(--text-primary);
+            border: 1px solid var(--accent-dim);
+        }
+        .btn-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .preset-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .preset-btn {
+            background: var(--bg-primary);
+            border: 1px solid var(--accent-dim);
+            color: var(--text-secondary);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover {
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .preset-btn.active {
+            background: var(--accent-dim);
+            border-color: var(--accent);
+            color: var(--accent);
+        }
+        .stats-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 0.5rem;
+        }
+        .stat-item {
+            background: var(--bg-primary);
+            padding: 0.5rem;
+            border-radius: 0.375rem;
+            text-align: center;
+        }
+        .stat-value {
+            font-size: 1rem;
+            font-weight: 600;
+            color: var(--accent);
+        }
+        .stat-label {
+            font-size: 0.65rem;
+            color: var(--text-dim);
+            text-transform: uppercase;
+        }
+        .equation {
+            background: var(--bg-primary);
+            padding: 0.75rem;
+            border-radius: 0.375rem;
+            font-family: 'Times New Roman', serif;
+            font-size: 0.85rem;
+            text-align: center;
+            color: var(--text-secondary);
+        }
+        .checkbox-row {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            margin-bottom: 0.5rem;
+        }
+        .checkbox-row input[type="checkbox"] {
+            accent-color: var(--accent);
+        }
+        .checkbox-row label {
+            font-size: 0.8rem;
+            color: var(--text-secondary);
+        }
+        #loading {
+            position: absolute;
+            inset: 0;
+            background: var(--bg-secondary);
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            gap: 1rem;
+        }
+        .spinner {
+            width: 40px;
+            height: 40px;
+            border: 3px solid var(--bg-panel);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin { to { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+    <header class="header">
+        <div>
+            <h1>Campos Vectoriales</h1>
+            <nav class="breadcrumb">
+                <a href="../../_portal/index.html">EigenLab</a> /
+                <a href="../../_portal/wasm-labs.html">WASM Labs</a> /
+                <a href="index.html">Mathematics</a>
+            </nav>
+        </div>
+        <div style="font-size: 0.75rem; color: var(--text-dim);">
+            WASM · RK4 Integration
+        </div>
+    </header>
+
+    <main class="main">
+        <div class="canvas-container">
+            <canvas id="canvas"></canvas>
+            <div id="loading">
+                <div class="spinner"></div>
+                <div style="color: var(--text-secondary); font-size: 0.9rem;">Cargando WASM...</div>
+            </div>
+        </div>
+
+        <aside class="controls">
+            <div class="control-group">
+                <h3>Campos Vectoriales</h3>
+                <div class="equation">
+                    F(x,y) = (F<sub>x</sub>, F<sub>y</sub>)
+                </div>
+                <p style="font-size: 0.7rem; color: var(--text-dim); margin-top: 0.5rem; line-height: 1.4;">
+                    Visualizacion de campos vectoriales 2D con adveccion de particulas
+                    usando integracion RK4.
+                </p>
+            </div>
+
+            <div class="control-group">
+                <h3>Tipo de Campo</h3>
+                <div class="preset-grid">
+                    <button class="preset-btn active" data-preset="rotation">Rotacion</button>
+                    <button class="preset-btn" data-preset="source">Fuente</button>
+                    <button class="preset-btn" data-preset="sink">Sumidero</button>
+                    <button class="preset-btn" data-preset="dipole">Dipolo</button>
+                    <button class="preset-btn" data-preset="saddle">Silla</button>
+                    <button class="preset-btn" data-preset="sincos">Sin/Cos</button>
+                    <button class="preset-btn" data-preset="uniform">Uniforme</button>
+                    <button class="preset-btn" data-preset="vortex">Vortice Par</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Parametros</h3>
+                <div class="control-row">
+                    <label>Fuerza del Campo</label>
+                    <span id="val-strength">1.0</span>
+                </div>
+                <input type="range" id="slider-strength" min="10" max="200" value="100">
+
+                <div class="control-row">
+                    <label>Velocidad Particulas</label>
+                    <span id="val-speed">1.0</span>
+                </div>
+                <input type="range" id="slider-speed" min="10" max="300" value="100">
+
+                <div class="control-row">
+                    <label>Frecuencia (Sin/Cos)</label>
+                    <span id="val-freq">1.0</span>
+                </div>
+                <input type="range" id="slider-freq" min="10" max="300" value="100">
+            </div>
+
+            <div class="control-group">
+                <h3>Visualizacion</h3>
+                <div class="checkbox-row">
+                    <input type="checkbox" id="check-vectors" checked>
+                    <label for="check-vectors">Mostrar Vectores</label>
+                </div>
+                <div class="checkbox-row">
+                    <input type="checkbox" id="check-particles" checked>
+                    <label for="check-particles">Mostrar Particulas</label>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Control</h3>
+                <div class="btn-row">
+                    <button class="btn" id="btn-play">Pausar</button>
+                    <button class="btn btn-secondary" id="btn-reset">Reset</button>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Estadisticas</h3>
+                <div class="stats-grid">
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-particles">0</div>
+                        <div class="stat-label">Particulas</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-magnitude">0</div>
+                        <div class="stat-label">Mag. Max</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-divergence">0</div>
+                        <div class="stat-label">Divergencia</div>
+                    </div>
+                    <div class="stat-item">
+                        <div class="stat-value" id="stat-curl">0</div>
+                        <div class="stat-label">Rotor</div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-group">
+                <h3>Tipos de Campo</h3>
+                <p style="font-size: 0.7rem; color: var(--text-dim); line-height: 1.4;">
+                    <strong style="color: var(--text-secondary);">Rotacion:</strong> F = (-y, x)/r (vortice)<br>
+                    <strong style="color: var(--text-secondary);">Fuente:</strong> F = (x, y)/r (divergente)<br>
+                    <strong style="color: var(--text-secondary);">Sumidero:</strong> F = -(x, y)/r (convergente)<br>
+                    <strong style="color: var(--text-secondary);">Dipolo:</strong> Superposicion de cargas<br>
+                    <strong style="color: var(--text-secondary);">Silla:</strong> F = (y, x) (punto silla)<br>
+                    <strong style="color: var(--text-secondary);">Sin/Cos:</strong> F = (sin(ky), cos(kx))
+                </p>
+            </div>
+        </aside>
+    </main>
+
+    <script src="../../eigenlab-core/build/eigenlab-core.js"></script>
+    <script>
+        // State
+        let Module = null;
+        let sim = null;
+        let running = true;
+        let frameCount = 0;
+        let showVectors = true;
+        let showParticles = true;
+
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // Canvas Setup
+        function resizeCanvas() {
+            const container = canvas.parentElement;
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = container.clientWidth * dpr;
+            canvas.height = container.clientHeight * dpr;
+            ctx.scale(dpr, dpr);
+            canvas.style.width = container.clientWidth + 'px';
+            canvas.style.height = container.clientHeight + 'px';
+        }
+        resizeCanvas();
+        window.addEventListener('resize', resizeCanvas);
+
+        // WASM Initialization
+        EigenLabCore().then(mod => {
+            Module = mod;
+            document.getElementById('loading').style.display = 'none';
+
+            sim = new Module.VectorFields();
+            sim.presetRotation();
+
+            setupControls();
+            loop();
+        }).catch(err => {
+            console.error('WASM load error:', err);
+            document.getElementById('loading').innerHTML =
+                '<div style="color: #ef4444;">Error cargando WASM</div>' +
+                '<div style="font-size: 0.75rem; color: var(--text-dim); margin-top: 0.5rem;">' +
+                'Ejecuta: python3 -m http.server 8080</div>';
+        });
+
+        // Controls
+        function setupControls() {
+            // Presets
+            document.querySelectorAll('.preset-btn').forEach(btn => {
+                btn.addEventListener('click', () => {
+                    document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+
+                    const preset = btn.dataset.preset;
+                    switch(preset) {
+                        case 'rotation': sim.presetRotation(); break;
+                        case 'source': sim.presetSource(); break;
+                        case 'sink': sim.presetSink(); break;
+                        case 'dipole': sim.presetDipole(); break;
+                        case 'saddle': sim.presetSaddle(); break;
+                        case 'sincos': sim.presetSinCos(); break;
+                        case 'uniform': sim.presetUniform(); break;
+                        case 'vortex': sim.presetVortexPair(); break;
+                    }
+                });
+            });
+
+            // Sliders
+            const sliderStrength = document.getElementById('slider-strength');
+            sliderStrength.addEventListener('input', () => {
+                const val = parseFloat(sliderStrength.value) / 100;
+                document.getElementById('val-strength').textContent = val.toFixed(1);
+                sim.setFieldStrength(val);
+            });
+
+            const sliderSpeed = document.getElementById('slider-speed');
+            sliderSpeed.addEventListener('input', () => {
+                const val = parseFloat(sliderSpeed.value) / 100;
+                document.getElementById('val-speed').textContent = val.toFixed(1);
+                sim.setParticleSpeed(val);
+            });
+
+            const sliderFreq = document.getElementById('slider-freq');
+            sliderFreq.addEventListener('input', () => {
+                const val = parseFloat(sliderFreq.value) / 100;
+                document.getElementById('val-freq').textContent = val.toFixed(1);
+                sim.setFrequency(val);
+            });
+
+            // Checkboxes
+            document.getElementById('check-vectors').addEventListener('change', (e) => {
+                showVectors = e.target.checked;
+            });
+
+            document.getElementById('check-particles').addEventListener('change', (e) => {
+                showParticles = e.target.checked;
+            });
+
+            // Play/Pause
+            document.getElementById('btn-play').addEventListener('click', () => {
+                running = !running;
+                document.getElementById('btn-play').textContent = running ? 'Pausar' : 'Play';
+            });
+
+            // Reset
+            document.getElementById('btn-reset').addEventListener('click', () => {
+                sim.resetParticles();
+            });
+        }
+
+        // Rendering
+        function drawArrow(x, y, vx, vy, scale, color) {
+            const mag = Math.sqrt(vx * vx + vy * vy);
+            if (mag < 0.01) return;
+
+            const len = Math.min(mag * scale, 20);
+            const dx = vx / mag * len;
+            const dy = vy / mag * len;
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 1;
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+            ctx.lineTo(x + dx, y + dy);
+            ctx.stroke();
+
+            // Arrowhead
+            const headLen = 3;
+            const angle = Math.atan2(dy, dx);
+            ctx.beginPath();
+            ctx.moveTo(x + dx, y + dy);
+            ctx.lineTo(x + dx - headLen * Math.cos(angle - 0.5), y + dy - headLen * Math.sin(angle - 0.5));
+            ctx.moveTo(x + dx, y + dy);
+            ctx.lineTo(x + dx - headLen * Math.cos(angle + 0.5), y + dy - headLen * Math.sin(angle + 0.5));
+            ctx.stroke();
+        }
+
+        function draw() {
+            const w = canvas.width / (window.devicePixelRatio || 1);
+            const h = canvas.height / (window.devicePixelRatio || 1);
+
+            // Clear
+            ctx.fillStyle = '#030712';
+            ctx.fillRect(0, 0, w, h);
+
+            if (!sim) return;
+
+            const gridW = sim.gridWidth();
+            const gridH = sim.gridHeight();
+            const fieldData = Module.getVectorFieldData(sim);
+            const particleData = Module.getVectorFieldParticles(sim);
+            const brightnessData = Module.getVectorFieldBrightness(sim);
+            const numParticles = sim.particleCount();
+
+            // Domain
+            const domainW = 10;
+            const domainH = 7.5;
+            const scaleX = w / domainW;
+            const scaleY = h / domainH;
+            const scale = Math.min(scaleX, scaleY);
+            const offsetX = (w - domainW * scale) / 2;
+            const offsetY = (h - domainH * scale) / 2;
+
+            function toScreen(x, y) {
+                return {
+                    x: offsetX + (x + domainW / 2) * scale,
+                    y: offsetY + (domainH / 2 - y) * scale  // Flip Y
+                };
+            }
+
+            // Draw grid vectors
+            if (showVectors) {
+                const cellW = domainW / (gridW - 1);
+                const cellH = domainH / (gridH - 1);
+
+                for (let j = 0; j < gridH; j++) {
+                    for (let i = 0; i < gridW; i++) {
+                        const idx = (j * gridW + i) * 2;
+                        const vx = fieldData[idx];
+                        const vy = fieldData[idx + 1];
+
+                        const x = i * cellW - domainW / 2;
+                        const y = j * cellH - domainH / 2;
+                        const pos = toScreen(x, y);
+
+                        // Color by magnitude
+                        const mag = Math.sqrt(vx * vx + vy * vy);
+                        const t = Math.min(mag / 2, 1);
+                        const r = Math.floor(50 + t * 200);
+                        const g = Math.floor(80 + t * 100);
+                        const b = Math.floor(150 - t * 50);
+
+                        drawArrow(pos.x, pos.y, vx * scale * 0.15, -vy * scale * 0.15, 1, `rgba(${r}, ${g}, ${b}, 0.6)`);
+                    }
+                }
+            }
+
+            // Draw particles
+            if (showParticles) {
+                for (let i = 0; i < numParticles; i++) {
+                    const x = particleData[i * 2];
+                    const y = particleData[i * 2 + 1];
+                    const brightness = brightnessData[i];
+
+                    const pos = toScreen(x, y);
+
+                    // Only draw if in bounds
+                    if (pos.x > 0 && pos.x < w && pos.y > 0 && pos.y < h) {
+                        const alpha = brightness * 0.9;
+                        ctx.fillStyle = `rgba(249, 115, 22, ${alpha})`;
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, 2, 0, Math.PI * 2);
+                        ctx.fill();
+
+                        // Glow
+                        ctx.fillStyle = `rgba(249, 115, 22, ${alpha * 0.3})`;
+                        ctx.beginPath();
+                        ctx.arc(pos.x, pos.y, 5, 0, Math.PI * 2);
+                        ctx.fill();
+                    }
+                }
+            }
+
+            // Draw axis
+            ctx.strokeStyle = 'rgba(255, 255, 255, 0.1)';
+            ctx.lineWidth = 1;
+            const origin = toScreen(0, 0);
+            ctx.beginPath();
+            ctx.moveTo(0, origin.y);
+            ctx.lineTo(w, origin.y);
+            ctx.moveTo(origin.x, 0);
+            ctx.lineTo(origin.x, h);
+            ctx.stroke();
+        }
+
+        // Main Loop
+        function loop() {
+            if (running && sim) {
+                sim.stepMultiple(2);
+                frameCount++;
+
+                // Update stats every 10 frames
+                if (frameCount % 10 === 0) {
+                    const stats = sim.getStats();
+                    document.getElementById('stat-particles').textContent = stats.particleCount;
+                    document.getElementById('stat-magnitude').textContent = stats.maxMagnitude.toFixed(2);
+                    document.getElementById('stat-divergence').textContent = stats.divergence.toFixed(2);
+                    document.getElementById('stat-curl').textContent = stats.curl.toFixed(2);
+                }
+            }
+
+            draw();
+            requestAnimationFrame(loop);
+        }
+    </script>
+</body>
+</html>

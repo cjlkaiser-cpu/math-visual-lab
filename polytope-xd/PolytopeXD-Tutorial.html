@@ -1,0 +1,3285 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolytopeXD — Tutorial Completo de Politopos 4D</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <style>
+    
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --primary: #7c3aed;
+    --primary-dark: #4c1d95;
+    --primary-light: #a78bfa;
+    --secondary: #4a5568;
+    --success: #276749;
+    --warning: #975a16;
+    --danger: #9b2c2c;
+    --bg-light: #f8f9fc;
+    --bg-code: #0f0e1a;
+    --border: #d1d5db;
+    --text: #1a202c;
+    --text-light: #4a5568;
+    --accent: #0891b2;
+    --accent-light: #22d3ee;
+    --font-serif: 'Cormorant Garamond', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+    --font-sans: 'Source Sans 3', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text);
+    background: var(--bg-light);
+    font-weight: 400;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, #1e1b4b 0%, #0c0a1a 60%, #0e4457 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px -2px rgba(0,0,0,0.35);
+    border-bottom: 3px solid var(--accent);
+}
+
+header h1 {
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+header h1 .polytope { color: #c4b5fd; }
+header h1 .xd { color: #22d3ee; }
+
+header p {
+    font-family: var(--font-sans);
+    opacity: 0.95;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+/* Layout */
+.container {
+    display: flex;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: white;
+    border-right: 1px solid var(--border);
+    height: calc(100vh - 100px);
+    position: sticky;
+    top: 100px;
+    overflow-y: auto;
+    padding: 1rem;
+    flex-shrink: 0;
+}
+
+.sidebar h3 {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.sidebar ul { list-style: none; }
+.sidebar li { margin-bottom: 0.25rem; }
+
+.sidebar a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.sidebar a:hover { background: var(--bg-light); color: var(--primary); }
+.sidebar a.active { background: var(--primary); color: white; }
+
+.sidebar .sub-item a {
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 960px;
+    min-width: 0;
+}
+
+/* Sections */
+section {
+    background: white;
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+}
+
+/* Headings */
+h2 {
+    font-family: var(--font-serif);
+    color: var(--primary);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+    letter-spacing: 0.01em;
+}
+
+h3 {
+    font-family: var(--font-serif);
+    color: var(--text);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem;
+    letter-spacing: 0.01em;
+}
+
+h4 {
+    font-family: var(--font-sans);
+    color: var(--accent);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 1.5rem 0 0.75rem;
+}
+
+h5 {
+    font-family: var(--font-sans);
+    color: var(--text-light);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 1.2rem;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* Links */
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Code */
+pre {
+    background: var(--bg-code);
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    border-left: 4px solid var(--accent);
+}
+
+code {
+    background: #ede9fe;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: #5b21b6;
+}
+
+pre code { background: none; padding: 0; color: inherit; }
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid var(--accent);
+    margin: 1.5rem 0;
+    padding: 1.25rem 1.5rem;
+    background: #ecfeff;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+}
+
+blockquote p { margin-bottom: 0.5rem; text-align: left; }
+blockquote p:last-child { margin-bottom: 0; }
+
+/* Tables */
+table, .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+}
+
+th, td {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+tr:nth-child(even) { background: #faf8ff; }
+tr:hover { background: #f0ebff; }
+
+/* Lists */
+ul, ol { margin: 1.25rem 0; padding-left: 1.75rem; }
+li { margin-bottom: 0.6rem; line-height: 1.7; }
+
+/* HR */
+hr, .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+}
+
+/* KaTeX */
+.katex-display {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0;
+}
+
+.katex { font-size: 1.1em; color: var(--text); }
+.katex-display > .katex { font-size: 1.15em; }
+
+/* Diagrams */
+.diagram {
+    background: #f1f0f9;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--accent);
+}
+
+/* Details/Summary */
+details {
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+summary {
+    padding: 1rem 1.25rem;
+    background: #f1f0f9;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+summary:hover { background: #e8e7f4; }
+summary::marker { color: var(--primary); }
+
+/* Responsive */
+@media (max-width: 1200px) { .sidebar { display: none; } }
+@media (max-width: 768px) {
+    .main-content { padding: 1rem; }
+    section { padding: 1.5rem; }
+    header { padding: 1.5rem 1rem; }
+    header h1 { font-size: 1.8rem; }
+}
+
+/* Print */
+@media print {
+    .sidebar, header { display: none; }
+    .main-content { max-width: 100%; padding: 0; }
+    section { break-inside: avoid; box-shadow: none; border: none; padding: 1rem 0; }
+    body { font-size: 10pt; }
+}
+
+/* Smooth scroll + scrollbar */
+html { scroll-behavior: smooth; }
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Strong inside lists — make exercise titles stand out */
+li > strong:first-child, p > strong:first-child {
+    color: var(--primary-dark);
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1><span class="polytope">Polytope</span><span class="xd">XD</span> — Tutorial Completo</h1>
+        <p>Politopos Regulares en la Cuarta Dimension: Geometria, Proyecciones y Visualizacion</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+<h3>Indice de Contenidos</h3>
+<ul>
+  <li><a href="#introduccion-a-la-cuarta-dimension">1. Introduccion a la Cuarta
+Dimension</a></li>
+  <li class="sub-item"><a href="#que-es-la-cuarta-dimension-espacial">1.1 Que es la cuarta
+dimension espacial</a></li>
+  <li class="sub-item"><a href="#analogia-dimensional-punto-linea-cuadrado-cubo-hipercubo">1.2
+Analogia dimensional: punto, line...</a></li>
+  <li class="sub-item"><a href="#politopos-regulares-generalizacion-de-poliedros-regulares">1.3
+Politopos regulares: generalizaci...</a></li>
+  <li class="sub-item"><a href="#notacion-de-schlafli-pqr">1.4 Notacion de Schlafli {p,q,r}</a></li>
+  <li><a href="#los-6-politopos-regulares-en-4d">2. Los 6 Politopos Regulares en
+4D</a></li>
+  <li class="sub-item"><a href="#pentacoro-5-cell-333">2.1 Pentacoro (5-cell) \{3,3,3\}</a></li>
+  <li class="sub-item"><a href="#teseracto-tesseract-433">2.2 Teseracto (Tesseract) \{4,3,3\}</a></li>
+  <li class="sub-item"><a href="#hexadecacoro-16-cell-334">2.3 Hexadecacoro (16-cell) \{3,3,4\}</a></li>
+  <li class="sub-item"><a href="#icositetracoro-24-cell-343">2.4 Icositetracoro (24-cell) \{3,4,3\}</a></li>
+  <li class="sub-item"><a href="#hecatonicosacoro-120-cell-533">2.5 Hecatonicosacoro (120-cell)
+\{5,3...</a></li>
+  <li><a href="#proyeccion-4d-a-3d">3. Proyeccion 4D a 3D</a></li>
+  <li class="sub-item"><a href="#el-problema-fundamental-como-ver-4-dimensiones">3.1 El problema
+fundamental: como “ve...</a></li>
+  <li class="sub-item"><a href="#proyeccion-en-perspectiva">3.2 Proyeccion en perspectiva</a></li>
+  <li class="sub-item"><a href="#proyeccion-estereografica">3.3 Proyeccion estereografica</a></li>
+  <li class="sub-item"><a href="#comparacion-de-ambos-metodos">3.4 Comparacion de ambos
+metodos</a></li>
+  <li class="sub-item"><a href="#distancia-de-vision-y-su-efecto">3.5 Distancia de vision y su
+efecto</a></li>
+  <li><a href="#rotaciones-en-4d">4. Rotaciones en 4D</a></li>
+  <li class="sub-item"><a href="#planos-de-rotacion-no-ejes-como-en-3d">4.1 Planos de rotacion
+(no ejes como ...</a></li>
+  <li class="sub-item"><a href="#los-6-planos-de-rotacion-xy-xz-xw-yz-yw-zw">4.2 Los 6 planos de
+rotacion: XY, XZ,...</a></li>
+  <li class="sub-item"><a href="#matrices-de-rotacion-4d">4.3 Matrices de rotacion 4D</a></li>
+  <li class="sub-item"><a href="#composicion-de-rotaciones">4.4 Composicion de rotaciones</a></li>
+  <li class="sub-item"><a href="#fenomenos-sin-analogia-3d-rotacion-doble">4.5 Fenomenos sin
+analogia 3D: rotaci...</a></li>
+  <li><a href="#secciones-transversales-hiperplanos">5. Secciones Transversales
+(Hiperplanos)</a></li>
+  <li class="sub-item"><a href="#analogia-cortando-un-cubo-3d-con-un-plano-2d">5.1 Analogia:
+cortando un cubo 3D con...</a></li>
+  <li class="sub-item"><a href="#cortando-un-politopo-4d-con-un-hiperplano-3d">5.2 Cortando un
+politopo 4D con un hi...</a></li>
+  <li class="sub-item"><a href="#algoritmo-de-interseccion-arista-hiperplano">5.3 Algoritmo de
+interseccion arista-...</a></li>
+  <li class="sub-item"><a href="#tipos-de-corte-w-vertice-arista-diagonal">5.4 Tipos de corte: W,
+Vertice, Arist...</a></li>
+  <li class="sub-item"><a href="#analisis-de-la-seccion-area-perimetro-regularidad">5.5 Analisis
+de la seccion: area, per...</a></li>
+  <li><a href="#celdas-y-descomposicion">6. Celdas y Descomposicion</a></li>
+  <li class="sub-item"><a href="#que-son-las-celdas-de-un-4-politopo">6.1 Que son las celdas de
+un 4-politopo</a></li>
+  <li class="sub-item"><a href="#explosion-de-celdas-visualizacion-radial">6.2 Explosion de
+celdas: visualizacio...</a></li>
+  <li class="sub-item"><a href="#navegacion-celda-a-celda">6.3 Navegacion celda a celda</a></li>
+  <li class="sub-item"><a href="#celdas-del-pentacoro-teseracto-hexadecacoro-y-24-cell">6.4
+Celdas del pentacoro, teseracto, ...</a></li>
+  <li><a href="#redes-nets-y-desplegados">7. Redes (Nets) y Desplegados</a></li>
+  <li class="sub-item"><a href="#analogia-red-de-un-cubo-6-cuadrados-en-cruz">7.1 Analogia: red
+de un cubo (6 cuadr...</a></li>
+  <li class="sub-item"><a href="#red-del-teseracto-la-cruz-de-dali-8-cubos">7.2 Red del
+teseracto: la cruz de Dal...</a></li>
+  <li class="sub-item"><a href="#plegado-y-desplegado-de-la-red-3d-al-politopo-4d">7.3 Plegado y
+desplegado: de la red 3...</a></li>
+  <li class="sub-item"><a href="#salvador-dali-y-corpus-hypercubus-1954">7.4 Salvador Dali y
+“Corpus Hypercubu...</a></li>
+  <li><a href="#caracteristica-de-euler-generalizada">8. Caracteristica de Euler
+Generalizada</a></li>
+  <li class="sub-item"><a href="#formula-v---e-f---c-0-para-4-politopos">8.1 Formula: V - E + F - C = 0 para 4...</a></li>
+  <li class="sub-item"><a href="#verificacion-para-los-6-politopos">8.2 Verificacion para los 6
+politopos</a></li>
+  <li class="sub-item"><a href="#generalizacion-a-n-dimensiones">8.3 Generalizacion a n dimensiones</a></li>
+  <li><a href="#dualidad-en-4d">9. Dualidad en 4D</a></li>
+  <li class="sub-item"><a href="#concepto-de-dual-intercambio-vertices-y-celdas">9.1 Concepto de
+dual: intercambio ver...</a></li>
+  <li class="sub-item"><a href="#parejas-duales">9.2 Parejas duales</a></li>
+  <li class="sub-item"><a href="#auto-dualidad-pentacoro-y-24-cell">9.3 Auto-dualidad: pentacoro
+y 24-cell</a></li>
+  <li><a href="#guia-de-uso-de-polytopexd">10. Guia de Uso de PolytopeXD</a></li>
+  <li class="sub-item"><a href="#interfaz">10.1 Interfaz</a></li>
+  <li class="sub-item"><a href="#controles-de-navegacion-3d-mouse-scroll">10.2 Controles de
+navegacion 3D (mous...</a></li>
+  <li class="sub-item"><a href="#panel-explorar-sliders-opciones">10.3 Panel Explorar: sliders,
+opciones</a></li>
+  <li class="sub-item"><a href="#panel-cortar-direcciones-animacion">10.4 Panel Cortar:
+direcciones, anima...</a></li>
+  <li class="sub-item"><a href="#panel-celdas-navegacion-explosion">10.5 Panel Celdas:
+navegacion, explosion</a></li>
+  <li><a href="#ejercicios">11. Ejercicios</a></li>
+  <li><a href="#glosario">12. Glosario</a></li>
+  <li><a href="#referencias-bibliograficas">13. Referencias Bibliograficas</a></li>
+</ul>
+</nav>
+
+        <main class="main-content">
+            <h1
+id="polytopexd-tutorial-completo-de-politopos-regulares-en-la-cuarta-dimension">PolytopeXD
+— Tutorial Completo de Politopos Regulares en la Cuarta Dimension</h1>
+<blockquote>
+<p><strong>PolytopeXD</strong> es un explorador interactivo de los 6
+politopos regulares convexos en 4 dimensiones, con 4 modos de
+visualizacion (Explorar, Cortar, Celdas, Red) que permiten comprender la
+geometria del hiperespacio mediante proyecciones, secciones
+transversales, descomposicion celular y desplegados.</p>
+</blockquote>
+<hr class="section-divider" />
+
+
+<section id="sec-introduccion-a-la-cuarta-dimension">
+<h2 id="introduccion-a-la-cuarta-dimension">1. Introduccion a la Cuarta
+Dimension</h2>
+<h3 id="que-es-la-cuarta-dimension-espacial">1.1 Que es la cuarta
+dimension espacial</h3>
+<p>Cuando hablamos de la <strong>cuarta dimension</strong> en este
+contexto, nos referimos estrictamente a una cuarta dimension
+<strong>espacial</strong>, no a la dimension temporal de la relatividad.
+Es una direccion geometrica adicional, perpendicular a las tres que
+conocemos (largo, ancho, alto), que denotamos con la coordenada <span class="math inline">w</span>.</p>
+<p>Un punto en el espacio 4D se representa como un vector de cuatro
+componentes:</p>
+<p><span class="math display">\mathbf{p} = (x, y, z, w) \in
+\mathbb{R}^4</span></p>
+<p>Aunque no podemos visualizar directamente el espacio 4D — nuestra
+experiencia perceptual esta limitada a 3 dimensiones — podemos razonar
+sobre el usando <strong>analogias dimensionales</strong>,
+<strong>proyecciones</strong> y <strong>secciones
+transversales</strong>. Este es precisamente el proposito de PolytopeXD:
+hacer accesible la geometria 4D mediante herramientas interactivas de
+visualizacion.</p>
+<h3 id="analogia-dimensional-punto-linea-cuadrado-cubo-hipercubo">1.2
+Analogia dimensional: punto, linea, cuadrado, cubo, hipercubo</h3>
+<p>La estrategia mas poderosa para comprender la cuarta dimension es la
+<strong>analogia dimensional ascendente</strong>. Observemos como cada
+objeto se construye a partir del anterior:</p>
+<pre><code class="language-javascript">Dimension 0      Dimension 1      Dimension 2      Dimension 3      Dimension 4
+
+    *             *----------*     *----------*     *----------*     Se proyecta
+  (punto)            (linea)      |          |     /|         /|     en 3D como
+                                  |          |    / |        / |     un cubo
+                                  |          |   *--|-------*  |     dentro de
+                                  *----------*   |  *-------|--*     otro cubo
+                                  (cuadrado)     | /        | /
+                                                 |/         |/
+                                                 *----------*
+                                                   (cubo)</code></pre>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Objeto</th>
+<th>Vertices</th>
+<th>Aristas</th>
+<th>Caras</th>
+<th>Celdas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0</td>
+<td>Punto</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>1</td>
+<td>Segmento</td>
+<td>2</td>
+<td>1</td>
+<td>0</td>
+<td>0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>Cuadrado</td>
+<td>4</td>
+<td>4</td>
+<td>1</td>
+<td>0</td>
+</tr>
+<tr>
+<td>3</td>
+<td>Cubo</td>
+<td>8</td>
+<td>12</td>
+<td>6</td>
+<td>0</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>Hipercubo</strong></td>
+<td><strong>16</strong></td>
+<td><strong>32</strong></td>
+<td><strong>24</strong></td>
+<td><strong>8</strong></td>
+</tr>
+</tbody>
+</table>
+<p>El patron es claro: al extruir un objeto <span class="math inline">n</span>-dimensional en la direccion de la dimension
+<span class="math inline">n+1</span>, cada vertice genera una arista,
+cada arista genera una cara, y cada cara genera una celda. Formalmente,
+si un <span class="math inline">n</span>-cubo tiene <span class="math inline">V</span> vertices, <span class="math inline">E</span> aristas y <span class="math inline">F</span> caras, el <span class="math inline">(n+1)</span>-cubo tiene <span class="math inline">2V</span> vertices, <span class="math inline">2E +
+V</span> aristas, <span class="math inline">2F + E</span> caras, y asi
+sucesivamente.</p>
+<h3 id="politopos-regulares-generalizacion-de-poliedros-regulares">1.3
+Politopos regulares: generalizacion de poliedros regulares</h3>
+<p>Un <strong>politopo regular</strong> es la generalizacion a <span class="math inline">n</span> dimensiones de los poligonos regulares (2D)
+y los poliedros regulares (3D). Un politopo es regular si:</p>
+<ol type="1">
+<li>Todas sus <strong>facetas</strong> (elementos de dimension <span class="math inline">n-1</span>) son identicas y regulares.</li>
+<li>Todas sus figuras de vertice (la configuracion alrededor de cada
+vertice) son identicas.</li>
+<li>Es <strong>transitivo por banderas</strong>: el grupo de simetrias
+actua transitivamente sobre las banderas (cadenas
+vertice-arista-cara-…-faceta).</li>
+</ol>
+<p>En cada dimension, el numero de politopos regulares convexos es
+finito y esta completamente clasificado:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 26%" />
+<col style="width: 23%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Cantidad</th>
+<th>Politopos regulares</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td><span class="math inline">\infty</span></td>
+<td>Poligonos regulares: triangulo, cuadrado, pentagono, …</td>
+</tr>
+<tr>
+<td>3</td>
+<td>5</td>
+<td><strong>Solidos platonicos</strong>: tetraedro, cubo, octaedro,
+dodecaedro, icosaedro</td>
+</tr>
+<tr>
+<td><strong>4</strong></td>
+<td><strong>6</strong></td>
+<td>Pentacoro, teseracto, hexadecacoro, <strong>icositetracoro</strong>,
+hecatonicosacoro, hexacosicoro</td>
+</tr>
+<tr>
+<td><span class="math inline">n \geq 5</span></td>
+<td>3</td>
+<td>Solo el simplex, el hipercubo y el ortoplex (cross-polytope)</td>
+</tr>
+</tbody>
+</table>
+<p>La dimension 4 es <strong>excepcionalmente rica</strong>: tiene 6
+politopos regulares, mas que cualquier otra dimension <span class="math inline">n \geq 3</span>. Esto se debe a la existencia de 3
+politopos “excepcionales” que no tienen analogo en dimensiones
+superiores, siendo el icositetracoro (24-cell) el mas notable porque
+<strong>tampoco tiene analogo en dimension 3</strong>.</p>
+<h3 id="notacion-de-schlafli-pqr">1.4 Notacion de Schlafli {p,q,r}</h3>
+<p>La <strong>notacion de Schlafli</strong> codifica la estructura
+recursiva de un politopo regular. Para un 4-politopo, el simbolo es
+<span class="math inline">\{p, q, r\}</span> donde:</p>
+<ul>
+<li><span class="math inline">p</span> = numero de lados de cada
+<strong>cara</strong> (poligono 2D).</li>
+<li><span class="math inline">\{p, q\}</span> = simbolo de Schlafli de
+cada <strong>celda</strong> (poliedro 3D que forma la frontera).</li>
+<li><span class="math inline">\{q, r\}</span> = simbolo de Schlafli de
+la <strong>figura de vertice</strong> (poliedro que describe la vecindad
+de cada vertice).</li>
+</ul>
+<p>Por ejemplo, el teseracto <span class="math inline">\{4, 3,
+3\}</span> tiene: - Caras cuadradas (<span class="math inline">p =
+4</span>). - Celdas cubicas <span class="math inline">\{4, 3\}</span>
+(cubos). - Figura de vertice tetraedrica <span class="math inline">\{3,
+3\}</span> (3 cubos se encuentran en cada vertice formando un
+tetraedro).</p>
+<p>Los 6 simbolos de Schlafli para los 4-politopos regulares son:</p>
+<table style="width:100%;">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 20%" />
+<col style="width: 14%" />
+<col style="width: 16%" />
+<col style="width: 28%" />
+</colgroup>
+<thead>
+<tr>
+<th>Politopo</th>
+<th>Schlafli</th>
+<th>Caras</th>
+<th>Celdas</th>
+<th>Fig. vertice</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pentacoro</td>
+<td><span class="math inline">\{3,3,3\}</span></td>
+<td>Triangulos <span class="math inline">\{3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td><span class="math inline">\{4,3,3\}</span></td>
+<td>Cuadrados <span class="math inline">\{4\}</span></td>
+<td>Cubos <span class="math inline">\{4,3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+</tr>
+<tr>
+<td>Hexadecacoro</td>
+<td><span class="math inline">\{3,3,4\}</span></td>
+<td>Triangulos <span class="math inline">\{3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+<td>Octaedros <span class="math inline">\{3,4\}</span></td>
+</tr>
+<tr>
+<td>Icositetracoro</td>
+<td><span class="math inline">\{3,4,3\}</span></td>
+<td>Triangulos <span class="math inline">\{3\}</span></td>
+<td>Octaedros <span class="math inline">\{3,4\}</span></td>
+<td>Cubos <span class="math inline">\{4,3\}</span></td>
+</tr>
+<tr>
+<td>Hecatonicosacoro</td>
+<td><span class="math inline">\{5,3,3\}</span></td>
+<td>Pentagonos <span class="math inline">\{5\}</span></td>
+<td>Dodecaedros <span class="math inline">\{5,3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+</tr>
+<tr>
+<td>Hexacosicoro</td>
+<td><span class="math inline">\{3,3,5\}</span></td>
+<td>Triangulos <span class="math inline">\{3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+<td>Icosaedros <span class="math inline">\{3,5\}</span></td>
+</tr>
+</tbody>
+</table>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-los-6-politopos-regulares-en-4d">
+<h2 id="los-6-politopos-regulares-en-4d">2. Los 6 Politopos Regulares en
+4D</h2>
+<h3 id="pentacoro-5-cell-333">2.1 Pentacoro (5-cell) <span class="math inline">\{3,3,3\}</span></h3>
+<p><strong>Nombre sistematico:</strong> 5-celdas | <strong>Analogo
+3D:</strong> Tetraedro | <strong>Familia:</strong> Simplex regular</p>
+<h4 id="datos-combinatorios">Datos combinatorios</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Cantidad</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertices (<span class="math inline">V</span>)</td>
+<td>5</td>
+<td>Puntos</td>
+</tr>
+<tr>
+<td>Aristas (<span class="math inline">E</span>)</td>
+<td>10</td>
+<td>Segmentos</td>
+</tr>
+<tr>
+<td>Caras (<span class="math inline">F</span>)</td>
+<td>10</td>
+<td>Triangulos equilateros</td>
+</tr>
+<tr>
+<td>Celdas (<span class="math inline">C</span>)</td>
+<td>5</td>
+<td>Tetraedros regulares</td>
+</tr>
+</tbody>
+</table>
+<h4 id="descripcion">Descripcion</h4>
+<p>El pentacoro es el <strong>simplex 4-dimensional</strong>: el
+politopo mas simple posible en 4D. Asi como un tetraedro es la union de
+4 puntos en posicion general en <span class="math inline">\mathbb{R}^3</span> (ningun trio colineal, ningun
+cuarteto coplanar), el pentacoro es la union de 5 puntos en posicion
+general en <span class="math inline">\mathbb{R}^4</span>.</p>
+<p>Cada par de vertices esta conectado por una arista — el pentacoro es
+el <strong>grafo completo</strong> <span class="math inline">K_5</span>.
+Cada trio de vertices forma una cara triangular, y cada cuarteto de
+vertices forma una celda tetraedrica.</p>
+<h4 id="auto-dualidad">Auto-dualidad</h4>
+<p>El pentacoro es <strong>auto-dual</strong>: su dual (intercambiando
+vertices por celdas y aristas por caras) es otro pentacoro. Esto se
+verifica porque <span class="math inline">V = C = 5</span> y <span class="math inline">E = F = 10</span>.</p>
+<h4 id="coordenadas">Coordenadas</h4>
+<p>Una eleccion conveniente de coordenadas para los 5 vertices del
+pentacoro unitario en <span class="math inline">\mathbb{R}^4</span>
+es:</p>
+<p><span class="math display">v_1 = \left(\frac{1}{\sqrt{10}},\;
+\frac{1}{\sqrt{6}},\; \frac{1}{\sqrt{3}},\; 1\right)</span></p>
+<p><span class="math display">v_2 = \left(\frac{1}{\sqrt{10}},\;
+\frac{1}{\sqrt{6}},\; \frac{1}{\sqrt{3}},\; -1\right)</span></p>
+<p><span class="math display">v_3 = \left(\frac{1}{\sqrt{10}},\;
+\frac{1}{\sqrt{6}},\; \frac{-2}{\sqrt{3}},\; 0\right)</span></p>
+<p><span class="math display">v_4 = \left(\frac{1}{\sqrt{10}},\;
+\frac{-3}{\sqrt{6}},\; 0,\; 0\right)</span></p>
+<p><span class="math display">v_5 = \left(\frac{-4}{\sqrt{10}},\; 0,\;
+0,\; 0\right)</span></p>
+<p>Alternativamente, una version mas simetrica usa las coordenadas de la
+base canonica aumentada:</p>
+<p><span class="math display">v_i = e_i \quad (i = 1, \ldots, 5) \quad
+\text{en } \mathbb{R}^5, \text{ proyectados al hiperplano } \sum x_i =
+1</span></p>
+<h4 id="grupo-de-simetria">Grupo de simetria</h4>
+<p>El grupo de simetria del pentacoro es el <strong>grupo
+simetrico</strong> <span class="math inline">S_5</span>, con <span class="math inline">|S_5| = 120</span> elementos. Cualquier permutacion
+de los 5 vertices es una simetria del politopo, ya que todos los pares
+son equivalentes.</p>
+<hr class="section-divider" />
+<h3 id="teseracto-tesseract-433">2.2 Teseracto (Tesseract) <span class="math inline">\{4,3,3\}</span></h3>
+<p><strong>Nombre sistematico:</strong> 8-celdas, hipercubo |
+<strong>Analogo 3D:</strong> Cubo | <strong>Familia:</strong> Hipercubos
+(<span class="math inline">\gamma_n</span>)</p>
+<h4 id="datos-combinatorios-1">Datos combinatorios</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Cantidad</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertices (<span class="math inline">V</span>)</td>
+<td>16</td>
+<td>Puntos</td>
+</tr>
+<tr>
+<td>Aristas (<span class="math inline">E</span>)</td>
+<td>32</td>
+<td>Segmentos</td>
+</tr>
+<tr>
+<td>Caras (<span class="math inline">F</span>)</td>
+<td>24</td>
+<td>Cuadrados</td>
+</tr>
+<tr>
+<td>Celdas (<span class="math inline">C</span>)</td>
+<td>8</td>
+<td>Cubos</td>
+</tr>
+</tbody>
+</table>
+<h4 id="descripcion-1">Descripcion</h4>
+<p>El teseracto es el <strong>hipercubo 4-dimensional</strong>: la
+generalizacion del cuadrado (2D) y del cubo (3D) a la cuarta dimension.
+Se construye conceptualmente <strong>extruyendo un cubo</strong> en la
+direccion de la cuarta dimension <span class="math inline">w</span>:</p>
+<ol type="1">
+<li>Tomar un cubo en <span class="math inline">\mathbb{R}^3</span> con
+<span class="math inline">w = -1</span>.</li>
+<li>Crear una copia identica con <span class="math inline">w =
++1</span>.</li>
+<li>Conectar cada vertice del primer cubo con el vertice correspondiente
+del segundo cubo.</li>
+</ol>
+<p>Este proceso genera 8 vertices nuevos (los del segundo cubo), 12
+aristas nuevas (las conexiones), 6 caras nuevas (las que unen aristas
+correspondientes) y un cubo nuevo (el “tubo” lateral).</p>
+<h4 id="coordenadas-1">Coordenadas</h4>
+<p>Los 16 vertices del teseracto unitario tienen coordenadas:</p>
+<p><span class="math display">(\pm 1, \pm 1, \pm 1, \pm 1)</span></p>
+<p>Es decir, todas las combinaciones posibles de <span class="math inline">+1</span> y <span class="math inline">-1</span> en
+cuatro coordenadas. La distancia entre vertices adyacentes (los que
+difieren en exactamente una coordenada) es <span class="math inline">2</span>.</p>
+<h4 id="dual-el-hexadecacoro-16-cell">Dual: el hexadecacoro
+(16-cell)</h4>
+<p>El dual del teseracto es el hexadecacoro <span class="math inline">\{3,3,4\}</span>. Al colocar un vertice en el centro
+de cada celda del teseracto y conectar los vertices de celdas
+adyacentes, obtenemos un 16-cell.</p>
+<h4 id="la-red-del-teseracto-y-el-arte-de-dali">La red del teseracto y
+el arte de Dali</h4>
+<p>La <strong>red</strong> (net) del teseracto es un desplegado
+tridimensional formado por 8 cubos. La disposicion mas conocida es la
+<strong>cruz de Dali</strong>: un cubo central rodeado por 4 cubos
+adyacentes en los lados, mas un cubo arriba y otro abajo. Salvador Dali
+utilizo esta red en su famosa obra <em>Corpus Hypercubus</em> (1954),
+donde Cristo esta crucificado sobre un desplegado del teseracto,
+simbolizando la trascendencia a una dimension superior.</p>
+<pre><code class="language-javascript">        +---+
+        | 5 |
+    +---+---+---+---+
+    | 2 | 1 | 4 | 8 |
+    +---+---+---+---+
+        | 3 |
+        +---+
+        | 6 |
+        +---+
+        | 7 |
+        +---+
+
+Red del teseracto (cruz de 8 cubos)
+Cubo 1: central
+Cubos 2,3,4,5: laterales
+Cubos 6,7: extremos inferiores
+Cubo 8: extremo lateral</code></pre>
+<p>En realidad, existen <strong>261</strong> redes distintas del
+teseracto (sin contar reflexiones), a diferencia de la unica red (en
+forma de cruz) del cubo con 11 variantes.</p>
+<h4 id="grupo-de-simetria-1">Grupo de simetria</h4>
+<p>El grupo de simetria del teseracto es el <strong>grupo
+hiperoctaedrico</strong> <span class="math inline">B_4</span>, con <span class="math inline">|B_4| = 2^4 \cdot 4! = 384</span> elementos. Incluye
+permutaciones de coordenadas y cambios de signo independientes.</p>
+<hr class="section-divider" />
+<h3 id="hexadecacoro-16-cell-334">2.3 Hexadecacoro (16-cell) <span class="math inline">\{3,3,4\}</span></h3>
+<p><strong>Nombre sistematico:</strong> 16-celdas | <strong>Analogo
+3D:</strong> Octaedro | <strong>Familia:</strong> Ortoplex (<span class="math inline">\beta_n</span>, cross-polytope)</p>
+<h4 id="datos-combinatorios-2">Datos combinatorios</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Cantidad</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertices (<span class="math inline">V</span>)</td>
+<td>8</td>
+<td>Puntos</td>
+</tr>
+<tr>
+<td>Aristas (<span class="math inline">E</span>)</td>
+<td>24</td>
+<td>Segmentos</td>
+</tr>
+<tr>
+<td>Caras (<span class="math inline">F</span>)</td>
+<td>32</td>
+<td>Triangulos equilateros</td>
+</tr>
+<tr>
+<td>Celdas (<span class="math inline">C</span>)</td>
+<td>16</td>
+<td>Tetraedros regulares</td>
+</tr>
+</tbody>
+</table>
+<h4 id="descripcion-2">Descripcion</h4>
+<p>El hexadecacoro es el <strong>ortoplex 4-dimensional</strong>
+(cross-polytope): la generalizacion del octaedro. Se construye tomando
+los 8 puntos situados a distancia unitaria del origen sobre los 4 ejes
+coordenados, en ambas direcciones.</p>
+<h4 id="coordenadas-2">Coordenadas</h4>
+<p>Los 8 vertices son las permutaciones de <span class="math inline">(\pm 1, 0, 0, 0)</span>:</p>
+<p><span class="math display">\pm e_1 = (\pm 1, 0, 0, 0), \quad \pm e_2
+= (0, \pm 1, 0, 0), \quad \pm e_3 = (0, 0, \pm 1, 0), \quad \pm e_4 =
+(0, 0, 0, \pm 1)</span></p>
+<p>Dos vertices estan conectados por una arista si y solo si no son
+<strong>antipodales</strong> (es decir, su suma no es el vector cero).
+Esto genera <span class="math inline">\binom{8}{2} - 4 = 28 - 4 =
+24</span> aristas.</p>
+<h4 id="dual-el-teseracto">Dual: el teseracto</h4>
+<p>El dual del hexadecacoro es el teseracto <span class="math inline">\{4,3,3\}</span>. La relacion de dualidad
+intercambia:</p>
+<p><span class="math display">8 \text{ vertices} \longleftrightarrow 8
+\text{ celdas (cubos del teseracto)}</span> <span class="math display">24 \text{ aristas} \longleftrightarrow 24 \text{
+caras (cuadrados del teseracto)}</span> <span class="math display">32
+\text{ caras} \longleftrightarrow 32 \text{ aristas (del
+teseracto)}</span> <span class="math display">16 \text{ celdas}
+\longleftrightarrow 16 \text{ vertices (del teseracto)}</span></p>
+<h4 id="construccion-alternativa">Construccion alternativa</h4>
+<p>El hexadecacoro puede construirse como la <strong>interseccion de dos
+teseractos</strong> rotados 45 grados uno respecto del otro, reescalados
+apropiadamente. Equivalentemente, es la envolvente convexa de los
+vertices <span class="math inline">(\pm 1, 0, 0, 0)</span> y
+permutaciones.</p>
+<h4 id="grupo-de-simetria-2">Grupo de simetria</h4>
+<p>Comparte el grupo hiperoctaedrico <span class="math inline">B_4</span> con el teseracto: <span class="math inline">|B_4| = 384</span>, ya que son duales.</p>
+<hr class="section-divider" />
+<h3 id="icositetracoro-24-cell-343">2.4 Icositetracoro (24-cell) <span class="math inline">\{3,4,3\}</span></h3>
+<p><strong>Nombre sistematico:</strong> 24-celdas | <strong>Analogo
+3D:</strong> <strong>Ninguno</strong> | <strong>Familia:</strong> Unico
+en 4D</p>
+<h4 id="datos-combinatorios-3">Datos combinatorios</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Cantidad</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertices (<span class="math inline">V</span>)</td>
+<td>24</td>
+<td>Puntos</td>
+</tr>
+<tr>
+<td>Aristas (<span class="math inline">E</span>)</td>
+<td>96</td>
+<td>Segmentos</td>
+</tr>
+<tr>
+<td>Caras (<span class="math inline">F</span>)</td>
+<td>96</td>
+<td>Triangulos equilateros</td>
+</tr>
+<tr>
+<td>Celdas (<span class="math inline">C</span>)</td>
+<td>24</td>
+<td>Octaedros regulares</td>
+</tr>
+</tbody>
+</table>
+<h4 id="el-politopo-mas-misterioso">El politopo mas misterioso</h4>
+<p>El icositetracoro es sin duda el objeto mas fascinante entre los 6
+politopos regulares en 4D, por una razon fundamental: <strong>no tiene
+analogo en ninguna otra dimension</strong>. En 3D existen 5 solidos
+platonicos; en 5D y superiores, solo 3. Pero en 4D existen 6 porque
+aparecen 3 politopos excepcionales, y el icositetracoro es el unico de
+los 6 que no puede entenderse como “la version 4D” de algun solido
+platonico.</p>
+<p>Es, ademas, <strong>auto-dual</strong>: su dual es otro
+icositetracoro, ya que <span class="math inline">V = C = 24</span> y
+<span class="math inline">E = F = 96</span>.</p>
+<h4 id="coordenadas-3">Coordenadas</h4>
+<p>Los 24 vertices del icositetracoro se dividen en dos grupos:</p>
+<p><strong>Grupo 1 — Vertices del hexadecacoro</strong> (8 vertices):
+<span class="math display">(\pm 1, 0, 0, 0), \quad (0, \pm 1, 0, 0),
+\quad (0, 0, \pm 1, 0), \quad (0, 0, 0, \pm 1)</span></p>
+<p><strong>Grupo 2 — Vertices del teseracto reescalado</strong> (16
+vertices): <span class="math display">\left(\pm \frac{1}{2}, \pm
+\frac{1}{2}, \pm \frac{1}{2}, \pm \frac{1}{2}\right)</span></p>
+<p>(todas las combinaciones de signos). Estos 16 puntos forman un
+teseracto de arista <span class="math inline">1</span> inscrito en la
+misma esfera.</p>
+<p>Equivalentemente, los 24 vertices son todas las permutaciones con
+signo de:</p>
+<p><span class="math display">(\pm 1, 0, 0, 0) \quad \text{y} \quad
+\left(\pm\tfrac{1}{2}, \pm\tfrac{1}{2}, \pm\tfrac{1}{2},
+\pm\tfrac{1}{2}\right)</span></p>
+<p>todos a distancia <span class="math inline">1</span> del origen.</p>
+<h4 id="conexion-con-los-cuaterniones">Conexion con los
+cuaterniones</h4>
+<p>Los 24 vertices del icositetracoro, interpretados como
+<strong>cuaterniones unitarios</strong>, forman el <strong>grupo binario
+tetraedrico</strong> <span class="math inline">2T</span> de orden 24.
+Multiplicados como cuaterniones, estan cerrados bajo la operacion de
+producto — forman un subgrupo de los cuaterniones unitarios <span class="math inline">S^3</span>. Esto conecta la geometria del
+icositetracoro con el algebra y la teoria de grupos de manera
+profunda.</p>
+<p>Los 24 cuaterniones son los <strong>cuaterniones de Hurwitz</strong>:
+<span class="math inline">\{\pm 1, \pm i, \pm j, \pm k, \frac{1}{2}(\pm
+1 \pm i \pm j \pm k)\}</span>.</p>
+<h4 id="estructura-celular">Estructura celular</h4>
+<p>Cada celda es un octaedro regular. Alrededor de cada vertice se
+encuentran 8 octaedros dispuestos como las caras de un cubo — la
+<strong>figura de vertice</strong> es precisamente un cubo <span class="math inline">\{4,3\}</span>.</p>
+<h4 id="grupo-de-simetria-3">Grupo de simetria</h4>
+<p>El grupo de simetria del icositetracoro tiene <span class="math inline">|G| = 1152</span> elementos, que es <span class="math inline">3 \times 384</span> (tres veces el grupo del
+teseracto). Esto refleja el hecho de que el 24-cell contiene 3
+hexadecacoros (16-cells) mutuamente inscritos.</p>
+<hr class="section-divider" />
+<h3 id="hecatonicosacoro-120-cell-533">2.5 Hecatonicosacoro (120-cell)
+<span class="math inline">\{5,3,3\}</span></h3>
+<p><strong>Nombre sistematico:</strong> 120-celdas | <strong>Analogo
+3D:</strong> Dodecaedro | <strong>Familia:</strong> Politopos
+excepcionales</p>
+<h4 id="datos-combinatorios-4">Datos combinatorios</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Cantidad</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertices (<span class="math inline">V</span>)</td>
+<td>600</td>
+<td>Puntos</td>
+</tr>
+<tr>
+<td>Aristas (<span class="math inline">E</span>)</td>
+<td>1200</td>
+<td>Segmentos</td>
+</tr>
+<tr>
+<td>Caras (<span class="math inline">F</span>)</td>
+<td>720</td>
+<td>Pentagonos regulares</td>
+</tr>
+<tr>
+<td>Celdas (<span class="math inline">C</span>)</td>
+<td>120</td>
+<td>Dodecaedros regulares</td>
+</tr>
+</tbody>
+</table>
+<h4 id="descripcion-3">Descripcion</h4>
+<p>El hecatonicosacoro es el analogo 4D del dodecaedro: un politopo
+cuyas celdas son dodecaedros regulares (poliedros con 12 caras
+pentagonales). Es el mas grande de los 6 politopos regulares en terminos
+de numero de celdas, y uno de los mas complejos de visualizar.</p>
+<h4 id="relacion-con-la-proporcion-aurea">Relacion con la proporcion
+aurea</h4>
+<p>La proporcion aurea <span class="math inline">\varphi = \frac{1 +
+\sqrt{5}}{2} \approx 1.618</span> impregna la estructura del
+hecatonicosacoro, al igual que impregna la del dodecaedro e icosaedro en
+3D. Las coordenadas de sus 600 vertices involucran potencias de <span class="math inline">\varphi</span> y sus conjugados <span class="math inline">\hat{\varphi} = \frac{1 - \sqrt{5}}{2}</span>.</p>
+<p>Un subconjunto de las coordenadas de los vertices incluye todas las
+permutaciones pares de:</p>
+<p><span class="math display">\left(0, 0, \pm 2, \pm 2\right), \quad
+\left(\pm 1, \pm 1, \pm 1, \pm\sqrt{5}\right), \quad
+\left(\pm\varphi^{-1}, \pm\varphi^{-1}, \pm\varphi^{-1},
+\pm\varphi^2\right)</span></p>
+<p><span class="math display">\left(\pm\varphi^{-2}, \pm\varphi,
+\pm\varphi, \pm\varphi\right), \quad \left(\pm\varphi^{-1},
+\pm\varphi^{-1}, \pm\varphi, \pm\sqrt{5}\right)</span></p>
+<p>y muchas mas familias que involucran combinaciones de <span class="math inline">\varphi</span>, <span class="math inline">\varphi^2</span>, <span class="math inline">\varphi^{-1}</span> y <span class="math inline">\sqrt{5}</span>.</p>
+<h4 id="dual-el-hexacosicoro-600-cell">Dual: el hexacosicoro
+(600-cell)</h4>
+<p>El dual del hecatonicosacoro es el hexacosicoro <span class="math inline">\{3,3,5\}</span>. La dualidad intercambia:</p>
+<p><span class="math display">600 \text{ vertices} \longleftrightarrow
+600 \text{ celdas (tetraedros del 600-cell)}</span> <span class="math display">120 \text{ celdas (dodecaedros)}
+\longleftrightarrow 120 \text{ vertices (del 600-cell)}</span></p>
+<h4 id="figura-de-vertice">Figura de vertice</h4>
+<p>La figura de vertice del hecatonicosacoro es un
+<strong>tetraedro</strong> <span class="math inline">\{3,3\}</span>: en
+cada vertice se encuentran exactamente 4 dodecaedros. Esto es analogo a
+como en el dodecaedro 3D, cada vertice es compartido por 3
+pentagonos.</p>
+<h4 id="grupo-de-simetria-4">Grupo de simetria</h4>
+<p>El grupo de simetria tiene <span class="math inline">|G| =
+14400</span> elementos, que es <span class="math inline">120 \times
+120</span> o equivalentemente <span class="math inline">|S_5|^2</span>.
+Es uno de los grupos de reflexion finitos mas ricos.</p>
+<hr class="section-divider" />
+<h3 id="hexacosicoro-600-cell-335">2.6 Hexacosicoro (600-cell) <span class="math inline">\{3,3,5\}</span></h3>
+<p><strong>Nombre sistematico:</strong> 600-celdas | <strong>Analogo
+3D:</strong> Icosaedro | <strong>Familia:</strong> Politopos
+excepcionales</p>
+<h4 id="datos-combinatorios-5">Datos combinatorios</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Elemento</th>
+<th>Cantidad</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Vertices (<span class="math inline">V</span>)</td>
+<td>120</td>
+<td>Puntos</td>
+</tr>
+<tr>
+<td>Aristas (<span class="math inline">E</span>)</td>
+<td>720</td>
+<td>Segmentos</td>
+</tr>
+<tr>
+<td>Caras (<span class="math inline">F</span>)</td>
+<td>1200</td>
+<td>Triangulos equilateros</td>
+</tr>
+<tr>
+<td>Celdas (<span class="math inline">C</span>)</td>
+<td>600</td>
+<td>Tetraedros regulares</td>
+</tr>
+</tbody>
+</table>
+<h4 id="descripcion-4">Descripcion</h4>
+<p>El hexacosicoro es el analogo 4D del icosaedro: un politopo denso
+formado por 600 tetraedros regulares. Es el politopo regular 4D con
+mayor numero de celdas (600) y caras (1200), y su visualizacion
+proyectada en 3D produce figuras de extraordinaria belleza y
+complejidad.</p>
+<h4 id="coordenadas-basadas-en-la-proporcion-aurea">Coordenadas basadas
+en la proporcion aurea</h4>
+<p>Los 120 vertices del hexacosicoro pueden construirse a partir de la
+proporcion aurea <span class="math inline">\varphi =
+\frac{1+\sqrt{5}}{2}</span> y su recíproco <span class="math inline">\varphi^{-1} = \varphi - 1</span>. Los vertices se
+organizan en varios grupos:</p>
+<p><strong>Grupo 1</strong> — 8 vertices del hexadecacoro: <span class="math display">(\pm 1, 0, 0, 0) \quad \text{y
+permutaciones}</span></p>
+<p><strong>Grupo 2</strong> — 16 vertices del teseracto: <span class="math display">\left(\pm\tfrac{1}{2}, \pm\tfrac{1}{2},
+\pm\tfrac{1}{2}, \pm\tfrac{1}{2}\right)</span></p>
+<p><strong>Grupo 3</strong> — 96 vertices con proporcion aurea: Todas
+las permutaciones pares de: <span class="math display">\frac{1}{2}\left(\pm\varphi, \pm 1,
+\pm\varphi^{-1}, 0\right)</span></p>
+<p>Los 24 vertices de los grupos 1 y 2 forman un icositetracoro
+inscrito, y los 96 vertices restantes completan la estructura.</p>
+<h4 id="relacion-con-los-cuaterniones-icosaedricos">Relacion con los
+cuaterniones icosaedricos</h4>
+<p>Los 120 vertices del hexacosicoro, interpretados como cuaterniones
+unitarios, forman el <strong>grupo binario icosaedrico</strong> <span class="math inline">2I</span> de orden 120. Este grupo es una extension
+doble del grupo de rotaciones del icosaedro <span class="math inline">A_5</span> y esta intimamente conectado con la
+resolucion de la ecuacion de quinto grado.</p>
+<h4 id="figura-de-vertice-1">Figura de vertice</h4>
+<p>La figura de vertice del hexacosicoro es un
+<strong>icosaedro</strong> <span class="math inline">\{3,5\}</span>: en
+cada vertice convergen 12 aristas y 20 tetraedros, dispuestos como las
+caras de un icosaedro.</p>
+<h4 id="dual-el-hecatonicosacoro-120-cell">Dual: el hecatonicosacoro
+(120-cell)</h4>
+<p>El dual del hexacosicoro es el hecatonicosacoro. Cada uno de los 600
+tetraedros se convierte en un vertice, y cada uno de los 120 vertices se
+convierte en un dodecaedro.</p>
+<h4 id="grupo-de-simetria-5">Grupo de simetria</h4>
+<p>Comparte el grupo de simetria con el hecatonicosacoro: <span class="math inline">|G| = 14400</span>.</p>
+<hr class="section-divider" />
+<h3 id="tabla-resumen-de-los-6-politopos">Tabla resumen de los 6
+politopos</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 14%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 7%" />
+<col style="width: 15%" />
+<col style="width: 17%" />
+<col style="width: 8%" />
+</colgroup>
+<thead>
+<tr>
+<th>Politopo</th>
+<th>Schlafli</th>
+<th><span class="math inline">V</span></th>
+<th><span class="math inline">E</span></th>
+<th><span class="math inline">F</span></th>
+<th><span class="math inline">C</span></th>
+<th>Tipo cara</th>
+<th>Tipo celda</th>
+<th>Dual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pentacoro</td>
+<td><span class="math inline">\{3,3,3\}</span></td>
+<td>5</td>
+<td>10</td>
+<td>10</td>
+<td>5</td>
+<td><span class="math inline">\triangle</span></td>
+<td>Tetraedro</td>
+<td>Si mismo</td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td><span class="math inline">\{4,3,3\}</span></td>
+<td>16</td>
+<td>32</td>
+<td>24</td>
+<td>8</td>
+<td><span class="math inline">\square</span></td>
+<td>Cubo</td>
+<td>16-cell</td>
+</tr>
+<tr>
+<td>Hexadecacoro</td>
+<td><span class="math inline">\{3,3,4\}</span></td>
+<td>8</td>
+<td>24</td>
+<td>32</td>
+<td>16</td>
+<td><span class="math inline">\triangle</span></td>
+<td>Tetraedro</td>
+<td>Teseracto</td>
+</tr>
+<tr>
+<td>Icositetracoro</td>
+<td><span class="math inline">\{3,4,3\}</span></td>
+<td>24</td>
+<td>96</td>
+<td>96</td>
+<td>24</td>
+<td><span class="math inline">\triangle</span></td>
+<td>Octaedro</td>
+<td>Si mismo</td>
+</tr>
+<tr>
+<td>Hecatonicosacoro</td>
+<td><span class="math inline">\{5,3,3\}</span></td>
+<td>600</td>
+<td>1200</td>
+<td>720</td>
+<td>120</td>
+<td><span class="math inline">\pentagon</span></td>
+<td>Dodecaedro</td>
+<td>600-cell</td>
+</tr>
+<tr>
+<td>Hexacosicoro</td>
+<td><span class="math inline">\{3,3,5\}</span></td>
+<td>120</td>
+<td>720</td>
+<td>1200</td>
+<td>600</td>
+<td><span class="math inline">\triangle</span></td>
+<td>Tetraedro</td>
+<td>120-cell</td>
+</tr>
+</tbody>
+</table>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-proyeccion-4d-a-3d">
+<h2 id="proyeccion-4d-a-3d">3. Proyeccion 4D a 3D</h2>
+<h3 id="el-problema-fundamental-como-ver-4-dimensiones">3.1 El problema
+fundamental: como “ver” 4 dimensiones</h3>
+<p>Nosotros habitamos un espacio tridimensional y nuestra retina es una
+superficie bidimensional. Cuando “vemos” un cubo, en realidad estamos
+viendo su <strong>proyeccion 2D</strong> (la imagen retiniana), y
+nuestro cerebro reconstruye la estructura 3D usando pistas como la
+perspectiva, la oclusion y el sombreado.</p>
+<p>Para visualizar un objeto 4D, necesitamos realizar una <strong>doble
+proyeccion</strong>:</p>
+<p><span class="math display">\text{4D} \xrightarrow{\text{proyeccion
+4D} \to \text{3D}} \text{3D} \xrightarrow{\text{renderizado 3D} \to
+\text{2D (pantalla)}} \text{2D}</span></p>
+<p>PolytopeXD realiza la primera proyeccion (<span class="math inline">4D \to 3D</span>) matematicamente, y delega la
+segunda (<span class="math inline">3D \to 2D</span>) al motor de
+renderizado Three.js.</p>
+<p>La analogia dimensional es poderosa: un ser 2D intentando comprender
+un cubo es exactamente analogo a nosotros intentando comprender un
+teseracto. La “sombra” de un cubo sobre un plano produce un hexagono o
+un cuadrado dentro de otro cuadrado, dependiendo de la orientacion.
+Similarmente, la “sombra” de un teseracto sobre el espacio 3D produce un
+cubo dentro de otro cubo (el <strong>rombododecaedro</strong> o la
+proyeccion cubica segun la orientacion).</p>
+<h3 id="proyeccion-en-perspectiva">3.2 Proyeccion en perspectiva</h3>
+<p>La <strong>proyeccion en perspectiva</strong> desde 4D a 3D simula la
+vision desde un punto situado a distancia <span class="math inline">d</span> en la direccion <span class="math inline">w</span>:</p>
+<p><span class="math display">\text{factor} = \frac{d}{d + w}</span></p>
+<p>Las coordenadas proyectadas son:</p>
+<p><span class="math display">x' = x \cdot \text{factor} = x \cdot
+\frac{d}{d + w}</span></p>
+<p><span class="math display">y' = y \cdot \text{factor} = y \cdot
+\frac{d}{d + w}</span></p>
+<p><span class="math display">z' = z \cdot \text{factor} = z \cdot
+\frac{d}{d + w}</span></p>
+<p>Este es el analogo exacto de la proyeccion perspectiva 3D-a-2D que
+usamos en fotografia y renderizado:</p>
+<p><span class="math display">x_{2D} = x_{3D} \cdot \frac{f}{f +
+z_{3D}}</span></p>
+<p>donde <span class="math inline">f</span> es la distancia focal.</p>
+<p><strong>Propiedades de la proyeccion en perspectiva:</strong> - Los
+objetos con <span class="math inline">w</span> mayor (mas “lejanos” en
+la 4a dimension) aparecen <strong>mas pequenos</strong>. - El factor
+tiende a 1 cuando <span class="math inline">d \to \infty</span>
+(proyeccion paralela/ortografica). - El factor diverge cuando <span class="math inline">w \to -d</span> (el objeto esta en el “centro de
+proyeccion”). - Las lineas rectas en 4D se proyectan como lineas rectas
+en 3D.</p>
+<h3 id="proyeccion-estereografica">3.3 Proyeccion estereografica</h3>
+<p>La <strong>proyeccion estereografica</strong> es una alternativa que
+preserva los angulos (es <strong>conforme</strong>). Se aplica
+proyectando desde un polo de la 3-esfera <span class="math inline">S^3</span> en la que estan inscritos los
+vertices:</p>
+<p><span class="math display">\text{escala} = \frac{d}{d - w}</span></p>
+<p>Las coordenadas proyectadas son:</p>
+<p><span class="math display">x' = x \cdot \frac{d}{d - w}, \quad
+y' = y \cdot \frac{d}{d - w}, \quad z' = z \cdot \frac{d}{d -
+w}</span></p>
+<p><strong>Propiedades de la proyeccion estereografica:</strong> - Es
+<strong>conforme</strong>: preserva los angulos locales (las celdas
+mantienen sus angulos diedricos). - Las esferas en 4D se proyectan como
+esferas en 3D (las aristas se curvan). - El polo de proyeccion (<span class="math inline">w = d</span>) se envia al infinito. - Las celdas
+cercanas al polo aparecen enormes y distorsionadas; las lejanas,
+comprimidas.</p>
+<h3 id="comparacion-de-ambos-metodos">3.4 Comparacion de ambos
+metodos</h3>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Perspectiva</th>
+<th>Estereografica</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Formula</td>
+<td><span class="math inline">\frac{d}{d + w}</span></td>
+<td><span class="math inline">\frac{d}{d - w}</span></td>
+</tr>
+<tr>
+<td>Preserva angulos</td>
+<td>No</td>
+<td><strong>Si</strong> (conforme)</td>
+</tr>
+<tr>
+<td>Preserva lineas rectas</td>
+<td><strong>Si</strong></td>
+<td>No (las curva)</td>
+</tr>
+<tr>
+<td>Celdas lejanas en <span class="math inline">w</span></td>
+<td>Se encogen</td>
+<td>Se encogen</td>
+</tr>
+<tr>
+<td>Intuicion</td>
+<td>Como una “foto” 4D</td>
+<td>Como un “mapa” esferico</td>
+</tr>
+<tr>
+<td>Mejor para</td>
+<td>Estructura global, aristas</td>
+<td>Simetria local, angulos</td>
+</tr>
+</tbody>
+</table>
+<p>En PolytopeXD, se puede alternar entre ambas proyecciones para
+obtener perspectivas complementarias del mismo politopo.</p>
+<h3 id="distancia-de-vision-y-su-efecto">3.5 Distancia de vision y su
+efecto</h3>
+<p>El parametro <span class="math inline">d</span> (distancia de vision
+4D) controla el grado de “perspectiva”:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 65%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th>Valor de <span class="math inline">d</span></th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">d = 2</span></td>
+<td>Perspectiva extrema: gran diferencia de tamano entre partes cercanas
+y lejanas</td>
+</tr>
+<tr>
+<td><span class="math inline">d = 3</span></td>
+<td>Perspectiva moderada: buen equilibrio entre profundidad y
+visibilidad</td>
+</tr>
+<tr>
+<td><span class="math inline">d = 5</span></td>
+<td>Perspectiva suave: las celdas son mas similares en tamano</td>
+</tr>
+<tr>
+<td><span class="math inline">d \to \infty</span></td>
+<td>Proyeccion paralela: sin perspectiva, las celdas lejanas tienen el
+mismo tamano que las cercanas</td>
+</tr>
+</tbody>
+</table>
+<p>La distancia ideal depende del politopo: para el teseracto, <span class="math inline">d \approx 3</span> produce el clasico “cubo dentro
+de cubo”. Para el 600-cell, valores mayores (<span class="math inline">d
+\approx 5</span>) ayudan a ver la estructura interna sin que las celdas
+exteriores dominen la vista.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-rotaciones-en-4d">
+<h2 id="rotaciones-en-4d">4. Rotaciones en 4D</h2>
+<h3 id="planos-de-rotacion-no-ejes-como-en-3d">4.1 Planos de rotacion
+(no ejes como en 3D)</h3>
+<p>En 3D, una rotacion se especifica por un <strong>eje</strong> (una
+linea) y un angulo. La rotacion gira todos los puntos alrededor de ese
+eje. Los puntos sobre el eje permanecen fijos.</p>
+<p>En 4D, la situacion es fundamentalmente diferente. Una rotacion se
+especifica por un <strong>plano de rotacion</strong> y un angulo. Los
+puntos en el plano complementario (perpendicular al plano de rotacion)
+permanecen fijos. Esto es porque en 4D, el complemento ortogonal de un
+plano (2D) es otro plano (2D), no una linea.</p>
+<p><strong>Analogia dimensional:</strong></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Dimension</th>
+<th>Rotacion definida por</th>
+<th>Puntos fijos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2D</td>
+<td>Un punto (centro)</td>
+<td>0-dimensional</td>
+</tr>
+<tr>
+<td>3D</td>
+<td>Un eje (linea)</td>
+<td>1-dimensional</td>
+</tr>
+<tr>
+<td><strong>4D</strong></td>
+<td><strong>Un plano</strong></td>
+<td><strong>2-dimensional (otro plano)</strong></td>
+</tr>
+<tr>
+<td><span class="math inline">n</span>D</td>
+<td>Un <span class="math inline">(n-2)</span>-plano</td>
+<td><span class="math inline">(n-2)</span>-dimensional</td>
+</tr>
+</tbody>
+</table>
+<h3 id="los-6-planos-de-rotacion-xy-xz-xw-yz-yw-zw">4.2 Los 6 planos de
+rotacion: XY, XZ, XW, YZ, YW, ZW</h3>
+<p>En <span class="math inline">\mathbb{R}^4</span>, existen <span class="math inline">\binom{4}{2} = 6</span> planos coordenados
+fundamentales:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Plano</th>
+<th>Coordenadas rotadas</th>
+<th>Coordenadas fijas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">XY</span></td>
+<td><span class="math inline">(x, y)</span></td>
+<td><span class="math inline">(z, w)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">XZ</span></td>
+<td><span class="math inline">(x, z)</span></td>
+<td><span class="math inline">(y, w)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">XW</span></td>
+<td><span class="math inline">(x, w)</span></td>
+<td><span class="math inline">(y, z)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">YZ</span></td>
+<td><span class="math inline">(y, z)</span></td>
+<td><span class="math inline">(x, w)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">YW</span></td>
+<td><span class="math inline">(y, w)</span></td>
+<td><span class="math inline">(x, z)</span></td>
+</tr>
+<tr>
+<td><span class="math inline">ZW</span></td>
+<td><span class="math inline">(z, w)</span></td>
+<td><span class="math inline">(x, y)</span></td>
+</tr>
+</tbody>
+</table>
+<p>Las rotaciones en los planos <span class="math inline">XY</span>,
+<span class="math inline">XZ</span> y <span class="math inline">YZ</span> son las rotaciones 3D habituales (no
+afectan la coordenada <span class="math inline">w</span>). Las
+rotaciones en planos que involucran <span class="math inline">W</span>
+(<span class="math inline">XW</span>, <span class="math inline">YW</span>, <span class="math inline">ZW</span>) son
+genuinamente 4-dimensionales: mezclan las coordenadas espaciales con la
+cuarta dimension, produciendo los efectos de “inversion” y “paso a
+traves” que hacen tan fascinante la geometria 4D.</p>
+<h3 id="matrices-de-rotacion-4d">4.3 Matrices de rotacion 4D</h3>
+<p>Una rotacion en el plano <span class="math inline">XW</span> por un
+angulo <span class="math inline">\theta</span> se representa como la
+matriz <span class="math inline">4 \times 4</span>:</p>
+<p><span class="math display">R_{XW}(\theta) = \begin{pmatrix}
+\cos\theta & 0 & 0 & -\sin\theta \\ 0 & 1 & 0 &
+0 \\ 0 & 0 & 1 & 0 \\ \sin\theta & 0 & 0 &
+\cos\theta \end{pmatrix}</span></p>
+<p>Analogamente, la rotacion en el plano <span class="math inline">YW</span> por un angulo <span class="math inline">\phi</span>:</p>
+<p><span class="math display">R_{YW}(\phi) = \begin{pmatrix} 1 & 0
+& 0 & 0 \\ 0 & \cos\phi & 0 & -\sin\phi \\ 0 & 0
+& 1 & 0 \\ 0 & \sin\phi & 0 & \cos\phi
+\end{pmatrix}</span></p>
+<p>Y la rotacion en el plano <span class="math inline">ZW</span> por un
+angulo <span class="math inline">\psi</span>:</p>
+<p><span class="math display">R_{ZW}(\psi) = \begin{pmatrix} 1 & 0
+& 0 & 0 \\ 0 & 1 & 0 & 0 \\ 0 & 0 & \cos\psi
+& -\sin\psi \\ 0 & 0 & \sin\psi & \cos\psi
+\end{pmatrix}</span></p>
+<p>Las rotaciones en planos 3D (<span class="math inline">XY</span>,
+<span class="math inline">XZ</span>, <span class="math inline">YZ</span>) tienen la forma habitual con la cuarta
+fila y columna como identidad.</p>
+<h3 id="composicion-de-rotaciones">4.4 Composicion de rotaciones</h3>
+<p>Una rotacion general en 4D se obtiene componiendo (multiplicando)
+rotaciones elementales. A diferencia de 3D, el grupo de rotaciones <span class="math inline">SO(4)</span> tiene dimension <span class="math inline">\binom{4}{2} = 6</span> (frente a dimension 3 para
+<span class="math inline">SO(3)</span>). Una rotacion general en 4D
+requiere hasta 6 parametros angulares.</p>
+<p>La composicion se realiza por multiplicacion de matrices:</p>
+<p><span class="math display">R_{\text{total}} = R_{XY}(\alpha) \cdot
+R_{XZ}(\beta) \cdot R_{XW}(\gamma) \cdot R_{YZ}(\delta) \cdot
+R_{YW}(\epsilon) \cdot R_{ZW}(\zeta)</span></p>
+<p>En PolytopeXD, la rotacion interactiva permite especificar angulos en
+los 6 planos independientemente, o usar una auto-rotacion que combina
+varias simultaneamente.</p>
+<h3 id="fenomenos-sin-analogia-3d-rotacion-doble">4.5 Fenomenos sin
+analogia 3D: rotacion doble</h3>
+<p>El fenomeno mas sorprendente de las rotaciones 4D es la
+<strong>rotacion doble</strong> (o <strong>rotacion isoclina</strong>).
+En 3D, toda rotacion tiene un eje fijo (teorema de Euler). En 4D, es
+posible realizar una rotacion que <strong>no deja fijo ningun
+punto</strong> (excepto el origen):</p>
+<p><span class="math display">R_{\text{doble}}(\theta, \phi) =
+R_{XY}(\theta) \cdot R_{ZW}(\phi)</span></p>
+<p>Esta rotacion gira simultaneamente en dos planos completamente
+perpendiculares. Cuando <span class="math inline">\theta = \phi</span>,
+la rotacion se llama <strong>isoclina izquierda</strong>; cuando <span class="math inline">\theta = -\phi</span>, <strong>isoclina
+derecha</strong>.</p>
+<p>Una rotacion isoclina mueve <strong>todos</strong> los puntos
+(excepto el origen) a lo largo de circulos, pero estos circulos estan
+entrelazados de manera que no existe un plano 2D globalmente fijo. En
+PolytopeXD, activar la rotacion doble sobre un teseracto produce un
+efecto hipnotico: todas las celdas se mueven simultaneamente sin que
+ninguna parezca permanecer en su lugar.</p>
+<p><strong>Propiedad notable:</strong> El grupo <span class="math inline">SO(4)</span> es localmente isomorfo a <span class="math inline">SO(3) \times SO(3)</span> (a diferencia de <span class="math inline">SO(n)</span> para <span class="math inline">n \neq
+4</span>, que es simple). Esto es una peculiaridad de la dimension 4 y
+esta directamente relacionado con la descomposicion de rotaciones 4D en
+pares de rotaciones 3D mediante cuaterniones.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-secciones-transversales-hiperplanos">
+<h2 id="secciones-transversales-hiperplanos">5. Secciones Transversales
+(Hiperplanos)</h2>
+<h3 id="analogia-cortando-un-cubo-3d-con-un-plano-2d">5.1 Analogia:
+cortando un cubo 3D con un plano 2D</h3>
+<p>Para comprender las secciones de un 4-politopo, consideremos primero
+la analogia mas familiar: cortar un cubo con un plano.</p>
+<p>Si cortamos un cubo unitario con un plano horizontal a diferentes
+alturas <span class="math inline">z = t</span>:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Valor de <span class="math inline">t</span></th>
+<th>Seccion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">t < 0</span> o <span class="math inline">t > 1</span></td>
+<td>Vacia</td>
+</tr>
+<tr>
+<td><span class="math inline">t = 0</span></td>
+<td>Cuadrado (cara inferior)</td>
+</tr>
+<tr>
+<td><span class="math inline">0 < t < 1</span></td>
+<td>Cuadrado (mismo tamano)</td>
+</tr>
+<tr>
+<td><span class="math inline">t = 1</span></td>
+<td>Cuadrado (cara superior)</td>
+</tr>
+</tbody>
+</table>
+<p>Si en cambio cortamos con un plano diagonal (por ejemplo, <span class="math inline">x + y + z = c</span>):</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Valor de <span class="math inline">c</span></th>
+<th>Seccion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">c = 0</span></td>
+<td>Punto (vertice)</td>
+</tr>
+<tr>
+<td><span class="math inline">c = 0.5</span></td>
+<td>Triangulo equilatero</td>
+</tr>
+<tr>
+<td><span class="math inline">c = 1.5</span></td>
+<td>Hexagono regular</td>
+</tr>
+<tr>
+<td><span class="math inline">c = 3</span></td>
+<td>Punto (vertice opuesto)</td>
+</tr>
+</tbody>
+</table>
+<p>Aparecen formas inesperadas (un <strong>hexagono</strong> al cortar
+un cubo). De manera similar, al cortar un 4-politopo con un hiperplano,
+pueden aparecer poliedros inesperados.</p>
+<h3 id="cortando-un-politopo-4d-con-un-hiperplano-3d">5.2 Cortando un
+politopo 4D con un hiperplano 3D</h3>
+<p>Un <strong>hiperplano</strong> en <span class="math inline">\mathbb{R}^4</span> es un subespacio afin de
+dimension 3, definido por una ecuacion lineal:</p>
+<p><span class="math display">\mathbf{n} \cdot \mathbf{x} = c \quad
+\Longleftrightarrow \quad n_x \cdot x + n_y \cdot y + n_z \cdot z + n_w
+\cdot w = c</span></p>
+<p>donde <span class="math inline">\mathbf{n}</span> es el vector normal
+al hiperplano y <span class="math inline">c</span> determina su
+posicion. La <strong>seccion transversal</strong> es la interseccion del
+politopo con este hiperplano, que generalmente produce un
+<strong>poliedro 3D</strong>.</p>
+<p>Por ejemplo, cortando un teseracto con el hiperplano <span class="math inline">w = t</span> para <span class="math inline">t \in
+[-1, 1]</span>:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Valor de <span class="math inline">t</span></th>
+<th>Seccion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">t = -1</span></td>
+<td>Cubo (celda inferior)</td>
+</tr>
+<tr>
+<td><span class="math inline">-1 < t < 1</span></td>
+<td>Cubo (del mismo tamano, <span class="math inline">2 \times 2 \times
+2</span>)</td>
+</tr>
+<tr>
+<td><span class="math inline">t = 1</span></td>
+<td>Cubo (celda superior)</td>
+</tr>
+</tbody>
+</table>
+<p>Esto tiene sentido: un teseracto es un “cubo extruido” en la
+direccion <span class="math inline">w</span>, asi que cortarlo
+perpendicularmente a <span class="math inline">w</span> siempre da un
+cubo.</p>
+<h3 id="algoritmo-de-interseccion-arista-hiperplano">5.3 Algoritmo de
+interseccion arista-hiperplano</h3>
+<p>Para calcular la seccion computacionalmente, PolytopeXD utiliza el
+siguiente algoritmo para cada arista del politopo:</p>
+<p>Dada una arista con vertices <span class="math inline">\mathbf{a}</span> y <span class="math inline">\mathbf{b}</span> y un hiperplano <span class="math inline">\mathbf{n} \cdot \mathbf{x} = c</span>:</p>
+<ol type="1">
+<li><p>Calcular los valores con signo: <span class="math display">d_a =
+\mathbf{n} \cdot \mathbf{a} - c, \quad d_b = \mathbf{n} \cdot \mathbf{b}
+- c</span></p></li>
+<li><p>Si <span class="math inline">d_a</span> y <span class="math inline">d_b</span> tienen <strong>signos opuestos</strong>
+(o alguno es cero), la arista cruza el hiperplano.</p></li>
+<li><p>El punto de interseccion se calcula por <strong>interpolacion
+lineal</strong>: <span class="math display">t = \frac{d_a}{d_a - d_b},
+\quad \mathbf{p} = \mathbf{a} + t(\mathbf{b} - \mathbf{a}) =
+(1-t)\mathbf{a} + t\mathbf{b}</span></p></li>
+<li><p>El punto <span class="math inline">\mathbf{p}</span> se proyecta
+a 3D (eliminando la componente en la direccion de <span class="math inline">\mathbf{n}</span> o aplicando la proyeccion
+4D-a-3D).</p></li>
+</ol>
+<p>Los puntos de interseccion obtenidos forman los vertices de un
+poliedro 3D. Para reconstruir las caras de este poliedro, se utilizan
+las caras del 4-politopo original: cada cara triangular o cuadrada
+cortada por el hiperplano produce una arista del poliedro seccion.</p>
+<h3 id="tipos-de-corte-w-vertice-arista-diagonal">5.4 Tipos de corte: W,
+Vertice, Arista, Diagonal</h3>
+<p>PolytopeXD ofrece cuatro direcciones de corte, cada una con un vector
+normal <span class="math inline">\mathbf{n}</span> diferente:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 52%" />
+<col style="width: 32%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Normal <span class="math inline">\mathbf{n}</span></th>
+<th>Descripcion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>W</strong> (estandar)</td>
+<td><span class="math inline">(0, 0, 0, 1)</span></td>
+<td>Corta perpendicularmente a la 4a dimension</td>
+</tr>
+<tr>
+<td><strong>Vertice</strong></td>
+<td><span class="math inline">\frac{1}{2}(1, 1, 1, 1)</span></td>
+<td>Corta en la direccion de un vertice del teseracto</td>
+</tr>
+<tr>
+<td><strong>Arista</strong></td>
+<td><span class="math inline">\frac{1}{\sqrt{2}}(1, 1, 0, 0)</span></td>
+<td>Corta en la direccion de una arista</td>
+</tr>
+<tr>
+<td><strong>Diagonal</strong></td>
+<td><span class="math inline">\frac{1}{\sqrt{3}}(1, 1, 1, 0)</span></td>
+<td>Corta en la direccion de una diagonal de cara</td>
+</tr>
+</tbody>
+</table>
+<p>Cada direccion revela diferentes simetrias ocultas del politopo. Por
+ejemplo: - Cortando el teseracto con el plano <span class="math inline">w = 0</span> se obtiene siempre un cubo. - Cortando
+el teseracto con la diagonal del vertice <span class="math inline">x + y
++ z + w = 0</span> en la posicion adecuada se obtiene un
+<strong>octaedro regular</strong> — una forma que no es celda del
+teseracto pero emerge de su estructura interna.</p>
+<h3 id="analisis-de-la-seccion-area-perimetro-regularidad">5.5 Analisis
+de la seccion: area, perimetro, regularidad</h3>
+<p>Para cada seccion calculada, PolytopeXD puede determinar:</p>
+<ul>
+<li><strong>Numero de vertices</strong> del poliedro seccion.</li>
+<li><strong>Numero de aristas</strong> y <strong>caras</strong>.</li>
+<li><strong>Volumen</strong> (por descomposicion en tetraedros).</li>
+<li><strong>Area superficial</strong> (suma de areas de caras).</li>
+<li><strong>Tipo de poliedro</strong>: si la seccion es un poliedro
+regular o semi-regular conocido.</li>
+</ul>
+<p>Estas propiedades varian continuamente al desplazar el hiperplano,
+excepto en puntos criticos donde la topologia de la seccion cambia (al
+pasar por un vertice, arista o cara del politopo).</p>
+<h3
+id="secciones-notables-que-formas-aparecen-al-cortar-cada-politopo">5.6
+Secciones notables: que formas aparecen al cortar cada politopo</h3>
+<h4 id="secciones-del-teseracto-433">Secciones del teseracto <span class="math inline">\{4,3,3\}</span></h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Direccion</th>
+<th>Posicion</th>
+<th>Seccion resultante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">W</span></td>
+<td>Cualquiera en <span class="math inline">[-1,1]</span></td>
+<td>Cubo</td>
+</tr>
+<tr>
+<td>Vertice</td>
+<td>Centro</td>
+<td><strong>Octaedro regular</strong></td>
+</tr>
+<tr>
+<td>Vertice</td>
+<td>Cerca del vertice</td>
+<td>Tetraedro</td>
+</tr>
+<tr>
+<td>Arista</td>
+<td>Centro</td>
+<td>Prisma hexagonal</td>
+</tr>
+</tbody>
+</table>
+<h4 id="secciones-del-hexadecacoro-334">Secciones del hexadecacoro <span class="math inline">\{3,3,4\}</span></h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Direccion</th>
+<th>Posicion</th>
+<th>Seccion resultante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">W</span></td>
+<td><span class="math inline">t = 0</span> (centro)</td>
+<td><strong>Octaedro regular</strong></td>
+</tr>
+<tr>
+<td><span class="math inline">W</span></td>
+<td><span class="math inline">t \neq 0</span></td>
+<td>Octaedro truncado o piramide</td>
+</tr>
+<tr>
+<td>Vertice</td>
+<td>Centro</td>
+<td>Cuboctaedro</td>
+</tr>
+</tbody>
+</table>
+<h4 id="secciones-del-icositetracoro-343">Secciones del icositetracoro
+<span class="math inline">\{3,4,3\}</span></h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Direccion</th>
+<th>Posicion</th>
+<th>Seccion resultante</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">W</span></td>
+<td>Centro</td>
+<td><strong>Cuboctaedro</strong></td>
+</tr>
+<tr>
+<td>Vertice</td>
+<td><span class="math inline">1/3</span> del camino</td>
+<td>Cubo</td>
+</tr>
+<tr>
+<td>Vertice</td>
+<td>Centro</td>
+<td>Cuboctaedro</td>
+</tr>
+</tbody>
+</table>
+<p>El icositetracoro produce secciones particularmente ricas, incluyendo
+cuboctaedros y octaedros truncados.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-celdas-y-descomposicion">
+<h2 id="celdas-y-descomposicion">6. Celdas y Descomposicion</h2>
+<h3 id="que-son-las-celdas-de-un-4-politopo">6.1 Que son las celdas de
+un 4-politopo</h3>
+<p>En la jerarquia de elementos de un politopo, las
+<strong>celdas</strong> son los elementos de dimension <span class="math inline">n-1</span> que forman la frontera:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Dimension del politopo</th>
+<th>Nombre de los elementos de frontera</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2D (poligono)</td>
+<td>Aristas (segmentos 1D)</td>
+</tr>
+<tr>
+<td>3D (poliedro)</td>
+<td><strong>Caras</strong> (poligonos 2D)</td>
+</tr>
+<tr>
+<td><strong>4D (4-politopo)</strong></td>
+<td><strong>Celdas</strong> (poliedros 3D)</td>
+</tr>
+</tbody>
+</table>
+<p>Asi como un cubo tiene 6 caras cuadradas que forman su superficie, un
+teseracto tiene 8 celdas cubicas que forman su “hipersuperficie”. Dos
+celdas adyacentes comparten una cara 2D, exactamente como dos caras
+adyacentes de un cubo comparten una arista.</p>
+<p>La intuicion clave es: la frontera de un 4-politopo es un conjunto de
+poliedros 3D pegados entre si por sus caras, formando una
+<strong>3-variedad cerrada</strong> (una superficie tridimensional sin
+borde). Para el teseracto, esta hipersuperficie es un conjunto de 8
+cubos que se pegan para formar un 3-toro topologico.</p>
+<h3 id="explosion-de-celdas-visualizacion-radial">6.2 Explosion de
+celdas: visualizacion radial</h3>
+<p>Para visualizar todas las celdas de un 4-politopo simultaneamente,
+PolytopeXD utiliza una tecnica de <strong>explosion radial</strong>:
+cada celda se desplaza radialmente desde el centro del politopo,
+separandola de sus vecinas. El factor de explosion controla cuanto se
+separan:</p>
+<ul>
+<li><strong>Factor 0</strong>: las celdas estan en su posicion original
+(superpuestas tras la proyeccion).</li>
+<li><strong>Factor 0.5</strong>: separacion moderada; se distinguen las
+celdas individuales.</li>
+<li><strong>Factor 1</strong>: separacion completa; las celdas flotan
+individualmente.</li>
+</ul>
+<p>Matematicamente, si el centroide del politopo es <span class="math inline">\mathbf{c}</span> y el centroide de una celda es
+<span class="math inline">\mathbf{g}_i</span>, la celda se desplaza
+por:</p>
+<p><span class="math display">\mathbf{g}'_i = \mathbf{g}_i + f \cdot
+(\mathbf{g}_i - \mathbf{c})</span></p>
+<p>donde <span class="math inline">f</span> es el factor de
+explosion.</p>
+<h3 id="navegacion-celda-a-celda">6.3 Navegacion celda a celda</h3>
+<p>PolytopeXD permite seleccionar y resaltar celdas individuales. Dos
+celdas son <strong>adyacentes</strong> si comparten una cara 2D. El
+grafo de adyacencia de celdas es el <strong>grafo dual</strong> del
+politopo, que tiene propiedades interesantes:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 13%" />
+<col style="width: 49%" />
+<col style="width: 20%" />
+</colgroup>
+<thead>
+<tr>
+<th>Politopo</th>
+<th>Celdas</th>
+<th>Caras compartidas por celda</th>
+<th>Grafo dual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pentacoro</td>
+<td>5 tetraedros</td>
+<td>4 (cada cara)</td>
+<td><span class="math inline">K_5</span> (completo)</td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td>8 cubos</td>
+<td>6 (cada cara del cubo con otra celda)</td>
+<td>Grafo del hexadecacoro</td>
+</tr>
+<tr>
+<td>Hexadecacoro</td>
+<td>16 tetraedros</td>
+<td>4</td>
+<td>Grafo del teseracto</td>
+</tr>
+<tr>
+<td>Icositetracoro</td>
+<td>24 octaedros</td>
+<td>8</td>
+<td>Grafo del icositetracoro (auto-dual)</td>
+</tr>
+</tbody>
+</table>
+<p>Al navegar celda a celda, se puede recorrer este grafo dual y
+observar como las celdas se ensamblan para formar el politopo
+completo.</p>
+<h3 id="celdas-del-pentacoro-teseracto-hexadecacoro-y-24-cell">6.4
+Celdas del pentacoro, teseracto, hexadecacoro y 24-cell</h3>
+<h4 id="pentacoro-5-tetraedros">Pentacoro: 5 tetraedros</h4>
+<p>Cada celda es un tetraedro regular. Cada par de celdas comparte
+exactamente una cara triangular. Eliminando una celda, las 4 restantes
+forman la “superficie” visible: un tetraedro hueco con las caras
+abiertas mirando hacia afuera.</p>
+<h4 id="teseracto-8-cubos">Teseracto: 8 cubos</h4>
+<p>Los 8 cubos del teseracto se pueden pensar como: - 1 cubo “inferior”
+(<span class="math inline">w = -1</span>, fijo en las 3 coordenadas
+espaciales). - 1 cubo “superior” (<span class="math inline">w =
++1</span>). - 6 cubos “laterales” (cada uno conecta una cara del cubo
+inferior con la correspondiente del superior).</p>
+<p>En la proyeccion en perspectiva, el cubo “inferior” aparece grande
+(exterior) y el “superior” aparece pequeno (interior), con los 6 cubos
+laterales como frustums truncados entre ambos.</p>
+<h4 id="hexadecacoro-16-tetraedros">Hexadecacoro: 16 tetraedros</h4>
+<p>Los 16 tetraedros son mas dificiles de visualizar. Cada tetraedro
+conecta 4 de los 8 vertices, bajo la condicion de que ninguno de los 4
+vertices sea antipodal a otro. La explosion de celdas revela una
+estructura de “estrella” con tetraedros apuntando en 16 direcciones
+distintas.</p>
+<h4 id="icositetracoro-24-octaedros">Icositetracoro: 24 octaedros</h4>
+<p>Los 24 octaedros se pueden dividir en 3 grupos de 8, donde cada grupo
+forma un hexadecacoro (16-cell). Es decir, el icositetracoro puede
+descomponerse como la <strong>union de 3 hexadecacoros mutuamente
+inscritos</strong>. Esta triple descomposicion es una de las propiedades
+mas elegantes del 24-cell.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-redes-nets-y-desplegados">
+<h2 id="redes-nets-y-desplegados">7. Redes (Nets) y Desplegados</h2>
+<h3 id="analogia-red-de-un-cubo-6-cuadrados-en-cruz">7.1 Analogia: red
+de un cubo (6 cuadrados en cruz)</h3>
+<p>Una <strong>red</strong> (net) de un poliedro 3D es un desplegado de
+sus caras en el plano 2D. Las caras se abren como las paginas de un
+libro, manteniendo las aristas de union, hasta que todas yacen en un
+mismo plano.</p>
+<pre><code class="language-javascript">        +---+
+        | T |  (Top / Arriba)
+    +---+---+---+---+
+    | I | F | D | B |  (Izquierda, Frente, Derecha, Detras)
+    +---+---+---+---+
+        | B |  (Bottom / Abajo)
+        +---+
+
+Red clasica de un cubo: 6 cuadrados en cruz</code></pre>
+<p>Un cubo tiene <strong>11</strong> redes distintas (sin contar
+reflexiones y rotaciones). Al plegar la red, los cuadrados se cierran
+alrededor de un espacio interior para formar el cubo.</p>
+<h3 id="red-del-teseracto-la-cruz-de-dali-8-cubos">7.2 Red del
+teseracto: la cruz de Dali (8 cubos)</h3>
+<p>De manera analoga, la <strong>red de un 4-politopo</strong> es un
+desplegado de sus celdas en el espacio 3D. Cada celda es un poliedro 3D,
+y la red las dispone de forma que comparten caras 2D, de manera que al
+“plegar” (en la 4a dimension) se cierra el 4-politopo.</p>
+<p>La red mas famosa del teseracto es la <strong>cruz de Dali</strong>:
+8 cubos dispuestos en forma de cruz tridimensional.</p>
+<pre><code class="language-javascript">              +-------+
+             /       /|
+            / Cubo5 / |
+           +-------+  |
+           |       |  +
+           |       | /
+           |       |/
++-------+--+-------+--+-------+--+-------+
+|       | /|       |\ |       | /|       |
+| Cubo2 |/ | Cubo1 | \| Cubo4 |/ | Cubo8 |
++-------+  +-------+  +-------+  +-------+
+           |       |  +
+           |       | /|
+           | Cubo3 |/ |
+           +-------+  |
+           |       |  +
+           |       | /
+           | Cubo6 |/
+           +-------+
+           |       |
+           | Cubo7 |
+           +-------+
+
+Red del teseracto: 8 cubos en disposicion cruciforme</code></pre>
+<p>Los cubos se nombran segun su posicion: - <strong>Cubo 1</strong>:
+central. - <strong>Cubos 2, 3, 4, 5</strong>: adyacentes al central por
+las 4 caras cardinales. - <strong>Cubos 6, 7</strong>: extension hacia
+abajo. - <strong>Cubo 8</strong>: extension lateral.</p>
+<p>Para plegar esta red en un teseracto, cada cubo se “dobla” en la
+cuarta dimension: 1. El Cubo 5 se pliega “hacia arriba” en <span class="math inline">w</span>. 2. El Cubo 3 se pliega “hacia abajo” en
+<span class="math inline">w</span>. 3. Los cubos laterales se pliegan en
+direcciones intermedias. 4. Los cubos extremos (6, 7, 8) continuan el
+plegado hasta cerrarse.</p>
+<h3 id="plegado-y-desplegado-de-la-red-3d-al-politopo-4d">7.3 Plegado y
+desplegado: de la red 3D al politopo 4D</h3>
+<p>El proceso de plegado se puede parametrizar con un angulo <span class="math inline">\alpha \in [0, \pi/2]</span>:</p>
+<ul>
+<li><span class="math inline">\alpha = 0</span>: red completamente
+desplegada (todos los cubos en <span class="math inline">\mathbb{R}^3</span>).</li>
+<li><span class="math inline">\alpha = \pi/2</span>: teseracto
+completamente plegado (los cubos forman la hipersuperficie del teseracto
+en <span class="math inline">\mathbb{R}^4</span>).</li>
+</ul>
+<p>PolytopeXD anima este proceso, mostrando como los 8 cubos se cierran
+progresivamente. En estados intermedios (<span class="math inline">0
+< \alpha < \pi/2</span>), la figura no es ni completamente plana
+ni completamente cerrada, lo que permite ver como las celdas se
+conectan.</p>
+<p>Formalmente, si la cara de union entre el cubo central y un cubo
+adyacente esta en el plano con normal <span class="math inline">\hat{u}</span> (en 3D), el plegado consiste en una
+rotacion del cubo adyacente por angulo <span class="math inline">\alpha</span> en el plano <span class="math inline">(\hat{u}, \hat{w})</span>, donde <span class="math inline">\hat{w}</span> es la direccion de la cuarta
+dimension.</p>
+<h3 id="salvador-dali-y-corpus-hypercubus-1954">7.4 Salvador Dali y
+“Corpus Hypercubus” (1954)</h3>
+<p>En 1954, Salvador Dali pinto <strong>Corpus Hypercubus</strong>
+(Crucifixion), una de las obras mas celebres que conectan el arte con la
+matematica de dimensiones superiores. En la pintura, la figura de Cristo
+esta crucificada sobre un desplegado del teseracto — exactamente la red
+de 8 cubos en cruz que hemos descrito.</p>
+<p>Dali estaba influenciado por las ideas de la cuarta dimension que
+circulaban en los circulos intelectuales de mediados del siglo XX. La
+eleccion del teseracto desplegado como cruz no es casual: simboliza la
+trascendencia del sufrimiento terrenal (3D) hacia una realidad superior
+(4D). La red del teseracto es una cruz 3D que, al plegarse, trasciende
+nuestro espacio.</p>
+<p>El artista consulto a matematicos, incluyendo a Thomas Banchoff
+(geometra especializado en visualizacion 4D) durante la creacion de la
+obra. La precision geometrica de los 8 cubos en la pintura es
+matematicamente correcta.</p>
+<p>La pintura se exhibe permanentemente en el <strong>Metropolitan
+Museum of Art</strong> de Nueva York.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-caracteristica-de-euler-generalizada">
+<h2 id="caracteristica-de-euler-generalizada">8. Caracteristica de Euler
+Generalizada</h2>
+<h3 id="formula-v---e-f---c-0-para-4-politopos">8.1 Formula: <span class="math inline">V - E + F - C = 0</span> para 4-politopos</h3>
+<p>La <strong>caracteristica de Euler</strong> para poliedros convexos
+3D establece:</p>
+<p><span class="math display">V - E + F = 2</span></p>
+<p>donde <span class="math inline">V</span> = vertices, <span class="math inline">E</span> = aristas, <span class="math inline">F</span> = caras.</p>
+<p>Para 4-politopos convexos, la formula se generaliza agregando las
+celdas con signo alternante:</p>
+<p><span class="math display">V - E + F - C = 0</span></p>
+<p>donde <span class="math inline">C</span> = celdas (poliedros 3D que
+forman la frontera). El valor 0 es la caracteristica de Euler de la
+3-esfera <span class="math inline">S^3</span> (que es la frontera de una
+4-bola).</p>
+<h3 id="verificacion-para-los-6-politopos">8.2 Verificacion para los 6
+politopos</h3>
+<p>Verifiquemos la formula para cada uno de los 6 politopos
+regulares:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>Politopo</th>
+<th><span class="math inline">V</span></th>
+<th><span class="math inline">E</span></th>
+<th><span class="math inline">F</span></th>
+<th><span class="math inline">C</span></th>
+<th><span class="math inline">V - E + F - C</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pentacoro</td>
+<td>5</td>
+<td>10</td>
+<td>10</td>
+<td>5</td>
+<td><span class="math inline">5 - 10 + 10 - 5 = 0</span></td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td>16</td>
+<td>32</td>
+<td>24</td>
+<td>8</td>
+<td><span class="math inline">16 - 32 + 24 - 8 = 0</span></td>
+</tr>
+<tr>
+<td>Hexadecacoro</td>
+<td>8</td>
+<td>24</td>
+<td>32</td>
+<td>16</td>
+<td><span class="math inline">8 - 24 + 32 - 16 = 0</span></td>
+</tr>
+<tr>
+<td>Icositetracoro</td>
+<td>24</td>
+<td>96</td>
+<td>96</td>
+<td>24</td>
+<td><span class="math inline">24 - 96 + 96 - 24 = 0</span></td>
+</tr>
+<tr>
+<td>Hecatonicosacoro</td>
+<td>600</td>
+<td>1200</td>
+<td>720</td>
+<td>120</td>
+<td><span class="math inline">600 - 1200 + 720 - 120 = 0</span></td>
+</tr>
+<tr>
+<td>Hexacosicoro</td>
+<td>120</td>
+<td>720</td>
+<td>1200</td>
+<td>600</td>
+<td><span class="math inline">120 - 720 + 1200 - 600 = 0</span></td>
+</tr>
+</tbody>
+</table>
+<p>En todos los casos, <span class="math inline">V - E + F - C =
+0</span>, confirmando la formula.</p>
+<h3 id="generalizacion-a-n-dimensiones">8.3 Generalizacion a <span class="math inline">n</span> dimensiones</h3>
+<p>La formula de Euler se generaliza a politopos convexos en <span class="math inline">n</span> dimensiones:</p>
+<p><span class="math display">\sum_{k=0}^{n-1} (-1)^k f_k = 1 -
+(-1)^n</span></p>
+<p>donde <span class="math inline">f_k</span> es el numero de <span class="math inline">k</span>-caras (elementos de dimension <span class="math inline">k</span>): <span class="math inline">f_0 = V</span>,
+<span class="math inline">f_1 = E</span>, <span class="math inline">f_2
+= F</span>, <span class="math inline">f_3 = C</span>, etc.</p>
+<p>Esto da:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Dimension <span class="math inline">n</span></th>
+<th>Formula</th>
+<th>Valor</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>2</td>
+<td><span class="math inline">V - E = 0</span></td>
+<td>0 (para poligonos)</td>
+</tr>
+<tr>
+<td>3</td>
+<td><span class="math inline">V - E + F = 2</span></td>
+<td>2</td>
+</tr>
+<tr>
+<td>4</td>
+<td><span class="math inline">V - E + F - C = 0</span></td>
+<td>0</td>
+</tr>
+<tr>
+<td>5</td>
+<td><span class="math inline">V - E + F - C + H = 2</span></td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<p>El patron alterna entre 0 y 2. Para <span class="math inline">n</span> par, la caracteristica es 0; para <span class="math inline">n</span> impar, es 2. Esto refleja la caracteristica
+de Euler de la esfera <span class="math inline">S^{n-1}</span>:</p>
+<p><span class="math display">\chi(S^{n-1}) = 1 + (-1)^{n-1}</span></p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-dualidad-en-4d">
+<h2 id="dualidad-en-4d">9. Dualidad en 4D</h2>
+<h3 id="concepto-de-dual-intercambio-vertices-y-celdas">9.1 Concepto de
+dual: intercambio vertices y celdas</h3>
+<p>El <strong>dual</strong> de un politopo se construye colocando un
+vertice en el centro de cada celda (faceta de dimension maxima) y
+conectando dos vertices del dual cuando las celdas correspondientes
+comparten una cara. Esto produce un nuevo politopo donde:</p>
+<ul>
+<li>Los <strong>vertices</strong> del dual corresponden a las
+<strong>celdas</strong> del original.</li>
+<li>Las <strong>celdas</strong> del dual corresponden a los
+<strong>vertices</strong> del original.</li>
+<li>Las <strong>aristas</strong> del dual corresponden a las
+<strong>caras</strong> del original (y viceversa).</li>
+</ul>
+<p>Formalmente, para un 4-politopo con <span class="math inline">f</span>-vector <span class="math inline">(V, E, F,
+C)</span>, su dual tiene <span class="math inline">f</span>-vector <span class="math inline">(C, F, E, V)</span> — el vector invertido.</p>
+<p>Si el original tiene simbolo de Schlafli <span class="math inline">\{p, q, r\}</span>, su dual tiene simbolo <span class="math inline">\{r, q, p\}</span> — el simbolo invertido.</p>
+<h3 id="parejas-duales">9.2 Parejas duales</h3>
+<p>Los 6 politopos regulares en 4D forman tres parejas bajo
+dualidad:</p>
+<p><strong>Pareja 1: Teseracto <span class="math inline">\{4,3,3\}</span> y Hexadecacoro <span class="math inline">\{3,3,4\}</span></strong></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th></th>
+<th>Teseracto</th>
+<th>Hexadecacoro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">V</span></td>
+<td>16</td>
+<td>8</td>
+</tr>
+<tr>
+<td><span class="math inline">E</span></td>
+<td>32</td>
+<td>24</td>
+</tr>
+<tr>
+<td><span class="math inline">F</span></td>
+<td>24</td>
+<td>32</td>
+</tr>
+<tr>
+<td><span class="math inline">C</span></td>
+<td>8</td>
+<td>16</td>
+</tr>
+<tr>
+<td>Celdas</td>
+<td>Cubos <span class="math inline">\{4,3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+</tr>
+</tbody>
+</table>
+<p>Los vertices del teseracto (16) corresponden a las celdas del
+hexadecacoro (16), y viceversa. Esta es la generalizacion de la dualidad
+cubo-octaedro en 3D.</p>
+<p><strong>Pareja 2: Hecatonicosacoro <span class="math inline">\{5,3,3\}</span> y Hexacosicoro <span class="math inline">\{3,3,5\}</span></strong></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th></th>
+<th>120-cell</th>
+<th>600-cell</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">V</span></td>
+<td>600</td>
+<td>120</td>
+</tr>
+<tr>
+<td><span class="math inline">E</span></td>
+<td>1200</td>
+<td>720</td>
+</tr>
+<tr>
+<td><span class="math inline">F</span></td>
+<td>720</td>
+<td>1200</td>
+</tr>
+<tr>
+<td><span class="math inline">C</span></td>
+<td>120</td>
+<td>600</td>
+</tr>
+<tr>
+<td>Celdas</td>
+<td>Dodecaedros <span class="math inline">\{5,3\}</span></td>
+<td>Tetraedros <span class="math inline">\{3,3\}</span></td>
+</tr>
+</tbody>
+</table>
+<p>Esta es la generalizacion de la dualidad dodecaedro-icosaedro en
+3D.</p>
+<p><strong>Pareja 3: Auto-duales</strong></p>
+<p>El pentacoro <span class="math inline">\{3,3,3\}</span> y el
+icositetracoro <span class="math inline">\{3,4,3\}</span> son
+auto-duales (ver seccion 9.3).</p>
+<h3 id="auto-dualidad-pentacoro-y-24-cell">9.3 Auto-dualidad: pentacoro
+y 24-cell</h3>
+<p>Un politopo es <strong>auto-dual</strong> si su dual es
+combinatoriamente identico a si mismo. Esto requiere: 1. <span class="math inline">V = C</span> (mismo numero de vertices y celdas). 2.
+<span class="math inline">E = F</span> (mismo numero de aristas y
+caras). 3. El simbolo de Schlafli es un palindromo: <span class="math inline">\{p, q, r\} = \{r, q, p\}</span>, es decir, <span class="math inline">p = r</span>.</p>
+<p>Los dos auto-duales en 4D son:</p>
+<p><strong>Pentacoro</strong> <span class="math inline">\{3,3,3\}</span>: <span class="math inline">p = r =
+3</span>. Con <span class="math inline">V = C = 5</span> y <span class="math inline">E = F = 10</span>, el dual de un pentacoro es otro
+pentacoro. Esto es la generalizacion del tetraedro auto-dual en 3D
+(<span class="math inline">\{3,3\}</span>).</p>
+<p><strong>Icositetracoro</strong> <span class="math inline">\{3,4,3\}</span>: <span class="math inline">p = r =
+3</span>. Con <span class="math inline">V = C = 24</span> y <span class="math inline">E = F = 96</span>, el dual de un icositetracoro es
+otro icositetracoro. Esta auto-dualidad es notable porque el 24-cell no
+tiene analogo 3D — es una auto-dualidad genuinamente nueva.</p>
+<p>La auto-dualidad del icositetracoro puede verificarse directamente:
+los 24 centros de los 24 octaedros (celdas) forman un conjunto de puntos
+que, reescalado, coincide con los 24 vertices originales.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-guia-de-uso-de-polytopexd">
+<h2 id="guia-de-uso-de-polytopexd">10. Guia de Uso de PolytopeXD</h2>
+<h3 id="interfaz">10.1 Interfaz</h3>
+<pre><code class="language-javascript">+--------------------------------------------------------------+
+| PolytopeXD    5-cell  Tesseract  16-cell  24-cell  120  600  |
++--------------------------------------+-----------------------+
+|                                      | [Explorar][Cortar]    |
+|                                      | [Celdas]  [Red]       |
+|                                      +-----------------------+
+|                                      | Proyeccion            |
+|         Viewport 3D                  |  Tipo: Perspectiva  v |
+|         (canvas WebGL)               |  Dist: ---o-----  3.0 |
+|                                      |                       |
+|         Arrastrar = orbitar          | Rotacion 4D           |
+|         Scroll = zoom               |  XW: ---o-----  0.00  |
+|                                      |  YW: ---o-----  0.00  |
+|                                      |  ZW: ---o-----  0.00  |
+|                                      |                       |
+|                                      | Opciones              |
+|                                      |  [x] Aristas          |
+|                                      |  [x] Vertices         |
+|                                      |  [ ] Caras            |
+|                                      |  [x] Auto-rotar       |
+|                                      |                       |
+|                                      | Info del politopo     |
+|                                      |  Nombre: Tesseract    |
+|                                      |  Schlafli: {4,3,3}    |
+|                                      |  V=16 E=32 F=24 C=8   |
+|                                      |  Euler: 16-32+24-8=0  |
++--------------------------------------+-----------------------+</code></pre>
+<h3 id="controles-de-navegacion-3d-mouse-scroll">10.2 Controles de
+navegacion 3D (mouse, scroll)</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 31%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr>
+<th>Accion</th>
+<th>Mouse</th>
+<th>Touch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orbitar (rotar la vista 3D)</td>
+<td>Arrastrar con boton izquierdo</td>
+<td>Arrastrar con un dedo</td>
+</tr>
+<tr>
+<td>Zoom (acercar/alejar)</td>
+<td>Rueda del raton</td>
+<td>Pellizco con dos dedos</td>
+</tr>
+</tbody>
+</table>
+<p>La camara orbita alrededor del centro del politopo proyectado. La
+rotacion 3D afecta solo a la camara; la rotacion 4D afecta al politopo
+mismo (su orientacion en <span class="math inline">\mathbb{R}^4</span>
+antes de proyectar).</p>
+<p><strong>Distincion importante:</strong> - <strong>Rotacion
+3D</strong> (mouse): rota la <em>camara</em> alrededor del objeto
+proyectado. Es como caminar alrededor de una escultura. -
+<strong>Rotacion 4D</strong> (sliders): rota el <em>objeto</em> en <span class="math inline">\mathbb{R}^4</span> antes de proyectar. Es como
+girar la escultura en una dimension que no podemos percibir.</p>
+<h3 id="panel-explorar-sliders-opciones">10.3 Panel Explorar: sliders,
+opciones</h3>
+<p>El panel <strong>Explorar</strong> es el modo principal de
+visualizacion. Contiene:</p>
+<h4 id="seleccion-de-politopo">Seleccion de politopo</h4>
+<p>Los 6 botones de la barra superior permiten cambiar entre politopos.
+Al seleccionar uno nuevo: - Se recalculan los vertices y aristas en 4D.
+- Se aplica la proyeccion actual. - Se actualizan los datos
+combinatorios (<span class="math inline">V</span>, <span class="math inline">E</span>, <span class="math inline">F</span>, <span class="math inline">C</span>).</p>
+<h4 id="tipo-de-proyeccion">Tipo de proyeccion</h4>
+<p>Menu desplegable para alternar entre <strong>Perspectiva</strong> y
+<strong>Estereografica</strong>. El cambio es inmediato y permite
+comparar ambas vistas del mismo politopo.</p>
+<h4 id="distancia-de-vision-d">Distancia de vision (<span class="math inline">d</span>)</h4>
+<p>Slider que controla el parametro <span class="math inline">d</span>
+en las formulas de proyeccion. Valores tipicos entre 2.0 y 10.0.</p>
+<h4 id="rotacion-4d">Rotacion 4D</h4>
+<p>Tres sliders para las rotaciones en los planos <span class="math inline">XW</span>, <span class="math inline">YW</span> y
+<span class="math inline">ZW</span>. Estos son los planos “genuinamente
+4D” que mezclan coordenadas espaciales con la cuarta dimension.
+Arrastrar estos sliders produce las deformaciones caracteristicas de los
+politopos 4D: el “cubo interior” del teseracto crece mientras el
+exterior se encoge, celdas pasan a traves de otras, etc.</p>
+<h4 id="opciones-de-visualizacion">Opciones de visualizacion</h4>
+<ul>
+<li><strong>Aristas</strong>: muestra/oculta las aristas del politopo
+(segmentos entre vertices).</li>
+<li><strong>Vertices</strong>: muestra/oculta las esferas en cada
+vertice.</li>
+<li><strong>Caras</strong>: muestra/oculta las caras semitransparentes
+(triangulos, cuadrados o pentagonos).</li>
+<li><strong>Auto-rotar</strong>: activa una rotacion 4D automatica que
+combina rotaciones en los planos <span class="math inline">XW</span> y
+<span class="math inline">YZ</span>, produciendo una vista dinamica del
+politopo.</li>
+</ul>
+<h3 id="panel-cortar-direcciones-animacion">10.4 Panel Cortar:
+direcciones, animacion</h3>
+<p>El panel <strong>Cortar</strong> permite visualizar secciones
+transversales del politopo con un hiperplano 3D.</p>
+<h4 id="direccion-de-corte">Direccion de corte</h4>
+<p>Selector entre los 4 tipos de corte: <span class="math inline">W</span>, Vertice, Arista, Diagonal (ver seccion
+5.4).</p>
+<h4 id="posicion-del-hiperplano">Posicion del hiperplano</h4>
+<p>Slider que desplaza el hiperplano a lo largo de la direccion
+seleccionada. El rango se ajusta automaticamente para cubrir todo el
+politopo.</p>
+<h4 id="animacion">Animacion</h4>
+<p>Boton que activa un barrido automatico del hiperplano de un extremo
+al otro, mostrando como la seccion evoluciona continuamente. Esto es
+analogo a un escaner de resonancia magnetica que obtiene “rebanadas” de
+un cuerpo 3D — aqui obtenemos “rebanadas” 3D de un cuerpo 4D.</p>
+<h4 id="informacion-de-la-seccion">Informacion de la seccion</h4>
+<p>Muestra en tiempo real: - Numero de vertices de la seccion. - Tipo de
+poliedro (si es reconocible). - Volumen y area superficial de la
+seccion.</p>
+<h3 id="panel-celdas-navegacion-explosion">10.5 Panel Celdas:
+navegacion, explosion</h3>
+<p>El panel <strong>Celdas</strong> permite explorar la descomposicion
+celular del politopo.</p>
+<h4 id="factor-de-explosion">Factor de explosion</h4>
+<p>Slider que controla la separacion radial de las celdas (0 = sin
+separacion, 1 = separacion completa).</p>
+<h4 id="selector-de-celda">Selector de celda</h4>
+<p>Permite resaltar una celda individual. La celda seleccionada se
+muestra en color solido mientras las demas se muestran
+semitransparentes. Los botones de navegacion permiten pasar a celdas
+adyacentes.</p>
+<h4 id="informacion-de-la-celda">Informacion de la celda</h4>
+<p>Muestra el tipo de celda (tetraedro, cubo, octaedro, dodecaedro), su
+numero de vertices, aristas y caras, y los indices de las celdas
+adyacentes.</p>
+<h3 id="panel-red-plegado-del-teseracto">10.6 Panel Red: plegado del
+teseracto</h3>
+<p>El panel <strong>Red</strong> permite visualizar el desplegado del
+teseracto (disponible principalmente para el teseracto, donde la red es
+mas intuitiva).</p>
+<h4 id="angulo-de-plegado">Angulo de plegado</h4>
+<p>Slider que controla el angulo <span class="math inline">\alpha</span>
+de plegado de la red: - <span class="math inline">\alpha = 0</span>:
+cruz de Dali completamente desplegada. - <span class="math inline">\alpha = \pi/2</span>: teseracto completamente
+cerrado.</p>
+<h4 id="animacion-de-plegado">Animacion de plegado</h4>
+<p>Boton que anima el plegado/desplegado completo, mostrando la
+transicion de la red 3D al politopo 4D.</p>
+<h4 id="cubos-individuales">Cubos individuales</h4>
+<p>Colores distintos para cada uno de los 8 cubos permiten seguir
+visualmente como se posiciona cada cubo en el proceso de plegado.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-ejercicios">
+<h2 id="ejercicios">11. Ejercicios</h2>
+<h3 id="ejercicio-1-verificar-euler-para-cada-politopo">Ejercicio 1:
+Verificar Euler para cada politopo</h3>
+<p><strong>Objetivo:</strong> Comprobar la formula <span class="math inline">V - E + F - C = 0</span> usando la informacion de
+PolytopeXD.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona cada uno de los 6
+politopos. 2. Anota los valores de <span class="math inline">V</span>,
+<span class="math inline">E</span>, <span class="math inline">F</span>,
+<span class="math inline">C</span> mostrados en el panel de informacion.
+3. Calcula <span class="math inline">V - E + F - C</span> para cada
+uno.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>Verifica que la formula se cumple para los 6 politopos. Completa la
+tabla:</li>
+</ol>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Politopo</th>
+<th><span class="math inline">V</span></th>
+<th><span class="math inline">E</span></th>
+<th><span class="math inline">F</span></th>
+<th><span class="math inline">C</span></th>
+<th><span class="math inline">V - E + F - C</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pentacoro</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+</tr>
+<tr>
+<td>Hexadecacoro</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+</tr>
+<tr>
+<td>Icositetracoro</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+</tr>
+<tr>
+<td>Hecatonicosacoro</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+</tr>
+<tr>
+<td>Hexacosicoro</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+<td>__</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Solucion:</strong></p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 20%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+<col style="width: 37%" />
+</colgroup>
+<thead>
+<tr>
+<th>Politopo</th>
+<th><span class="math inline">V</span></th>
+<th><span class="math inline">E</span></th>
+<th><span class="math inline">F</span></th>
+<th><span class="math inline">C</span></th>
+<th><span class="math inline">V - E + F - C</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Pentacoro</td>
+<td>5</td>
+<td>10</td>
+<td>10</td>
+<td>5</td>
+<td><span class="math inline">5 - 10 + 10 - 5 = 0</span></td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td>16</td>
+<td>32</td>
+<td>24</td>
+<td>8</td>
+<td><span class="math inline">16 - 32 + 24 - 8 = 0</span></td>
+</tr>
+<tr>
+<td>Hexadecacoro</td>
+<td>8</td>
+<td>24</td>
+<td>32</td>
+<td>16</td>
+<td><span class="math inline">8 - 24 + 32 - 16 = 0</span></td>
+</tr>
+<tr>
+<td>Icositetracoro</td>
+<td>24</td>
+<td>96</td>
+<td>96</td>
+<td>24</td>
+<td><span class="math inline">24 - 96 + 96 - 24 = 0</span></td>
+</tr>
+<tr>
+<td>Hecatonicosacoro</td>
+<td>600</td>
+<td>1200</td>
+<td>720</td>
+<td>120</td>
+<td><span class="math inline">600 - 1200 + 720 - 120 = 0</span></td>
+</tr>
+<tr>
+<td>Hexacosicoro</td>
+<td>120</td>
+<td>720</td>
+<td>1200</td>
+<td>600</td>
+<td><span class="math inline">120 - 720 + 1200 - 600 = 0</span></td>
+</tr>
+</tbody>
+</table>
+<ol start="2" type="a">
+<li>Para un poliedro 3D convexo, <span class="math inline">V - E + F =
+2</span>. Para un 4-politopo, <span class="math inline">V - E + F - C =
+0</span>. Si existieran 5-politopos regulares, que valor tendria <span class="math inline">V - E + F - C + H</span> donde <span class="math inline">H</span> es el numero de hiperceldas
+(4-celdas)?</li>
+</ol>
+<p><strong>Solucion:</strong> Siguiendo el patron: <span class="math inline">V - E + F - C + H = 2</span>. La caracteristica de
+Euler de <span class="math inline">S^4</span> es <span class="math inline">1 + (-1)^4 = 2</span>. Los tres 5-politopos
+regulares (5-simplex, 5-cubo y 5-ortoplex) satisfacen esta formula.</p>
+<hr class="section-divider" />
+<h3
+id="ejercicio-2-secciones-del-teseracto-que-formas-aparecen">Ejercicio
+2: Secciones del teseracto — que formas aparecen</h3>
+<p><strong>Objetivo:</strong> Descubrir los poliedros ocultos dentro del
+teseracto.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el
+<strong>Teseracto</strong> y ve al panel <strong>Cortar</strong>. 2.
+Selecciona la direccion <strong>W</strong> y desliza el hiperplano de
+<span class="math inline">-1</span> a <span class="math inline">+1</span>. 3. Cambia a la direccion
+<strong>Vertice</strong> y repite el barrido. 4. Observa las formas de
+las secciones.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>Al cortar con <span class="math inline">w = t</span> constante, que
+forma tiene la seccion? Depende de <span class="math inline">t</span>?</li>
+</ol>
+<p><strong>Solucion:</strong> La seccion es siempre un
+<strong>cubo</strong> de lado 2, para todo <span class="math inline">t
+\in [-1, 1]</span>. Esto es porque el teseracto <span class="math inline">[-1,1]^4</span> cortado por <span class="math inline">w = t</span> da <span class="math inline">[-1,1]^3</span>, que es un cubo. La seccion no
+depende de <span class="math inline">t</span> (solo su posicion en <span class="math inline">w</span>).</p>
+<ol start="2" type="a">
+<li>Al cortar con la diagonal del vertice (<span class="math inline">x +
+y + z + w = c</span>), para que valor de <span class="math inline">c</span> aparece un octaedro regular? Por que?</li>
+</ol>
+<p><strong>Solucion:</strong> Para <span class="math inline">c =
+0</span>, la seccion es un <strong>octaedro regular</strong>. Esto
+ocurre porque el hiperplano <span class="math inline">x + y + z + w =
+0</span> pasa por el centro del teseracto y corta las 24 caras cuadradas
+simetricamente. Los 12 puntos de interseccion (puntos medios de ciertas
+aristas) forman los 6 vertices de un octaedro regular. La simetria <span class="math inline">S_4</span> del hiperplano diagonal coincide con la
+simetria del octaedro.</p>
+<ol start="3" type="a">
+<li>Existe alguna seccion del teseracto que sea un tetraedro? A que
+valor de <span class="math inline">c</span> en la direccion del
+vertice?</li>
+</ol>
+<p><strong>Solucion:</strong> Si, para <span class="math inline">c</span> cercano a <span class="math inline">\pm
+4</span> (cerca de un vertice del teseracto). Cuando el hiperplano
+diagonal apenas entra en el teseracto, corta exactamente 4 aristas que
+emanan de un vertice, produciendo un tetraedro regular. Para <span class="math inline">c = 4 - \epsilon</span> con <span class="math inline">\epsilon</span> pequeno, se obtiene un tetraedro
+pequeno.</p>
+<hr class="section-divider" />
+<h3 id="ejercicio-3-rotacion-doble-en-4d">Ejercicio 3: Rotacion doble en
+4D</h3>
+<p><strong>Objetivo:</strong> Observar el fenomeno de rotacion doble,
+exclusivo de 4D.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el
+<strong>Teseracto</strong> en modo <strong>Explorar</strong>. 2.
+Desactiva <strong>Auto-rotar</strong>. 3. Pon el slider de rotacion
+<span class="math inline">XW</span> en un valor fijo (por ejemplo, 45
+grados). Observa el efecto. 4. Ahora agrega simultaneamente una rotacion
+<span class="math inline">YZ</span> del mismo angulo. Observa el efecto
+combinado.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>Cuando aplicas solo la rotacion <span class="math inline">XW</span>,
+que ocurre visualmente con el teseracto proyectado?</li>
+</ol>
+<p><strong>Solucion:</strong> Al rotar en el plano <span class="math inline">XW</span>, las coordenadas <span class="math inline">x</span> y <span class="math inline">w</span> se
+mezclan. Vertices que estaban “al frente” (<span class="math inline">w</span> bajo) pasan “al fondo” (<span class="math inline">w</span> alto) y viceversa. Visualmente, el cubo
+interior y el exterior del teseracto intercambian tamanos: el interior
+crece y el exterior se encoge, y en <span class="math inline">\theta =
+\pi/2</span> se invierte completamente.</p>
+<ol start="2" type="a">
+<li>Al activar la rotacion doble (<span class="math inline">XW</span> y
+<span class="math inline">YZ</span> simultaneamente), todos los vertices
+se mueven. Por que no hay puntos fijos (excepto el origen)?</li>
+</ol>
+<p><strong>Solucion:</strong> Una rotacion en <span class="math inline">XW</span> deja fijo el plano <span class="math inline">YZ</span>. Una rotacion en <span class="math inline">YZ</span> deja fijo el plano <span class="math inline">XW</span>. Combinadas, la unica interseccion de
+ambos subespacios fijos es <span class="math inline">\{0\}</span> — el
+origen. Por tanto, ningun punto distinto del origen permanece fijo, lo
+cual es imposible en 3D (donde toda rotacion tiene un eje fijo
+completo).</p>
+<ol start="3" type="a">
+<li>En 3D, toda rotacion puede descomponerse en una rotacion alrededor
+de un eje (teorema de Euler). Cuantos parametros se necesitan para
+describir una rotacion general en 3D? Y en 4D?</li>
+</ol>
+<p><strong>Solucion:</strong> En 3D: 3 parametros (por ejemplo, 3
+angulos de Euler, o un eje unitario + un angulo = 2 + 1 = 3). En 4D: 6
+parametros (los 6 angulos de rotacion en los 6 planos coordenados, o
+equivalentemente, <span class="math inline">\dim SO(4) = \binom{4}{2} =
+6</span>).</p>
+<hr class="section-divider" />
+<h3 id="ejercicio-4-proyeccion-perspectiva-vs.-estereografica">Ejercicio
+4: Proyeccion perspectiva vs. estereografica</h3>
+<p><strong>Objetivo:</strong> Comparar las dos proyecciones
+disponibles.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el
+<strong>Icositetracoro</strong> (24-cell). 2. Activa la visualizacion de
+<strong>Caras</strong>. 3. Alterna entre <strong>Perspectiva</strong> y
+<strong>Estereografica</strong>. 4. Observa como cambian las aristas y
+los angulos.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>En la proyeccion en perspectiva, las aristas del politopo se ven
+como lineas rectas. Es cierto tambien en la proyeccion
+estereografica?</li>
+</ol>
+<p><strong>Solucion:</strong> No. En la proyeccion estereografica, las
+aristas (segmentos rectos en 4D) se proyectan como <strong>arcos de
+circunferencia</strong> en 3D. Esto es porque la proyeccion
+estereografica es conforme (preserva angulos) pero no preserva lineas
+rectas. PolytopeXD puede mostrar las aristas como curvas o como
+segmentos rectos (la aproximacion recta es la mas comun por
+eficiencia).</p>
+<ol start="2" type="a">
+<li>Si dos celdas del 24-cell se encuentran con un angulo diedrico de
+<span class="math inline">\theta</span> en 4D, en cual de las dos
+proyecciones se preserva este angulo?</li>
+</ol>
+<p><strong>Solucion:</strong> En la proyeccion
+<strong>estereografica</strong>, porque es conforme (preserva angulos).
+En la proyeccion perspectiva, los angulos se distorsionan (especialmente
+para celdas alejadas del eje de proyeccion).</p>
+<ol start="3" type="a">
+<li>Cambia la distancia de vision <span class="math inline">d</span> de
+2 a 10. Que ocurre con la diferencia visual entre ambas
+proyecciones?</li>
+</ol>
+<p><strong>Solucion:</strong> A medida que <span class="math inline">d</span> aumenta, ambas proyecciones convergen hacia
+la <strong>proyeccion paralela</strong> (ortografica). Para <span class="math inline">d = 2</span>, la diferencia es dramatica; para <span class="math inline">d = 10</span>, son casi indistinguibles. Esto es
+porque tanto <span class="math inline">\frac{d}{d+w}</span> como <span class="math inline">\frac{d}{d-w}</span> tienden a 1 cuando <span class="math inline">d \gg |w|</span>.</p>
+<hr class="section-divider" />
+<h3 id="ejercicio-5-explosion-de-celdas-del-24-cell">Ejercicio 5:
+Explosion de celdas del 24-cell</h3>
+<p><strong>Objetivo:</strong> Comprender la estructura celular del
+politopo mas misterioso.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el
+<strong>Icositetracoro</strong> (24-cell). 2. Ve al panel
+<strong>Celdas</strong>. 3. Aumenta lentamente el factor de explosion de
+0 a 1. 4. Selecciona celdas individuales y explora la adyacencia.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>El 24-cell tiene 24 celdas octaedricas. Cuantas caras tiene cada
+octaedro? Cuantas celdas son adyacentes a cada celda?</li>
+</ol>
+<p><strong>Solucion:</strong> Cada octaedro tiene 8 caras triangulares.
+Cada celda del 24-cell es adyacente a <strong>8</strong> celdas (una por
+cada cara del octaedro). Esto contrasta con el teseracto, donde cada
+cubo es adyacente a 6 cubos (una por cada cara cuadrada del cubo, pero
+el cubo tiene 6 caras y el teseracto solo provee 3 celdas adyacentes por
+cubo… en realidad, la adyacencia depende de la estructura
+especifica).</p>
+<ol start="2" type="a">
+<li>El 24-cell puede descomponerse en 3 hexadecacoros (16-cells)
+mutuamente inscritos. Si cada hexadecacoro tiene 8 vertices, como se
+distribuyen los <span class="math inline">3 \times 8 = 24</span>
+vertices?</li>
+</ol>
+<p><strong>Solucion:</strong> Los 24 vertices se particionan exactamente
+en 3 grupos de 8. El primer grupo son los <span class="math inline">(\pm
+1, 0, 0, 0)</span> y permutaciones (8 vertices del 16-cell). Los otros
+dos grupos son subconjuntos de 8 vertices del tipo <span class="math inline">(\pm\frac{1}{2}, \pm\frac{1}{2}, \pm\frac{1}{2},
+\pm\frac{1}{2})</span>, seleccionados por la paridad del numero de
+signos negativos. Cada grupo de 8 vertices forma un hexadecacoro
+completo.</p>
+<ol start="3" type="a">
+<li>El 24-cell es auto-dual. Si explotas las celdas y miras los centros
+de los 24 octaedros, que figura forman?</li>
+</ol>
+<p><strong>Solucion:</strong> Los 24 centros de los octaedros forman
+otro <strong>icositetracoro</strong> (reescalado). Esto es la esencia de
+la auto-dualidad: los centros de las celdas replican la estructura de
+los vertices del original.</p>
+<hr class="section-divider" />
+<h3 id="ejercicio-6-red-del-teseracto-y-cubos-adyacentes">Ejercicio 6:
+Red del teseracto y cubos adyacentes</h3>
+<p><strong>Objetivo:</strong> Comprender la topologia del teseracto a
+traves de su red.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el
+<strong>Teseracto</strong> y ve al panel <strong>Red</strong>. 2.
+Observa la red desplegada (cruz de 8 cubos). 3. Anima el plegado y sigue
+un cubo especifico.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>En la cruz de Dali, el cubo central comparte una cara con 4 cubos
+laterales. Al plegar, donde queda la cara opuesta del cubo central (la
+que no toca ningun cubo lateral en la red)?</li>
+</ol>
+<p><strong>Solucion:</strong> La cara opuesta del cubo central se
+convierte en una cara interna del teseracto, compartida con el cubo que
+esta “al otro lado” en la 4a dimension. Al plegar, los cubos extremos de
+la cruz se cierran para formar las tapas del teseracto en la direccion
+<span class="math inline">w</span>.</p>
+<ol start="2" type="a">
+<li>Cuantas redes distintas tiene un cubo 3D? Y un teseracto?</li>
+</ol>
+<p><strong>Solucion:</strong> El cubo tiene <strong>11</strong> redes
+distintas (sin contar reflexiones ni rotaciones). El teseracto tiene
+<strong>261</strong> redes distintas. El crecimiento explosivo refleja
+la complejidad combinatoria creciente con la dimension.</p>
+<ol start="3" type="a">
+<li>Si cortamos la red del teseracto (8 cubos) a lo largo de las caras
+compartidas dejando exactamente 7 caras como “bisagras”, obtenemos un
+arbol con 8 nodos en el grafo de adyacencia. Cuantas aristas tiene el
+grafo de adyacencia completo del teseracto?</li>
+</ol>
+<p><strong>Solucion:</strong> En el teseracto, el grafo de adyacencia de
+celdas tiene 8 nodos (cubos). Cada cubo tiene 6 caras, pero en el
+teseracto cada cubo es adyacente a exactamente 6 cubos distintos (a
+traves de sus 6 caras). Sin embargo, esto daria <span class="math inline">8 \times 6 / 2 = 24</span> aristas, lo cual es
+demasiado. Revision: cada cubo del teseracto comparte una cara con otro
+cubo en 4 de sus 6 caras (las 2 caras restantes son opuestas a lo largo
+de <span class="math inline">w</span>). El numero total de pares
+adyacentes es <span class="math inline">24/2 = 12</span> si cada cara
+del teseracto es compartida por exactamente 2 cubos. El teseracto tiene
+24 caras cuadradas; cada una es compartida por exactamente 2 de las 8
+celdas. Entonces hay <span class="math inline">24</span> pares de
+adyacencia, pero cada par se cuenta una vez, dando <span class="math inline">24</span> aristas en el grafo de adyacencia. Es
+decir, cada cubo es adyacente a 6 cubos, y el grafo completo tiene <span class="math inline">8 \times 6 / 2 = 24</span> aristas.</p>
+<hr class="section-divider" />
+<h3
+id="ejercicio-7-dualidad-verificar-intercambio-v-leftrightarrow-c">Ejercicio
+7: Dualidad — verificar intercambio <span class="math inline">V
+\leftrightarrow C</span></h3>
+<p><strong>Objetivo:</strong> Comprobar experimentalmente la dualidad
+entre politopos.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el
+<strong>Teseracto</strong> y anota <span class="math inline">V</span>,
+<span class="math inline">E</span>, <span class="math inline">F</span>,
+<span class="math inline">C</span>. 2. Selecciona el
+<strong>Hexadecacoro</strong> y anota <span class="math inline">V</span>, <span class="math inline">E</span>, <span class="math inline">F</span>, <span class="math inline">C</span>. 3.
+Compara ambos conjuntos de valores. 4. Repite para la pareja 120-cell /
+600-cell.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>Verifica que <span class="math inline">(V, E, F, C)</span> del
+teseracto es <span class="math inline">(C, F, E, V)</span> del
+hexadecacoro.</li>
+</ol>
+<p><strong>Solucion:</strong> - Teseracto: <span class="math inline">(16, 32, 24, 8)</span>. - Hexadecacoro: <span class="math inline">(8, 24, 32, 16)</span>. - <span class="math inline">(C, F, E, V)</span> del hexadecacoro: <span class="math inline">(16, 32, 24, 8)</span>. Correcto.</p>
+<ol start="2" type="a">
+<li>Para los politopos auto-duales (pentacoro y 24-cell), que implica la
+auto-dualidad sobre sus <span class="math inline">f</span>-vectores?</li>
+</ol>
+<p><strong>Solucion:</strong> El <span class="math inline">f</span>-vector debe ser un palindromo: <span class="math inline">(V, E, F, C) = (C, F, E, V)</span>, lo que requiere
+<span class="math inline">V = C</span> y <span class="math inline">E =
+F</span>. - Pentacoro: <span class="math inline">(5, 10, 10, 5)</span>.
+Palindromo. - Icositetracoro: <span class="math inline">(24, 96, 96,
+24)</span>. Palindromo.</p>
+<ol start="3" type="a">
+<li>Si inventaramos un 4-politopo con <span class="math inline">f</span>-vector <span class="math inline">(V, E, F,
+C) = (10, 30, 30, 10)</span>, seria auto-dual? Cumple la formula de
+Euler?</li>
+</ol>
+<p><strong>Solucion:</strong> El <span class="math inline">f</span>-vector es un palindromo, asi que seria
+candidato a auto-dual. Verificamos Euler: <span class="math inline">10 -
+30 + 30 - 10 = 0</span>. Si, cumple la formula. Sin embargo, que exista
+un <span class="math inline">f</span>-vector valido no garantiza que
+exista un politopo con esos valores — se necesitarian verificar las
+<strong>relaciones de Dehn-Sommerville</strong> completas y la
+realizabilidad geometrica.</p>
+<hr class="section-divider" />
+<h3 id="ejercicio-8-secciones-diagonales-del-600-cell">Ejercicio 8:
+Secciones diagonales del 600-cell</h3>
+<p><strong>Objetivo:</strong> Explorar las secciones del politopo mas
+complejo.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el
+<strong>Hexacosicoro</strong> (600-cell). 2. Ve al panel
+<strong>Cortar</strong>. 3. Selecciona la direccion
+<strong>Vertice</strong> y barre la posicion lentamente. 4. Observa la
+evolucion de la seccion.</p>
+<p><strong>Preguntas:</strong></p>
+<ol type="a">
+<li>Cerca de un vertice del 600-cell, la seccion deberia parecerse a la
+figura de vertice. Cual es la figura de vertice del 600-cell?</li>
+</ol>
+<p><strong>Solucion:</strong> La figura de vertice del hexacosicoro
+<span class="math inline">\{3,3,5\}</span> es un
+<strong>icosaedro</strong> <span class="math inline">\{3,5\}</span>. Por
+tanto, cuando el hiperplano apenas corta un vertice, la seccion es un
+icosaedro pequeno.</p>
+<ol start="2" type="a">
+<li>El 600-cell tiene 720 aristas. Si la seccion ecuatorial (posicion
+central) tiene <span class="math inline">n</span> vertices, cada uno
+proviene de la interseccion del hiperplano con una arista.
+Aproximadamente cuantas aristas son cortadas?</li>
+</ol>
+<p><strong>Solucion:</strong> La seccion ecuatorial del 600-cell es un
+<strong>icosidodecaedro</strong> con 30 vertices. Por tanto, el
+hiperplano corta exactamente 30 de las 720 aristas.</p>
+<ol start="3" type="a">
+<li>La proporcion aurea <span class="math inline">\varphi</span> aparece
+en las coordenadas del 600-cell. Si un vertice tiene coordenada <span class="math inline">w = \varphi/2</span>, a que distancia del centro
+esta en la proyeccion perspectiva con <span class="math inline">d =
+3</span>?</li>
+</ol>
+<p><strong>Solucion:</strong> El factor de perspectiva es <span class="math inline">\frac{d}{d + w} = \frac{3}{3 + \varphi/2} =
+\frac{3}{3 + 0.809} = \frac{3}{3.809} \approx 0.788</span>. Las
+coordenadas <span class="math inline">(x, y, z)</span> se multiplican
+por este factor, acercando el vertice un $$21% hacia el centro respecto
+de su posicion en proyeccion paralela.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-glosario">
+<h2 id="glosario">12. Glosario</h2>
+<table class="styled-table">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr>
+<th>Termino</th>
+<th>Definicion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>4-politopo</strong></td>
+<td>Politopo en <span class="math inline">\mathbb{R}^4</span>; objeto
+geometrico 4-dimensional delimitado por celdas 3D</td>
+</tr>
+<tr>
+<td><strong>Arista</strong></td>
+<td>Elemento 1-dimensional de un politopo; segmento que conecta dos
+vertices</td>
+</tr>
+<tr>
+<td><strong>Auto-dual</strong></td>
+<td>Politopo cuyo dual es combinatoriamente identico a si mismo</td>
+</tr>
+<tr>
+<td><strong>Cara</strong></td>
+<td>Elemento 2-dimensional de un politopo; poligono plano</td>
+</tr>
+<tr>
+<td><strong>Caracteristica de Euler</strong></td>
+<td>Invariante topologico <span class="math inline">\chi = \sum (-1)^k
+f_k</span>; vale 0 para 4-politopos convexos</td>
+</tr>
+<tr>
+<td><strong>Celda</strong></td>
+<td>Elemento 3-dimensional de un 4-politopo; poliedro que forma parte de
+la frontera</td>
+</tr>
+<tr>
+<td><strong>Conforme</strong></td>
+<td>Propiedad de una transformacion que preserva angulos locales</td>
+</tr>
+<tr>
+<td><strong>Cross-polytope</strong></td>
+<td>Ortoplex; generalizacion del octaedro; envolvente convexa de <span class="math inline">\pm e_i</span> en <span class="math inline">\mathbb{R}^n</span></td>
+</tr>
+<tr>
+<td><strong>Cuaternion</strong></td>
+<td>Numero hipercomplejo de la forma <span class="math inline">a + bi +
+cj + dk</span>; describe rotaciones en 3D y 4D</td>
+</tr>
+<tr>
+<td><strong>Desplegado (net)</strong></td>
+<td>Disposicion de las celdas de un 4-politopo en el espacio 3D,
+manteniendo caras compartidas</td>
+</tr>
+<tr>
+<td><strong>Dual</strong></td>
+<td>Politopo obtenido intercambiando vertices por celdas y aristas por
+caras</td>
+</tr>
+<tr>
+<td><strong>Explosion radial</strong></td>
+<td>Tecnica de visualizacion que separa las celdas radialmente desde el
+centro</td>
+</tr>
+<tr>
+<td><strong>Figura de vertice</strong></td>
+<td>Politopo formado por los vecinos inmediatos de un vertice,
+conectados entre si</td>
+</tr>
+<tr>
+<td><strong><span class="math inline">f</span>-vector</strong></td>
+<td>Tupla <span class="math inline">(f_0, f_1, \ldots, f_{n-1})</span>
+que cuenta los elementos de cada dimension</td>
+</tr>
+<tr>
+<td><strong>Grupo de simetria</strong></td>
+<td>Conjunto de isometrias que preservan un politopo; su estructura
+algebraica</td>
+</tr>
+<tr>
+<td><strong>Hiperplano</strong></td>
+<td>Subespacio afin de dimension <span class="math inline">n-1</span> en
+<span class="math inline">\mathbb{R}^n</span>; generaliza el plano en
+3D</td>
+</tr>
+<tr>
+<td><strong>Hipercubo</strong></td>
+<td>Generalizacion del cubo a <span class="math inline">n</span>
+dimensiones; vertices en <span class="math inline">(\pm 1, \ldots, \pm
+1)</span></td>
+</tr>
+<tr>
+<td><strong>Notacion de Schlafli</strong></td>
+<td><span class="math inline">\{p, q, r, \ldots\}</span>; codifica
+recursivamente la estructura de un politopo regular</td>
+</tr>
+<tr>
+<td><strong>Ortoplex</strong></td>
+<td>Cross-polytope; dual del hipercubo; generalizacion del octaedro</td>
+</tr>
+<tr>
+<td><strong>Plano de rotacion</strong></td>
+<td>En 4D, la rotacion se define sobre un plano (no un eje como en
+3D)</td>
+</tr>
+<tr>
+<td><strong>Politopo</strong></td>
+<td>Generalizacion de poligonos y poliedros a <span class="math inline">n</span> dimensiones</td>
+</tr>
+<tr>
+<td><strong>Politopo regular</strong></td>
+<td>Politopo cuyos elementos son todos iguales y cuyas simetrias actuan
+transitivamente</td>
+</tr>
+<tr>
+<td><strong>Proporcion aurea</strong></td>
+<td><span class="math inline">\varphi = \frac{1+\sqrt{5}}{2} \approx
+1.618</span>; aparece en el 120-cell y 600-cell</td>
+</tr>
+<tr>
+<td><strong>Proyeccion en perspectiva</strong></td>
+<td>Proyeccion <span class="math inline">4D \to 3D</span> con factor
+<span class="math inline">\frac{d}{d+w}</span>; preserva lineas
+rectas</td>
+</tr>
+<tr>
+<td><strong>Proyeccion estereografica</strong></td>
+<td>Proyeccion <span class="math inline">4D \to 3D</span> con factor
+<span class="math inline">\frac{d}{d-w}</span>; preserva angulos
+(conforme)</td>
+</tr>
+<tr>
+<td><strong>Rotacion doble</strong></td>
+<td>Rotacion en 4D en dos planos perpendiculares simultaneamente; sin
+eje fijo</td>
+</tr>
+<tr>
+<td><strong>Rotacion isoclina</strong></td>
+<td>Rotacion doble donde ambos angulos son iguales (izquierda) u
+opuestos (derecha)</td>
+</tr>
+<tr>
+<td><strong>Seccion transversal</strong></td>
+<td>Interseccion de un politopo con un hiperplano; produce un poliedro
+de dimension menor</td>
+</tr>
+<tr>
+<td><strong>Simplex</strong></td>
+<td>Politopo mas simple en cada dimension; triangulo (2D), tetraedro
+(3D), pentacoro (4D)</td>
+</tr>
+<tr>
+<td><strong><span class="math inline">SO(4)</span></strong></td>
+<td>Grupo de rotaciones en <span class="math inline">\mathbb{R}^4</span>; grupo de Lie de dimension
+6</td>
+</tr>
+</tbody>
+</table>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-referencias-bibliograficas">
+<h2 id="referencias-bibliograficas">13. Referencias Bibliograficas</h2>
+<h3 id="libros-clasicos-de-geometria">Libros clasicos de geometria</h3>
+<ol type="1">
+<li><p><strong>Coxeter, H. S. M.</strong> <em>Regular Polytopes</em>
+(3ra ed., 1973). Dover Publications. — La referencia definitiva sobre
+politopos regulares en todas las dimensiones. Coxeter clasifica
+completamente los politopos regulares y establece la notacion y
+nomenclatura estandar.</p></li>
+<li><p><strong>Abbott, E. A.</strong> <em>Flatland: A Romance of Many
+Dimensions</em> (1884). — Novela clasica que explora la percepcion
+dimensional a traves de la historia de un ser 2D que descubre la tercera
+dimension. Esencial para desarrollar la intuicion sobre dimensiones
+superiores.</p></li>
+<li><p><strong>Hilbert, D. &amp; Cohn-Vossen, S.</strong> <em>Geometry
+and the Imagination</em> (1952). Chelsea Publishing. — Tratamiento
+magistral de la geometria intuitiva, incluyendo secciones sobre
+politopos y dimensiones superiores, escrito por uno de los matematicos
+mas influyentes del siglo XX.</p></li>
+<li><p><strong>Sommerville, D. M. Y.</strong> <em>An Introduction to the
+Geometry of N Dimensions</em> (1929). Dover Publications. — Introduccion
+sistematica a la geometria en <span class="math inline">n</span>
+dimensiones, con enfasis en politopos.</p></li>
+</ol>
+<h3 id="visualizacion-4d">Visualizacion 4D</h3>
+<ol start="5" type="1">
+<li><p><strong>Banchoff, T. F.</strong> <em>Beyond the Third Dimension:
+Geometry, Computer Graphics, and Higher Dimensions</em> (1990).
+Scientific American Library. — Pionero en la visualizacion computacional
+de objetos 4D; colaboro con Dali en “Corpus Hypercubus”.</p></li>
+<li><p><strong>Hanson, A. J.</strong> “Visualizing Quaternions” (2006).
+Morgan Kaufmann. — Conexion profunda entre cuaterniones, rotaciones 4D y
+visualizacion.</p></li>
+<li><p><strong>Miyazaki, K.</strong> <em>An Adventure in
+Multidimensional Space: The Art and Geometry of Polygons, Polyhedra, and
+Polytopes</em> (1986). Wiley. — Perspectiva artistica y geometrica de
+los politopos.</p></li>
+</ol>
+<h3 id="articulos-y-recursos">Articulos y recursos</h3>
+<ol start="8" type="1">
+<li><p><strong>Stillwell, J.</strong> “The Story of the 120-Cell.”
+<em>Notices of the AMS</em>, 48(1), 17–24 (2001). — Historia y
+propiedades del hecatonicosacoro.</p></li>
+<li><p><strong>Sullivan, J. M.</strong> “Generating and Rendering
+Four-Dimensional Polytopes.” <em>The Mathematica Journal</em>, 1(3),
+76–85 (1991). — Algoritmos para renderizar politopos 4D.</p></li>
+<li><p><strong>Wikipedia.</strong> Articulos detallados sobre cada uno
+de los 6 politopos regulares convexos en 4D. Particularmente utiles:</p>
+<ul>
+<li>“Regular 4-polytope”</li>
+<li>“5-cell”, “Tesseract”, “16-cell”, “24-cell”, “120-cell”,
+“600-cell”</li>
+<li>“Schlafli symbol”</li>
+<li>“4-polytope”</li>
+</ul></li>
+</ol>
+<h3 id="arte-y-cultura">Arte y cultura</h3>
+<ol start="11" type="1">
+<li><p><strong>Dali, S.</strong> <em>Corpus Hypercubus
+(Crucifixion)</em> (1954). Oleo sobre lienzo, 194.3 x 123.8 cm.
+Metropolitan Museum of Art, Nueva York. — La obra que popularizo la red
+del teseracto.</p></li>
+<li><p><strong>Robbin, T.</strong> <em>Shadows of Reality: The Fourth
+Dimension in Relativity, Cubism, and Modern Thought</em> (2006). Yale
+University Press. — La cuarta dimension en el arte y el pensamiento
+moderno.</p></li>
+</ol>
+<h3 id="recursos-computacionales">Recursos computacionales</h3>
+<ol start="13" type="1">
+<li><p><strong>Three.js</strong> (r128+). Biblioteca WebGL para
+renderizado 3D en navegadores web. https://threejs.org/ — Motor de
+renderizado utilizado por PolytopeXD para la visualizacion.</p></li>
+<li><p><strong>Zome System.</strong> Herramienta fisica de construccion
+de politopos. https://www.zometool.com/ — Permite construir modelos
+fisicos de las proyecciones de politopos 4D.</p></li>
+</ol>
+<hr class="section-divider" />
+<p><em>Tutorial generado para PolytopeXD — Explorador de Politopos
+Regulares en 4D.</em></p>
+
+</section>
+        </main>
+    </div>
+
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.math.inline').forEach(function(el) {
+        try { katex.render(el.textContent, el, { displayMode: false, throwOnError: false }); }
+        catch(e) { console.warn('KaTeX inline error:', e); }
+    });
+    document.querySelectorAll('.math.display').forEach(function(el) {
+        try { katex.render(el.textContent, el, { displayMode: true, throwOnError: false }); }
+        catch(e) { console.warn('KaTeX display error:', e); }
+    });
+});
+</script>
+
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.sidebar a');
+    const sections = document.querySelectorAll('section[id]');
+    function updateActive() {
+        let current = '';
+        sections.forEach(sec => {
+            if (window.scrollY >= sec.offsetTop - 150) current = sec.id;
+        });
+        links.forEach(link => {
+            link.classList.remove('active');
+            const href = link.getAttribute('href').substring(1);
+            if (href === current || 'sec-' + href === current) link.classList.add('active');
+        });
+    }
+    window.addEventListener('scroll', updateActive);
+    updateActive();
+});
+</script>
+
+</body>
+</html>

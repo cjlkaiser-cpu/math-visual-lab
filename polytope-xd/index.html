@@ -1,0 +1,273 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PolytopeXD — Explorador de Politopos 4D</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="css/styles.css">
+</head>
+<body class="bg-gray-950 text-white overflow-hidden font-[Inter]">
+
+    <!-- ===================== HEADER ===================== -->
+    <header class="h-12 bg-gray-900/80 backdrop-blur border-b border-gray-800 flex items-center px-4 gap-4 select-none">
+        <h1 class="text-lg font-semibold tracking-tight">
+            <span class="text-violet-400">Polytope</span><span class="text-cyan-400">XD</span>
+        </h1>
+        <div class="h-6 w-px bg-gray-700"></div>
+
+        <!-- Polytope selector -->
+        <div id="polytope-selector" class="flex gap-1">
+            <button class="polytope-btn active" data-polytope="5cell">5-cell</button>
+            <button class="polytope-btn" data-polytope="tesseract">Tesseract</button>
+            <button class="polytope-btn" data-polytope="16cell">16-cell</button>
+            <button class="polytope-btn" data-polytope="24cell">24-cell</button>
+            <button class="polytope-btn" data-polytope="120cell">120-cell</button>
+            <button class="polytope-btn" data-polytope="600cell">600-cell</button>
+        </div>
+
+        <div class="flex-1"></div>
+        <a href="PolytopeXD-Tutorial.html" target="_blank" class="text-xs text-gray-500 hover:text-violet-400 transition-colors font-[JetBrains_Mono]">Tutorial</a>
+        <div class="h-6 w-px bg-gray-700"></div>
+        <div id="polytope-name" class="text-sm text-gray-400 font-medium mr-2">Pentacoro</div>
+        <div id="rotation-display" class="text-xs font-[JetBrains_Mono] text-gray-600"></div>
+    </header>
+
+    <!-- ===================== MAIN ===================== -->
+    <main class="flex" style="height: calc(100vh - 48px);">
+
+        <!-- Canvas container -->
+        <div id="canvas-container" class="flex-1 relative bg-canvas">
+            <canvas id="main-canvas"></canvas>
+
+            <!-- Slice info overlay (bottom-left) -->
+            <div id="slice-overlay" class="overlay hidden" style="bottom:16px;left:16px;">
+                <div class="overlay-card">
+                    <div class="text-[10px] text-gray-500 uppercase tracking-wider mb-1">Sección 3D</div>
+                    <canvas id="slice-canvas" width="180" height="180" class="slice-mini-canvas"></canvas>
+                    <div id="slice-info-overlay" class="text-xs mt-2 text-gray-300"></div>
+                </div>
+            </div>
+
+            <!-- Cell info overlay (top-left) -->
+            <div id="cell-overlay" class="overlay hidden" style="top:16px;left:16px;">
+                <div class="overlay-card">
+                    <div id="cell-info-overlay" class="text-xs text-gray-300"></div>
+                </div>
+            </div>
+
+            <!-- Net info overlay (bottom-left) -->
+            <div id="net-overlay" class="overlay hidden" style="bottom:16px;left:16px;">
+                <div class="overlay-card">
+                    <div id="net-info-overlay" class="text-xs text-gray-300"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ===================== SIDEBAR ===================== -->
+        <aside class="w-[380px] bg-gray-900/60 backdrop-blur border-l border-gray-800 flex flex-col overflow-hidden">
+
+            <!-- Mode tabs -->
+            <div class="flex border-b border-gray-800">
+                <button class="mode-btn active" data-mode="explore">Explorar</button>
+                <button class="mode-btn" data-mode="slice">Cortar</button>
+                <button class="mode-btn" data-mode="cells">Celdas</button>
+                <button class="mode-btn" data-mode="net">Red</button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4">
+
+                <!-- ========== EXPLORE PANEL ========== -->
+                <div id="explore-panel" class="mode-panel space-y-4">
+                    <div>
+                        <label class="panel-label">Proyección</label>
+                        <div class="flex gap-2">
+                            <button class="proj-btn active" data-proj="perspective">Perspectiva</button>
+                            <button class="proj-btn" data-proj="stereographic">Estereográfica</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="panel-label">Distancia 4D: <span id="view-dist-val" class="text-violet-300">3.0</span></label>
+                        <input type="range" id="view-distance" class="range-input w-full" min="1.5" max="8" step="0.1" value="3">
+                    </div>
+                    <div>
+                        <label class="panel-label">Rotaciones 4D</label>
+                        <div class="space-y-2">
+                            <div class="rotation-row">
+                                <span class="rotation-label">XY</span>
+                                <input type="range" class="rotation-slider flex-1" data-plane="xy" min="0" max="360" step="1" value="0">
+                                <span class="rotation-value" data-plane="xy">0°</span>
+                            </div>
+                            <div class="rotation-row">
+                                <span class="rotation-label">XZ</span>
+                                <input type="range" class="rotation-slider flex-1" data-plane="xz" min="0" max="360" step="1" value="0">
+                                <span class="rotation-value" data-plane="xz">0°</span>
+                            </div>
+                            <div class="rotation-row">
+                                <span class="rotation-label">XW</span>
+                                <input type="range" class="rotation-slider flex-1" data-plane="xw" min="0" max="360" step="1" value="0">
+                                <span class="rotation-value" data-plane="xw">0°</span>
+                            </div>
+                            <div class="rotation-row">
+                                <span class="rotation-label">YZ</span>
+                                <input type="range" class="rotation-slider flex-1" data-plane="yz" min="0" max="360" step="1" value="0">
+                                <span class="rotation-value" data-plane="yz">0°</span>
+                            </div>
+                            <div class="rotation-row">
+                                <span class="rotation-label">YW</span>
+                                <input type="range" class="rotation-slider flex-1" data-plane="yw" min="0" max="360" step="1" value="0">
+                                <span class="rotation-value" data-plane="yw">0°</span>
+                            </div>
+                            <div class="rotation-row">
+                                <span class="rotation-label">ZW</span>
+                                <input type="range" class="rotation-slider flex-1" data-plane="zw" min="0" max="360" step="1" value="0">
+                                <span class="rotation-value" data-plane="zw">0°</span>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="space-y-2">
+                        <label class="option-check">
+                            <input type="checkbox" id="auto-rotate" checked>
+                            <span>Auto-rotación 4D</span>
+                        </label>
+                        <label class="option-check">
+                            <input type="checkbox" id="depth-color" checked>
+                            <span>Color por profundidad W</span>
+                        </label>
+                        <label class="option-check">
+                            <input type="checkbox" id="show-vertices">
+                            <span>Mostrar vértices</span>
+                        </label>
+                        <label class="option-check">
+                            <input type="checkbox" id="show-axes" checked>
+                            <span>Ejes 3D</span>
+                        </label>
+                    </div>
+                </div>
+
+                <!-- ========== SLICE PANEL ========== -->
+                <div id="slice-panel" class="mode-panel hidden space-y-4">
+                    <div>
+                        <label class="panel-label">Dirección de corte</label>
+                        <div class="grid grid-cols-2 gap-2">
+                            <button class="cut-btn active" data-cut="w">W (celda)</button>
+                            <button class="cut-btn" data-cut="vertex">Vértice</button>
+                            <button class="cut-btn" data-cut="edge">Arista</button>
+                            <button class="cut-btn" data-cut="diagonal">Diagonal</button>
+                        </div>
+                    </div>
+                    <div>
+                        <label class="panel-label">Posición: <span id="slice-pos-val" class="text-cyan-300">0.00</span></label>
+                        <input type="range" id="slice-position" class="range-input cyan-range w-full" min="-1.5" max="1.5" step="0.01" value="0">
+                    </div>
+                    <div class="space-y-2">
+                        <label class="option-check">
+                            <input type="checkbox" id="slice-animate">
+                            <span>Animar corte</span>
+                        </label>
+                        <label class="option-check">
+                            <input type="checkbox" id="show-slice-plane" checked>
+                            <span>Mostrar plano de corte</span>
+                        </label>
+                    </div>
+                    <div id="slice-result" class="info-box">
+                        <div class="text-gray-500">Mueve el slider para cortar el politopo</div>
+                    </div>
+                </div>
+
+                <!-- ========== CELLS PANEL ========== -->
+                <div id="cells-panel" class="mode-panel hidden space-y-4">
+                    <div>
+                        <label class="panel-label">Navegador de celdas</label>
+                        <div class="flex items-center gap-3">
+                            <button id="cell-prev" class="cell-nav-btn">&larr;</button>
+                            <span id="cell-counter" class="text-sm font-[JetBrains_Mono] flex-1 text-center text-gray-300">1 / 5</span>
+                            <button id="cell-next" class="cell-nav-btn">&rarr;</button>
+                        </div>
+                    </div>
+                    <div id="cell-detail" class="info-box"></div>
+                    <div class="space-y-2">
+                        <label class="option-check">
+                            <input type="checkbox" id="isolate-cell">
+                            <span>Aislar celda</span>
+                        </label>
+                        <label class="option-check">
+                            <input type="checkbox" id="show-cell-faces" checked>
+                            <span>Mostrar caras de celda</span>
+                        </label>
+                        <label class="option-check">
+                            <input type="checkbox" id="explode-cells">
+                            <span>Explosión de celdas</span>
+                        </label>
+                    </div>
+                    <div>
+                        <label class="panel-label">Factor de explosión: <span id="explode-val" class="text-violet-300">0.0</span></label>
+                        <input type="range" id="explode-amount" class="range-input w-full" min="0" max="2" step="0.05" value="0" disabled>
+                    </div>
+                    <div id="cells-unavailable" class="hidden text-center py-4">
+                        <div class="text-gray-500 text-sm">Exploración de celdas disponible para<br>5-cell, tesseract, 16-cell y 24-cell</div>
+                    </div>
+                </div>
+
+                <!-- ========== NET PANEL ========== -->
+                <div id="net-panel" class="mode-panel hidden space-y-4">
+                    <div id="net-content">
+                        <div>
+                            <label class="panel-label">Plegado: <span id="fold-val" class="text-cyan-300">100%</span></label>
+                            <input type="range" id="fold-slider" class="range-input cyan-range w-full" min="0" max="100" step="1" value="100">
+                        </div>
+                        <div class="flex gap-2 mt-3">
+                            <button id="net-play" class="action-btn flex-1">▶ Desplegar</button>
+                            <button id="net-reset" class="action-btn flex-1">↺ Reset</button>
+                        </div>
+                        <div class="info-box mt-3">
+                            <div class="text-violet-300 font-medium mb-1">Cruz de Dalí</div>
+                            <div class="text-gray-400 text-[11px] leading-relaxed">
+                                El tesseract se despliega en 8 cubos formando una cruz tridimensional,
+                                análoga a la cruz del «Corpus Hypercubus» de Salvador Dalí (1954).
+                                La red 3D del hipercubo es el análogo 4D de desplegar un cubo
+                                en 6 cuadrados.
+                            </div>
+                        </div>
+                    </div>
+                    <div id="net-unavailable" class="hidden text-center py-8">
+                        <div class="text-gray-500 text-sm">Red disponible solo para el tesseract</div>
+                        <button id="go-tesseract" class="action-btn mt-3">Ir al Tesseract</button>
+                    </div>
+                </div>
+
+                <!-- ========== PROPERTIES (always visible) ========== -->
+                <div class="border-t border-gray-800 pt-4 mt-2">
+                    <h3 class="panel-label mb-2">Propiedades</h3>
+                    <div id="properties-table" class="space-y-1"></div>
+                </div>
+
+                <!-- Schläfli / notation -->
+                <div>
+                    <h3 class="panel-label mb-2">Notación de Schläfli</h3>
+                    <div id="formula-box" class="info-box text-center">
+                        <div id="schlafli-display" class="text-lg font-[JetBrains_Mono] text-violet-300"></div>
+                        <div id="schlafli-desc" class="text-[11px] text-gray-500 mt-1"></div>
+                    </div>
+                </div>
+
+                <!-- Duality info -->
+                <div>
+                    <h3 class="panel-label mb-2">Dual</h3>
+                    <div id="dual-info" class="info-box text-xs text-gray-400"></div>
+                </div>
+            </div>
+        </aside>
+    </main>
+
+    <!-- ===================== SCRIPTS ===================== -->
+    <script src="js/polytopes.js"></script>
+    <script src="js/slicer.js"></script>
+    <script src="js/main.js"></script>
+</body>
+</html>

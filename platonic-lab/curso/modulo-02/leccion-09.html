@@ -1,0 +1,210 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 9: Demostración Visual de Euler | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-08.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="./leccion-10.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 2</h3>
+                    <p class="text-sm text-gray-400 mb-4">La Fórmula de Euler</p>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>3/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <a href="./leccion-07.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">7. Vértices, Aristas y Caras</a>
+                        <a href="./leccion-08.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">8. La Fórmula Mágica</a>
+                        <a href="./leccion-09.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">9. Demostración Visual</a>
+                        <a href="./leccion-10.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">10. Verificación en 5 Sólidos</a>
+                        <a href="./leccion-11.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">11. ¿Por qué Solo 5?</a>
+                        <a href="./leccion-12.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">12. Topología y la Esfera</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 9</span>
+                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">Demostración Visual de Euler</h1>
+                        <p class="text-gray-400 text-lg">Una prueba intuitiva de por qué V - E + F = 2 para cualquier poliedro convexo.</p>
+                    </div>
+
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Demostración por "Inflado"</h2>
+                        <p class="text-gray-300 mb-4">
+                            Imagina que el poliedro está hecho de goma elástica. Si lo "inflamos" hasta convertirlo en una esfera, las caras se transforman en regiones sobre la superficie esférica.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Proceso Paso a Paso</h3>
+                        
+                        <div class="space-y-4 mb-6">
+                            <div class="bg-gray-800/50 p-4 rounded-lg border-l-4 border-platonic-purple">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Paso 1: Remover una Cara</h4>
+                                <p class="text-gray-300 text-sm">Imagina quitar una cara del poliedro. Ahora tenemos una "cáscara" abierta que podemos "aplanar" sobre el plano.</p>
+                                <p class="text-sm text-gray-400 mt-1">Nuevo valor: F' = F - 1</p>
+                            </div>
+
+                            <div class="bg-gray-800/50 p-4 rounded-lg border-l-4 border-platonic-cyan">
+                                <h4 class="font-semibold text-platonic-cyan mb-2">Paso 2: Triangular</h4>
+                                <p class="text-gray-300 text-sm">Dividimos todas las caras en triángulos añadiendo diagonales. Cada diagonal añade 1 arista y 1 cara, manteniendo V - E + F constante.</p>
+                            </div>
+
+                            <div class="bg-gray-800/50 p-4 rounded-lg border-l-4 border-platonic-purple">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Paso 3: Eliminar Triángulos</h4>
+                                <p class="text-gray-300 text-sm">Quitamos triángulos de borde uno por uno. Hay dos casos:</p>
+                                <ul class="list-disc list-inside text-sm text-gray-400 mt-2 ml-4">
+                                    <li><strong>Caso A:</strong> 1 arista, 0 vértices (triángulo con 2 aristas en borde). F↓1, E↓1 → V-E+F no cambia</li>
+                                    <li><strong>Caso B:</strong> 2 aristas, 1 vértice (triángulo con 1 arista en borde). F↓1, E↓2, V↓1 → V-E+F no cambia</li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-gray-800/50 p-4 rounded-lg border-l-4 border-green-500">
+                                <h4 class="font-semibold text-green-400 mb-2">Paso 4: Triángulo Final</h4>
+                                <p class="text-gray-300 text-sm">Nos queda un solo triángulo con: V=3, E=3, F=1</p>
+                                <p class="text-center text-lg text-green-400 my-2">3 - 3 + 1 = 1</p>
+                                <p class="text-sm text-gray-400">Pero recordemos que quitamos una cara al inicio, así que: 1 + 1 = <strong>2</strong></p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Demostración Alternativa: Red de Poliedro</h3>
+                        <p class="text-gray-300 mb-4">
+                            Otra forma visual es "desplegar" el poliedro en el plano (diagrama de Schlegel):
+                        </p>
+
+                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-purple mb-3">Argumento:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>Un poliedro desplegado forma un grafo plano</li>
+                                <li>El exterior del grafo representa la cara que quitamos</li>
+                                <li>Para grafos planos conexos: V - E + F = 2</li>
+                                <li>Esto incluye la cara exterior como una "cara" más</li>
+                            </ol>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Invariantes Topológicos</h3>
+                        <p class="text-gray-300 mb-4">
+                            Lo increíble es que V - E + F = 2 es un <strong>invariante topológico</strong>: no cambia si deformamos continuamente el objeto sin romperlo.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Esfera</h4>
+                                <p class="text-center text-2xl text-green-400 font-mono">χ = 2</p>
+                                <p class="text-sm text-gray-400 mt-2">Cualquier poliedro convexo</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Toro (donut)</h4>
+                                <p class="text-center text-2xl text-yellow-400 font-mono">χ = 0</p>
+                                <p class="text-sm text-gray-400 mt-2">Tiene un "agujero"</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio Visual</h3>
+                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-cyan mb-3">Intenta con un cubo:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>Imagina quitar la cara superior (F pasa de 6 a 5)</li>
+                                <li>"Despliega" el cubo en el plano</li>
+                                <li>Cuenta: V=8, E=12, F=5 (incluyendo el exterior)</li>
+                                <li>Verifica: 8 - 12 + 5 = 1... ¡falta la cara quitada!</li>
+                                <li>Completo: 8 - 12 + 6 = 2 ✓</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
+                            <span class="mr-2">🔬</span> LAB: Visualiza la Demostración
+                        </h2>
+                        <p class="text-gray-400 mb-4">Explora diferentes sólidos y verifica visualmente la fórmula.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-08.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                            ← Anterior
+                        </a>
+                        <a href="./leccion-10.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                            Siguiente: Verificación →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">
+                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

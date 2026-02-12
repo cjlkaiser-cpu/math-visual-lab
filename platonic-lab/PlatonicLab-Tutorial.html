@@ -1,0 +1,2416 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>PlatonicLab — Guia Completa de los Solidos Platonicos</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <style>
+    
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --primary: #7c3aed;
+    --primary-dark: #4c1d95;
+    --primary-light: #a78bfa;
+    --secondary: #4a5568;
+    --success: #276749;
+    --warning: #975a16;
+    --danger: #9b2c2c;
+    --bg-light: #faf9f7;
+    --bg-code: #1a1b2e;
+    --border: #d1d5db;
+    --text: #1a202c;
+    --text-light: #4a5568;
+    --accent: #d97706;
+    --accent-light: #f59e0b;
+    --font-serif: 'Cormorant Garamond', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+    --font-sans: 'Source Sans 3', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text);
+    background: var(--bg-light);
+    font-weight: 400;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px -2px rgba(0,0,0,0.25);
+    border-bottom: 3px solid var(--accent);
+}
+
+header h1 {
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+header h1 .platonic { color: #c4b5fd; }
+header h1 .lab { color: #fbbf24; }
+
+header p {
+    font-family: var(--font-sans);
+    opacity: 0.95;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+/* Layout */
+.container {
+    display: flex;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: white;
+    border-right: 1px solid var(--border);
+    height: calc(100vh - 100px);
+    position: sticky;
+    top: 100px;
+    overflow-y: auto;
+    padding: 1rem;
+    flex-shrink: 0;
+}
+
+.sidebar h3 {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.sidebar ul { list-style: none; }
+.sidebar li { margin-bottom: 0.25rem; }
+
+.sidebar a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.sidebar a:hover { background: var(--bg-light); color: var(--primary); }
+.sidebar a.active { background: var(--primary); color: white; }
+
+.sidebar .sub-item a {
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 960px;
+    min-width: 0;
+}
+
+/* Sections */
+section {
+    background: white;
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+}
+
+/* Headings */
+h2 {
+    font-family: var(--font-serif);
+    color: var(--primary);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+    letter-spacing: 0.01em;
+}
+
+h3 {
+    font-family: var(--font-serif);
+    color: var(--text);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem;
+    letter-spacing: 0.01em;
+}
+
+h4 {
+    font-family: var(--font-sans);
+    color: var(--secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 1.5rem 0 0.75rem;
+}
+
+h5 {
+    font-family: var(--font-sans);
+    color: var(--text-light);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 1.2rem;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* Links */
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Code */
+pre {
+    background: var(--bg-code);
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    border-left: 4px solid var(--accent);
+}
+
+code {
+    background: #fef3c7;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: #92400e;
+}
+
+pre code { background: none; padding: 0; color: inherit; }
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid var(--accent);
+    margin: 1.5rem 0;
+    padding: 1.25rem 1.5rem;
+    background: #fffbeb;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+}
+
+blockquote p { margin-bottom: 0.5rem; text-align: left; }
+blockquote p:last-child { margin-bottom: 0; }
+
+/* Tables */
+table, .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+}
+
+th, td {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+tr:nth-child(even) { background: #faf8ff; }
+tr:hover { background: #f5f0ff; }
+
+/* Lists */
+ul, ol { margin: 1.25rem 0; padding-left: 1.75rem; }
+li { margin-bottom: 0.6rem; line-height: 1.7; }
+
+/* HR */
+hr, .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+}
+
+/* KaTeX */
+.katex-display {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0;
+}
+
+.katex { font-size: 1.1em; color: var(--text); }
+.katex-display > .katex { font-size: 1.15em; }
+
+/* Diagrams */
+.diagram {
+    background: #f7f6f3;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--accent);
+}
+
+/* Details/Summary */
+details {
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+summary {
+    padding: 1rem 1.25rem;
+    background: #f7f6f3;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.1rem;
+}
+
+summary:hover { background: #eeeee8; }
+summary::marker { color: var(--primary); }
+
+/* Responsive */
+@media (max-width: 1200px) { .sidebar { display: none; } }
+@media (max-width: 768px) {
+    .main-content { padding: 1rem; }
+    section { padding: 1.5rem; }
+    header { padding: 1.5rem 1rem; }
+    header h1 { font-size: 1.8rem; }
+}
+
+/* Print */
+@media print {
+    .sidebar, header { display: none; }
+    .main-content { max-width: 100%; padding: 0; }
+    section { break-inside: avoid; box-shadow: none; border: none; padding: 1rem 0; }
+    body { font-size: 10pt; }
+}
+
+/* Smooth scroll + scrollbar */
+html { scroll-behavior: smooth; }
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+/* Strong inside lists — make exercise titles stand out */
+li > strong:first-child, p > strong:first-child {
+    color: var(--primary-dark);
+}
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1><span class="platonic">Platonic</span><span class="lab">Lab</span> — Guia Completa</h1>
+        <p>Los Solidos Platonicos: Un Recorrido Matematico, Historico y Aplicado</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+<h3>Indice de Contenidos</h3>
+<ul>
+  <li><a href="#un-recorrido-matematico-historico-y-aplicado">Un Recorrido
+Matematico, Historico y Aplicado</a></li>
+  <li><a href="#resumen">Resumen</a></li>
+  <li><a href="#introduccion">1. Introduccion</a></li>
+  <li class="sub-item"><a href="#definiciones-fundamentales">1.1 Definiciones Fundamentales</a></li>
+  <li class="sub-item"><a href="#notacion-de-schlafli">1.2 Notacion de Schlafli</a></li>
+  <li class="sub-item"><a href="#objetivos-de-esta-guia">1.3 Objetivos de Esta Guia</a></li>
+  <li class="sub-item"><a href="#uso-de-esta-guia-con-platoniclab">1.4 Uso de Esta Guia con
+PlatonicLab</a></li>
+  <li><a href="#contexto-historico">2. Contexto Historico</a></li>
+  <li class="sub-item"><a href="#antigua-grecia">2.1 Antigua Grecia</a></li>
+  <li class="sub-item"><a href="#euclides">2.2 Euclides</a></li>
+  <li class="sub-item"><a href="#kepler">2.3 Kepler</a></li>
+  <li class="sub-item"><a href="#geometria-moderna">2.4 Geometria Moderna</a></li>
+  <li><a href="#fundamentos-matematicos">3. Fundamentos Matematicos</a></li>
+  <li class="sub-item"><a href="#formula-de-euler">3.1 Formula de Euler</a></li>
+  <li class="sub-item"><a href="#demostracion-de-unicidad">3.2 Demostracion de Unicidad</a></li>
+  <li><a href="#propiedades-geometricas">4. Propiedades Geometricas</a></li>
+  <li class="sub-item"><a href="#radios-y-angulos">4.1 Radios y Angulos</a></li>
+  <li class="sub-item"><a href="#volumen-y-area">4.2 Volumen y Area</a></li>
+  <li><a href="#exploracion-interactiva">5. Exploracion Interactiva</a></li>
+  <li class="sub-item"><a href="#controles-basicos-de-platoniclab">5.1 Controles Basicos de
+PlatonicLab</a></li>
+  <li class="sub-item"><a href="#capas-de-visualizacion">5.2 Capas de Visualizacion</a></li>
+  <li class="sub-item"><a href="#ejercicio-3-exploracion-visual-completa">5.3 EJERCICIO 3:
+Exploracion Visual C...</a></li>
+  <li class="sub-item"><a href="#construccion-paso-a-paso">5.4 Construccion Paso a Paso</a></li>
+  <li class="sub-item"><a href="#ejercicio-4-construccion-del-tetraedro">5.5 EJERCICIO 4:
+Construccion del Tet...</a></li>
+  <li><a href="#dualidad">6. Dualidad</a></li>
+  <li class="sub-item"><a href="#concepto-de-dualidad">6.1 Concepto de Dualidad</a></li>
+  <li class="sub-item"><a href="#parejas-duales">6.2 Parejas Duales</a></li>
+  <li class="sub-item"><a href="#propiedades-de-la-dualidad">6.3 Propiedades de la Dualidad</a></li>
+  <li class="sub-item"><a href="#ejercicio-6-exploracion-de-duales-en-platoniclab">6.4 EJERCICIO
+6: Exploracion de Duale...</a></li>
+  <li class="sub-item"><a href="#visualizacion-del-morphing-dual">6.5 Visualizacion del Morphing
+Dual</a></li>
+  <li><a href="#grupos-de-simetria">7. Grupos de Simetria</a></li>
+  <li class="sub-item"><a href="#tipos-de-simetria">7.1 Tipos de Simetria</a></li>
+  <li class="sub-item"><a href="#grupos-de-simetria-rotacional">7.2 Grupos de Simetria
+Rotacional</a></li>
+  <li class="sub-item"><a href="#grupos-completos-con-reflexiones">7.3 Grupos Completos (con
+Reflexiones)</a></li>
+  <li class="sub-item"><a href="#ejercicio-8-exploracion-de-simetrias">7.4 EJERCICIO 8:
+Exploracion de Simet...</a></li>
+  <li class="sub-item"><a href="#el-grupo-del-icosaedro-y-a5">7.5 El Grupo del Icosaedro y
+A5</a></li>
+  <li><a href="#operaciones-de-conway">8. Operaciones de Conway</a></li>
+  <li class="sub-item"><a href="#definicion">8.1 Definicion</a></li>
+  <li class="sub-item"><a href="#tabla-de-operaciones-de-conway">8.2 Tabla de Operaciones de
+Conway</a></li>
+  <li class="sub-item"><a href="#ejemplos-de-aplicacion">8.3 Ejemplos de Aplicacion</a></li>
+  <li class="sub-item"><a href="#ejercicio-9-operaciones-de-conway-en-platoniclab">8.4 EJERCICIO
+9: Operaciones de Conwa...</a></li>
+  <li class="sub-item"><a href="#notacion-de-conway">8.5 Notacion de Conway</a></li>
+  <li><a href="#teoria-de-grafos-aplicada-a-los-solidos-platonicos">9. Teoria de
+Grafos Aplicada a los Solidos Platonicos</a></li>
+  <li class="sub-item"><a href="#representacion-como-grafos">9.1 Representacion como Grafos</a></li>
+  <li class="sub-item"><a href="#propiedades-de-los-grafos-platonicos">9.2 Propiedades de los
+Grafos Platonicos</a></li>
+  <li class="sub-item"><a href="#ejercicio-11-vista-de-grafo-en-platoniclab">9.3 EJERCICIO 11:
+Vista de Grafo en P...</a></li>
+  <li class="sub-item"><a href="#aplicaciones-de-los-grafos-platonicos">9.4 Aplicaciones de los
+Grafos Platon...</a></li>
+  <li><a href="#visualizacion-4d-politopos-regulares">10. Visualizacion 4D:
+Politopos Regulares</a></li>
+  <li class="sub-item"><a href="#extension-a-4-dimensiones">10.1 Extension a 4 Dimensiones</a></li>
+  <li class="sub-item"><a href="#los-seis-politopos-regulares-4d">10.2 Los Seis Politopos
+Regulares 4D</a></li>
+  <li class="sub-item"><a href="#proyecciones-3d">10.3 Proyecciones 3D</a></li>
+  <li class="sub-item"><a href="#ejercicio-12-visualizacion-de-politopos-4d-en-platoniclab">10.4
+EJERCICIO 12: Visualizacion de P...</a></li>
+  <li class="sub-item"><a href="#relacion-con-los-solidos-platonicos">10.5 Relacion con los
+Solidos Platonicos</a></li>
+  <li><a href="#calculadora-de-propiedades">11. Calculadora de Propiedades</a></li>
+  <li class="sub-item"><a href="#uso-de-la-calculadora-en-platoniclab">11.1 Uso de la Calculadora
+en Platoni...</a></li>
+  <li class="sub-item"><a href="#parametros-de-entrada">11.2 Parametros de Entrada</a></li>
+  <li class="sub-item"><a href="#propiedades-calculables">11.3 Propiedades Calculables</a></li>
+  <li class="sub-item"><a href="#ejemplo-calculadora-del-cubo">11.4 EJEMPLO: Calculadora del
+Cubo</a></li>
+  <li class="sub-item"><a href="#ejercicio-14-uso-de-la-calculadora">11.5 EJERCICIO 14: Uso de la
+Calculadora</a></li>
+  <li><a href="#aplicaciones-modernas">12. Aplicaciones Modernas</a></li>
+  <li class="sub-item"><a href="#cristalografia-1">12.1 Cristalografia</a></li>
+  <li class="sub-item"><a href="#quimica-molecular-1">12.2 Quimica Molecular</a></li>
+  <li class="sub-item"><a href="#virologia-estructural-1">12.3 Virologia Estructural</a></li>
+  <li class="sub-item"><a href="#arquitectura-y-diseno">12.4 Arquitectura y Diseno</a></li>
+  <li class="sub-item"><a href="#matematicas-discretas">12.5 Matematicas Discretas</a></li>
+  <li><a href="#comparacion-entre-solidos">13. Comparacion Entre Solidos</a></li>
+  <li class="sub-item"><a href="#tabla-comparativa-general">13.1 Tabla Comparativa General</a></li>
+  <li class="sub-item"><a href="#ejercicio-15-analisis-comparativo">13.2 EJERCICIO 15: Analisis
+Comparativo</a></li>
+  <li class="sub-item"><a href="#ejercicio-16-graficos-comparativos">13.3 EJERCICIO 16: Graficos
+Comparativos</a></li>
+  <li><a href="#conclusion">14. Conclusion</a></li>
+  <li><a href="#referencias">Referencias</a></li>
+</ul>
+</nav>
+
+        <main class="main-content">
+            <h1 id="guia-completa-de-los-solidos-platonicos">Guia Completa de los
+Solidos Platonicos</h1>
+
+<section id="sec-un-recorrido-matematico-historico-y-aplicado">
+<h2 id="un-recorrido-matematico-historico-y-aplicado">Un Recorrido
+Matematico, Historico y Aplicado</h2>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-resumen">
+<h2 id="resumen">Resumen</h2>
+<p>Los solidos platonicos constituyen uno de los conjuntos mas elegantes
+en la historia de las matematicas. Estos cinco poliedros convexos
+—tetraedro, cubo, octaedro, dodecaedro e icosaedro— han fascinado a
+filosofos, matematicos y cientificos durante milenios.</p>
+<p>Esta guia presenta un analisis exhaustivo desde tres perspectivas:
+contexto historico, tratamiento matematico riguroso, y aplicaciones
+contemporaneas en cristalografia, virologia y otras ciencias.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-introduccion">
+<h2 id="introduccion">1. Introduccion</h2>
+<h3 id="definiciones-fundamentales">1.1 Definiciones Fundamentales</h3>
+<p>Un <strong>poliedro regular</strong> o <strong>solido
+platonico</strong> satisface tres condiciones: 1. Todas sus caras son
+poligonos regulares congruentes entre si 2. Todas las caras tienen el
+mismo numero de lados 3. El mismo numero de caras se encuentra en cada
+vertice</p>
+<p>Esta definicion conduce a una conclusion profunda: existen
+exactamente cinco poliedros regulares en el espacio tridimensional.</p>
+<h3 id="notacion-de-schlafli">1.2 Notacion de Schlafli</h3>
+<p>El matematico suizo Ludwig Schlaefli desarrollo una notacion mediante
+par ordenado {p, q}, donde p representa el numero de lados de cada cara
+y q indica el numero de caras que concurren en cada vertice:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 21%" />
+<col style="width: 15%" />
+<col style="width: 10%" />
+<col style="width: 15%" />
+<col style="width: 13%" />
+<col style="width: 24%" />
+</colgroup>
+<thead>
+<tr>
+<th>Solido</th>
+<th>Notacion</th>
+<th>Caras</th>
+<th>Vertices</th>
+<th>Aristas</th>
+<th>Simbolo {p, q}</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>{3, 3}</td>
+<td>4</td>
+<td>4</td>
+<td>6</td>
+<td>{3, 3}</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>{4, 3}</td>
+<td>6</td>
+<td>8</td>
+<td>12</td>
+<td>{4, 3}</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>{3, 4}</td>
+<td>8</td>
+<td>6</td>
+<td>12</td>
+<td>{3, 4}</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>{5, 3}</td>
+<td>12</td>
+<td>20</td>
+<td>30</td>
+<td>{5, 3}</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>{3, 5}</td>
+<td>20</td>
+<td>12</td>
+<td>30</td>
+<td>{3, 5}</td>
+</tr>
+</tbody>
+</table>
+<h3 id="objetivos-de-esta-guia">1.3 Objetivos de Esta Guia</h3>
+<p>Esta guia esta diseñada para acompanar la exploracion interactiva con
+PlatonicLab. Cada seccion incluye: - Explicaciones teoricas con formulas
+matematicas - Ejercicios praticos para realizar con la simulacion -
+Ejemplos numericos concretos - Referencias a las visualizaciones
+correspondientes</p>
+<h3 id="uso-de-esta-guia-con-platoniclab">1.4 Uso de Esta Guia con
+PlatonicLab</h3>
+<p>Esta guia esta estructurada para ser utilizada junto con la
+aplicacion interactiva PlatonicLab. Las siguientes convenciones se usan
+para indicar acciones en la aplicacion:</p>
+<p><strong>REFERENCIAS A LA INTERFAZ:</strong> - [Menu Solido] → Panel
+de seleccion de solido (teclas 1-5) - [Slider Arista] → Control para
+ajustar longitud de arista (a) - [Boton Play] → Iniciar/detener rotacion
+automatica - [Capa Caras] → Activar/desactivar visualizacion de caras -
+[Capa Aristas] → Activar/desactivar visualizacion de aristas - [Capa
+Vertices] → Activar/desactivar visualizacion de vertices - [Capa Esfera
+Circ.] → Activar esfera circunscrita (azul) - [Capa Esfera Ins.] →
+Activar esfera inscrita (roja) - [Pestana Construir] → Modo de
+construccion paso a paso - [Pestana Comparar] → Comparacion entre
+solidos - [Pestana Conway] → Operaciones de Conway - [Pestana 4D] →
+Visualizacion de politopos 4D - [Pestana Grafo] → Vista de teoria de
+grafos - [Pestana Calc] → Calculadora de propiedades</p>
+<p><strong>NOTAS SOBRE LAS IMAGENES:</strong> Las imagenes de referencia
+(Figura X) se generaran a partir de las visualizaciones de PlatonicLab.
+Para crear cada imagen: 1. Configure el solido y angulo deseados 2.
+Active las capas apropiadas 3. Pause la rotacion si es necesario 4.
+Capture la pantalla</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-contexto-historico">
+<h2 id="contexto-historico">2. Contexto Historico</h2>
+<h3 id="antigua-grecia">2.1 Antigua Grecia</h3>
+<p><strong>Teeteto</strong> (417-369 a.C.) establecio las construcciones
+geometricas completas de los cinco poliedros.</p>
+<p><strong>Platon</strong> (427-347 a.C.), en su dialogo <em>Timeo</em>,
+asocio cada solido con un elemento: - <strong>Tetraedro</strong> → Fuego
+- <strong>Octaedro</strong> → Aire - <strong>Icosaedro</strong> → Agua -
+<strong>Cubo</strong> → Tierra - <strong>Dodecaedro</strong> → Eter
+(quinta esencia)</p>
+<h3 id="euclides">2.2 Euclides</h3>
+<p>Los <em>Elementos</em> (300 a.C.) presentan el primer tratamiento
+axiomatico, culminando con los cinco solidos platonicos en el Libro
+XIII.</p>
+<h3 id="kepler">2.3 Kepler</h3>
+<p>En <em>Mysterium Cosmographicum</em> (1596), Kepler proposo un modelo
+cosmologico con solidos platonicos anidados entre orbitas
+planetarias.</p>
+<h3 id="geometria-moderna">2.4 Geometria Moderna</h3>
+<p><strong>Schlaefli</strong> desarrollo su notacion.
+<strong>Poincare</strong> generalizo la formula de Euler.
+<strong>Coxeter</strong> proporciono el tratamiento completo en
+<em>Regular Polytopes</em>.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-fundamentos-matematicos">
+<h2 id="fundamentos-matematicos">3. Fundamentos Matematicos</h2>
+<h3 id="formula-de-euler">3.1 Formula de Euler</h3>
+<p>Para cualquier poliedro convexo: <strong>V - E + C = 2</strong></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Solido</th>
+<th>V</th>
+<th>E</th>
+<th>C</th>
+<th>V-E+C</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>4</td>
+<td>6</td>
+<td>4</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>8</td>
+<td>12</td>
+<td>6</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>6</td>
+<td>12</td>
+<td>8</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>20</td>
+<td>30</td>
+<td>12</td>
+<td>2</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>12</td>
+<td>30</td>
+<td>20</td>
+<td>2</td>
+</tr>
+</tbody>
+</table>
+<h3 id="demostracion-de-unicidad">3.2 Demostracion de Unicidad</h3>
+<p>Para un p-gono regular, el angulo interior es: <strong>αp = ((p-2) ×
+180) / p</strong></p>
+<p>Con q caras por vertice, la convexidad requiere: <strong>q × αp &lt;
+360</strong></p>
+<p>Esto conduce a: <strong>(p-2)(q-2) &lt; 4</strong></p>
+<p>Las unicas soluciones son los cinco solidos platonicos.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-propiedades-geometricas">
+<h2 id="propiedades-geometricas">4. Propiedades Geometricas</h2>
+<h3 id="radios-y-angulos">4.1 Radios y Angulos</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 33%" />
+<col style="width: 28%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th>Solido</th>
+<th>Radio Circunscrito R</th>
+<th>Radio Inscrito r</th>
+<th>Angulo Diedro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>a√6 / 4</td>
+<td>a√6 / 12</td>
+<td>70.5°</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>a√3 / 2</td>
+<td>a/2</td>
+<td>90°</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>a√2 / 2</td>
+<td>a√6 / 6</td>
+<td>109.5°</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>a√3(1+√5)/4</td>
+<td>a√(25+11√5)/4√2</td>
+<td>116.6°</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>a√(10+2√5)/4</td>
+<td>a(3+√5)/2√3</td>
+<td>138.2°</td>
+</tr>
+</tbody>
+</table>
+<h3 id="volumen-y-area">4.2 Volumen y Area</h3>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Solido</th>
+<th>Volumen V</th>
+<th>Area Superficial A</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>a³√2 / 12</td>
+<td>a²√3</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>a³</td>
+<td>6a²</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>a³√2 / 3</td>
+<td>2a²√3</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>a³(15+7√5)/4</td>
+<td>3a²√(25+10√5)</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>a³(5(3+√5))/12</td>
+<td>5a²√3</td>
+</tr>
+</tbody>
+</table>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-exploracion-interactiva">
+<h2 id="exploracion-interactiva">5. Exploracion Interactiva</h2>
+<h3 id="controles-basicos-de-platoniclab">5.1 Controles Basicos de
+PlatonicLab</h3>
+<p>PlatonicLab proporciona las siguientes herramientas de
+exploracion:</p>
+<p><strong>SELECCION DE SOLIDO:</strong> - Menu desplegable para
+seleccionar entre los 5 solidos platonicos - Atajos de teclado: teclas
+1-5 para acceso rapido - Tecla 1: Tetraedro - Tecla 2: Cubo - Tecla 3:
+Octaedro - Tecla 4: Dodecaedro - Tecla 5: Icosaedro</p>
+<p><strong>CONTROL DE ARISTA:</strong> - Slider para ajustar la longitud
+de arista (a) - Rango tipico: 0.5 a 3.0 unidades - Valor predeterminado:
+a = 1.0</p>
+<p><strong>VISUALIZACION:</strong> - Rotacion automatica: animacion
+continua del solido - [Boton Play/Pause]: detener la rotacion para
+examinar detalles - Zoom: acercamiento para ver vertices y aristas -
+Arrastrar con mouse: rotacion manual</p>
+<h3 id="capas-de-visualizacion">5.2 Capas de Visualizacion</h3>
+<p>PlatonicLab permite activar/desactivar diferentes capas de
+visualizacion:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 19%" />
+<col style="width: 57%" />
+<col style="width: 23%" />
+</colgroup>
+<thead>
+<tr>
+<th>Capa</th>
+<th>Descripcion</th>
+<th>Color tipico</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Caras</td>
+<td>Superficies planas del solido</td>
+<td>Variable</td>
+</tr>
+<tr>
+<td>Aristas</td>
+<td>Lineas que conectan vertices</td>
+<td>Blanco/negro</td>
+</tr>
+<tr>
+<td>Vertices</td>
+<td>Puntos de interseccion</td>
+<td>Negro</td>
+</tr>
+<tr>
+<td>Esfera Circ.</td>
+<td>Esfera que pasa por todos vertices</td>
+<td>Azul transparente</td>
+</tr>
+<tr>
+<td>Esfera Ins.</td>
+<td>Esfera tangente a todas las caras</td>
+<td>Rojo transparente</td>
+</tr>
+<tr>
+<td>Centro Masa</td>
+<td>Punto central del solido</td>
+<td>Verde</td>
+</tr>
+<tr>
+<td>Ejes Sim.</td>
+<td>Ejes de simetria principales</td>
+<td>Amarillo</td>
+</tr>
+</tbody>
+</table>
+<p><strong>NOTA:</strong> La esfera circunscrita (R) pasa por todos los
+vertices del solido. La esfera inscrita (r) es tangente a todas las
+caras.</p>
+<h3 id="ejercicio-3-exploracion-visual-completa">5.3 EJERCICIO 3:
+Exploracion Visual Completa</h3>
+<p><strong>Objetivo:</strong> Familiarizarse con las herramientas de
+visualizacion de PlatonicLab.</p>
+<p><strong>Material necesario:</strong> Acceso a PlatonicLab</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><strong>Seleccionar el icosaedro</strong> ([Menu Solido] o tecla 5)
+<ul>
+<li>Observar las 20 caras triangulares</li>
+<li>Contar los 12 vertices</li>
+<li>Notar las 30 aristas</li>
+</ul></li>
+<li><strong>Activar la esfera circunscrita</strong> ([Capa Esfera
+Circ.])
+<ul>
+<li>Verificar que la esfera azul pasa exactamente por los 12
+vertices</li>
+<li>Medir visualmente el radio (comparar con formulas de Seccion
+4.1)</li>
+</ul></li>
+<li><strong>Activar la esfera inscrita</strong> ([Capa Esfera Ins.])
+<ul>
+<li>Observar que la esfera roja toca el centro de cada cara</li>
+<li>Comparar los tamanos de ambas esferas</li>
+</ul></li>
+<li><strong>Pausar la rotacion</strong> ([Boton Pause])
+<ul>
+<li>Examinar un vertice cercano</li>
+<li>Contar: ¿Cuantas caras concurren en cada vertice? (deberia ser 5
+para el icosaedro)</li>
+</ul></li>
+<li><strong>Cambiar al dodecaedro</strong> ([Menu Solido] o tecla 4)
+<ul>
+<li>Repetir las observaciones anteriores</li>
+<li>Comparar: ¿Cual esfera es mas grande relativamente en cada
+caso?</li>
+</ul></li>
+</ol>
+<p><strong>Pregunta de reflexion:</strong> - ¿Por que la razon entre R
+(radio circunscrito) y r (radio inscrito) es mayor en el icosaedro que
+en el cubo?</p>
+<p><strong>Respuesta esperada:</strong> La razon R/r indica que tan
+“picudo” o “aplanado” es el solido. El icosaedro tiene un angulo diedro
+mayor (138.2°) lo que significa que sus carasestan mas “abiertas” desde
+el centro, resultando en una mayor diferencia entre ambas esferas.</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 5.1: Icosaedro con esferas
+circunscrita e inscrita superpuestas.</p>
+<h3 id="construccion-paso-a-paso">5.4 Construccion Paso a Paso</h3>
+<p>Cada solido puede visualizarse en etapas de construccion progresiva.
+Esta caracteristica permite entender como se forma la estructura
+geometrica.</p>
+<p><strong>ETAPA 0: Vertices</strong> - Solo se muestran los puntos
+donde iran las aristas - Para el tetraedro: 4 vertices - Para el cubo: 8
+vertices - Para el dodecaedro: 20 vertices</p>
+<p><strong>ETAPA 1: Aristas</strong> - Se agregan las lineas que
+conectan los vertices - Las aristas tienen longitud uniforme (a) - Cada
+arista conecta exactamente 2 vertices</p>
+<p><strong>ETAPA 2: Caras</strong> - Se completan las superficies planas
+- Cada cara es un poligono regular - Las caras comparten aristas con
+caras vecinas</p>
+<p><strong>ETAPA 3: Solido Completo</strong> - Se muestran todas las
+capas simultaneamente - El solido esta completamente formado - Listo
+para exploracion de propiedades</p>
+<h3 id="ejercicio-4-construccion-del-tetraedro">5.5 EJERCICIO 4:
+Construccion del Tetraedro</h3>
+<p><strong>Objetivo:</strong> Entender la estructura del tetraedro
+mediante construccion progresiva.</p>
+<p><strong>Instrucciones en PlatonicLab:</strong></p>
+<ol type="1">
+<li><p>Ir a [Pestana Construir]</p></li>
+<li><p>Seleccionar “Tetraedro” ([Menu Solido])</p></li>
+<li><p>Avanzar por las etapas de construccion:</p>
+<p><strong>Paso 1 (Vertices):</strong></p>
+<ul>
+<li>Observar los 4 puntos en el espacio</li>
+<li>¿Que distribucion espacial tienen?</li>
+<li>Los 4 vertices forman un tetraedro regular</li>
+</ul>
+<p><strong>Paso 2 (Aristas):</strong></p>
+<ul>
+<li>Verificar que hay 6 aristas</li>
+<li>Cada vertice se conecta con otros 3</li>
+<li>Nota: 4 vertices × 3 conexiones / 2 = 6 aristas</li>
+</ul>
+<p><strong>Paso 3 (Caras):</strong></p>
+<ul>
+<li>Observar las 4 caras triangulares equilateras</li>
+<li>Cada cara comparte aristas con otras 3 caras</li>
+</ul></li>
+</ol>
+<p><strong>PREGUNTA DE COMPRENSION:</strong> - ¿Por que el tetraedro es
+el unico solido platonico donde cada vertice se conecta directamente con
+todos los demas vertices?</p>
+<p><strong>RESPUESTA:</strong> Con solo 4 vertices, cada par posible de
+vertices define una unica arista. Esto significa que el grafo del
+tetraedro es el grafo completo K4, donde cada uno de los 4 vertices esta
+conectado con los otros 3. En los otros solidos platonicos, existen
+vertices que no están directamente conectados (estan separados por una
+arista intermedia).</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 5.2: Construccion progresiva
+del tetraedro (etapas 0-3)</p>
+<h3 id="ejercicio-5-construccion-del-cubo">5.6 EJERCICIO 5: Construccion
+del Cubo</h3>
+<p><strong>Objetivo:</strong> Observar las diferencias en la estructura
+de conexiones.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li>Seleccionar “Cubo” ([Menu Solido])</li>
+<li>Observar la construccion paso a paso</li>
+<li>Contar: ¿Cuantos vertices tiene el cubo? (8)</li>
+<li>Contar: ¿Cuantas aristas conecta cada vertice? (3)</li>
+<li>Comparar con el tetraedro</li>
+</ol>
+<p><strong>PREGUNTA:</strong> - Si cada vertice del cubo tiene 3
+aristas, ¿cual es el numero total de aristas?</p>
+<p><strong>CALCULO:</strong> 8 vertices × 3 aristas/vertice = 24 Pero
+cada arista se cuenta 2 veces (una para cada extremo) Numero de aristas
+= 24 / 2 = 12</p>
+<p><strong>VERIFICAR:</strong> 8 - 12 + 6 = 2 ✓ (Formula de Euler)</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 5.3: Construccion progresiva
+del cubo</p>
+<h3 id="angulo-diedro-y-su-medicion">5.7 Angulo Diedro y su
+Medicion</h3>
+<p>El <strong>angulo diedro</strong> es el angulo entre dos caras
+adyacentes. Es una propiedad fundamental que distingue a cada solido
+platonico.</p>
+<p><strong>Formulas de angulos diedros:</strong></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Solido</th>
+<th>Angulo Diedro (θ)</th>
+<th>Formula exacta</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>70.53°</td>
+<td>arccos(1/3)</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>90.00°</td>
+<td>90°</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>109.47°</td>
+<td>arccos(-1/3)</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>116.57°</td>
+<td>arctan(2)</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>138.19°</td>
+<td>arccos(-√5/3)</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Para medir el angulo diedro en PlatonicLab:</strong></p>
+<ol type="1">
+<li>Pausar la rotacion ([Boton Pause])</li>
+<li>Zoom en un vertice donde se encuentren 2-3 caras</li>
+<li>Visualizar las normales de las caras (si esta disponible)</li>
+<li>Usar la herramienta de medicion si existe</li>
+</ol>
+<p><strong>REFERENCIA:</strong>参见 Figura 5.4: Comparacion de angulos
+diedros (todos los solidos superpuestos)</p>
+<p>El dual se obtiene tomando centros de caras como nuevos vertices:</p>
+<ul>
+<li><strong>Tetraedro</strong> ↔︎ <strong>Tetraedro</strong>
+(autodual)</li>
+<li><strong>Cubo</strong> ↔︎ <strong>Octaedro</strong></li>
+<li><strong>Dodecaedro</strong> ↔︎ <strong>Icosaedro</strong></li>
+</ul>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-dualidad">
+<h2 id="dualidad">6. Dualidad</h2>
+<h3 id="concepto-de-dualidad">6.1 Concepto de Dualidad</h3>
+<p>El <strong>dual</strong> de un poliedro es otro poliedro relacionado
+de manera especial. Se obtiene mediante un proceso geometrico
+elegante:</p>
+<ol type="1">
+<li><strong>Tomar el centro de cada cara</strong> del poliedro
+original</li>
+<li><strong>Usar estos centros</strong> como los vertices del poliedro
+dual</li>
+<li><strong>Conectar vertices duales</strong> que correspondan a caras
+adyacentes en el original</li>
+</ol>
+<p>Matematicamente, el dual del solido {p, q} es el solido {q, p}.</p>
+<h3 id="parejas-duales">6.2 Parejas Duales</h3>
+<ul>
+<li><strong>Tetraedro</strong> ↔︎ <strong>Tetraedro</strong> (autodual,
+unico caso especial)</li>
+<li><strong>Cubo</strong> ↔︎ <strong>Octaedro</strong> (intercambian 6 y
+8, 8 y 6)</li>
+<li><strong>Dodecaedro</strong> ↔︎ <strong>Icosaedro</strong>
+(intercambian 12 y 20)</li>
+</ul>
+<h3 id="propiedades-de-la-dualidad">6.3 Propiedades de la Dualidad</h3>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Propiedad</th>
+<th>Solido Original</th>
+<th>Solido Dual</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Numero de caras</td>
+<td>C</td>
+<td>V (vertices)</td>
+</tr>
+<tr>
+<td>Numero de vertices</td>
+<td>V</td>
+<td>C (caras)</td>
+</tr>
+<tr>
+<td>Numero de aristas</td>
+<td>E</td>
+<td>E (invariante)</td>
+</tr>
+<tr>
+<td>Simbolo de Schlafli</td>
+<td>{p, q}</td>
+<td>{q, p}</td>
+</tr>
+<tr>
+<td>Radio circunscrito</td>
+<td>R</td>
+<td>r (del original)</td>
+</tr>
+<tr>
+<td>Radio inscrito</td>
+<td>r</td>
+<td>R (del original)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejercicio-6-exploracion-de-duales-en-platoniclab">6.4 EJERCICIO
+6: Exploracion de Duales en PlatonicLab</h3>
+<p><strong>Objetivo:</strong> Comprender la relacion geometrica entre
+solidos duales mediante visualizacion interactiva.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><strong>Seleccionar el Cubo</strong> ([Menu Solido] o tecla 2)</li>
+<li><strong>Activar “Mostrar Dual”</strong> (buscar en opciones de
+visualizacion)</li>
+<li><strong>Observar:</strong>
+<ul>
+<li>Los 6 vertices del octaedro dual aparecen en los centros de las 6
+caras del cubo</li>
+<li>Los 8 vertices del cubo corresponden a los centros de las 8 caras
+triangulares del octaedro</li>
+<li>Las aristas de ambos solidos son perpendiculares entre si</li>
+</ul></li>
+<li><strong>Cambiar al Dodecaedro</strong> ([Menu Solido] o tecla
+4)</li>
+<li><strong>Activar el dual</strong></li>
+<li><strong>Contar:</strong>
+<ul>
+<li>¿Cuantas caras tiene el dodecaedro? (12 pentagonos)</li>
+<li>¿Cuantos vertices deberia tener su dual? (12)</li>
+<li>Verificar: el icosaedro dual tiene 12 vertices</li>
+</ul></li>
+</ol>
+<p><strong>PREGUNTA DE COMPRENSION:</strong> - ¿Por que el tetraedro es
+su propio dual?</p>
+<p><strong>RESPUESTA:</strong> El tetraedro tiene 4 vertices y 4 caras.
+Cuando tomamos los centros de las 4 caras triangulares, estos 4 puntos
+forman otro tetraedro (el dual). Ademas, el dual del dual es el
+original, por lo que es unico entre los solidos platonicos en ser
+“autodual”.</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 6.1: Cubo y su dual octaedro
+superpuestos</p>
+<h3 id="visualizacion-del-morphing-dual">6.5 Visualizacion del Morphing
+Dual</h3>
+<p>PlatonicLab puede mostrar la transformacion continua entre un solido
+y su dual:</p>
+<ol type="1">
+<li>Seleccionar un solido (ej: Cubo)</li>
+<li>Activar “Morphing Dual” o “Animacion de Dualidad”</li>
+<li>Observar como los vertices se mueven hacia los centros de las
+caras</li>
+<li>El solido se transforma gradualmente en su dual</li>
+</ol>
+<p><strong>REFERENCIA:</strong>参见 Figura 6.2: Secuencia de morphing
+cubo → octaedro</p>
+<h3 id="ejercicio-7-dualidad-y-simetria">6.6 EJERCICIO 7: Dualidad y
+Simetria</h3>
+<p><strong>Objetivo:</strong> Relacionar la dualidad con los grupos de
+simetria.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li>Comparar los grupos de simetria de solidos duales</li>
+<li>Cubo (grupo Oh, orden 48) y Octaedro (grupo Oh, orden 48)</li>
+<li>Dodecaedro (grupo Ih, orden 120) e Icosaedro (grupo Ih, orden
+120)</li>
+</ol>
+<p><strong>PREGUNTA:</strong> - ¿Por que solidos duales tienen el mismo
+grupo de simetria?</p>
+<p><strong>RESPUESTA:</strong> La operacion de dualidad es una
+transformacion que preserva la estructura de incidences entre vertices,
+aristas y caras. Las simetrias del poliedro original se traducen en
+simetrias del dual de manera natural, por lo que ambos poliedros
+comparten exactamente las mismas simetrias.</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Solido</th>
+<th>Grupo Rotacional</th>
+<th>Orden</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>T</td>
+<td>12</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>O</td>
+<td>24</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>O</td>
+<td>24</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>I</td>
+<td>60</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>I</td>
+<td>60</td>
+</tr>
+</tbody>
+</table>
+<p>El grupo del icosaedro es isomorfo a A5.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-grupos-de-simetria">
+<h2 id="grupos-de-simetria">7. Grupos de Simetria</h2>
+<h3 id="tipos-de-simetria">7.1 Tipos de Simetria</h3>
+<p>Los solidos platonicos poseen simetrias que forman grupos algebraicos
+elegantes:</p>
+<p><strong>Simetrias Rotacionales:</strong> Solo rotaciones que mapean
+el solido a si mismo (orientacion preservada).</p>
+<p><strong>Simetrias Completas:</strong> Rotaciones mas reflexiones
+(incluye inversiones).</p>
+<h3 id="grupos-de-simetria-rotacional">7.2 Grupos de Simetria
+Rotacional</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 14%" />
+<col style="width: 8%" />
+<col style="width: 8%" />
+<col style="width: 68%" />
+</colgroup>
+<thead>
+<tr>
+<th>Solido</th>
+<th>Grupo</th>
+<th>Orden</th>
+<th>Elementos de Simetria</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>T</td>
+<td>12</td>
+<td>8 rotaciones de 120° (por vertices)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>3 rotaciones de 180° (por aristas)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>1 identidad</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>O</td>
+<td>24</td>
+<td>6 rotaciones de 90° (por caras)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>3 rotaciones de 180° (por caras, eje perpendicular)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>8 rotaciones de 120° (por vertices)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>6 rotaciones de 180° (por aristas)</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>O</td>
+<td>24</td>
+<td>(Mismo grupo que el cubo)</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>I</td>
+<td>60</td>
+<td>12 rotaciones de 72° (por caras pentagonales)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>12 rotaciones de 144° (por caras)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>20 rotaciones de 120° (por vertices)</td>
+</tr>
+<tr>
+<td></td>
+<td></td>
+<td></td>
+<td>15 rotaciones de 180° (por aristas)</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>I</td>
+<td>60</td>
+<td>(Mismo grupo que el dodecaedro)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="grupos-completos-con-reflexiones">7.3 Grupos Completos (con
+Reflexiones)</h3>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Solido</th>
+<th>Grupo</th>
+<th>Orden</th>
+<th>Descripcion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>Td</td>
+<td>24</td>
+<td>T + 6 planos de reflexion + inversion</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>Oh</td>
+<td>48</td>
+<td>O + centro de inversion</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>Oh</td>
+<td>48</td>
+<td>(Mismo que el cubo)</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>Ih</td>
+<td>120</td>
+<td>I + centro de inversion</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>Ih</td>
+<td>120</td>
+<td>(Mismo que el dodecaedro)</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejercicio-8-exploracion-de-simetrias">7.4 EJERCICIO 8:
+Exploracion de Simetrias</h3>
+<p><strong>Objetivo:</strong> Observar las simetrias de rotacion de cada
+solido en PlatonicLab.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><p><strong>Seleccionar el cubo</strong> ([Menu Solido] o tecla
+2)</p></li>
+<li><p><strong>Activar “Ejes de Simetria”</strong> ([Capa Ejes
+Sim.])</p></li>
+<li><p><strong>Identificar los diferentes tipos de ejes:</strong></p>
+<ul>
+<li><strong>3 ejes de 90°:</strong> Pasan por los centros de pares de
+caras opuestas</li>
+<li><strong>4 ejes de 120°:</strong> Pasan por pares de vertices
+opuestos</li>
+<li><strong>6 ejes de 180°:</strong> Pasan por los puntos medios de
+aristas opuestas</li>
+</ul></li>
+<li><p><strong>Contar:</strong> Total de ejes de simetria del cubo = 3 +
+4 + 6 = 13</p></li>
+<li><p><strong>Verificar el orden del grupo:</strong></p>
+<ul>
+<li>3 ejes × 3 rotaciones no-identidad = 9</li>
+<li>4 ejes × 2 rotaciones no-identidad = 8</li>
+<li>6 ejes × 1 rotacion no-identidad = 6</li>
+<li>Total: 9 + 8 + 6 + 1 (identidad) = 24 ✓</li>
+</ul></li>
+<li><p><strong>Cambiar al icosaedro</strong> y repetir el
+analisis</p></li>
+</ol>
+<p><strong>PREGUNTA:</strong> - ¿Cual es el numero total de ejes de
+simetria del icosaedro?</p>
+<p><strong>RESPUESTA:</strong> - 6 ejes de 72° (por vertices, cada eje
+pasa por 2 vertices opuestos) - 10 ejes de 120° (por caras, cada eje
+pasa por 2 caras opuestas) - 15 ejes de 180° (por aristas, cada eje pasa
+por puntos medios de aristas opuestas) - Total: 6 + 10 + 15 = 31
+ejes</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 7.1: Ejes de simetria del
+cubo</p>
+<h3 id="el-grupo-del-icosaedro-y-a5">7.5 El Grupo del Icosaedro y
+A5</h3>
+<p>El grupo de rotaciones del icosaedro (grupo I, orden 60) es isomorfo
+al grupo alternante A5, el grupo de permutaciones pares de 5
+elementos.</p>
+<p>Esta conexion tiene implicaciones profundas: - Relacion con las
+rotaciones que preserven un icosaedro - Aplicaciones en teoria de grupos
+y fisica de particulas - Relacion con las raices del polinomio x² + x -
+1 = 0 (numero aureo φ)</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 7.2: Ejes de simetria del
+icosaedro</p>
+<h3 id="cristalografia">7.1 Cristalografia</h3>
+<ul>
+<li>Cubico: halita, fluorita, pirita</li>
+<li>Octaedro: diamante, magnetita</li>
+<li>Dodecaedro: pirita</li>
+</ul>
+<h3 id="quimica-molecular">7.2 Quimica Molecular</h3>
+<ul>
+<li><strong>Tetraedro</strong>: CH4, diamante</li>
+<li><strong>Octaedro</strong>: [CoF6]3-</li>
+<li><strong>Icosaedro</strong>: B12H12^2-</li>
+</ul>
+<h3 id="virologia-estructural">7.3 Virologia Estructural</h3>
+<p>Los virus icosaedricos usan el principio de cuasi-equivalencia.
+Poliovirus, rinovirus y adenovirus tienen capsulas icosaedricas.</p>
+<h3 id="arquitectura">7.4 Arquitectura</h3>
+<ul>
+<li>Domos geodesicos (Fuller)</li>
+<li>Atomium de Brussels</li>
+<li>Pelota de futbol (icosaedro truncado)</li>
+</ul>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-operaciones-de-conway">
+<h2 id="operaciones-de-conway">8. Operaciones de Conway</h2>
+<h3 id="definicion">8.1 Definicion</h3>
+<p>John Conway (1937-2020) definio un conjunto de operaciones
+topologicas que generan nuevos poliedros a partir de solidos platonicos
+y otros poliedros. Estas operaciones son fundamentales en la teoria de
+poliedros y permiten explorar la diversidad de formas geometricas
+regulares y semirregulares.</p>
+<h3 id="tabla-de-operaciones-de-conway">8.2 Tabla de Operaciones de
+Conway</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 9%" />
+<col style="width: 8%" />
+<col style="width: 56%" />
+<col style="width: 25%" />
+</colgroup>
+<thead>
+<tr>
+<th>Operacion</th>
+<th>Simbolo</th>
+<th>Descripcion</th>
+<th>Resultado del Tetraedro</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dual</td>
+<td>d</td>
+<td>Invierte vertices y caras; intercambia poliedro con su dual</td>
+<td>Tetraedro (autodual)</td>
+</tr>
+<tr>
+<td>Truncado</td>
+<td>t</td>
+<td>Corta vertices, creando nuevas caras</td>
+<td>Tetraedro truncado</td>
+</tr>
+<tr>
+<td>Rectificar</td>
+<td>a</td>
+<td>Interseccion con dual (tambien llamada “ambo”)</td>
+<td>Tetraedro rectificado</td>
+</tr>
+<tr>
+<td>Expandir</td>
+<td>e</td>
+<td>Separar caras y conectar vertices nuevos</td>
+<td>Tetraedro expandido</td>
+</tr>
+<tr>
+<td>Snub</td>
+<td>s</td>
+<td>Variante con simetria rotacional; inserta triangulos</td>
+<td>Tetraedro snub</td>
+</tr>
+<tr>
+<td>Kis</td>
+<td>k</td>
+<td>Eleva piramides en cada cara</td>
+<td>Tetraedro kis</td>
+</tr>
+<tr>
+<td>Meta</td>
+<td>m</td>
+<td>Combinacion de operaciones (meta = truncado + kis)</td>
+<td>Tetraedro meta</td>
+</tr>
+<tr>
+<td>Need</td>
+<td>n</td>
+<td>Agrega vertices en el centro de cada cara</td>
+<td>Tetraedro need</td>
+</tr>
+<tr>
+<td>Bevel</td>
+<td>b</td>
+<td>Agrega vertices a lo largo de las aristas</td>
+<td>Tetraedro bevel</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejemplos-de-aplicacion">8.3 Ejemplos de Aplicacion</h3>
+<p><strong>Del Cubo:</strong> - Cubo + Truncado = Cubo truncado (6
+octagonos + 8 triangulos) - Cubo + Rectificado = Cuboctaedro (8
+triangulos + 6 cuadrados) - Cubo + Snub = Cubo snub - Cubo + Expanded =
+Cubo expandido = Rombicuboctaedro</p>
+<p><strong>Del Dodecaedro:</strong> - Dodecaedro + Truncado = Dodecaedro
+truncado - Dodecaedro + Rectificado = Icosidodecaedro - Dodecaedro +
+Expanded = Icosidodecaedro expandido - Dodecaedro + Snub = Dodecaedro
+snub</p>
+<p><strong>Del Icosaedro:</strong> - Icosaedro + Truncado = Icosaedro
+truncado (utilizado en futbol) - Icosaedro + Snub = Icosaedro snub
+(arquimedeano)</p>
+<h3 id="ejercicio-9-operaciones-de-conway-en-platoniclab">8.4 EJERCICIO
+9: Operaciones de Conway en PlatonicLab</h3>
+<p><strong>Objetivo:</strong> Visualizar las transformaciones de Conway
+y comprender sus efectos geometricos.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><p><strong>Ir a [Pestana Conway]</strong></p></li>
+<li><p><strong>Seleccionar el Cubo</strong> ([Menu Solido])</p></li>
+<li><p><strong>Explorar las operaciones basicas:</strong></p>
+<p><strong>Operacion Dual (d):</strong></p>
+<ul>
+<li>Seleccionar “Dual”</li>
+<li>Observar: el cubo se transforma en un octaedro</li>
+<li>Verificar: el dual del octaedro es el cubo original</li>
+</ul>
+<p><strong>Operacion Truncado (t):</strong></p>
+<ul>
+<li>Seleccionar “Truncado”</li>
+<li>Observar: los vertices cortados crean nuevas caras triangulares</li>
+<li>Contar: 6 nuevas caras (originalmente 6 caras del cubo) + 8 vertices
+cortados = 14 caras</li>
+<li>Identificar: 6 octagonos (caras truncadas) + 8 triangulos (vertices
+cortados)</li>
+</ul>
+<p><strong>Operacion Rectificado/Ambo (a):</strong></p>
+<ul>
+<li>Seleccionar “Rectificado”</li>
+<li>Observar: el cubo se convierte en cuboctaedro</li>
+<li>Caracteristicas: 8 triangulos + 6 cuadrados</li>
+</ul></li>
+<li><p><strong>Experimentar con combinaciones:</strong></p>
+<ul>
+<li>t + t (doble truncado)</li>
+<li>d + t (dual luego truncado)</li>
+<li>a + t (rectificar luego truncar)</li>
+</ul></li>
+</ol>
+<p><strong>PREGUNTA:</strong> - ¿Que sucede cuando aplicamos “Dual” a un
+solido y luego “Dual” de nuevo?</p>
+<p><strong>RESPUESTA:</strong> Obtenemos el solido original de vuelta.
+Esto significa que la operacion Dual es una <strong>involucion</strong>
+(su propia inversa): dual(dual(S)) = S</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 8.1: Cubo y sus
+transformaciones de Conway</p>
+<h3 id="notacion-de-conway">8.5 Notacion de Conway</h3>
+<p>Conway desarrollo una notacion compacta para describir poliedros:</p>
+<ul>
+<li><strong>Y</strong> = Tetraedro</li>
+<li><strong>O</strong> = Cubo</li>
+<li><strong>D</strong> = Dodecaedro</li>
+<li><strong>I</strong> = Icosaedro</li>
+<li><strong>tY</strong> = Tetraedro truncado</li>
+<li><strong>aO</strong> = Cubo rectificado = Cuboctaedro</li>
+<li><strong>eD</strong> = Dodecaedro expandido</li>
+<li><strong>sI</strong> = Icosaedro snub</li>
+</ul>
+<p><strong>Ejemplos avanzados:</strong> - <strong>tid</strong> =
+Icosidodecaedro truncado (dodecaedro truncado + rectificado) -
+<strong>gisdid</strong> = Icosidodecaedro giro truncado -
+<strong>x</strong> = Expandir</p>
+<h3 id="ejercicio-10-construir-el-futbol-icosaedro-truncado">8.6
+EJERCICIO 10: Construir el Futbol (Icosaedro Truncado)</h3>
+<p><strong>Objetivo:</strong> Entender como se forma un icosaedro
+truncado a partir de un icosaedro.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><strong>Seleccionar el Icosaedro</strong> ([Menu Solido] o tecla
+5)</li>
+<li><strong>Aplicar Operacion Truncado</strong> ([Pestana Conway] →
+“Truncado”)</li>
+<li><strong>Observar:</strong>
+<ul>
+<li>Cada vertice del icosaedro (donde concurren 5 triangulos) se
+corta</li>
+<li>El corte crea una nueva cara pentagonal</li>
+<li>Los triangulos originales se convierten en hexagonos</li>
+</ul></li>
+<li><strong>Contar las caras del icosaedro truncado:</strong>
+<ul>
+<li>12 caras pentagonales (una por cada vertice original)</li>
+<li>20 caras hexagonales (una por cada cara triangular original)</li>
+<li>Total: 32 caras</li>
+</ul></li>
+<li><strong>Comparar con un futbol real:</strong>
+<ul>
+<li>Los futbols modernos usan este patron</li>
+<li>La combinacion de pentagonos y hexagonos permite un empaquetamiento
+almost spherical</li>
+</ul></li>
+</ol>
+<p><strong>REFERENCIA:</strong>参见 Figura 8.2: Icosaedro y su version
+truncada (futbol)</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Operacion</th>
+<th>Simbolo</th>
+<th>Descripcion</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Dual</td>
+<td>d</td>
+<td>Invierte vertices y caras</td>
+</tr>
+<tr>
+<td>Truncado</td>
+<td>t</td>
+<td>Corta vertices</td>
+</tr>
+<tr>
+<td>Rectificar</td>
+<td>a</td>
+<td>Interseccion con dual</td>
+</tr>
+<tr>
+<td>Expandir</td>
+<td>e</td>
+<td>Separa caras</td>
+</tr>
+<tr>
+<td>Snub</td>
+<td>s</td>
+<td>Variante rotacional</td>
+</tr>
+</tbody>
+</table>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-teoria-de-grafos-aplicada-a-los-solidos-platonicos">
+<h2 id="teoria-de-grafos-aplicada-a-los-solidos-platonicos">9. Teoria de
+Grafos Aplicada a los Solidos Platonicos</h2>
+<h3 id="representacion-como-grafos">9.1 Representacion como Grafos</h3>
+<p>Cada solido platonico puede representarse como un
+<strong>grafo</strong> donde: - Los <strong>vertices</strong> del grafo
+son los vertices del poliedro - Las <strong>aristas</strong> del grafo
+son las aristas del poliedro - Las <strong>caras</strong> se representan
+como ciclos en el grafo</p>
+<p>Esta perspectiva permite aplicar herramientas de teoria de grafos al
+estudio de poliedros.</p>
+<h3 id="propiedades-de-los-grafos-platonicos">9.2 Propiedades de los
+Grafos Platonicos</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 16%" />
+<col style="width: 13%" />
+<col style="width: 12%" />
+<col style="width: 17%" />
+<col style="width: 13%" />
+<col style="width: 26%" />
+</colgroup>
+<thead>
+<tr>
+<th>Solido</th>
+<th>Vertices</th>
+<th>Aristas</th>
+<th>Regularidad</th>
+<th>Diametro</th>
+<th>Girth (ciclo min.)</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>4</td>
+<td>6</td>
+<td>3-regular</td>
+<td>1</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>8</td>
+<td>12</td>
+<td>3-regular</td>
+<td>3</td>
+<td>4</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>6</td>
+<td>12</td>
+<td>4-regular</td>
+<td>2</td>
+<td>3</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>20</td>
+<td>30</td>
+<td>3-regular</td>
+<td>5</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>12</td>
+<td>30</td>
+<td>5-regular</td>
+<td>3</td>
+<td>3</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Definiciones:</strong> - <strong>Regularidad:</strong> Numero
+de aristas que concurren en cada vertice - <strong>Diametro:</strong>
+Maxima distancia最短 entre cualquier par de vertices -
+<strong>Girth:</strong> Longitud del ciclo mas pequeno en el grafo</p>
+<h3 id="ejercicio-11-vista-de-grafo-en-platoniclab">9.3 EJERCICIO 11:
+Vista de Grafo en PlatonicLab</h3>
+<p><strong>Objetivo:</strong> Analizar los grafos platonicos y sus
+propiedades.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><p><strong>Ir a [Pestana Grafo]</strong></p></li>
+<li><p><strong>Para cada solido, observar:</strong></p>
+<p><strong>Tetraedro:</strong></p>
+<ul>
+<li>4 vertices, cada uno conectado a los otros 3</li>
+<li>Es el <strong>grafo completo K4</strong></li>
+<li>Diametro = 1 (cualquier vertice llega a cualquier otro en un
+paso)</li>
+<li>Girth = 3 (cada cara es un triangulo)</li>
+</ul>
+<p><strong>Cubo:</strong></p>
+<ul>
+<li>8 vertices en un cubo 3D</li>
+<li>Cada vertice tiene grado 3</li>
+<li>Diametro = 3 (opuestos requieren 3 pasos)</li>
+<li>Girth = 4 (las caras son cuadrados)</li>
+</ul>
+<p><strong>Octaedro:</strong></p>
+<ul>
+<li>6 vertices (polo norte, polo sur, 4 en el ecuador)</li>
+<li>Cada vertice tiene grado 4</li>
+<li>Diametro = 2</li>
+<li>Girth = 3 (las caras son triangulos)</li>
+</ul>
+<p><strong>Dodecaedro:</strong></p>
+<ul>
+<li>20 vertices, 30 aristas</li>
+<li>Mayor diametro (5) entre los solidos platonicos</li>
+<li>Girth = 5 (las caras son pentagonos)</li>
+</ul>
+<p><strong>Icosaedro:</strong></p>
+<ul>
+<li>12 vertices, cada uno con grado 5</li>
+<li>Mayor regularidad (5-regular)</li>
+<li>Diametro = 3</li>
+</ul></li>
+<li><p><strong>Contestar:</strong></p>
+<ul>
+<li>¿Cual es el grado de cada vertice en el icosaedro? (5)</li>
+<li>¿Cual solido tiene el mayor diametro? (Dodecaedro = 5)</li>
+</ul></li>
+</ol>
+<p><strong>PREGUNTA DE REFLEXION:</strong> - ¿Por que el dodecaedro
+tiene el mayor diametro a pesar de no ser el mas grande en vertices?</p>
+<p><strong>RESPUESTA:</strong> El diametro depende de la “conectividad”
+y la distribucion espacial. En el dodecaedro, los vertices opuestosestan
+muy separados topologicamente debido a la estructura de pentagonos, lo
+que aumenta la distancia maxima.</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 9.1: Grafos de los cinco
+solidos platonicos</p>
+<h3 id="aplicaciones-de-los-grafos-platonicos">9.4 Aplicaciones de los
+Grafos Platonicos</h3>
+<p>Los grafos platonicos tienen aplicaciones importantes:</p>
+<p><strong>Redes de Comunicacion:</strong> - Estructuras con alta
+conectividad - Tolerancia a fallas - Enrutamiento eficiente</p>
+<p><strong>Quimica Molecular:</strong> - Representacion de estructuras
+moleculares - Isomerismo y simetria molecular - Grafos de fullerenos
+(moleculas de carbono)</p>
+<p><strong>Teoria de Codigos:</strong> - Codigos correctores de errores
+- Los codigos de Golay estan relacionados con el icosaedro - Diseño de
+experimentos</p>
+<p><strong>Optimizacion:</strong> - Empaquetamiento esferico (problema
+de Tammes) - Distribucion de puntos en esferas</p>
+<p>En 4 dimensiones existen seis politopos regulares:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Politopo</th>
+<th>Simbolo</th>
+<th>Caras 3D</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5-celda</td>
+<td>{3,3,3}</td>
+<td>5 tetraedros</td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td>{4,3,3}</td>
+<td>8 cubos</td>
+</tr>
+<tr>
+<td>16-celda</td>
+<td>{3,3,4}</td>
+<td>8 tetraedros</td>
+</tr>
+<tr>
+<td>24-celda</td>
+<td>{3,4,3}</td>
+<td>24 octaedros</td>
+</tr>
+<tr>
+<td>120-celda</td>
+<td>{5,3,3}</td>
+<td>120 dodecaedros</td>
+</tr>
+<tr>
+<td>600-celda</td>
+<td>{3,3,5}</td>
+<td>600 tetraedros</td>
+</tr>
+</tbody>
+</table>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-visualizacion-4d-politopos-regulares">
+<h2 id="visualizacion-4d-politopos-regulares">10. Visualizacion 4D:
+Politopos Regulares</h2>
+<h3 id="extension-a-4-dimensiones">10.1 Extension a 4 Dimensiones</h3>
+<p>En el espacio tridimensional (3D) existen 5 poliedros regulares
+convexos. En el espacio tetradimensional (4D) existen <strong>6
+politopos regulares convexos</strong>. Esta generalizacion sigue
+patrones matematicos profundos.</p>
+<h3 id="los-seis-politopos-regulares-4d">10.2 Los Seis Politopos
+Regulares 4D</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 25%" />
+<col style="width: 23%" />
+<col style="width: 19%" />
+<col style="width: 11%" />
+<col style="width: 10%" />
+<col style="width: 10%" />
+</colgroup>
+<thead>
+<tr>
+<th>Politopo</th>
+<th>Simbolo de Schlafli</th>
+<th>Caras 3D</th>
+<th>Vertices</th>
+<th>Aristas</th>
+<th>Celdas</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5-celda</td>
+<td>{3,3,3}</td>
+<td>5 tetraedros</td>
+<td>5</td>
+<td>10</td>
+<td>5</td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td>{4,3,3}</td>
+<td>8 cubos</td>
+<td>16</td>
+<td>32</td>
+<td>8</td>
+</tr>
+<tr>
+<td>16-celda</td>
+<td>{3,3,4}</td>
+<td>8 tetraedros</td>
+<td>8</td>
+<td>24</td>
+<td>16</td>
+</tr>
+<tr>
+<td>24-celda</td>
+<td>{3,4,3}</td>
+<td>24 octaedros</td>
+<td>24</td>
+<td>96</td>
+<td>24</td>
+</tr>
+<tr>
+<td>120-celda</td>
+<td>{5,3,3}</td>
+<td>120 dodecaedros</td>
+<td>600</td>
+<td>720</td>
+<td>120</td>
+</tr>
+<tr>
+<td>600-celda</td>
+<td>{3,3,5}</td>
+<td>600 tetraedros</td>
+<td>120</td>
+<td>360</td>
+<td>600</td>
+</tr>
+</tbody>
+</table>
+<h3 id="proyecciones-3d">10.3 Proyecciones 3D</h3>
+<p>No podemos ver directamente objetos 4D, pero podemos visualizar sus
+<strong>proyecciones 3D</strong>.</p>
+<p><strong>5-celda (Pentacoro):</strong> - Compuesta por 5 celdas
+tetraedricas - Proyeccion mas comun: un tetraedro central con 4
+tetraedros “apuntando hacia afuera” - Relacion directa con el tetraedro
+(solido platonico 3D)</p>
+<p><strong>Teseracto (Hipercubo):</strong> - Extension 4D del cubo -
+Proyeccion clasica: un cubo dentro de otro cubo - Las aristas del cubo
+interior conectan con el cubo exterior - Puede verse como 8 cubos
+pegados en un patron 4D</p>
+<p><strong>16-celda:</strong> - Dual del teseracto - Compuesto por 16
+celdas tetraedricas - Proyeccion: un octaedro con 8 tetraedros</p>
+<h3 id="ejercicio-12-visualizacion-de-politopos-4d-en-platoniclab">10.4
+EJERCICIO 12: Visualizacion de Politopos 4D en PlatonicLab</h3>
+<p><strong>Objetivo:</strong> Comprender las proyecciones de politopos
+4D mediante visualizacion interactiva.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><strong>Ir a [Pestana 4D]</strong></li>
+<li><strong>Seleccionar “5-celda” (Pentacoro)</strong></li>
+<li><strong>Observar la proyeccion 3D:</strong>
+<ul>
+<li>Identificar las 5 celdas tetraedricas</li>
+<li>Notar como se conectan entre si</li>
+<li>Contar: 5 vertices, 10 aristas, 10 caras triangulares</li>
+</ul></li>
+<li><strong>Rotar la proyeccion</strong> para ver diferentes angulos
+<ul>
+<li>Observar como la estructura cambia de apariencia</li>
+<li>Algunas proyecciones muestran simetrias ocultas</li>
+</ul></li>
+<li><strong>Seleccionar “Teseracto” (Hipercubo)</strong></li>
+<li><strong>Identificar:</strong>
+<ul>
+<li>Cubo exterior (visible como marco)</li>
+<li>Cubo interior (proyeccion del cubo “lejano”)</li>
+<li>Aristas que conectan vertices correspondientes</li>
+</ul></li>
+<li><strong>Experimentar con diferentes proyecciones:</strong>
+<ul>
+<li>Proyeccion ortogonal</li>
+<li>Proyeccion perspectiva</li>
+<li>Animacion de rotacion 4D</li>
+</ul></li>
+</ol>
+<p><strong>PREGUNTA:</strong> - ¿Como se relaciona la 5-celda con el
+tetraedro?</p>
+<p><strong>RESPUESTA:</strong> La 5-celda esta compuesta por <strong>5
+celdas tetraedricas</strong>, cada una siendo un tetraedro regular. Es
+la generalizacion natural del tetraedro a 4 dimensiones: asi como un
+tetraedro tiene 4 vertices y 4 caras triangulares, la 5-celda tiene 5
+vertices y 5 celdas tetraedricas.</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 10.1: Proyecciones de la
+5-celda</p>
+<h3 id="relacion-con-los-solidos-platonicos">10.5 Relacion con los
+Solidos Platonicos</h3>
+<p>Los politopos 4D tienen relaciones especiales con los solidos
+platonicos 3D:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Politopo 4D</th>
+<th>Relacion con Solidos Platonicos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>5-celda</td>
+<td>Compuesto por tetraedros</td>
+</tr>
+<tr>
+<td>Teseracto</td>
+<td>Las caras 3D son cubos</td>
+</tr>
+<tr>
+<td>16-celda</td>
+<td>Compuesto por tetraedros; dual del teseracto</td>
+</tr>
+<tr>
+<td>24-celda</td>
+<td>Las caras 3D son octaedros</td>
+</tr>
+<tr>
+<td>120-celda</td>
+<td>Las caras 3D son dodecaedros</td>
+</tr>
+<tr>
+<td>600-celda</td>
+<td>Compuesto por tetraedros; dual del 120-celda</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejercicio-13-comparacion-de-politopos">10.6 EJERCICIO 13:
+Comparacion de Politopos</h3>
+<p><strong>Objetivo:</strong> Comparar las propiedades de los politopos
+4D.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li><strong>Para cada politopo, registrar:</strong>
+<ul>
+<li>Numero de vertices (V)</li>
+<li>Numero de aristas (E)</li>
+<li>Numero de caras (C)</li>
+<li>Numero de celdas (hiper-caras 3D)</li>
+</ul></li>
+<li><strong>Verificar la formula de Euler para 4D:</strong>
+<ul>
+<li>V - E + C - Celdas = 0</li>
+</ul></li>
+<li><strong>Ejemplo con la 5-celda:</strong>
+<ul>
+<li>V = 5</li>
+<li>E = 10</li>
+<li>C = 10 (caras 2D, triangulos)</li>
+<li>Celdas = 5 (tetraedros 3D)</li>
+<li>Verificacion: 5 - 10 + 10 - 5 = 0 ✓</li>
+</ul></li>
+</ol>
+<p><strong>PREGUNTA:</strong> - ¿Cual es la formula de Euler general
+para politopos n-dimensionales?</p>
+<p><strong>RESPUESTA:</strong> V0 - V1 + V2 - V3 + … + (-1)^n Vn = 0
+(para politopos convexos)</p>
+<p>donde Vk es el numero de elementos de dimension k.</p>
+<p><strong>REFERENCIA:</strong>参见 Figura 10.2: Teseracto con sus 8
+celdas cubicas</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-calculadora-de-propiedades">
+<h2 id="calculadora-de-propiedades">11. Calculadora de Propiedades</h2>
+<h3 id="uso-de-la-calculadora-en-platoniclab">11.1 Uso de la Calculadora
+en PlatonicLab</h3>
+<p>La seccion [Pestana Calc] de PlatonicLab permite calcular todas las
+propiedades geometricas de cualquier solido platonico de forma rapida y
+precisa.</p>
+<h3 id="parametros-de-entrada">11.2 Parametros de Entrada</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 15%" />
+<col style="width: 42%" />
+<col style="width: 24%" />
+<col style="width: 17%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parametro</th>
+<th>Descripcion</th>
+<th>Rango tipico</th>
+<th>Unidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>a</td>
+<td>Longitud de arista</td>
+<td>0.1 - 10.0</td>
+<td>unidades</td>
+</tr>
+<tr>
+<td>solid</td>
+<td>Tipo de solido</td>
+<td>1-5</td>
+<td>entero</td>
+</tr>
+<tr>
+<td>precision</td>
+<td>Numero de decimales</td>
+<td>2-10</td>
+<td>entero</td>
+</tr>
+</tbody>
+</table>
+<h3 id="propiedades-calculables">11.3 Propiedades Calculables</h3>
+<p>La calculadora proporciona: vertices (V), aristas (E), caras (C),
+radio circunscrito (R), radio inscrito (r), angulo diedro, volumen y
+area superficial.</p>
+<h3 id="ejemplo-calculadora-del-cubo">11.4 EJEMPLO: Calculadora del
+Cubo</h3>
+<p><strong>Entrada:</strong> a = 2, solid = cubo (2), precision = 4</p>
+<p><strong>Salida:</strong></p>
+<pre><code class="language-javascript">=== CUBO (a = 2.0000) ===
+Vertices:          8
+Aristas:           12
+Caras:             6
+Euler (V-E+C):     2
+
+Radio Circunscrito R = 1.7321
+Radio Inscrito r     = 1.0000
+Radio Medio ρ        = 1.2247
+Angulo Diedro θ     = 90.0000°
+
+Volumen V           = 8.0000
+Area Superficial A  = 24.0000</code></pre>
+<h3 id="ejercicio-14-uso-de-la-calculadora">11.5 EJERCICIO 14: Uso de la
+Calculadora</h3>
+<p><strong>Objetivo:</strong> Familiarizarse con el calculo automatico
+de propiedades.</p>
+<p><strong>Instrucciones:</strong></p>
+<ol type="1">
+<li>Ir a [Pestana Calc]</li>
+<li>Seleccionar cubo (opcion 2)</li>
+<li>Ajustar a = 2</li>
+<li>Anotar los resultados</li>
+<li>Comparar con calculos manuales: Volumen = a³ = 8, Area = 6a² =
+24</li>
+<li>Cambiar a tetraedro con a = 1 y comparar con valores teoricos</li>
+</ol>
+<p><strong>PREGUNTA:</strong> ¿Como cambia el volumen si duplicamos la
+arista?</p>
+<p><strong>RESPUESTA:</strong> El volumen aumenta por factor de 8
+(proporcional a a³).</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-aplicaciones-modernas">
+<h2 id="aplicaciones-modernas">12. Aplicaciones Modernas</h2>
+<h3 id="cristalografia-1">12.1 Cristalografia</h3>
+<p>Los solidos platonicos aparecen naturalmente en estructuras
+cristalinas:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Sistema Cristalino</th>
+<th>Solido Relacionado</th>
+<th>Ejemplos</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Cubico</td>
+<td>Cubo</td>
+<td>Halita, fluorita, pirita</td>
+</tr>
+<tr>
+<td>Cubico</td>
+<td>Octaedro</td>
+<td>Diamante, magnetita</td>
+</tr>
+<tr>
+<td>Cubico</td>
+<td>Dodecaedro</td>
+<td>Pirita (cristales cubicos)</td>
+</tr>
+<tr>
+<td>Cubico</td>
+<td>Tetraedro</td>
+<td>Esfalerita</td>
+</tr>
+</tbody>
+</table>
+<h3 id="quimica-molecular-1">12.2 Quimica Molecular</h3>
+<p>La geometria molecular frecuentemente adopta formas platonicas:</p>
+<ul>
+<li><strong>Tetraedro</strong>: Metano (CH4), ion amonio (NH4+),
+diamante, silicio</li>
+<li><strong>Octaedro</strong>: Ion [CoF6]3-, alumbre, fluoruro de
+azufre</li>
+<li><strong>Icosaedro</strong>: Boranos B12H12^2-, fullerenos</li>
+</ul>
+<h3 id="virologia-estructural-1">12.3 Virologia Estructural</h3>
+<p>La aplicacion mas striking es en la arquitectura de virus:</p>
+<ul>
+<li>Los virus icosaedricos usan el principio de
+<strong>cuasi-equivalencia</strong> de Caspar y Klug (1962)</li>
+<li>El icosaedro es la forma optima para empaquetar capsulas
+virales</li>
+<li>Proporciona maxima estabilidad con minima energia</li>
+<li>Virus con capsulas icosaedricas: poliovirus, rinovirus,
+adenovirus</li>
+</ul>
+<p><strong>Formula de capsomeros:</strong> T = h² + hk + k²</p>
+<p>donde T es el numero de triangulos en cada cara del icosaedro
+expandido.</p>
+<h3 id="arquitectura-y-diseno">12.4 Arquitectura y Diseno</h3>
+<ul>
+<li><strong>Domos geodesicos</strong> (Buckminster Fuller): basados en
+triangulos icosaedricos</li>
+<li><strong>Atomium</strong> de Brussels: estructura de cubo
+metalico</li>
+<li><strong>Pelota de futbol</strong>: icosaedro truncado (32 caras: 12
+pentagonos + 20 hexagonos)</li>
+<li>Dados y juegos de mesa</li>
+</ul>
+<h3 id="matematicas-discretas">12.5 Matematicas Discretas</h3>
+<ul>
+<li>Codigos correctores de errores (codigos de Golay relacionados con el
+icosaedro)</li>
+<li>Optimizacion esferica (problema de Tammes)</li>
+<li>Geometria computacional</li>
+<li>Teoria de grafos y redes</li>
+</ul>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-comparacion-entre-solidos">
+<h2 id="comparacion-entre-solidos">13. Comparacion Entre Solidos</h2>
+<h3 id="tabla-comparativa-general">13.1 Tabla Comparativa General</h3>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Solido</th>
+<th>Caras</th>
+<th>V/E/C</th>
+<th>Angulo</th>
+<th>Vol(a=1)</th>
+<th>Area(a=1)</th>
+<th>R/r</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Tetraedro</td>
+<td>4 tri</td>
+<td>4/6/4</td>
+<td>70.5°</td>
+<td>0.1179</td>
+<td>1.7321</td>
+<td>3.00</td>
+</tr>
+<tr>
+<td>Cubo</td>
+<td>6 cua</td>
+<td>8/12/6</td>
+<td>90°</td>
+<td>1.0000</td>
+<td>6.0000</td>
+<td>1.73</td>
+</tr>
+<tr>
+<td>Octaedro</td>
+<td>8 tri</td>
+<td>6/12/8</td>
+<td>109.5°</td>
+<td>0.4714</td>
+<td>3.4641</td>
+<td>1.73</td>
+</tr>
+<tr>
+<td>Dodecaedro</td>
+<td>12 pen</td>
+<td>20/30/12</td>
+<td>116.6°</td>
+<td>7.6631</td>
+<td>20.6457</td>
+<td>1.26</td>
+</tr>
+<tr>
+<td>Icosaedro</td>
+<td>20 tri</td>
+<td>12/30/20</td>
+<td>138.2°</td>
+<td>2.1817</td>
+<td>8.6603</td>
+<td>1.26</td>
+</tr>
+</tbody>
+</table>
+<h3 id="ejercicio-15-analisis-comparativo">13.2 EJERCICIO 15: Analisis
+Comparativo</h3>
+<p><strong>Objetivo:</strong> Identificar patrones y relaciones entre
+solidos.</p>
+<p><strong>Analisis de la tabla:</strong></p>
+<ol type="1">
+<li><strong>Dualidad reflejada:</strong>
+<ul>
+<li>Tetraedro es autodual</li>
+<li>Cubo (6-8) y Octaedro (8-6) son duales</li>
+<li>Dodecaedro (12-20) e Icosaedro (20-12) son duales</li>
+</ul></li>
+<li><strong>Razones R/r identicas en duales:</strong>
+<ul>
+<li>Cubo y Octaedro: R/r = 1.73</li>
+<li>Dodecaedro e Icosaedro: R/r = 1.26</li>
+</ul></li>
+<li><strong>Volumen relativo (a=1):</strong>
+<ul>
+<li>Dodecaedro tiene el mayor volumen (7.66)</li>
+<li>Tetraedro tiene el menor volumen (0.12)</li>
+</ul></li>
+<li><strong>Area superficial (a=1):</strong>
+<ul>
+<li>Dodecaedro tiene la mayor area (20.65)</li>
+<li>Tetraedro tiene la menor area (1.73)</li>
+</ul></li>
+</ol>
+<h3 id="ejercicio-16-graficos-comparativos">13.3 EJERCICIO 16: Graficos
+Comparativos</h3>
+<p><strong>Objetivo:</strong> Visualizar las relaciones mediante
+graficos.</p>
+<p><strong>Crear graficos de:</strong></p>
+<ol type="1">
+<li>Volumen vs. numero de caras</li>
+<li>Angulo diedro vs. regularidad</li>
+<li>Razon R/r vs. tipo de cara</li>
+</ol>
+<p><strong>Interpretacion:</strong></p>
+<ul>
+<li>Los solidos con mas caras tienden a tener mayor volumen</li>
+<li>El angulo diedro aumenta con la complejidad</li>
+<li>La razon R/r indica “esfericidad” del solido</li>
+</ul>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-conclusion">
+<h2 id="conclusion">14. Conclusion</h2>
+<p>Los solidos platonicos representan la interseccion perfecta entre
+matematica pura y comprension del mundo natural. Su estudio conecta:</p>
+<ul>
+<li>La <strong>geometria clasica</strong> de Euclides con la topologia
+moderna</li>
+<li>La <strong>simetria abstracta</strong> con las estructuras
+moleculares</li>
+<li>La <strong>historia de las ideas</strong> con las aplicaciones
+cientificas contemporaneas</li>
+</ul>
+<p>Desde las especulaciones cosmologicas de Platon hasta el diseno de
+farmacos antivirales, los solidos platonicos han demostrado ser objetos
+matematicos de relevancia duradera.</p>
+<p>La existencia de exactamente cinco solidos platonicos —demostrada
+rigurosamente hace mas de dos milenios— sigue siendo uno de los teoremas
+mas elegantes de las matematicas, con aplicaciones que se extienden
+desde la teoria de grupos hasta la biologia estructural.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-referencias">
+<h2 id="referencias">Referencias</h2>
+<ul>
+<li>Coxeter, H.S.M. (1973). <em>Regular Polytopes</em>. Dover
+Publications.</li>
+<li>Euclides. <em>Elementos</em>. Libro XIII.</li>
+<li>Kepler, J. (1596). <em>Mysterium Cosmographicum</em>.</li>
+<li>Platon. <em>Timeo</em>.</li>
+<li>Schlaefli, L. (1901). <em>Theorie der vielfachen
+Kontinuitat</em>.</li>
+<li>Conway, J.H., Burgiel, H., Goodman-Strauss, C. (2008). <em>The
+Symmetries of Things</em>. A K Peters.</li>
+<li>Caspar, D.L., Klug, A. (1962). “Physical principles in the
+construction of regular viruses”. <em>Cold Spring Harbor Symposia on
+Quantitative Biology</em>.</li>
+</ul>
+<hr class="section-divider" />
+<p><em>Esta guia fue generada para acompanar PlatonicLab - Laboratorio
+Interactivo de Solidos Platonicos.</em></p>
+<p><em>Para generar las figuras de referencia, capture pantalla de
+PlatonicLab con las configuraciones indicadas en cada seccion.</em></p>
+
+</section>
+        </main>
+    </div>
+
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.math.inline').forEach(function(el) {
+        try { katex.render(el.textContent, el, { displayMode: false, throwOnError: false }); }
+        catch(e) { console.warn('KaTeX inline error:', e); }
+    });
+    document.querySelectorAll('.math.display').forEach(function(el) {
+        try { katex.render(el.textContent, el, { displayMode: true, throwOnError: false }); }
+        catch(e) { console.warn('KaTeX display error:', e); }
+    });
+});
+</script>
+
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.sidebar a');
+    const sections = document.querySelectorAll('section[id]');
+    function updateActive() {
+        let current = '';
+        sections.forEach(sec => {
+            if (window.scrollY >= sec.offsetTop - 150) current = sec.id;
+        });
+        links.forEach(link => {
+            link.classList.remove('active');
+            const href = link.getAttribute('href').substring(1);
+            if (href === current || 'sec-' + href === current) link.classList.add('active');
+        });
+    }
+    window.addEventListener('scroll', updateActive);
+    updateActive();
+});
+</script>
+
+</body>
+</html>

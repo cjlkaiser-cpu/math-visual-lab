@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 3: Platón y el Timeo — Los Elementos del Cosmos | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+        .element-card {
+            transition: transform 0.3s;
+        }
+        .element-card:hover {
+            transform: translateY(-4px);
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-02.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="./leccion-04.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
+                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>3/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 50%"></div>
+                        </div>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 3</span>
+                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">Platón y el Timeo — Los Elementos del Cosmos</h1>
+                        <p class="text-gray-400 text-lg">Descubre cómo Platón asoció cada sólido platónico con un elemento fundamental de la naturaleza.</p>
+                    </div>
+
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">El Timeo de Platón</h2>
+                        <p class="text-gray-300 mb-4">
+                            En su diálogo <em>Timeo</em> (c. 360 a.C.), Platón presentó una de las cosmologías más influyentes de la historia. Propuso que los cuatro elementos clásicos —tierra, agua, aire y fuego— estaban compuestos por partículas con formas geométricas perfectas.
+                        </p>
+
+                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 border-l-4 border-platonic-purple">
+                            <p class="text-lg italic text-gray-300">
+                                "La geometría es el archetipo de la belleza del mundo."
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2">— Platón (427-347 a.C.)</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-4">Los Cinco Elementos y sus Sólidos</h3>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
+                            <div class="element-card bg-red-900/20 p-6 rounded-lg border border-red-500/30">
+                                <div class="text-4xl mb-2">🔥</div>
+                                <h4 class="font-bold text-red-400 mb-2">FUEGO — Tetraedro</h4>
+                                <p class="text-sm text-gray-300 mb-2">El tetraedro, con sus puntas afiladas, representa el calor y la penetración del fuego.</p>
+                                <p class="text-xs text-gray-500">4 caras triangulares · Angulo diedro: 70.5°</p>
+                            </div>
+
+                            <div class="element-card bg-yellow-900/20 p-6 rounded-lg border border-yellow-500/30">
+                                <div class="text-4xl mb-2">🌍</div>
+                                <h4 class="font-bold text-yellow-400 mb-2">TIERRA — Cubo</h4>
+                                <p class="text-sm text-gray-300 mb-2">El cubo es el más estable. Representa la solidez y permanencia de la tierra.</p>
+                                <p class="text-xs text-gray-500">6 caras cuadradas · Angulo diedro: 90°</p>
+                            </div>
+
+                            <div class="element-card bg-blue-900/20 p-6 rounded-lg border border-blue-500/30">
+                                <div class="text-4xl mb-2">💨</div>
+                                <h4 class="font-bold text-blue-400 mb-2">AIRE — Octaedro</h4>
+                                <p class="text-sm text-gray-300 mb-2">El octaedro, ligero y aerodinámico, representa la movilidad del aire.</p>
+                                <p class="text-xs text-gray-500">8 caras triangulares · Angulo diedro: 109.5°</p>
+                            </div>
+
+                            <div class="element-card bg-cyan-900/20 p-6 rounded-lg border border-cyan-500/30">
+                                <div class="text-4xl mb-2">💧</div>
+                                <h4 class="font-bold text-cyan-400 mb-2">AGUA — Icosaedro</h4>
+                                <p class="text-sm text-gray-300 mb-2">El icosaedro, con sus muchas caras, es la forma más esférica. Representa la fluidez del agua.</p>
+                                <p class="text-xs text-gray-500">20 caras triangulares · Angulo diedro: 138.2°</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-purple-900/20 p-6 rounded-lg border border-purple-500/30 mb-8">
+                            <div class="text-4xl mb-2">✨</div>
+                            <h4 class="font-bold text-purple-400 mb-2">ÉTER — Dodecaedro</h4>
+                            <p class="text-gray-300 mb-2">Platón reservó el dodecaedro para representar el <strong>quinta essentia</strong> o quinta esencia — el éter que llena el cosmos.</p>
+                            <p class="text-xs text-gray-500">12 caras pentagonales · La forma "más perfecta"</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Cosmología Platónica</h3>
+                        <p class="text-gray-300 mb-4">
+                            Para Platón, el universo entero estaba construido según principios matemáticos. Los sólidos platónicos no eran meras abstracciones, sino las <strong>formas fundamentales</strong> de la realidad material.
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-800">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">Elemento</th>
+                                        <th class="px-4 py-2 text-center">Sólido</th>
+                                        <th class="px-4 py-2 text-center">Característica</th>
+                                        <th class="px-4 py-2 text-center">Propiedad</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr>
+                                        <td class="px-4 py-2 text-red-400">Fuego</td>
+                                        <td class="px-4 py-2 text-center">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center">Puntas afiladas</td>
+                                        <td class="px-4 py-2 text-center">Calor, penetración</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-yellow-400">Tierra</td>
+                                        <td class="px-4 py-2 text-center">Cubo</td>
+                                        <td class="px-4 py-2 text-center">Base estable</td>
+                                        <td class="px-4 py-2 text-center">Solidez, permanencia</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-blue-400">Aire</td>
+                                        <td class="px-4 py-2 text-center">Octaedro</td>
+                                        <td class="px-4 py-2 text-center">Forma ligera</td>
+                                        <td class="px-4 py-2 text-center">Movilidad</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-cyan-400">Agua</td>
+                                        <td class="px-4 py-2 text-center">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center">Muy esférico</td>
+                                        <td class="px-4 py-2 text-center">Fluidez</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-purple-400">Éter/Cosmos</td>
+                                        <td class="px-4 py-2 text-center">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center">Pentágonos divinos</td>
+                                        <td class="px-4 py-2 text-center">Universo</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Teeteto y las Construcciones</h3>
+                        <p class="text-gray-300 mb-4">
+                            <strong>Teeteto</strong> (417-369 a.C.), matemático ateniense contemporáneo de Platón, estableció las construcciones geométricas completas de los cinco poliedros. Fue quien demostró rigurosamente que solo existen estos cinco.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio de Reflexión</h3>
+                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-purple mb-3">Conecta forma con función:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>¿Por qué el cubo representa la tierra (estabilidad)?</li>
+                                <li>¿Por qué el icosaedro, siendo el más esférico, representa el agua?</li>
+                                <li>¿Qué hace al dodecaedro "divino" o cósmico?</li>
+                                <li>Busca ejemplos modernos donde estas formas aparezcan en la naturaleza</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
+                            <span class="mr-2">🔬</span> LAB: Los Elementos en 3D
+                        </h2>
+                        <p class="text-gray-400 mb-4">Visualiza cada sólido asociado a su elemento. Observa sus propiedades geométricas.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                        <div class="mt-4 grid grid-cols-5 gap-2">
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'tetrahedron'}, '*')" class="px-3 py-2 bg-red-900/40 border border-red-500/30 hover:bg-red-900/60 rounded text-sm text-center">
+                                <div class="text-lg">🔥</div>Fuego
+                            </button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'cube'}, '*')" class="px-3 py-2 bg-yellow-900/40 border border-yellow-500/30 hover:bg-yellow-900/60 rounded text-sm text-center">
+                                <div class="text-lg">🌍</div>Tierra
+                            </button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'octahedron'}, '*')" class="px-3 py-2 bg-blue-900/40 border border-blue-500/30 hover:bg-blue-900/60 rounded text-sm text-center">
+                                <div class="text-lg">💨</div>Aire
+                            </button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'icosahedron'}, '*')" class="px-3 py-2 bg-cyan-900/40 border border-cyan-500/30 hover:bg-cyan-900/60 rounded text-sm text-center">
+                                <div class="text-lg">💧</div>Agua
+                            </button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'dodecahedron'}, '*')" class="px-3 py-2 bg-purple-900/40 border border-purple-500/30 hover:bg-purple-900/60 rounded text-sm text-center">
+                                <div class="text-lg">✨</div>Éter
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-02.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                            ← Anterior: Pitágoras
+                        </a>
+                        <a href="./leccion-04.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                            Siguiente: Euclides →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">
+                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 8: La Fórmula Mágica V - E + F = 2 | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+        .formula-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.2), rgba(6, 182, 212, 0.2));
+            border: 2px solid #8b5cf6;
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-07.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="./leccion-09.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 2</h3>
+                    <p class="text-sm text-gray-400 mb-4">La Fórmula de Euler</p>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>2/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 33.3%"></div>
+                        </div>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <a href="./leccion-07.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">7. Vértices, Aristas y Caras</a>
+                        <a href="./leccion-08.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">8. La Fórmula Mágica</a>
+                        <a href="./leccion-09.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">9. Demostración Visual</a>
+                        <a href="./leccion-10.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">10. Verificación en 5 Sólidos</a>
+                        <a href="./leccion-11.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">11. ¿Por qué Solo 5?</a>
+                        <a href="./leccion-12.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">12. Topología y la Esfera</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 8</span>
+                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">La Fórmula Mágica V - E + F = 2</h1>
+                        <p class="text-gray-400 text-lg">Uno de los teoremas más elegantes de las matemáticas: la característica de Euler.</p>
+                    </div>
+
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Leonhard Euler (1707-1783)</h2>
+                        <p class="text-gray-300 mb-4">
+                            El matemático suizo Leonhard Euler descubrió una de las fórmulas más profundas de la geometría: para cualquier poliedro convexo, la relación entre vértices (V), aristas (E) y caras (F) es constante.
+                        </p>
+
+                        <div class="formula-box rounded-lg p-8 mb-8 text-center">
+                            <p class="text-sm text-gray-400 mb-2">Fórmula de Euler</p>
+                            <p class="text-4xl font-bold text-platonic-cyan font-mono">V - E + F = 2</p>
+                            <p class="text-sm text-gray-400 mt-2">La característica de Euler es siempre 2</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">¿Por qué es "Mágica"?</h3>
+                        <p class="text-gray-300 mb-4">
+                            Esta fórmula es sorprendente porque:
+                        </p>
+
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-6 ml-4">
+                            <li>Es <strong>universal</strong>: válida para todos los poliedros convexos</li>
+                            <li>No depende de la forma, solo de la <strong>topología</strong></li>
+                            <li>Un tetraedro y un poliedro con 1000 caras comparten la misma característica</li>
+                            <li>Conecta geometría con <strong>topología</strong> (estudio de formas sin distancias)</li>
+                        </ul>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Verificación en los Sólidos Platónicos</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-800">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">Sólido</th>
+                                        <th class="px-4 py-2 text-center">V</th>
+                                        <th class="px-4 py-2 text-center">E</th>
+                                        <th class="px-4 py-2 text-center">F</th>
+                                        <th class="px-4 py-2 text-center">V - E + F</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center">4</td>
+                                        <td class="px-4 py-2 text-center">6</td>
+                                        <td class="px-4 py-2 text-center">4</td>
+                                        <td class="px-4 py-2 text-center text-green-400 font-bold">4-6+4=2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
+                                        <td class="px-4 py-2 text-center">8</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2 text-center">6</td>
+                                        <td class="px-4 py-2 text-center text-green-400 font-bold">8-12+6=2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
+                                        <td class="px-4 py-2 text-center">6</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2 text-center">8</td>
+                                        <td class="px-4 py-2 text-center text-green-400 font-bold">6-12+8=2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center">20</td>
+                                        <td class="px-4 py-2 text-center">30</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2 text-center text-green-400 font-bold">20-30+12=2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2 text-center">30</td>
+                                        <td class="px-4 py-2 text-center">20</td>
+                                        <td class="px-4 py-2 text-center text-green-400 font-bold">12-30+20=2</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-4 mb-6">
+                            <p class="text-green-400 font-semibold text-center">✓ ¡Todos verifican V - E + F = 2!</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Significado del 2</h3>
+                        <p class="text-gray-300 mb-4">
+                            El número 2 representa la <strong>característica de Euler</strong> de una esfera. Cualquier poliedro convexo es topológicamente equivalente a una esfera, por eso todos tienen la misma característica.
+                        </p>
+
+                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-purple mb-2">Analogía:</h4>
+                            <p class="text-gray-300 text-sm">
+                                Imagina que deformas suavemente el poliedro hasta convertirlo en una esfera sin romper ni pegar nada. 
+                                Durante esta deformación, V, E y F pueden cambiar de posición, pero la fórmula V - E + F permanece invariante.
+                            </p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Aplicaciones de la Fórmula</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Verificación</h4>
+                                <p class="text-sm text-gray-400">Comprueba si un modelo de poliedro es válido</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Cálculo</h4>
+                                <p class="text-sm text-gray-400">Encuentra un elemento desconocido (V, E o F)</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Clasificación</h4>
+                                <p class="text-sm text-gray-400">Identifica la topología de un objeto</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Grafos</h4>
+                                <p class="text-sm text-gray-400">Análisis de redes y conectividad</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio Práctico</h3>
+                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-cyan mb-3">Resuelve:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>Si V = 10 y E = 15, ¿cuántas caras tiene el poliedro?</li>
+                                <li>Si un poliedro tiene 7 caras y 12 aristas, ¿cuántos vértices tiene?</li>
+                                <li>Verifica la fórmula para un prisma triangular (2 triángulos + 3 cuadrados)</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
+                            <span class="mr-2">🔬</span> LAB: Verifica Euler
+                        </h2>
+                        <p class="text-gray-400 mb-4">Selecciona cualquier sólido en PlatonicLab y verifica que cumple V - E + F = 2.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-07.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                            ← Anterior
+                        </a>
+                        <a href="./leccion-09.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                            Siguiente: Demostración →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">
+                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

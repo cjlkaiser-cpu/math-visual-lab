@@ -1,0 +1,386 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Ecuaciones Diferenciales - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-6 py-4">
+            <div class="flex items-center gap-4">
+                <a href="../ecuaciones-diferenciales.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Volver a simulación
+                </a>
+                <div class="h-4 w-px bg-gray-800"></div>
+                <span class="text-sm text-gray-500">Guía Pedagógica</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <h1 class="text-4xl font-light mb-2">
+            <span class="text-violet-400 font-medium">Ecuaciones</span> Diferenciales
+        </h1>
+        <p class="text-gray-400 text-lg mb-12">El lenguaje del cambio continuo</p>
+
+        <!-- Introducción -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Introducción</h2>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Una <strong>ecuación diferencial</strong> es una ecuación que relaciona una función
+                con sus derivadas. Son el lenguaje matemático del cambio: desde el crecimiento de poblaciones
+                hasta el movimiento de planetas, las leyes de la física se expresan naturalmente como EDOs.
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Esta simulación visualiza <strong>campos de pendientes</strong> (slope fields): en cada punto
+                del plano, una pequeña línea indica la pendiente que tendría cualquier solución que pase por ahí.
+                Haz clic para trazar curvas solución que fluyen siguiendo estas pendientes.
+            </p>
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <h3 class="text-lg font-medium text-violet-300 mb-3">Notación</h3>
+                <ul class="space-y-2 text-gray-400">
+                    <li><span class="mono text-violet-300">dy/dx = f(x, y)</span> - EDO de primer orden</li>
+                    <li><span class="mono text-violet-300">d²y/dx² = g(x, y, y')</span> - EDO de segundo orden</li>
+                    <li><span class="mono text-violet-300">y(x₀) = y₀</span> - Condición inicial</li>
+                    <li><span class="mono text-violet-300">Isoclina</span> - Curva donde dy/dx = constante</li>
+                    <li><span class="mono text-violet-300">Nulclina</span> - Curva donde dy/dx = 0</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Ecuaciones Disponibles -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Ecuaciones Disponibles</h2>
+
+            <div class="space-y-6">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-emerald-400 mb-2">Crecimiento Exponencial</h3>
+                    <div class="mono text-violet-300 mb-3">dy/dx = k·y</div>
+                    <p class="text-gray-400 text-sm mb-3">
+                        La tasa de cambio es proporcional al valor actual. Modela poblaciones ilimitadas,
+                        decaimiento radiactivo (k < 0), interés compuesto continuo.
+                    </p>
+                    <p class="text-gray-500 text-xs">
+                        Solución analítica: <span class="mono">y = Ce^(kx)</span>
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-cyan-400 mb-2">Crecimiento Logístico</h3>
+                    <div class="mono text-violet-300 mb-3">dy/dx = r·y·(1 - y/K)</div>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Crecimiento con <strong>capacidad de carga</strong> K. La población crece rápido
+                        cuando es pequeña, se frena al acercarse a K. Más realista que el exponencial.
+                    </p>
+                    <p class="text-gray-500 text-xs">
+                        Solución analítica: <span class="mono">y = K / (1 + Ce^(-rx))</span>. Punto de equilibrio en y = K.
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-amber-400 mb-2">Oscilador Armónico</h3>
+                    <div class="mono text-violet-300 mb-3">d²y/dx² = -ω²·y</div>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Sistema masa-resorte sin fricción. Produce oscilaciones sinusoidales perpetuas.
+                        El <strong>retrato de fase</strong> muestra órbitas cerradas (elipses).
+                    </p>
+                    <p class="text-gray-500 text-xs">
+                        Solución: <span class="mono">y = A·cos(ωx) + B·sin(ωx)</span>. Energía se conserva.
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-rose-400 mb-2">Oscilador Van der Pol</h3>
+                    <div class="mono text-violet-300 mb-3">d²y/dx² = μ(1-y²)·dy/dx - y</div>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Oscilador no lineal con <strong>ciclo límite</strong>. Todas las soluciones
+                        (excepto el origen) convergen a una órbita periódica estable. Modela latidos cardíacos,
+                        circuitos electrónicos.
+                    </p>
+                    <p class="text-gray-500 text-xs">
+                        No tiene solución analítica cerrada. μ controla la no linealidad.
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-violet-400 mb-2">Lotka-Volterra</h3>
+                    <div class="mono text-violet-300 mb-3">dx/dt = αx - βxy, dy/dt = δxy - γy</div>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Modelo <strong>depredador-presa</strong>. x = presas, y = depredadores.
+                        Produce oscilaciones acopladas: cuando hay muchas presas, los depredadores crecen,
+                        reducen las presas, y luego decaen.
+                    </p>
+                    <p class="text-gray-500 text-xs">
+                        Las órbitas son cerradas pero no elipses. Punto de equilibrio en (γ/δ, α/β).
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-pink-400 mb-2">Péndulo No Lineal</h3>
+                    <div class="mono text-violet-300 mb-3">d²θ/dt² = -(g/L)·sin(θ)</div>
+                    <p class="text-gray-400 text-sm mb-3">
+                        Péndulo real (no la aproximación sin(θ) ≈ θ). El retrato de fase muestra
+                        <strong>separatrices</strong>: fronteras entre oscilación y rotación completa.
+                    </p>
+                    <p class="text-gray-500 text-xs">
+                        Solución involucra integrales elípticas. Periodo depende de la amplitud.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Métodos Numéricos -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Métodos Numéricos</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-cyan-400 mb-3">Método de Euler</h3>
+                    <div class="mono text-sm text-gray-400 mb-3">
+                        y_{n+1} = y_n + h·f(x_n, y_n)
+                    </div>
+                    <p class="text-gray-500 text-sm">
+                        El método más simple. Usa la pendiente actual para dar un "paso" de tamaño h.
+                        <strong>Error local O(h²)</strong>, error global O(h).
+                        Puede ser inestable para h grande.
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-violet-500/30 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-violet-400 mb-3">Runge-Kutta 4 (RK4)</h3>
+                    <div class="mono text-xs text-gray-400 mb-3">
+                        k₁ = f(x, y)<br>
+                        k₂ = f(x+h/2, y+hk₁/2)<br>
+                        k₃ = f(x+h/2, y+hk₂/2)<br>
+                        k₄ = f(x+h, y+hk₃)<br>
+                        y_{n+1} = y_n + (h/6)(k₁+2k₂+2k₃+k₄)
+                    </div>
+                    <p class="text-gray-500 text-sm">
+                        Promedia 4 estimaciones de pendiente. <strong>Error local O(h⁵)</strong>.
+                        Mucho más preciso que Euler para el mismo h. Método estándar en ciencia.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experimentos -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Experimentos Sugeridos</h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-emerald-400 mb-2">1. Comparar Euler vs RK4</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Con crecimiento exponencial (k = 0.5), traza una solución con cada método
+                        y el mismo punto inicial.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Euler diverge ligeramente de la solución exacta</li>
+                        <li>RK4 es indistinguible de la analítica</li>
+                        <li>La diferencia crece con el tiempo</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-cyan-400 mb-2">2. Estabilidad Logística</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        En la ecuación logística, traza soluciones desde diferentes condiciones iniciales.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Todas convergen a y = K (capacidad de carga)</li>
+                        <li>y = 0 es equilibrio inestable</li>
+                        <li>y = K es equilibrio estable (atractor)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-amber-400 mb-2">3. Ciclo Límite de Van der Pol</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Traza soluciones desde dentro y fuera del ciclo límite.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Soluciones interiores espiralan hacia afuera</li>
+                        <li>Soluciones exteriores espiralan hacia adentro</li>
+                        <li>Todas convergen al mismo ciclo cerrado</li>
+                        <li>Aumenta μ para ver oscilaciones de "relajación"</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-rose-400 mb-2">4. Separatrices del Péndulo</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        En el péndulo, busca las curvas que separan regiones de comportamiento diferente.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Órbitas cerradas pequeñas: oscilación</li>
+                        <li>Órbitas que dan vueltas completas: rotación</li>
+                        <li>La separatriz pasa por (±π, 0): puntos de silla</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-violet-400 mb-2">5. Desfase Depredador-Presa</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        En Lotka-Volterra, observa cómo oscilan presas y depredadores.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Los picos de depredadores siguen a los de presas</li>
+                        <li>El desfase es típicamente de ~90° (cuarto de periodo)</li>
+                        <li>Las órbitas son cerradas: sistema conservativo</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conceptos Clave -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Conceptos Clave</h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-emerald-400 mb-2">Puntos de Equilibrio</h3>
+                    <p class="text-gray-500 text-sm">
+                        Puntos donde dy/dx = 0 (y dv/dx = 0 en 2D). Las soluciones constantes.
+                        Pueden ser <strong>estables</strong> (atraen soluciones cercanas) o
+                        <strong>inestables</strong> (las repelen).
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-cyan-400 mb-2">Retrato de Fase</h3>
+                    <p class="text-gray-500 text-sm">
+                        Para sistemas de 2º orden, graficamos (y, dy/dx) en lugar de (x, y).
+                        Muestra la <strong>dinámica cualitativa</strong>: equilibrios, ciclos,
+                        separatrices, atractores.
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-amber-400 mb-2">Existencia y Unicidad</h3>
+                    <p class="text-gray-500 text-sm">
+                        Si f(x, y) es continua y tiene derivada parcial ∂f/∂y acotada, entonces
+                        existe una única solución por cada condición inicial. Las soluciones
+                        no se cruzan (excepto en puntos de equilibrio).
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-rose-400 mb-2">Sistemas Autónomos</h3>
+                    <p class="text-gray-500 text-sm">
+                        Cuando la ecuación no depende explícitamente de x: dy/dx = f(y).
+                        El campo de pendientes es el mismo a lo largo de líneas verticales.
+                        Las soluciones son "traslaciones" horizontales entre sí.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conexiones -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Conexiones</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="../lorenz.html" class="guide-link">
+                    <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">M</span>
+                    <span>Lorenz - Sistema caótico 3D</span>
+                </a>
+                <a href="../../Physics/Physics Visual Lab/pendulo-doble.html" class="guide-link">
+                    <span class="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">F</span>
+                    <span>Péndulo Doble - Caos determinista</span>
+                </a>
+                <a href="../../Biology/Biology Visual Lab/lotka-volterra.html" class="guide-link">
+                    <span class="w-5 h-5 bg-green-500 rounded-full flex items-center justify-center text-xs font-bold">B</span>
+                    <span>Ecosistemas - Depredador-Presa</span>
+                </a>
+                <a href="../funciones.html" class="guide-link">
+                    <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">M</span>
+                    <span>Funciones - Derivadas visualizadas</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Advertencias -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-amber-400 mb-4">Limitaciones del Modelo</h2>
+            <ul class="space-y-3 text-gray-400">
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>Los métodos numéricos acumulan <strong>error</strong> con el tiempo.
+                    Para simulaciones largas, la solución puede desviarse significativamente.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>Cerca de <strong>singularidades</strong> (donde f(x,y) explota),
+                    los métodos pueden fallar o dar resultados incorrectos.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>Las <strong>isoclinas y nulclinas</strong> se calculan por muestreo discreto,
+                    pueden aparecer discontinuas o con "ruido".</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>Para Lotka-Volterra, los parámetros γ y δ están fijos internamente
+                    (γ = δ = 0.5) para simplificar la interfaz.</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Historia -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Contexto Histórico</h2>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Las ecuaciones diferenciales nacieron con el cálculo de <strong>Newton</strong> y
+                <strong>Leibniz</strong> (c. 1680). Newton las usó para describir el movimiento
+                planetario y la gravedad.
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                <strong>Euler</strong> (1768) desarrolló el primer método numérico sistemático.
+                <strong>Runge</strong> y <strong>Kutta</strong> (1900-1901) mejoraron dramáticamente
+                la precisión con sus métodos de orden superior.
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                <strong>Poincaré</strong> (c. 1890) revolucionó el campo al estudiar
+                cualitativamente las soluciones sin resolverlas explícitamente, sentando las bases
+                de la teoría de sistemas dinámicos y el caos.
+            </p>
+            <p class="text-gray-300 leading-relaxed">
+                El oscilador de <strong>Van der Pol</strong> (1920) fue uno de los primeros ejemplos
+                estudiados de ciclo límite, surgido del análisis de circuitos de radio.
+            </p>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-gray-900 pt-8 text-center text-gray-600 text-sm">
+            <p>Math Visual Lab - EigenLab</p>
+        </footer>
+    </main>
+</body>
+</html>

@@ -1,0 +1,306 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 5: Exploración Visual Completa | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-04.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="./leccion-06.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
+                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>5/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 83.3%"></div>
+                        </div>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 5</span>
+                            <span class="text-gray-400 text-sm">⏱️ 30 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">Exploración Visual Completa</h1>
+                        <p class="text-gray-400 text-lg">Un recorrido práctico por todas las herramientas de visualización de PlatonicLab.</p>
+                    </div>
+
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Laboratorio Interactivo</h2>
+                        <p class="text-gray-300 mb-4">
+                            En esta lección pondremos en práctica todo lo aprendido. Usaremos PlatonicLab para explorar visualmente cada sólido y comprender sus propiedades geométricas.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Controles Básicos</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">🎮 Selección</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>Tecla 1: Tetraedro</li>
+                                    <li>Tecla 2: Cubo</li>
+                                    <li>Tecla 3: Octaedro</li>
+                                    <li>Tecla 4: Dodecaedro</li>
+                                    <li>Tecla 5: Icosaedro</li>
+                                </ul>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-purple mb-2">🔍 Visualización</h4>
+                                <ul class="text-sm text-gray-300 space-y-1">
+                                    <li>Clic + arrastrar: Rotar</li>
+                                    <li>Scroll: Zoom</li>
+                                    <li>Espacio: Play/Pause</li>
+                                    <li>Slider: Tamaño de arista</li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Capas de Visualización</h3>
+                        <p class="text-gray-300 mb-4">
+                            PlatonicLab permite activar/desactivar diferentes capas para analizar la estructura:
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-800">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">Capa</th>
+                                        <th class="px-4 py-2 text-left">Descripción</th>
+                                        <th class="px-4 py-2 text-center">Color</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr>
+                                        <td class="px-4 py-2 font-medium">Caras</td>
+                                        <td class="px-4 py-2">Superficies planas del sólido</td>
+                                        <td class="px-4 py-2 text-center text-green-400">Variable</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 font-medium">Aristas</td>
+                                        <td class="px-4 py-2">Líneas que conectan vértices</td>
+                                        <td class="px-4 py-2 text-center text-white">Blanco</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 font-medium">Vértices</td>
+                                        <td class="px-4 py-2">Puntos de intersección</td>
+                                        <td class="px-4 py-2 text-center text-yellow-400">Amarillo</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 font-medium">Esfera Circ.</td>
+                                        <td class="px-4 py-2">Pasa por todos los vértices</td>
+                                        <td class="px-4 py-2 text-center text-blue-400">Azul</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 font-medium">Esfera Ins.</td>
+                                        <td class="px-4 py-2">Tangente a todas las caras</td>
+                                        <td class="px-4 py-2 text-center text-red-400">Rojo</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio 1: Exploración del Icosaedro</h3>
+                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-purple mb-3">Instrucciones:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>Selecciona el icosaedro (tecla 5)</li>
+                                <li>Observa las 20 caras triangulares</li>
+                                <li>Cuenta los 12 vértices</li>
+                                <li>Activa la esfera circunscrita (azul)</li>
+                                <li>Verifica que pasa exactamente por los 12 vértices</li>
+                                <li>Activa la esfera inscrita (roja)</li>
+                                <li>Observa que toca el centro de cada cara</li>
+                                <li>Pausa la rotación y examina un vértice cercano</li>
+                                <li>Cuenta: ¿Cuántas caras concurren en cada vértice? (debería ser 5)</li>
+                            </ol>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio 2: Construcción Progresiva</h3>
+                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-cyan mb-3">Construcción del Tetraedro:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>Ve a la pestaña "Construir"</li>
+                                <li>Selecciona Tetraedro</li>
+                                <li><strong>Etapa 0 (Vértices):</strong> Observa los 4 puntos en el espacio</li>
+                                <li><strong>Etapa 1 (Aristas):</strong> Verifica 6 aristas conectando los vértices</li>
+                                <li><strong>Etapa 2 (Caras):</strong> Observa las 4 caras triangulares</li>
+                                <li><strong>Etapa 3 (Completo):</strong> Sólido formado con todas las capas</li>
+                            </ol>
+                            <p class="text-gray-400 mt-3 text-sm italic">
+                                Nota: 4 vértices × 3 conexiones / 2 = 6 aristas
+                            </p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio 3: Comparación de Esferas</h3>
+                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-purple mb-3">Compara R/r para cada sólido:</h4>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                                <div class="bg-gray-700/50 p-3 rounded">
+                                    <p class="text-sm text-gray-300">Tetraedro: R/r = 3.00</p>
+                                    <p class="text-xs text-gray-500">Muy "picudo"</p>
+                                </div>
+                                <div class="bg-gray-700/50 p-3 rounded">
+                                    <p class="text-sm text-gray-300">Cubo/Octaedro: R/r = 1.73</p>
+                                    <p class="text-xs text-gray-500">Relación media</p>
+                                </div>
+                                <div class="bg-gray-700/50 p-3 rounded">
+                                    <p class="text-sm text-gray-300">Dodecaedro/Icosaedro: R/r = 1.26</p>
+                                    <p class="text-xs text-gray-500">Más "esféricos"</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Propiedades Geométricas</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-800">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">Sólido</th>
+                                        <th class="px-4 py-2 text-center">Radio R</th>
+                                        <th class="px-4 py-2 text-center">Radio r</th>
+                                        <th class="px-4 py-2 text-center">Ángulo Diedro</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center font-mono">a√6/4</td>
+                                        <td class="px-4 py-2 text-center font-mono">a√6/12</td>
+                                        <td class="px-4 py-2 text-center">70.5°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
+                                        <td class="px-4 py-2 text-center font-mono">a√3/2</td>
+                                        <td class="px-4 py-2 text-center font-mono">a/2</td>
+                                        <td class="px-4 py-2 text-center">90°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
+                                        <td class="px-4 py-2 text-center font-mono">a√2/2</td>
+                                        <td class="px-4 py-2 text-center font-mono">a√6/6</td>
+                                        <td class="px-4 py-2 text-center">109.5°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center font-mono">a√3(1+√5)/4</td>
+                                        <td class="px-4 py-2 text-center font-mono">...</td>
+                                        <td class="px-4 py-2 text-center">116.6°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center font-mono">a√(10+2√5)/4</td>
+                                        <td class="px-4 py-2 text-center font-mono">...</td>
+                                        <td class="px-4 py-2 text-center">138.2°</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
+                            <span class="mr-2">🔬</span> LAB: Laboratorio Completo
+                        </h2>
+                        <p class="text-gray-400 mb-4">Realiza todos los ejercicios anteriores usando PlatonicLab. Tómate tu tiempo para explorar cada sólido.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="700" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                        <div class="mt-4 flex flex-wrap gap-2">
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'tetrahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">1 - Tetraedro</button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'cube'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">2 - Cubo</button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'octahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">3 - Octaedro</button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'dodecahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">4 - Dodecaedro</button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'icosahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">5 - Icosaedro</button>
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({tab: 'calc'}, '*')" class="px-4 py-2 bg-platonic-purple hover:bg-purple-600 rounded text-sm">Calculadora</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-04.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                            ← Anterior: Euclides
+                        </a>
+                        <a href="./leccion-06.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                            Siguiente: Notación Schläfli →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">
+                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

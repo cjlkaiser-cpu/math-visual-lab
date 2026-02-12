@@ -1,0 +1,258 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 4: Euclides y los Elementos | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-03.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="./leccion-05.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
+                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>4/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 66.6%"></div>
+                        </div>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 4</span>
+                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">Euclides y los Elementos</h1>
+                        <p class="text-gray-400 text-lg">La sistematización matemática que culmina con la prueba de que solo existen cinco sólidos platónicos.</p>
+                    </div>
+
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">El Padre de la Geometría</h2>
+                        <p class="text-gray-300 mb-4">
+                            Euclides (c. 300 a.C.) compuso <em>Los Elementos</em>, la obra matemática más influyente de la historia. En 13 libros, estableció el método axiomático-deductivo que domina las matemáticas hasta hoy.
+                        </p>
+
+                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 border-l-4 border-platonic-purple">
+                            <p class="text-lg italic text-gray-300">
+                                "No hay camino real hacia la geometría."
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2">— Euclides, según Proclo</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Libro XIII: Los Sólidos Platónicos</h3>
+                        <p class="text-gray-300 mb-4">
+                            El último libro de los Elementos está dedicado enteramente a los sólidos platónicos. Euclides demostró rigurosamente:
+                        </p>
+
+                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-purple mb-3">Proposición XVIII del Libro XIII:</h4>
+                            <p class="text-gray-300 italic">
+                                "Se pueden construir cinco figuras sólidas, y no más, que están contenidas por polígonos equiláteros y equiángulos iguales."
+                            </p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Demostración de Euclides</h3>
+                        <p class="text-gray-300 mb-4">
+                            Euclides utilizó un argumento basado en la <strong>convexidad</strong> y la suma de ángulos en un vértice:
+                        </p>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-cyan mb-2">Paso 1: Ángulo interior de un polígono</h4>
+                                <p class="text-gray-300 text-sm">Para un polígono regular de <strong>p</strong> lados:</p>
+                                <p class="text-center text-lg text-platonic-purple my-2">α<sub>p</sub> = (p-2) × 180° / p</p>
+                            </div>
+
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-cyan mb-2">Paso 2: Condición de convexidad</h4>
+                                <p class="text-gray-300 text-sm">En cada vértice concurren <strong>q</strong> caras. Para que el poliedro sea convexo:</p>
+                                <p class="text-center text-lg text-platonic-purple my-2">q × α<sub>p</sub> < 360°</p>
+                            </div>
+
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h4 class="font-semibold text-platonic-cyan mb-2">Paso 3: Las únicas soluciones</h4>
+                                <p class="text-gray-300 text-sm">Sustituyendo y simplificando:</p>
+                                <p class="text-center text-lg text-platonic-purple my-2">(p-2)(q-2) < 4</p>
+                                <p class="text-gray-300 text-sm mt-2">Las únicas soluciones enteras son las 5 combinaciones de los sólidos platónicos.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Tabla de Soluciones Válidas</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-800">
+                                    <tr>
+                                        <th class="px-4 py-2 text-center">p (lados)</th>
+                                        <th class="px-4 py-2 text-center">q (caras/vértice)</th>
+                                        <th class="px-4 py-2 text-left">Sólido</th>
+                                        <th class="px-4 py-2 text-center">Suma de ángulos</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center">3 × 60° = 180°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-center">4</td>
+                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
+                                        <td class="px-4 py-2 text-center">4 × 60° = 240°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-center">5</td>
+                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center">5 × 60° = 300°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">4</td>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
+                                        <td class="px-4 py-2 text-center">3 × 90° = 270°</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">5</td>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center">3 × 108° = 324°</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-6">
+                            <h4 class="font-semibold text-red-400 mb-2">¿Por qué no hay más?</h4>
+                            <p class="text-gray-300 text-sm">
+                                Si intentamos p=3, q=6: 6 × 60° = 360° (aplanado, no forma sólido)<br>
+                                Si intentamos p=6, q=3: 3 × 120° = 360° (aplanado, teselación plana)<br>
+                                Para p>5 o q>5, la suma excede 360°, imposibilitando la convexidad.
+                            </p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Legado de los Elementos</h3>
+                        <p class="text-gray-300 mb-4">
+                            Los Elementos de Euclides establecieron el estándar de rigor matemático por más de 2000 años. La demostración de que solo existen cinco sólidos platónicos es un ejemplo perfecto de:
+                        </p>
+
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-6 ml-4">
+                            <li>Razonamiento deductivo desde axiomas</li>
+                            <li>Demostración por casos exhaustivos</li>
+                            <li>Uso de condiciones necesarias y suficientes</li>
+                            <li>Economía de argumentos (sin casos superfluos)</li>
+                        </ul>
+
+                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-cyan mb-3">Ejercicio: Verificación Numérica</h4>
+                            <p class="text-gray-300 mb-2">Verifica que para cada sólido: (p-2)(q-2) < 4</p>
+                            <ul class="text-sm text-gray-400 space-y-1">
+                                <li>Tetraedro {3,3}: (3-2)(3-2) = 1 < 4 ✓</li>
+                                <li>Cubo {4,3}: (4-2)(3-2) = 2 < 4 ✓</li>
+                                <li>Octaedro {3,4}: (3-2)(4-2) = 2 < 4 ✓</li>
+                                <li>Dodecaedro {5,3}: (5-2)(3-2) = 3 < 4 ✓</li>
+                                <li>Icosaedro {3,5}: (3-2)(5-2) = 3 < 4 ✓</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
+                            <span class="mr-2">🔬</span> LAB: Verificación Interactiva
+                        </h2>
+                        <p class="text-gray-400 mb-4">Verifica la construcción de cada sólido en PlatonicLab. Observa el número de caras que concurren en cada vértice.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-03.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                            ← Anterior: Platón
+                        </a>
+                        <a href="./leccion-05.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                            Siguiente: Exploración Visual →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">
+                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

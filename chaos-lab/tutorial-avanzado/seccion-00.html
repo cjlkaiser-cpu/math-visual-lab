@@ -1,0 +1,827 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sección 0: Fundamentos Matemáticos | ChaosLab Avanzado</title>
+    
+    <!-- Google Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/contrib/auto-render.min.js"></script>
+    
+    <!-- Custom Styles -->
+    <link rel="stylesheet" href="css/tutorial.css">
+    
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        serif: ['Cormorant Garamond', 'serif'],
+                        sans: ['Source Sans 3', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    }
+                }
+            }
+        }
+        
+        document.addEventListener("DOMContentLoaded", function() {
+            renderMathInElement(document.body, {
+                delimiters: [
+                    {left: '$$', right: '$$', display: true},
+                    {left: '$', right: '$', display: false}
+                ],
+                throwOnError: false
+            });
+        });
+    </script>
+</head>
+<body>
+    <div class="tutorial-container">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <h2>ChaosLab</h2>
+                <p>Tutorial Avanzado</p>
+            </div>
+            <nav class="sidebar-nav">
+                <h3>Contenido de la Sección</h3>
+                <ul>
+                    <li><a href="#introduccion" class="subsection">1. Introducción</a></li>
+                    <li><a href="#banach" class="subsection">2. Espacios de Banach</a></li>
+                    <li><a href="#edo" class="subsection">3. Ecuaciones Diferenciales</a></li>
+                    <li><a href="#variedades" class="subsection">4. Variedades Diferenciables</a></li>
+                    <li><a href="#ejercicios" class="subsection">5. Ejercicios</a></li>
+                </ul>
+                
+                <h3 style="margin-top: 1.5rem;">Navegación General</h3>
+                <ul>
+                    <li><a href="index.html">← Volver al Inicio</a></li>
+                    <li><a href="seccion-01.html">Siguiente: Sección 1 →</a></li>
+                </ul>
+            </nav>
+        </aside>
+        
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header de página -->
+            <header class="page-header">
+                <h1>Sección 0: Fundamentos Matemáticos</h1>
+                <p class="subtitle">Espacios de Banach, Existencia y Unicidad de Soluciones, Dependencia Continua</p>
+                <div class="meta">
+                    <span>Dificultad: Avanzada</span>
+                    <span>Tiempo estimado: 4 horas</span>
+                </div>
+                <div class="progress-bar-container">
+                    <div class="progress-bar" style="width: 5%;"></div>
+                </div>
+            </header>
+            
+            <!-- Introducción -->
+            <section class="mb-12">
+                <h2 id="introduccion">1. Introducción</h2>
+                
+                <p>
+                    Los sistemas caóticos representan uno de los fenómenos más fascinantes en las matemáticas aplicadas y la física teórica. Sin embargo, antes de poder analizar propiedades como la sensibilidad a condiciones iniciales, los exponentes de Lyapunov o la dimensionalidad fractal, es imperativo establecer una base matemática rigurosa que garantice que los objetos que estudiamos realmente existen y están bien definidos.
+                </p>
+                
+                <p>
+                    En ChaosLab, trabajamos con ecuaciones diferenciales, mapeos iterados, y sistemas dinámicos en espacios de fase de alta dimensionalidad. Todo este análisis asume implícitamente ciertas propiedades de regularidad: que las soluciones existen, que son únicas, que dependen continuamente de las condiciones iniciales, y que los flujos preservan la estructura diferenciable del espacio de fases. Estas propiedades no son triviales ni universales; requieren hipótesis específicas sobre las funciones que definen nuestros sistemas.
+                </p>
+                
+                <p>
+                    Esta sección establece los fundamentos matemáticos necesarios para justificar rigurosamente el trabajo con sistemas caóticos. Comenzaremos con el análisis funcional en espacios de Banach, desarrollaremos la teoría de existencia y unicidad para ecuaciones diferenciales ordinarias mediante el método de iteraciones de Picard, y concluiremos con la teoría de variedades diferenciables que proporciona el marco geométrico adecuado para el estudio de flujos dinámicos.
+                </p>
+            </section>
+
+            <!-- Espacios de Banach -->
+            <section class="mb-12">
+                <h2 id="banach">2. Espacios de Banach y Análisis Funcional</h2>
+                
+                <h3>2.1 Espacios Normados Completos</h3>
+                
+                <p>
+                    El análisis funcional proporciona el marco abstracto necesario para estudiar ecuaciones en espacios infinito-dimensionales, pero sus conceptos fundamentales son igualmente cruciales en dimensiones finitas. Comenzamos con la definición central de espacio normado.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 2.1 (Espacio Normado)</h4>
+                    <p>
+                        Un <strong>espacio normado</strong> es un par $(X, \|\cdot\|)$ donde $X$ es un espacio vectorial sobre $\mathbb{R}$ (o $\mathbb{C}$) y $\|\cdot\|: X \to \mathbb{R}$ es una función que satisface:
+                    </p>
+                    <ol>
+                        <li><strong>Definida positiva:</strong> $\|x\| \geq 0$ para todo $x \in X$, y $\|x\| = 0$ si y solo si $x = 0$</li>
+                        <li><strong>Homogeneidad:</strong> $\|\alpha x\| = |\alpha| \|x\|$ para todo $\alpha \in \mathbb{R}$, $x \in X$</li>
+                        <li><strong>Desigualdad triangular:</strong> $\|x + y\| \leq \|x\| + \|y\|$ para todo $x, y \in X$</li>
+                    </ol>
+                </div>
+                
+                <p>
+                    La norma induce una métrica natural $d(x, y) = \|x - y\|$, lo que permite hablar de convergencia y completez. La noción de completitud es fundamental para garantizar que los límites de sucesiones convergentes permanezcan en el espacio.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 2.2 (Espacio de Banach)</h4>
+                    <p>
+                        Un <strong>espacio de Banach</strong> es un espacio normado $(X, \|\cdot\|)$ que es <strong>completo</strong> respecto a la métrica inducida por la norma. Es decir, toda sucesión de Cauchy en $X$ converge a un límite en $X$.
+                    </p>
+                </div>
+                
+                <p>
+                    Recordemos que una sucesión $(x_n)$ es de Cauchy si para todo $\varepsilon > 0$ existe $N \in \mathbb{N}$ tal que $\|x_n - x_m\| < \varepsilon$ para todo $n, m \geq N$.
+                </p>
+                
+                <div class="example">
+                    <h4>Ejemplos Fundamentales</h4>
+                    <ul>
+                        <li><strong>$\mathbb{R}^n$ con norma euclídea:</strong> $\|x\|_2 = \sqrt{\sum_{i=1}^n x_i^2}$. Este es el espacio de Banach más utilizado en sistemas dinámicos finito-dimensionales.</li>
+                        <li><strong>$\mathbb{R}^n$ con norma supremo:</strong> $\|x\|_\infty = \max_{1 \leq i \leq n} |x_i|$. Equivalente a la euclídea pero a veces más conveniente para estimaciones.</li>
+                        <li><strong>$C([a,b])$ con norma supremo:</strong> El espacio de funciones continuas en $[a,b]$ con $\|f\|_\infty = \sup_{t \in [a,b]} |f(t)|$. Este espacio es crucial para el método de Picard.</li>
+                        <li><strong>$\ell^p$ espacios de sucesiones:</strong> Para $1 \leq p < \infty$, $\|x\|_p = \left(\sum_{n=1}^\infty |x_n|^p\right)^{1/p}$.</li>
+                    </ul>
+                </div>
+                
+                <h3>2.2 Operadores en Espacios de Banach</h3>
+                
+                <p>
+                    Cuando resolvemos ecuaciones diferenciales mediante métodos iterativos, estamos esencialmente aplicando operadores a funciones repetidamente. La teoría de operadores lineales acotados proporciona las herramientas para analizar la convergencia de tales iteraciones.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 2.3 (Operador Lineal Acotado)</h4>
+                    <p>
+                        Sean $X$ e $Y$ espacios de Banach. Un operador lineal $T: X \to Y$ se dice <strong>acotado</strong> si existe $M > 0$ tal que:
+                    </p>
+                    <p class="text-center text-lg my-3">
+                        $$\|Tx\|_Y \leq M\|x\|_X \quad \text{para todo } x \in X$$
+                    </p>
+                    <p>
+                        La <strong>norma de operador</strong> se define como:
+                        $$\|T\| = \sup_{\|x\|_X = 1} \|Tx\|_Y = \sup_{x \neq 0} \frac{\|Tx\|_Y}{\|x\|_X}$$
+                    </p>
+                </div>
+                
+                <p>
+                    El espacio de operadores lineales acotados de $X$ a $Y$, denotado $\mathcal{L}(X, Y)$, es itself un espacio de Banach con la norma de operador definida anteriormente.
+                </p>
+                
+                <div class="theorem">
+                    <h4>Teorema 2.1 (de la Aplicación Abierta)</h4>
+                    <p>
+                        Sea $T: X \to Y$ un operador lineal acotado y sobreyectivo entre espacios de Banach. Entonces $T$ es una aplicación abierta: mapea conjuntos abiertos en conjuntos abiertos. Equivalentemente, si $T$ es biyectivo, entonces $T^{-1}$ es acotado.
+                    </p>
+                </div>
+                
+                <p>
+                    El concepto crucial para nuestros propósitos es el de <strong>contracción</strong>, un operador que "contrae" distancias entre puntos.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 2.4 (Operador Contractivo)</h4>
+                    <p>
+                        Sea $(X, d)$ un espacio métrico completo. Un mapeo $T: X \to X$ es una <strong>contracción</strong> si existe una constante $L \in [0, 1)$ tal que:
+                    </p>
+                    <p class="text-center text-lg my-3">
+                        $$d(T(x), T(y)) \leq L \cdot d(x, y) \quad \text{para todo } x, y \in X$$
+                    </p>
+                    <p>
+                        La constante $L$ se llama <strong>constante de Lipschitz</strong> o <strong>factor de contracción</strong>.
+                    </p>
+                </div>
+            </section>
+            
+            <section class="mb-12">
+                <h3>2.3 Teorema del Punto Fijo de Banach</h3>
+                
+                <p>
+                    El teorema del punto fijo de Banach (también conocido como teorema de la contracción o principio de las aplicaciones contractivas) es uno de los resultados más importantes en análisis funcional. Proporciona condiciones suficientes para la existencia y unicidad de puntos fijos y, crucialmente, da un método constructivo para encontrarlos.
+                </p>
+                
+                <div class="theorem">
+                    <h4>Teorema 2.2 (Banach, 1922)</h4>
+                    <p>
+                        Sea $(X, d)$ un espacio métrico completo no vacío y sea $T: X \to X$ una contracción con constante $L < 1$. Entonces:
+                    </p>
+                    <ol>
+                        <li><strong>Existencia:</strong> $T$ tiene exactamente un punto fijo $x^* \in X$, es decir, $T(x^*) = x^*$.</li>
+                        <li><strong>Construcción:</strong> Para cualquier $x_0 \in X$, la sucesión iterada $x_{n+1} = T(x_n)$ converge a $x^*$.</li>
+                        <li><strong>Estimación de error:</strong> $\|x_n - x^*\| \leq \frac{L^n}{1-L} \|x_1 - x_0\|$.</li>
+                    </ol>
+                </div>
+                
+                <div class="proof">
+                    <h4>Demostración Completa</h4>
+                    
+                    <p><strong>Paso 1: Construcción de la sucesión iterativa</strong></p>
+                    <p>
+                        Sea $x_0 \in X$ arbitrario. Definimos la sucesión $(x_n)$ por iteración:
+                    </p>
+                    <p class="text-center mb-4">$$x_{n+1} = T(x_n) \quad \text{para } n = 0, 1, 2, \ldots$$</p>
+                    
+                    <p><strong>Paso 2: La sucesión es de Cauchy</strong></p>
+                    <p>
+                        Demostremos que $(x_n)$ es una sucesión de Cauchy. Primero, estimemos la distancia entre iteraciones consecutivas:
+                    </p>
+                    <p class="text-center mb-2">$$\|x_{n+1} - x_n\| = \|T(x_n) - T(x_{n-1})\| \leq L \|x_n - x_{n-1}\|$$</p>
+                    <p>
+                        Por inducción, obtenemos:
+                    </p>
+                    <p class="text-center mb-3">$$\|x_{n+1} - x_n\| \leq L^n \|x_1 - x_0\|$$</p>
+                    
+                    <p>
+                        Ahora, para $m > n$, usando la desigualdad triangular:
+                    </p>
+                    <p class="text-center mb-2">$$\|x_m - x_n\| \leq \sum_{k=n}^{m-1} \|x_{k+1} - x_k\| \leq \sum_{k=n}^{m-1} L^k \|x_1 - x_0\|$$</p>
+                    <p>
+                        Esta es una serie geométrica. Como $L < 1$:
+                    </p>
+                    <p class="text-center mb-3">$$\|x_m - x_n\| \leq \|x_1 - x_0\| \sum_{k=n}^{\infty} L^k = \|x_1 - x_0\| \frac{L^n}{1-L}$$</p>
+                    <p>
+                        Dado $\varepsilon > 0$, como $L^n \to 0$, existe $N$ tal que para $n \geq N$:
+                        $\|x_1 - x_0\| \frac{L^n}{1-L} < \varepsilon$. Por tanto, $(x_n)$ es de Cauchy.
+                    </p>
+                    
+                    <p><strong>Paso 3: Existencia del punto fijo</strong></p>
+                    <p>
+                        Como $X$ es completo, existe $x^* \in X$ tal que $x_n \to x^*$. Como $T$ es continua (las contracciones son Lipschitz, y por tanto continuas):
+                    </p>
+                    <p class="text-center mb-3">$$T(x^*) = T(\lim_{n \to \infty} x_n) = \lim_{n \to \infty} T(x_n) = \lim_{n \to \infty} x_{n+1} = x^*$$</p>
+                    <p>
+                        Por tanto, $x^*$ es un punto fijo de $T$.
+                    </p>
+                    
+                    <p><strong>Paso 4: Unicidad del punto fijo</strong></p>
+                    <p>
+                        Supongamos que $y^*$ es otro punto fijo de $T$. Entonces:
+                    </p>
+                    <p class="text-center mb-2">$$\|x^* - y^*\| = \|T(x^*) - T(y^*)\| \leq L \|x^* - y^*\|$$</p>
+                    <p>
+                        Esto implica:
+                    </p>
+                    <p class="text-center mb-3">$$(1 - L) \|x^* - y^*\| \leq 0$$</p>
+                    <p>
+                        Como $L < 1$, tenemos $1 - L > 0$, por lo que $\|x^* - y^*\| = 0$, es decir, $x^* = y^*$.
+                    </p>
+                    
+                    <p><strong>Paso 5: Estimación de la tasa de convergencia</strong></p>
+                    <p>
+                        Tomando límite $m \to \infty$ en la estimación del Paso 2:
+                    </p>
+                    <p class="text-center mb-3">$$\|x^* - x_n\| \leq \frac{L^n}{1-L} \|x_1 - x_0\|$$</p>
+                    <p>
+                        Esto completa la demostración, mostrando convergencia exponencial con tasa $L$.
+                    </p>
+                </div>
+                
+                <div class="note tip">
+                    <h4>Importancia para Sistemas Dinámicos</h4>
+                    <p>
+                        El teorema de Banach es la piedra angular del teorema de existencia y unicidad de Picard-Lindelöf para ecuaciones diferenciales ordinarias. Cuando transformamos una EDO en una ecuación integral y definimos el operador de Picard, demostraremos que este operador es una contracción en un espacio de Banach adecuado, garantizando así existencia y unicidad de soluciones locales.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Ecuaciones Diferenciales Ordinarias -->
+            <section class="mb-12">
+                <h2 id="edo">3. Ecuaciones Diferenciales Ordinarias</h2>
+                
+                <h3>3.1 Problema de Valor Inicial</h3>
+                
+                <p>
+                    Un sistema dinámico continuo está tipicamente modelado por una ecuación diferencial ordinaria (EDO) que describe la evolución temporal de variables de estado. El problema matemático fundamental consiste en determinar si, dada una condición inicial, existe una única trayectoria que evoluciona según la regla dinámica especificada.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 3.1 (Problema de Valor Inicial)</h4>
+                    <p>
+                        Un <strong>problema de valor inicial (PVI)</strong> en $\mathbb{R}^n$ consiste en encontrar una función $x: I \to \mathbb{R}^n$ diferenciable en un intervalo $I \subseteq \mathbb{R}$ tal que:
+                    </p>
+                    <p class="text-center text-lg my-3">
+                        $$\begin{cases}
+                        \dot{x}(t) = f(t, x(t)), & t \in I \\
+                        x(t_0) = x_0
+                        \end{cases}$$
+                    </p>
+                    <p>
+                        donde $f: D \subseteq \mathbb{R} \times \mathbb{R}^n \to \mathbb{R}^n$ es una función dada (el campo vectorial), $t_0 \in \mathbb{R}$ es el tiempo inicial, y $x_0 \in \mathbb{R}^n$ es la condición inicial.
+                    </p>
+                </div>
+                
+                <p>
+                    En el contexto de sistemas dinámicos autónomos (donde $f$ no depende explícitamente de $t$), el tiempo inicial puede tomarse como $t_0 = 0$ sin pérdida de generalidad mediante una traslación temporal. Sin embargo, para el tratamiento general mantenemos $t_0$ arbitrario.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 3.2 (Función de Evolución y Flujo)</h4>
+                    <p>
+                        La <strong>función de evolución</strong> o <strong>flujo</strong> de un sistema dinámico es la función $\Phi: \mathcal{D} \subseteq \mathbb{R} \times \mathbb{R}^n \to \mathbb{R}^n$ tal que para cada $(t_0, x_0) \in \mathbb{R}^{n+1}$:
+                    </p>
+                    <p class="text-center text-lg my-3">$$\Phi(t; t_0, x_0) = x(t)$$</p>
+                    <p>
+                        donde $x(t)$ es la solución del PVI con condición inicial $x(t_0) = x_0$. En sistemas autónomos, escribimos $\Phi^t(x_0)$ o $\phi(t; x_0)$.
+                    </p>
+                </div>
+                
+                <p>
+                    Una <strong>solución maximal</strong> es una solución que no puede extenderse más allá de su intervalo de definición. El dominio maximal de existencia depende de las propiedades de $f$ y de la condición inicial.
+                </p>
+                
+                <h3>3.2 Teorema de Existencia y Unicidad de Picard-Lindelöf</h3>
+                
+                <p>
+                    El teorema de Picard-Lindelöf (también llamado teorema de existencia y unicidad de Cauchy-Lipschitz) establece condiciones suficientes sobre el campo vectorial $f$ para garantizar existencia y unicidad local de soluciones. Es el resultado fundamental de la teoría de EDOs.
+                </p>
+                
+                <div class="theorem">
+                    <h4>Teorema 3.1 (Picard-Lindelöf)</h4>
+                    <p>
+                        Sea $D \subseteq \mathbb{R} \times \mathbb{R}^n$ abierto y sea $f: D \to \mathbb{R}^n$ una función que satisface:
+                    </p>
+                    <ol>
+                        <li><strong>Continuidad:</strong> $f$ es continua en $D$</li>
+                        <li><strong>Condición de Lipschitz:</strong> $f$ es localmente Lipschitz continua en la variable $x$, uniformemente en $t$. Es decir, para cada $(t_0, x_0) \in D$, existen vecindades $U$ de $t_0$ y $V$ de $x_0$, y una constante $L > 0$ tal que:
+                        $$\|f(t, x) - f(t, y)\| \leq L \|x - y\| \quad \text{para todo } t \in U, x, y \in V$$</li>
+                    </ol>
+                    <p>
+                        Entonces para cada $(t_0, x_0) \in D$, existe $\alpha > 0$ tal que el PVI tiene una única solución $x(t)$ definida en el intervalo $[t_0 - \alpha, t_0 + \alpha]$.
+                    </p>
+                </div>
+                
+                <p>
+                    La demostración clásica de este teorema transforma la EDO en una ecuación integral y aplica el teorema del punto fijo de Banach al operador de Picard.
+                </p>
+                
+                <div class="proof">
+                    <h4>Demostración Completa</h4>
+                    
+                    <p><strong>Paso 1: Transformación a ecuación integral</strong></p>
+                    <p>
+                        Una función $x: I \to \mathbb{R}^n$ diferenciable es solución del PVI si y solo si satisface la ecuación integral:
+                    </p>
+                    <p class="text-center mb-4">$$x(t) = x_0 + \int_{t_0}^t f(s, x(s)) \, ds$$</p>
+                    
+                    <p>
+                        (Demostración de equivalencia: Si $x$ satisface la EDO, integrando desde $t_0$ a $t$ obtenemos la forma integral. Recíprocamente, si $x$ es continua y satisface la ecuación integral, entonces es diferenciable por el teorema fundamental del cálculo, y derivando recuperamos la EDO.)
+                    </p>
+                    
+                    <p><strong>Paso 2: Construcción del espacio de Banach</strong></p>
+                    <p>
+                        Sean $\delta > 0$ y $\varepsilon > 0$ tales que el cilindro:
+                    </p>
+                    <p class="text-center mb-3">$$R = \{(t, x) : |t - t_0| \leq \delta, \|x - x_0\| \leq \varepsilon\} \subseteq D$$</p>
+                    <p>
+                        Como $f$ es continua en el compacto $R$, existe $M = \max_{(t,x) \in R} \|f(t, x)\|$.
+                    </p>
+                    <p>
+                        Definimos el espacio:
+                        $$X = \{x \in C([t_0 - \alpha, t_0 + \alpha]) : \|x(t) - x_0\| \leq \varepsilon \text{ para todo } t\}$$
+                        donde $\alpha = \min\{\delta, \varepsilon/M\}$. Este es un subconjunto cerrado del espacio de Banach $C([t_0 - \alpha, t_0 + \alpha])$ con la norma supremo, y por tanto es completo.
+                    </p>
+                    
+                    <p><strong>Paso 3: Definición del operador de Picard</strong></p>
+                    <p>
+                        Definimos el <strong>operador de Picard</strong> $P: X \to C([t_0 - \alpha, t_0 + \alpha])$ por:
+                    </p>
+                    <p class="text-center mb-4">$$(Px)(t) = x_0 + \int_{t_0}^t f(s, x(s)) \, ds$$</p>
+                    
+                    <p><strong>Paso 4: Verificación de que $P$ mapea $X$ en $X$</strong></p>
+                    <p>
+                        Para $x \in X$ y $|t - t_0| \leq \alpha$:
+                    </p>
+                    <p class="text-center mb-2">$$\|(Px)(t) - x_0\| = \left\|\int_{t_0}^t f(s, x(s)) \, ds\right\| \leq \int_{t_0}^t \|f(s, x(s))\| \, ds \leq M|t - t_0| \leq M\alpha \leq \varepsilon$$</p>
+                    <p>
+                        Por tanto, $Px \in X$.
+                    </p>
+                    
+                    <p><strong>Paso 5: Demostración de que $P$ es contracción</strong></p>
+                    <p>
+                        Sean $x, y \in X$. Usando la condición de Lipschitz:
+                    </p>
+                    <p class="text-center mb-2">$$\|(Px)(t) - (Py)(t)\| = \left\|\int_{t_0}^t [f(s, x(s)) - f(s, y(s))] \, ds\right\|$$</p>
+                    <p class="text-center mb-2">$$\leq \int_{t_0}^t \|f(s, x(s)) - f(s, y(s))\| \, ds \leq \int_{t_0}^t L \|x(s) - y(s)\| \, ds$$</p>
+                    <p class="text-center mb-3">$$\leq L \|x - y\|_\infty |t - t_0| \leq L\alpha \|x - y\|_\infty$$</p>
+                    <p>
+                        Tomando supremo sobre $t$:
+                    </p>
+                    <p class="text-center mb-4">$$\|Px - Py\|_\infty \leq L\alpha \|x - y\|_\infty$$</p>
+                    <p>
+                        Elegimos $\alpha$ suficientemente pequeño para que $L\alpha < 1$ (ajustando $\alpha \leq \min\{\delta, \varepsilon/M, 1/(2L)\}$). Entonces $P$ es una contracción con constante $L\alpha < 1$.
+                    </p>
+                    
+                    <p><strong>Paso 6: Aplicación del teorema de punto fijo</strong></p>
+                    <p>
+                        Por el teorema de Banach, $P$ tiene un único punto fijo $x^* \in X$. Este punto fijo satisface:
+                    </p>
+                    <p class="text-center mb-3">$$x^*(t) = x_0 + \int_{t_0}^t f(s, x^*(s)) \, ds$$</p>
+                    <p>
+                        que es equivalente al PVI original. La unicidad del punto fijo implica la unicidad de la solución en $[t_0 - \alpha, t_0 + \alpha]$.
+                    </p>
+                    
+                    <p><strong>Paso 7: Estimaciones explícitas</strong></p>
+                    <p>
+                        Las iteraciones de Picard $x_{n+1} = Px_n$ convergen a la solución con estimación de error:
+                    </p>
+                    <p class="text-center mb-3">$$\|x_n - x^*\|_\infty \leq \frac{(L\alpha)^n}{1 - L\alpha} \|x_1 - x_0\|_\infty$$</p>
+                    <p>
+                        Esto completa la demostración del teorema de Picard-Lindelöf.
+                    </p>
+                </div>
+                
+                <div class="note important">
+                    <h4>Observaciones Importantes</h4>
+                    <ul>
+                        <li><strong>Condición de Lipschitz:</strong> Si $f$ es de clase $C^1$ en $x$, entonces es automáticamente localmente Lipschitz (por el teorema del valor medio).</li>
+                        <li><strong>Condición de Peano:</strong> Solo con continuidad de $f$ se garantiza existencia (teorema de Peano), pero no unicidad. Ejemplo: $\dot{x} = \sqrt{|x|}$ con $x(0) = 0$ tiene infinitas soluciones.</li>
+                        <li><strong>Sistemas autónomos:</strong> Para $\dot{x} = f(x)$ con $f \in C^1$, la solución existe localmente y es única. El flujo define un sistema dinámico local.</li>
+                    </ul>
+                </div>
+                
+                <h3>3.3 Dependencia Continua respecto a Condiciones Iniciales</h3>
+                
+                <p>
+                    Una propiedad esencial de los sistemas dinámicos deterministas es que soluciones cercanas permanecen cercanas, al menos por tiempo corto. Esta dependencia continua es el fundamento para poder predecir comportamientos a corto plazo, aunque en sistemas caóticos esta predicción se degrade exponencialmente.
+                </p>
+                
+                <div class="theorem">
+                    <h4>Teorema 3.2 (Dependencia Continua)</h4>
+                    <p>
+                        Sean $x(t)$ y $y(t)$ soluciones de $\dot{x} = f(t, x)$ con condiciones iniciales $x(t_0) = x_0$ y $y(t_0) = y_0$, respectivamente, definidas en un intervalo común $[t_0, t_1]$. Supongamos que $f$ satisface una condición de Lipschitz global con constante $L$ en la región de interés. Entonces:
+                    </p>
+                    <p class="text-center text-lg my-3">
+                        $$\|x(t) - y(t)\| \leq \|x_0 - y_0\| e^{L|t - t_0|} \quad \text{para todo } t \in [t_0, t_1]$$
+                    </p>
+                </div>
+                
+                <div class="proof">
+                    <h4>Demostración usando la desigualdad de Gronwall</h4>
+                    
+                    <p><strong>Paso 1: Formulación de la desigualdad integral</strong></p>
+                    <p>
+                        Definimos $u(t) = \|x(t) - y(t)\|$. Como ambas funciones satisfacen la EDO:
+                    </p>
+                    <p class="text-center mb-3">$$x(t) = x_0 + \int_{t_0}^t f(s, x(s)) \, ds, \quad y(t) = y_0 + \int_{t_0}^t f(s, y(s)) \, ds$$</p>
+                    <p>
+                        Restando y tomando normas:
+                    </p>
+                    <p class="text-center mb-2">$$u(t) \leq \|x_0 - y_0\| + \int_{t_0}^t \|f(s, x(s)) - f(s, y(s))\| \, ds$$</p>
+                    <p class="text-center mb-4">$$\leq \|x_0 - y_0\| + L \int_{t_0}^t u(s) \, ds$$</p>
+                    
+                    <p><strong>Paso 2: Aplicación de la desigualdad de Gronwall</strong></p>
+                    <p>
+                        <strong>Lema (Gronwall):</strong> Si $u(t)$ es una función no negativa continua que satisface:
+                    </p>
+                    <p class="text-center mb-3">$$u(t) \leq a + b \int_{t_0}^t u(s) \, ds$$</p>
+                    <p>
+                        para constantes $a, b \geq 0$, entonces:
+                    </p>
+                    <p class="text-center mb-4">$$u(t) \leq a e^{b(t - t_0)}$$</p>
+                    
+                    <p><strong>Paso 3: Demostración del lema de Gronwall</strong></p>
+                    <p>
+                        Definimos $v(t) = a + b \int_{t_0}^t u(s) \, ds$. Entonces $v'(t) = b u(t) \leq b v(t)$ (pues $u(t) \leq v(t)$ por hipótesis).
+                    </p>
+                    <p>
+                        Consideramos $\frac{d}{dt}[v(t) e^{-b(t-t_0)}] = v'(t)e^{-b(t-t_0)} - b v(t)e^{-b(t-t_0)} \leq 0$.
+                    </p>
+                    <p>
+                        Por tanto, $v(t) e^{-b(t-t_0)} \leq v(t_0) = a$, lo que implica $v(t) \leq a e^{b(t-t_0)}$.
+                    </p>
+                    <p>
+                        Como $u(t) \leq v(t)$, obtenemos $u(t) \leq a e^{b(t-t_0)}$.
+                    </p>
+                    
+                    <p><strong>Paso 4: Conclusión</strong></p>
+                    <p>
+                        Aplicando Gronwall con $a = \|x_0 - y_0\|$ y $b = L$:
+                    </p>
+                    <p class="text-center mb-3">$$\|x(t) - y(t)\| \leq \|x_0 - y_0\| e^{L(t - t_0)}$$</p>
+                    <p>
+                        Para $t < t_0$, el argumento es análogo considerando integración hacia atrás. Esto completa la demostración.
+                    </p>
+                </div>
+                
+                <div class="example">
+                    <h4>Interpretación Geométrica</h4>
+                    <p>
+                        El flujo $\Phi^t$ es un <strong>difeomorfismo local</strong>: para cada $t$ fijo en el dominio de existencia, la función $x_0 \mapsto \Phi^t(x_0)$ es diferenciable con inversa diferenciable. Esto preserva la estructura diferenciable del espacio de fases.
+                    </p>
+                    <p>
+                        En sistemas caóticos como el atractor de Lorenz, a pesar de esta dependencia continua formal, el factor $e^{L|t-t_0|}$ crece exponencialmente (con $L$ relacionado al mayor exponente de Lyapunov), haciendo que trayectorias inicialmente cercanas se separen dramáticamente en tiempos moderados.
+                    </p>
+                </div>
+            </section>
+
+            <!-- Variedades Diferenciables -->
+            <section class="mb-12">
+                <h2 id="variedades">4. Variedades Diferenciables y Espacios de Fases</h2>
+                
+                <h3>4.1 Variedades Diferenciables</h3>
+                
+                <p>
+                    Mientras que el análisis en $\mathbb{R}^n$ es suficiente para muchos sistemas, el marco natural para sistemas dinámicos es el de variedades diferenciables. Una variedad es un espacio que localmente "parece" $\mathbb{R}^n$ pero puede tener estructura global más compleja.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 4.1 (Variedad Diferenciable - Intuitiva)</h4>
+                    <p>
+                        Una <strong>variedad diferenciable</strong> $M$ de dimensión $n$ es un espacio topológico que puede cubrirse por una colección de <strong>cartas</strong> $(U_\alpha, \phi_\alpha)$ donde:
+                    </p>
+                    <ul>
+                        <li>$U_\alpha$ son abiertos que cubren $M$</li>
+                        <li>$\phi_\alpha: U_\alpha \to V_\alpha \subseteq \mathbb{R}^n$ son homeomorfismos (mapeos continuos con inversa continua)</li>
+                        <li>En las intersecciones $U_\alpha \cap U_\beta$, los <strong>cambios de coordenadas</strong> $\phi_\beta \circ \phi_\alpha^{-1}$ son difeomorfismos (suaves con inversa suave)</li>
+                    </ul>
+                    <p>
+                        Esto permite hacer cálculo diferencial en $M$ usando coordenadas locales.
+                    </p>
+                </div>
+                
+                <div class="example">
+                    <h4>Ejemplos</h4>
+                    <ul>
+                        <li><strong>$\mathbb{R}^n$:</strong> La variedad trivial con una sola carta (la identidad).</li>
+                        <li><strong>Esfera $S^n$:</strong> Cubierta por dos cartas usando proyección estereográfica desde los polos norte y sur.</li>
+                        <li><strong>Toro $\mathbb{T}^n = S^1 \times \cdots \times S^1$:</strong> Espacio de fases natural para osciladores acoplados.</li>
+                        <li><strong>Superficies de energía constante:</strong> En sistemas Hamiltonianos conservativos, el espacio de fases se restringe a niveles de energía, que son variedades de codimensión 1.</li>
+                    </ul>
+                </div>
+                
+                <p>
+                    En cada punto $p \in M$, podemos definir el <strong>espacio tangente</strong> $T_pM$, que es un espacio vectorial de dimensión $n$ que representa todas las direcciones posibles de movimiento desde $p$. La unión de todos estos espacios forma el <strong>fibrado tangente</strong> $TM$, que es itself una variedad de dimensión $2n$.
+                </p>
+                
+                <h3>4.2 Campos Vectoriales y Flujos</h3>
+                
+                <p>
+                    Un sistema dinámico en una variedad está definido por un campo vectorial, que asigna a cada punto una dirección y velocidad de movimiento.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 4.2 (Campo Vectorial)</h4>
+                    <p>
+                        Un <strong>campo vectorial</strong> suave $X$ en una variedad $M$ es una función que asigna a cada punto $p \in M$ un vector $X(p) \in T_pM$ en el espacio tangente, de manera suave (las componentes en coordenadas locales son funciones suaves).
+                    </p>
+                </div>
+                
+                <p>
+                    Dado un campo vectorial, buscamos curvas integrales: trayectorias cuya velocidad en cada punto coincida con el campo vectorial.
+                </p>
+                
+                <div class="theorem">
+                    <h4>Teorema 4.1 (Existencia del Flujo Local)</h4>
+                    <p>
+                        Sea $X$ un campo vectorial suave en una variedad $M$. Para cada $p \in M$, existe un entorno $U$ de $p$, un número $\varepsilon > 0$, y una función suave $\Phi: (-\varepsilon, \varepsilon) \times U \to M$ tal que:
+                    </p>
+                    <ol>
+                        <li>$\Phi(0, x) = x$ para todo $x \in U$ (condición inicial)</li>
+                        <li>$\frac{d}{dt}\Phi(t, x) = X(\Phi(t, x))$ para todo $(t, x) \in (-\varepsilon, \varepsilon) \times U$ (ecuación diferencial)</li>
+                    </ol>
+                    <p>
+                        La función $\Phi$ se llama <strong>flujo local</strong> generado por $X$.
+                    </p>
+                </div>
+                
+                <p>
+                    El flujo satisface la propiedad de <strong>grupo local a un parámetro</strong>: donde esté definido,
+                </p>
+                <p class="text-center text-lg mb-4">$$\Phi^{t+s}(x) = \Phi^t(\Phi^s(x))$$</p>
+                <p>
+                    Es decir, evolucionar por tiempo $t+s$ es equivalente a evolucionar por tiempo $s$ y luego por tiempo $t$.
+                </p>
+                
+                <h3>4.3 Difeomorfismos y Estructura del Espacio de Fases</h3>
+                
+                <p>
+                    Los difeomorfismos son los isomorfismos naturales en la categoría de variedades diferenciables: mapeos suaves con inversa suave que preservan toda la estructura diferenciable.
+                </p>
+                
+                <div class="definition">
+                    <h4>Definición 4.3 (Difeomorfismo)</h4>
+                    <p>
+                        Un <strong>difeomorfismo</strong> entre variedades $M$ y $N$ es un mapeo biyectivo $f: M \to N$ tal que tanto $f$ como $f^{-1}$ son suaves (infinitamente diferenciables). Dos variedades son <strong>difemorfas</strong> si existe un difeomorfismo entre ellas.
+                    </p>
+                </div>
+                
+                <div class="theorem">
+                    <h4>Teorema 4.2 (El Flujo como Difeomorfismo Local)</h4>
+                    <p>
+                        Sea $X$ un campo vectorial suave en $M$ con flujo local $\Phi^t$. Para cada $t$ suficientemente pequeño (donde el flujo esté definido), el mapeo:
+                    </p>
+                    <p class="text-center mb-3">$$\Phi^t: U \to \Phi^t(U)$$</p>
+                    <p>
+                        es un difeomorfismo sobre su imagen. Es decir, el flujo transporta diferenciablemente regiones del espacio de fases preservando toda la estructura geométrica local.
+                    </p>
+                </div>
+                
+                <div class="note tip">
+                    <h4>Implicaciones para Sistemas Caóticos</h4>
+                    <ul>
+                        <li><strong>Preservación de volumen:</strong> El determinante Jacobiano del flujo está relacionado con la divergencia del campo vectorial. Sistemas disipativos contraen volúmenes, mientras que sistemas Hamiltonianos los preservan.</li>
+                        <li><strong>Estructura de atractores:</strong> En sistemas disipativos caóticos, el flujo contrae volúmenes en la mayoría de direcciones pero expande en otras (direcciones inestables), llevando a conjuntos atractores de medida cero pero dimensión fractal.</li>
+                        <li><strong>Entropía topológica:</strong> La complejidad del flujo puede medirse por cuántas trayectorias distintas pueden distinguirse, relacionado con la tasa de expansión local.</li>
+                    </ul>
+                </div>
+            </section>
+
+            <!-- Ejercicios -->
+            <section class="mb-12">
+                <h2 id="ejercicios">5. Ejercicios</h2>
+                
+                <h3>Ejercicios Básicos</h3>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 1: Verificación de Espacio de Banach</h4>
+                    <p>
+                        Verificar que $(\mathbb{R}^n, \|\cdot\|_2)$ es un espacio de Banach, donde $\|x\|_2 = \sqrt{\sum_{i=1}^n x_i^2}$.
+                    </p>
+                    <div class="solution">
+                        <h5>Solución:</h5>
+                        <p>
+                            <strong>Paso 1: Verificar que es espacio normado.</strong>
+                        </p>
+                        <p>
+                            (i) Definida positiva: $\|x\|_2 \geq 0$ pues es raíz cuadrada de suma de cuadrados. $\|x\|_2 = 0 \Leftrightarrow \sum x_i^2 = 0 \Leftrightarrow x_i = 0$ para todo $i \Leftrightarrow x = 0$.
+                        </p>
+                        <p>
+                            (ii) Homogeneidad: $\|\alpha x\|_2 = \sqrt{\sum (\alpha x_i)^2} = \sqrt{\alpha^2 \sum x_i^2} = |\alpha| \|x\|_2$.
+                        </p>
+                        <p>
+                            (iii) Desigualdad triangular: Usando la desigualdad de Cauchy-Schwarz:
+                            $$\|x + y\|_2^2 = \sum (x_i + y_i)^2 = \sum x_i^2 + 2\sum x_i y_i + \sum y_i^2$$
+                            $$\leq \|x\|_2^2 + 2\|x\|_2\|y\|_2 + \|y\|_2^2 = (\|x\|_2 + \|y\|_2)^2$$
+                        </p>
+                        <p>
+                            <strong>Paso 2: Verificar completitud.</strong>
+                        </p>
+                        <p>
+                            Sea $(x^{(k)})$ una sucesión de Cauchy en $\mathbb{R}^n$. Entonces para cada coordenada $i$, la sucesión $(x_i^{(k)})$ es de Cauchy en $\mathbb{R}$ (pues $|x_i^{(k)} - x_i^{(m)}| \leq \|x^{(k)} - x^{(m)}\|_2 < \varepsilon$). Como $\mathbb{R}$ es completo, $x_i^{(k)} \to x_i$ para algún $x_i \in \mathbb{R}$. Definiendo $x = (x_1, \ldots, x_n)$, se tiene $x^{(k)} \to x$ en $\mathbb{R}^n$.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 2: Operador Lineal Acotado es Lipschitz</h4>
+                    <p>
+                        Demostrar que un operador lineal acotado $T: X \to Y$ entre espacios normados es una función Lipschitz continua. ¿Cuál es la constante de Lipschitz óptima?
+                    </p>
+                    <div class="solution">
+                        <h5>Solución:</h5>
+                        <p>
+                            Para cualquier $x, y \in X$:
+                        </p>
+                        <p class="text-center mb-2">$$\|T(x) - T(y)\|_Y = \|T(x - y)\|_Y \leq \|T\| \|x - y\|_X$$</p>
+                        <p>
+                            La primera igualdad usa linealidad de $T$: $T(x) - T(y) = T(x - y)$.
+                        </p>
+                        <p>
+                            La desigualdad es la definición de la norma de operador: $\|T\| = \sup_{\|z\|=1} \|Tz\|$, por tanto $\|Tz\| \leq \|T\| \|z\|$ para todo $z$.
+                        </p>
+                        <p>
+                            Entonces $T$ es Lipschitz con constante $L = \|T\|$. Esta es óptima: por definición de supremo, para todo $\varepsilon > 0$ existe $z$ con $\|z\| = 1$ tal que $\|Tz\| > \|T\| - \varepsilon$. Tomando $x = z$ e $y = 0$, tenemos $\|T(x) - T(y)\|/\|x - y\| = \|Tz\| > \|T\| - \varepsilon$.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 3: Constante de Lipschitz para Seno</h4>
+                    <p>
+                        Calcular la constante de Lipschitz para $f(x) = \sin(x)$ en $\mathbb{R}$ y en $[0, \pi]$.
+                    </p>
+                    <div class="solution">
+                        <h5>Solución:</h5>
+                        <p>
+                            Por el teorema del valor medio, para cualquier $x, y \in \mathbb{R}$, existe $\xi$ entre $x$ y $y$ tal que:
+                        </p>
+                        <p class="text-center mb-2">$$|\sin(x) - \sin(y)| = |\cos(\xi)| \cdot |x - y| \leq |x - y|$$</p>
+                        <p>
+                            pues $|\cos(\xi)| \leq 1$ para todo $\xi$. Por tanto, $L = 1$ en todo $\mathbb{R}$. Esta es óptima pues en $x = 0$, $f'(0) = \cos(0) = 1$.
+                        </p>
+                        <p>
+                            En $[0, \pi]$, el máximo de $|\cos(x)|$ es 1 (en $x = 0$ y $x = \pi$), así que $L = 1$ también.
+                        </p>
+                    </div>
+                </div>
+                
+                <h3>Ejercicios Intermedios</h3>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 4: Unicidad en Teorema de Banach</h4>
+                    <p>
+                        Demostrar directamente (sin usar el teorema completo) que si $T$ es una contracción con constante $L < 1$, entonces tiene a lo sumo un punto fijo.
+                    </p>
+                    <div class="solution">
+                        <h5>Solución:</h5>
+                        <p>
+                            Supongamos que $x^*$ e $y^*$ son puntos fijos de $T$. Entonces:
+                        </p>
+                        <p class="text-center mb-2">$$\|x^* - y^*\| = \|T(x^*) - T(y^*)\| \leq L \|x^* - y^*\|$$</p>
+                        <p>
+                            Esto implica $(1 - L)\|x^* - y^*\| \leq 0$.
+                        </p>
+                        <p>
+                            Como $L < 1$, tenemos $1 - L > 0$, así que $\|x^* - y^*\| = 0$, es decir, $x^* = y^*$.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 5: Iteraciones de Picard para EDO Lineal</h4>
+                    <p>
+                        Considerar la EDO $\dot{x} = ax$ con $x(0) = x_0$. Calcular las primeras tres iteraciones de Picard y verificar que convergen a la solución exacta.
+                    </p>
+                    <div class="solution">
+                        <h5>Solución:</h5>
+                        <p>
+                            El operador de Picard es $(Px)(t) = x_0 + \int_0^t ax(s) \, ds$.
+                        </p>
+                        <p>
+                            <strong>Iteración 0:</strong> $x_0(t) = x_0$ (constante)
+                        </p>
+                        <p>
+                            <strong>Iteración 1:</strong> $x_1(t) = x_0 + \int_0^t ax_0 \, ds = x_0 + ax_0 t = x_0(1 + at)$
+                        </p>
+                        <p>
+                            <strong>Iteración 2:</strong> $x_2(t) = x_0 + \int_0^t ax_0(1 + as) \, ds = x_0 + ax_0 t + \frac{a^2 x_0 t^2}{2} = x_0\left(1 + at + \frac{(at)^2}{2}\right)$
+                        </p>
+                        <p>
+                            <strong>Iteración 3:</strong> $x_3(t) = x_0\left(1 + at + \frac{(at)^2}{2} + \frac{(at)^3}{6}\right)$
+                        </p>
+                        <p>
+                            Reconocemos los términos de la serie de Taylor de $e^{at}$. La solución exacta es $x(t) = x_0 e^{at}$.
+                        </p>
+                    </div>
+                </div>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 6: Dependencia Continua para Sistema Lineal</h4>
+                    <p>
+                        Sea $\dot{x} = Ax$ donde $A$ es una matriz constante. Demostrar que la solución con condición inicial $x(0) = x_0$ es $x(t) = e^{At}x_0$ y verificar la fórmula de dependencia continua.
+                    </p>
+                    <div class="solution">
+                        <h5>Solución:</h5>
+                        <p>
+                            La solución de $\dot{x} = Ax$ se obtiene por serie de potencias:
+                            $$x(t) = \left(I + At + \frac{A^2 t^2}{2!} + \cdots\right)x_0 = e^{At}x_0$$
+                        </p>
+                        <p>
+                            Para dos condiciones iniciales $x_0$ e $y_0$:
+                            $$\|x(t) - y(t)\| = \|e^{At}(x_0 - y_0)\| \leq \|e^{At}\| \|x_0 - y_0\|$$
+                        </p>
+                        <p>
+                            Como $\|e^{At}\| \leq e^{\|A\||t|}$, obtenemos:
+                            $$\|x(t) - y(t)\| \leq e^{\|A\||t|} \|x_0 - y_0\|$$
+                        </p>
+                        <p>
+                            que coincide con la estimación del Teorema 3.2 tomando $L = \|A\|$.
+                        </p>
+                    </div>
+                </div>
+                
+                <h3>Ejercicios Avanzados</h3>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 7: Completitud de C([a,b])</h4>
+                    <p>
+                        Demostrar que el espacio $C([a,b])$ de funciones continuas en $[a,b]$ con la norma supremo es un espacio de Banach.
+                    </p>
+                </div>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 8: Existencia Global vs Local</h4>
+                    <p>
+                        Considerar la EDO $\dot{x} = x^2$ con $x(0) = 1$. Demostrar que la solución explota en tiempo finito y calcular el tiempo de explosión. ¿Por qué el teorema de existencia global no aplica?
+                    </p>
+                </div>
+                
+                <div class="exercise">
+                    <h4>Ejercicio 9: Variedad Estable del Sistema Lineal</h4>
+                    <p>
+                        Para el sistema lineal $\dot{x} = Ax$ donde $A = \begin{pmatrix} -1 & 0 \\ 0 & 2 \end{pmatrix}$, encontrar explícitamente las variedades estable e inestable del origen.
+                    </p>
+                </div>
+            </section>
+            
+            <!-- Navegación -->
+            <nav class="nav-footer">
+                <a href="index.html" class="nav-prev">
+                    <div class="nav-label">Anterior</div>
+                    <div class="nav-title">Índice del Tutorial</div>
+                </a>
+                <a href="seccion-01.html" class="nav-next">
+                    <div class="nav-label">Siguiente</div>
+                    <div class="nav-title">Sección 1: Fundamentos de Teoría del Caos</div>
+                </a>
+            </nav>
+        </main>
+    </div>
+</body>
+</html>

@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Curso: Matemáticas Visuales — De Platón a 4D</title>
+    
+    <!-- Fonts -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'system-ui', 'sans-serif'],
+                        mono: ['JetBrains Mono', 'monospace'],
+                    },
+                    colors: {
+                        primary: { DEFAULT: '#8b5cf6', light: '#a78bfa', dark: '#7c3aed' },
+                        secondary: { DEFAULT: '#06b6d4', light: '#22d3ee' },
+                        accent: { DEFAULT: '#f59e0b', light: '#fbbf24' },
+                    }
+                }
+            }
+        };
+    </script>
+    
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+        .hero-gradient {
+            background: radial-gradient(ellipse at top, #1e1b4b 0%, #0f0f1a 50%, #000000 100%);
+        }
+        .solid-icon {
+            transition: transform 0.3s ease, filter 0.3s ease;
+        }
+        .solid-icon:hover {
+            transform: scale(1.1) rotate(5deg);
+            filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+        }
+    </style>
+</head>
+<body class="bg-gray-950 text-gray-200 font-sans min-h-screen">
+    
+    <!-- Navigation -->
+    <nav class="fixed top-0 w-full z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center gap-2">
+                    <span class="text-2xl">◆</span>
+                    <span class="font-bold text-xl tracking-tight">
+                        <span class="text-primary">Platonic</span><span class="text-gray-400">Lab</span>
+                    </span>
+                </div>
+                <div class="flex items-center gap-6">
+                    <a href="#curriculum" class="text-sm text-gray-400 hover:text-white transition-colors">Contenido</a>
+                    <a href="#modulos" class="text-sm text-gray-400 hover:text-white transition-colors">Módulos</a>
+                    <a href="modulo-01/leccion-01.html" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-colors">
+                        Comenzar Curso →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Hero Section -->
+    <section class="hero-gradient pt-32 pb-20 px-4">
+        <div class="max-w-5xl mx-auto text-center">
+            <div class="flex justify-center gap-8 mb-8">
+                <div class="solid-icon text-6xl" title="Tetraedro">🔺</div>
+                <div class="solid-icon text-6xl" title="Cubo">🎲</div>
+                <div class="solid-icon text-6xl" title="Octaedro">💎</div>
+                <div class="solid-icon text-6xl" title="Dodecaedro">⬡</div>
+                <div class="solid-icon text-6xl" title="Icosaedro">⚽</div>
+            </div>
+            
+            <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
+                <span class="gradient-text">Matemáticas Visuales</span>
+            </h1>
+            <p class="text-2xl md:text-3xl text-gray-400 mb-4 font-light">
+                De Platón a la Cuarta Dimensión
+            </p>
+            <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-10">
+                Un viaje interactivo a través de los sólidos platónicos, desde la antigua Grecia hasta las geometrías multidimensionales modernas.
+            </p>
+            
+            <div class="flex flex-col sm:flex-row gap-4 justify-center">
+                <a href="modulo-01/leccion-01.html" class="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
+                    🚀 Comenzar el Curso
+                </a>
+                <a href="#preview" class="px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all border border-gray-700">
+                    👁️ Ver Demo
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Stats -->
+    <section class="py-12 border-y border-gray-800 bg-gray-900/50">
+        <div class="max-w-6xl mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
+                <div>
+                    <div class="text-3xl font-bold text-primary mb-1">33</div>
+                    <div class="text-sm text-gray-500">Lecciones</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-secondary mb-1">6</div>
+                    <div class="text-sm text-gray-500">Módulos</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-accent mb-1">33h</div>
+                    <div class="text-sm text-gray-500">Duración</div>
+                </div>
+                <div>
+                    <div class="text-3xl font-bold text-green-500 mb-1">100%</div>
+                    <div class="text-sm text-gray-500">Interactivo</div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- About -->
+    <section id="curriculum" class="py-20 px-4">
+        <div class="max-w-4xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-12">
+                <span class="gradient-text">¿Qué Aprenderás?</span>
+            </h2>
+            
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-primary/50 transition-colors">
+                    <div class="text-3xl mb-4">📜</div>
+                    <h3 class="text-lg font-semibold mb-2">Historia y Filosofía</h3>
+                    <p class="text-gray-400 text-sm">Desde Pitágoras y Platón hasta las matemáticas modernas. La evolución de la geometría sagrada.</p>
+                </div>
+                
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-secondary/50 transition-colors">
+                    <div class="text-3xl mb-4">🧮</div>
+                    <h3 class="text-lg font-semibold mb-2">Fórmula de Euler</h3>
+                    <p class="text-gray-400 text-sm">V - E + F = 2. La relación que conecta todos los poliedros convexos y su demostración visual.</p>
+                </div>
+                
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-accent/50 transition-colors">
+                    <div class="text-3xl mb-4">🔄</div>
+                    <h3 class="text-lg font-semibold mb-2">Dualidad y Simetría</h3>
+                    <p class="text-gray-400 text-sm">Las relaciones ocultas entre los sólidos y sus grupos de simetría algebraicos.</p>
+                </div>
+                
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-green-500/50 transition-colors">
+                    <div class="text-3xl mb-4">🔮</div>
+                    <h3 class="text-lg font-semibold mb-2">Geometría 4D</h3>
+                    <p class="text-gray-400 text-sm">Politopos de cuatro dimensiones: teseractos, 24-celdas y proyecciones estereográficas.</p>
+                </div>
+                
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-pink-500/50 transition-colors">
+                    <div class="text-3xl mb-4">🕸️</div>
+                    <h3 class="text-lg font-semibold mb-2">Teoría de Grafos</h3>
+                    <p class="text-gray-400 text-sm">Los sólidos como redes: caminos hamiltonianos, coloración y diagramas de Schlegel.</p>
+                </div>
+                
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-yellow-500/50 transition-colors">
+                    <div class="text-3xl mb-4">🔬</div>
+                    <h3 class="text-lg font-semibold mb-2">Aplicaciones Modernas</h3>
+                    <p class="text-gray-400 text-sm">Cristalografía, virología, fullerenos y quasicristales en la ciencia actual.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Modules Overview -->
+    <section id="modulos" class="py-20 px-4 bg-gray-900/30">
+        <div class="max-w-5xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-12">
+                <span class="gradient-text">Estructura del Curso</span>
+            </h2>
+            
+            <div class="space-y-4">
+                <!-- Módulo 1 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-primary/30 transition-all">
+                    <div class="p-6 flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary font-bold text-lg">01</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold mb-2">Los Guardianes de la Geometría</h3>
+                            <p class="text-gray-400 mb-3">Historia y filosofía de los sólidos platónicos desde Pitágoras hasta Platón.</p>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>📚 6 lecciones</span>
+                                <span>⏱️ ~5 horas</span>
+                            </div>
+                        </div>
+                        <a href="modulo-01/leccion-01.html" class="px-4 py-2 bg-gray-800 hover:bg-primary text-gray-300 hover:text-white rounded-lg transition-colors text-sm">
+                            Comenzar →
+                        </a>
+                    </div>
+                </div>
+                
+                <!-- Módulo 2 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-secondary/30 transition-all">
+                    <div class="p-6 flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center text-secondary font-bold text-lg">02</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold mb-2">La Fórmula de Euler</h3>
+                            <p class="text-gray-400 mb-3">V - E + F = 2. El teorema que unifica la geometría y la demostración de unicidad.</p>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>📚 6 lecciones</span>
+                                <span>⏱️ ~6 horas</span>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
+                    </div>
+                </div>
+                
+                <!-- Módulo 3 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-accent/30 transition-all">
+                    <div class="p-6 flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center text-accent font-bold text-lg">03</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold mb-2">Dualidad y Simetría</h3>
+                            <p class="text-gray-400 mb-3">Las relaciones ocultas entre los sólidos y sus grupos de simetría algebraicos.</p>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>📚 6 lecciones</span>
+                                <span>⏱️ ~6 horas</span>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
+                    </div>
+                </div>
+                
+                <!-- Módulo 4 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-green-500/30 transition-all">
+                    <div class="p-6 flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center text-green-500 font-bold text-lg">04</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold mb-2">Más Allá de la Tercera Dimensión</h3>
+                            <p class="text-gray-400 mb-3">Politopos 4D y proyecciones estereográficas. Navegando el hiperespacio.</p>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>📚 6 lecciones</span>
+                                <span>⏱️ ~6 horas</span>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
+                    </div>
+                </div>
+                
+                <!-- Módulo 5 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-pink-500/30 transition-all">
+                    <div class="p-6 flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center text-pink-500 font-bold text-lg">05</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold mb-2">Teoría de Grafos Aplicada</h3>
+                            <p class="text-gray-400 mb-3">Los sólidos como redes. Diagramas de Schlegel y caminos hamiltonianos.</p>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>📚 5 lecciones</span>
+                                <span>⏱️ ~5 horas</span>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
+                    </div>
+                </div>
+                
+                <!-- Módulo 6 -->
+                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-yellow-500/30 transition-all">
+                    <div class="p-6 flex items-start gap-4">
+                        <div class="flex-shrink-0 w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center text-yellow-500 font-bold text-lg">06</div>
+                        <div class="flex-1">
+                            <h3 class="text-xl font-semibold mb-2">De Platón al Mundo Moderno</h3>
+                            <p class="text-gray-400 mb-3">Aplicaciones en cristalografía, virología, fullerenos y quasicristales.</p>
+                            <div class="flex items-center gap-4 text-sm text-gray-500">
+                                <span>📚 4 lecciones</span>
+                                <span>⏱️ ~5 horas</span>
+                            </div>
+                        </div>
+                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Interactive Demo -->
+    <section id="preview" class="py-20 px-4">
+        <div class="max-w-6xl mx-auto">
+            <h2 class="text-3xl font-bold text-center mb-4">
+                <span class="gradient-text">Experiencia Interactiva</span>
+            </h2>
+            <p class="text-gray-400 text-center mb-8">Cada lección incluye PlatonicLab embebido para explorar los conceptos en tiempo real</p>
+            
+            <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl shadow-primary/10">
+                <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+                    <div class="flex gap-1.5">
+                        <div class="w-3 h-3 rounded-full bg-red-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
+                        <div class="w-3 h-3 rounded-full bg-green-500"></div>
+                    </div>
+                    <span class="ml-4 text-sm text-gray-400">PlatonicLab — Icosaedro</span>
+                </div>
+                <div class="aspect-video bg-gray-950">
+                    <iframe src="../index.html" class="w-full h-full border-0" title="PlatonicLab Demo"></iframe>
+                </div>
+            </div>
+            
+            <div class="text-center mt-8">
+                <a href="modulo-01/leccion-01.html" class="inline-flex items-center gap-2 px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all transform hover:scale-105">
+                    🎓 Comenzar el Curso Ahora
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
+                </a>
+            </div>
+        </div>
+    </section>
+    
+    <!-- Footer -->
+    <footer class="py-12 px-4 border-t border-gray-800 bg-gray-950">
+        <div class="max-w-4xl mx-auto text-center">
+            <div class="flex items-center justify-center gap-2 mb-4">
+                <span class="text-2xl">◆</span>
+                <span class="font-bold text-xl">
+                    <span class="text-primary">Platonic</span><span class="text-gray-400">Lab</span>
+                </span>
+            </div>
+            <p class="text-gray-500 text-sm">
+                Curso de Matemáticas Visuales • De Platón a 4D
+            </p>
+            <p class="text-gray-600 text-xs mt-2">
+                Explorando la belleza geométrica desde la antigua Grecia hasta la geometría moderna.
+            </p>
+        </div>
+    </footer>
+    
+</body>
+</html>

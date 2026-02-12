@@ -1,0 +1,167 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 14: El Tetraedro Autodual | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-13.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="./leccion-15.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 3</h3>
+                    <p class="text-sm text-gray-400 mb-4">Dualidad y Simetría</p>
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>2/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 33.3%"></div>
+                        </div>
+                    </div>
+                    <nav class="space-y-2">
+                        <a href="./leccion-13.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">13. Concepto de Dualidad</a>
+                        <a href="./leccion-14.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">14. El Tetraedro Autodual</a>
+                        <a href="./leccion-15.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">15. Cubo y Octaedro</a>
+                        <a href="./leccion-16.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">16. Dodecaedro e Icosaedro</a>
+                        <a href="./leccion-17.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">17. Grupos de Simetría</a>
+                        <a href="./leccion-18.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">18. Ejes de Rotación</a>
+                    </nav>
+                </div>
+            </aside>
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 14</span>
+                            <span class="text-gray-400 text-sm">⏱️ 15 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">El Tetraedro Autodual</h1>
+                        <p class="text-gray-400 text-lg">El único sólido platónico que es su propio dual.</p>
+                    </div>
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">¿Qué es un Poliedro Autodual?</h2>
+                        <p class="text-gray-300 mb-4">Un poliedro es <strong>autodual</strong> cuando su dual es congruente consigo mismo. El tetraedro es el único sólido platónico con esta propiedad especial.</p>
+                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
+                            <h3 class="text-lg font-semibold text-platonic-purple mb-2">Por qué el Tetraedro es Autodual</h3>
+                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
+                                <li>4 vértices = 4 caras</li>
+                                <li>Al intercambiar V y C, obtenemos los mismos números</li>
+                                <li>Los centros de las 4 caras triangulares forman otro tetraedro</li>
+                                <li>Notación {3,3} → {3,3} (no cambia al invertir)</li>
+                            </ul>
+                        </div>
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Construcción del Dual</h3>
+                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>El tetraedro tiene 4 caras triangulares</li>
+                                <li>Encontramos el centro de cada cara (punto medio de sus 3 vértices)</li>
+                                <li>Estos 4 centros son los vértices del tetraedro dual</li>
+                                <li>Conectamos centros de caras adyacentes</li>
+                                <li>Resultado: un tetraedro invertido (rotado 180°)</li>
+                            </ol>
+                        </div>
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Tetraedro y su Dual</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-800/50 p-4 rounded-lg text-center">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Tetraedro Original</h4>
+                                <p class="text-4xl mb-2">🔺</p>
+                                <p class="text-sm text-gray-400">V=4, E=6, C=4</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg text-center">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Tetraedro Dual</h4>
+                                <p class="text-4xl mb-2">🔻</p>
+                                <p class="text-sm text-gray-400">V=4, E=6, C=4</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 mb-4">Cuando superponemos ambos tetraedros, forman una <strong>estrella de 8 puntas</strong> conocida como <em>estrella tetraédrica</em> o <em>compuesto de dos tetraedros</em>.</p>
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Compuesto Tetraédrico</h3>
+                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
+                            <p class="text-gray-300 mb-2">Al superponer un tetraedro y su dual:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
+                                <li>Forman un poliedro con 8 caras triangulares</li>
+                                <li>Los 8 vértices corresponden a los de un cubo</li>
+                                <li>Las aristas se cruzan en el centro</li>
+                                <li>Es un poliedro estrellado regular</li>
+                            </ul>
+                        </div>
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Propiedades Únicas</h3>
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-6 ml-4">
+                            <li>Grafo completo K₄ (cada vértice conectado a todos los demás)</li>
+                            <li>Es el simplex 3D (generalización del triángulo)</li>
+                            <li>Dualidad perfecta: R = 3r (razón exacta)</li>
+                            <li>Su grupo de simetría tiene 12 elementos rotacionales</li>
+                        </ul>
+                    </div>
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Tetraedro Dual</h2>
+                        <p class="text-gray-400 mb-4">Visualiza el tetraedro y su dual superpuestos.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-13.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
+                        <a href="./leccion-15.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Cubo y Octaedro →</a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+        </div>
+    </footer>
+</body>
+</html>

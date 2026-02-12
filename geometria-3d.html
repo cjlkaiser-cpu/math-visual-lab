@@ -1,0 +1,780 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Geometría 3D - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+        .shape-btn {
+            padding: 10px 14px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #9ca3af;
+            font-size: 0.8rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 4px;
+        }
+        .shape-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .shape-btn:hover:not(.active) {
+            background: #374151;
+        }
+        .shape-icon {
+            font-size: 1.5rem;
+        }
+        #canvas-container {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 100%);
+        }
+        .prop-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        .prop-row:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Geometría</span> 3D
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Rotación: <span id="rotation-display" class="text-violet-400">0°, 0°</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div id="canvas-container" class="flex-1 relative">
+            <!-- Three.js canvas will be added here -->
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-96 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Explorador de Sólidos</h2>
+
+            <!-- Shape Selection -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Selecciona un Sólido</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="shape-btn active" data-shape="cube">
+                        <span class="shape-icon">⬜</span>
+                        <span>Cubo</span>
+                    </button>
+                    <button class="shape-btn" data-shape="sphere">
+                        <span class="shape-icon">⚪</span>
+                        <span>Esfera</span>
+                    </button>
+                    <button class="shape-btn" data-shape="cylinder">
+                        <span class="shape-icon">🔵</span>
+                        <span>Cilindro</span>
+                    </button>
+                    <button class="shape-btn" data-shape="cone">
+                        <span class="shape-icon">🔺</span>
+                        <span>Cono</span>
+                    </button>
+                    <button class="shape-btn" data-shape="torus">
+                        <span class="shape-icon">⭕</span>
+                        <span>Toro</span>
+                    </button>
+                    <button class="shape-btn" data-shape="tetrahedron">
+                        <span class="shape-icon">△</span>
+                        <span>Tetraedro</span>
+                    </button>
+                    <button class="shape-btn" data-shape="octahedron">
+                        <span class="shape-icon">◇</span>
+                        <span>Octaedro</span>
+                    </button>
+                    <button class="shape-btn" data-shape="dodecahedron">
+                        <span class="shape-icon">⬡</span>
+                        <span>Dodeca.</span>
+                    </button>
+                    <button class="shape-btn" data-shape="icosahedron">
+                        <span class="shape-icon">◆</span>
+                        <span>Icosa.</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Dimensions -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Dimensiones</label>
+
+                <div class="mb-4" id="param-size-container">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500" id="param-size-label">Tamaño</span>
+                        <span class="text-violet-400 mono" id="param-size-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-size" min="0.5" max="3" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-radius-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">Radio</span>
+                        <span class="text-violet-400 mono" id="param-radius-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-radius" min="0.3" max="2" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-height-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">Altura</span>
+                        <span class="text-violet-400 mono" id="param-height-value">2.0</span>
+                    </div>
+                    <input type="range" id="param-height" min="0.5" max="4" value="2" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-tube-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">Radio del Tubo</span>
+                        <span class="text-violet-400 mono" id="param-tube-value">0.3</span>
+                    </div>
+                    <input type="range" id="param-tube" min="0.1" max="0.8" value="0.3" step="0.05" class="w-full">
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Visualización</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-wireframe" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Modo alambre (wireframe)
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-edges" checked class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Mostrar aristas
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-axes" checked class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Mostrar ejes
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="auto-rotate" checked class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Auto-rotación
+                    </label>
+                </div>
+            </div>
+
+            <!-- Cross Section -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Sección Transversal</label>
+                <label class="flex items-center gap-2 text-sm text-gray-300 mb-3">
+                    <input type="checkbox" id="show-section" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                    Mostrar sección
+                </label>
+                <div id="section-controls" style="display: none;">
+                    <div class="mb-3">
+                        <div class="flex justify-between text-sm mb-1">
+                            <span class="text-gray-500">Posición del corte</span>
+                            <span class="text-cyan-400 mono" id="section-pos-value">0.0</span>
+                        </div>
+                        <input type="range" id="section-pos" min="-1.5" max="1.5" value="0" step="0.1" class="w-full">
+                    </div>
+                    <div class="flex gap-2">
+                        <button id="section-x" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 rounded text-xs transition active:bg-violet-600">Plano YZ</button>
+                        <button id="section-y" class="flex-1 py-2 bg-violet-600 rounded text-xs transition">Plano XZ</button>
+                        <button id="section-z" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 rounded text-xs transition">Plano XY</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Properties -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Propiedades</label>
+                <div class="bg-gray-900 rounded-lg p-4">
+                    <div class="prop-row">
+                        <span class="text-gray-500">Volumen:</span>
+                        <span class="mono text-emerald-400" id="prop-volume">1.000</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="text-gray-500">Área superficial:</span>
+                        <span class="mono text-cyan-400" id="prop-area">6.000</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="text-gray-500">Vértices:</span>
+                        <span class="mono text-violet-400" id="prop-vertices">8</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="text-gray-500">Aristas:</span>
+                        <span class="mono text-violet-400" id="prop-edges">12</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="text-gray-500">Caras:</span>
+                        <span class="mono text-violet-400" id="prop-faces">6</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Formulas -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Fórmulas</label>
+                <div class="math-box rounded-lg p-4 text-center">
+                    <div class="text-sm text-gray-500 mb-2" id="formula-title">Cubo (lado a)</div>
+                    <div class="mono text-violet-300 text-sm mb-1" id="formula-volume">V = a³</div>
+                    <div class="mono text-cyan-300 text-sm" id="formula-area">A = 6a²</div>
+                </div>
+            </div>
+
+            <!-- Guide Link -->
+            <a href="guides/geometria-3d.html" class="guide-link">
+                <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">?</span>
+                <span>Guía pedagógica</span>
+            </a>
+        </aside>
+    </main>
+
+    <script>
+        // Three.js setup
+        const container = document.getElementById('canvas-container');
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(60, container.clientWidth / container.clientHeight, 0.1, 1000);
+        const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+
+        renderer.setSize(container.clientWidth, container.clientHeight);
+        renderer.setPixelRatio(window.devicePixelRatio);
+        container.appendChild(renderer.domElement);
+
+        // State
+        const state = {
+            currentShape: 'cube',
+            size: 1,
+            radius: 1,
+            height: 2,
+            tubeRadius: 0.3,
+            wireframe: false,
+            showEdges: true,
+            showAxes: true,
+            autoRotate: true,
+            showSection: false,
+            sectionAxis: 'y',
+            sectionPos: 0,
+            isDragging: false,
+            prevMouse: { x: 0, y: 0 },
+            rotation: { x: 0.3, y: 0.5 }
+        };
+
+        let mesh, edges, sectionPlane;
+
+        // Lighting
+        const ambientLight = new THREE.AmbientLight(0x404040, 0.5);
+        scene.add(ambientLight);
+
+        const directionalLight = new THREE.DirectionalLight(0xffffff, 0.8);
+        directionalLight.position.set(5, 5, 5);
+        scene.add(directionalLight);
+
+        const directionalLight2 = new THREE.DirectionalLight(0x8866ff, 0.4);
+        directionalLight2.position.set(-5, 3, -5);
+        scene.add(directionalLight2);
+
+        // Create axes helper
+        const axesGroup = new THREE.Group();
+        const axisLength = 3;
+
+        function createAxis(color, start, end) {
+            const material = new THREE.LineBasicMaterial({ color });
+            const geometry = new THREE.BufferGeometry().setFromPoints([
+                new THREE.Vector3(...start),
+                new THREE.Vector3(...end)
+            ]);
+            return new THREE.Line(geometry, material);
+        }
+
+        axesGroup.add(createAxis(0xff4444, [-axisLength, 0, 0], [axisLength, 0, 0])); // X - red
+        axesGroup.add(createAxis(0x44ff44, [0, -axisLength, 0], [0, axisLength, 0])); // Y - green
+        axesGroup.add(createAxis(0x4444ff, [0, 0, -axisLength], [0, 0, axisLength])); // Z - blue
+        scene.add(axesGroup);
+
+        // Grid helper
+        const gridHelper = new THREE.GridHelper(6, 12, 0x333333, 0x222222);
+        gridHelper.position.y = -2;
+        scene.add(gridHelper);
+
+        camera.position.set(4, 3, 4);
+        camera.lookAt(0, 0, 0);
+
+        // Create geometry
+        function createGeometry(shape) {
+            switch (shape) {
+                case 'cube':
+                    return new THREE.BoxGeometry(state.size, state.size, state.size);
+                case 'sphere':
+                    return new THREE.SphereGeometry(state.radius, 32, 32);
+                case 'cylinder':
+                    return new THREE.CylinderGeometry(state.radius, state.radius, state.height, 32);
+                case 'cone':
+                    return new THREE.ConeGeometry(state.radius, state.height, 32);
+                case 'torus':
+                    return new THREE.TorusGeometry(state.radius, state.tubeRadius, 16, 48);
+                case 'tetrahedron':
+                    return new THREE.TetrahedronGeometry(state.size);
+                case 'octahedron':
+                    return new THREE.OctahedronGeometry(state.size);
+                case 'dodecahedron':
+                    return new THREE.DodecahedronGeometry(state.size);
+                case 'icosahedron':
+                    return new THREE.IcosahedronGeometry(state.size);
+                default:
+                    return new THREE.BoxGeometry(state.size, state.size, state.size);
+            }
+        }
+
+        function updateMesh() {
+            if (mesh) {
+                scene.remove(mesh);
+                mesh.geometry.dispose();
+                mesh.material.dispose();
+            }
+            if (edges) {
+                scene.remove(edges);
+                edges.geometry.dispose();
+                edges.material.dispose();
+            }
+
+            const geometry = createGeometry(state.currentShape);
+
+            // Main mesh
+            const material = new THREE.MeshPhongMaterial({
+                color: 0x8855ff,
+                wireframe: state.wireframe,
+                transparent: true,
+                opacity: state.wireframe ? 1 : 0.85,
+                side: THREE.DoubleSide
+            });
+            mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+
+            // Edges
+            if (state.showEdges && !state.wireframe) {
+                const edgesGeometry = new THREE.EdgesGeometry(geometry);
+                const edgesMaterial = new THREE.LineBasicMaterial({ color: 0x22d3ee });
+                edges = new THREE.LineSegments(edgesGeometry, edgesMaterial);
+                scene.add(edges);
+            }
+
+            updateProperties();
+            updateFormulas();
+        }
+
+        function updateSection() {
+            if (sectionPlane) {
+                scene.remove(sectionPlane);
+            }
+
+            if (!state.showSection) return;
+
+            const size = 4;
+            const geometry = new THREE.PlaneGeometry(size, size);
+            const material = new THREE.MeshBasicMaterial({
+                color: 0x22d3ee,
+                transparent: true,
+                opacity: 0.2,
+                side: THREE.DoubleSide
+            });
+            sectionPlane = new THREE.Mesh(geometry, material);
+
+            switch (state.sectionAxis) {
+                case 'x':
+                    sectionPlane.rotation.y = Math.PI / 2;
+                    sectionPlane.position.x = state.sectionPos;
+                    break;
+                case 'y':
+                    sectionPlane.rotation.x = Math.PI / 2;
+                    sectionPlane.position.y = state.sectionPos;
+                    break;
+                case 'z':
+                    sectionPlane.position.z = state.sectionPos;
+                    break;
+            }
+
+            scene.add(sectionPlane);
+        }
+
+        function updateProperties() {
+            const s = state.size;
+            const r = state.radius;
+            const h = state.height;
+            const t = state.tubeRadius;
+
+            let volume, area, vertices, edgesCount, faces;
+
+            switch (state.currentShape) {
+                case 'cube':
+                    volume = s ** 3;
+                    area = 6 * s ** 2;
+                    vertices = 8;
+                    edgesCount = 12;
+                    faces = 6;
+                    break;
+                case 'sphere':
+                    volume = (4 / 3) * Math.PI * r ** 3;
+                    area = 4 * Math.PI * r ** 2;
+                    vertices = '∞';
+                    edgesCount = '∞';
+                    faces = '∞';
+                    break;
+                case 'cylinder':
+                    volume = Math.PI * r ** 2 * h;
+                    area = 2 * Math.PI * r * (r + h);
+                    vertices = '∞';
+                    edgesCount = 2;
+                    faces = 3;
+                    break;
+                case 'cone':
+                    volume = (1 / 3) * Math.PI * r ** 2 * h;
+                    const slant = Math.sqrt(r ** 2 + h ** 2);
+                    area = Math.PI * r * (r + slant);
+                    vertices = '∞';
+                    edgesCount = 1;
+                    faces = 2;
+                    break;
+                case 'torus':
+                    volume = 2 * Math.PI ** 2 * r * t ** 2;
+                    area = 4 * Math.PI ** 2 * r * t;
+                    vertices = '∞';
+                    edgesCount = '∞';
+                    faces = '∞';
+                    break;
+                case 'tetrahedron':
+                    volume = (s ** 3) / (6 * Math.sqrt(2));
+                    area = Math.sqrt(3) * s ** 2;
+                    vertices = 4;
+                    edgesCount = 6;
+                    faces = 4;
+                    break;
+                case 'octahedron':
+                    volume = (Math.sqrt(2) / 3) * s ** 3;
+                    area = 2 * Math.sqrt(3) * s ** 2;
+                    vertices = 6;
+                    edgesCount = 12;
+                    faces = 8;
+                    break;
+                case 'dodecahedron':
+                    const phi = (1 + Math.sqrt(5)) / 2;
+                    volume = ((15 + 7 * Math.sqrt(5)) / 4) * s ** 3;
+                    area = 3 * Math.sqrt(25 + 10 * Math.sqrt(5)) * s ** 2;
+                    vertices = 20;
+                    edgesCount = 30;
+                    faces = 12;
+                    break;
+                case 'icosahedron':
+                    volume = (5 * (3 + Math.sqrt(5)) / 12) * s ** 3;
+                    area = 5 * Math.sqrt(3) * s ** 2;
+                    vertices = 12;
+                    edgesCount = 30;
+                    faces = 20;
+                    break;
+            }
+
+            document.getElementById('prop-volume').textContent = typeof volume === 'number' ? volume.toFixed(3) : volume;
+            document.getElementById('prop-area').textContent = typeof area === 'number' ? area.toFixed(3) : area;
+            document.getElementById('prop-vertices').textContent = vertices;
+            document.getElementById('prop-edges').textContent = edgesCount;
+            document.getElementById('prop-faces').textContent = faces;
+        }
+
+        function updateFormulas() {
+            const formulas = {
+                cube: {
+                    title: 'Cubo (lado a)',
+                    volume: 'V = a³',
+                    area: 'A = 6a²'
+                },
+                sphere: {
+                    title: 'Esfera (radio r)',
+                    volume: 'V = (4/3)πr³',
+                    area: 'A = 4πr²'
+                },
+                cylinder: {
+                    title: 'Cilindro (radio r, altura h)',
+                    volume: 'V = πr²h',
+                    area: 'A = 2πr(r + h)'
+                },
+                cone: {
+                    title: 'Cono (radio r, altura h)',
+                    volume: 'V = (1/3)πr²h',
+                    area: 'A = πr(r + √(r² + h²))'
+                },
+                torus: {
+                    title: 'Toro (radio R, tubo r)',
+                    volume: 'V = 2π²Rr²',
+                    area: 'A = 4π²Rr'
+                },
+                tetrahedron: {
+                    title: 'Tetraedro (arista a)',
+                    volume: 'V = a³/(6√2)',
+                    area: 'A = √3 · a²'
+                },
+                octahedron: {
+                    title: 'Octaedro (arista a)',
+                    volume: 'V = (√2/3)a³',
+                    area: 'A = 2√3 · a²'
+                },
+                dodecahedron: {
+                    title: 'Dodecaedro (arista a)',
+                    volume: 'V ≈ 7.66a³',
+                    area: 'A ≈ 20.65a²'
+                },
+                icosahedron: {
+                    title: 'Icosaedro (arista a)',
+                    volume: 'V ≈ 2.18a³',
+                    area: 'A = 5√3 · a²'
+                }
+            };
+
+            const f = formulas[state.currentShape];
+            document.getElementById('formula-title').textContent = f.title;
+            document.getElementById('formula-volume').textContent = f.volume;
+            document.getElementById('formula-area').textContent = f.area;
+        }
+
+        function showParamControls() {
+            const shape = state.currentShape;
+            const sizeContainer = document.getElementById('param-size-container');
+            const radiusContainer = document.getElementById('param-radius-container');
+            const heightContainer = document.getElementById('param-height-container');
+            const tubeContainer = document.getElementById('param-tube-container');
+
+            sizeContainer.style.display = 'none';
+            radiusContainer.style.display = 'none';
+            heightContainer.style.display = 'none';
+            tubeContainer.style.display = 'none';
+
+            switch (shape) {
+                case 'cube':
+                case 'tetrahedron':
+                case 'octahedron':
+                case 'dodecahedron':
+                case 'icosahedron':
+                    sizeContainer.style.display = 'block';
+                    break;
+                case 'sphere':
+                    radiusContainer.style.display = 'block';
+                    break;
+                case 'cylinder':
+                case 'cone':
+                    radiusContainer.style.display = 'block';
+                    heightContainer.style.display = 'block';
+                    break;
+                case 'torus':
+                    radiusContainer.style.display = 'block';
+                    tubeContainer.style.display = 'block';
+                    break;
+            }
+        }
+
+        // Event listeners
+        document.querySelectorAll('.shape-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.shape-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.currentShape = btn.dataset.shape;
+                showParamControls();
+                updateMesh();
+            });
+        });
+
+        document.getElementById('param-size').addEventListener('input', (e) => {
+            state.size = parseFloat(e.target.value);
+            document.getElementById('param-size-value').textContent = state.size.toFixed(1);
+            updateMesh();
+        });
+
+        document.getElementById('param-radius').addEventListener('input', (e) => {
+            state.radius = parseFloat(e.target.value);
+            document.getElementById('param-radius-value').textContent = state.radius.toFixed(1);
+            updateMesh();
+        });
+
+        document.getElementById('param-height').addEventListener('input', (e) => {
+            state.height = parseFloat(e.target.value);
+            document.getElementById('param-height-value').textContent = state.height.toFixed(1);
+            updateMesh();
+        });
+
+        document.getElementById('param-tube').addEventListener('input', (e) => {
+            state.tubeRadius = parseFloat(e.target.value);
+            document.getElementById('param-tube-value').textContent = state.tubeRadius.toFixed(2);
+            updateMesh();
+        });
+
+        document.getElementById('show-wireframe').addEventListener('change', (e) => {
+            state.wireframe = e.target.checked;
+            updateMesh();
+        });
+
+        document.getElementById('show-edges').addEventListener('change', (e) => {
+            state.showEdges = e.target.checked;
+            updateMesh();
+        });
+
+        document.getElementById('show-axes').addEventListener('change', (e) => {
+            state.showAxes = e.target.checked;
+            axesGroup.visible = e.target.checked;
+        });
+
+        document.getElementById('auto-rotate').addEventListener('change', (e) => {
+            state.autoRotate = e.target.checked;
+        });
+
+        document.getElementById('show-section').addEventListener('change', (e) => {
+            state.showSection = e.target.checked;
+            document.getElementById('section-controls').style.display = e.target.checked ? 'block' : 'none';
+            updateSection();
+        });
+
+        document.getElementById('section-pos').addEventListener('input', (e) => {
+            state.sectionPos = parseFloat(e.target.value);
+            document.getElementById('section-pos-value').textContent = state.sectionPos.toFixed(1);
+            updateSection();
+        });
+
+        ['x', 'y', 'z'].forEach(axis => {
+            document.getElementById(`section-${axis}`).addEventListener('click', (e) => {
+                document.querySelectorAll('[id^="section-"]').forEach(btn => {
+                    if (btn.id.match(/section-[xyz]/)) {
+                        btn.classList.remove('bg-violet-600');
+                        btn.classList.add('bg-gray-800');
+                    }
+                });
+                e.target.classList.remove('bg-gray-800');
+                e.target.classList.add('bg-violet-600');
+                state.sectionAxis = axis;
+                updateSection();
+            });
+        });
+
+        // Mouse controls
+        renderer.domElement.addEventListener('mousedown', (e) => {
+            state.isDragging = true;
+            state.prevMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        window.addEventListener('mouseup', () => {
+            state.isDragging = false;
+        });
+
+        window.addEventListener('mousemove', (e) => {
+            if (!state.isDragging) return;
+
+            const dx = e.clientX - state.prevMouse.x;
+            const dy = e.clientY - state.prevMouse.y;
+
+            state.rotation.y += dx * 0.005;
+            state.rotation.x += dy * 0.005;
+
+            state.prevMouse = { x: e.clientX, y: e.clientY };
+        });
+
+        renderer.domElement.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const zoom = e.deltaY > 0 ? 1.1 : 0.9;
+            camera.position.multiplyScalar(zoom);
+        });
+
+        // Resize
+        window.addEventListener('resize', () => {
+            camera.aspect = container.clientWidth / container.clientHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize(container.clientWidth, container.clientHeight);
+        });
+
+        // Animation
+        function animate() {
+            requestAnimationFrame(animate);
+
+            if (state.autoRotate) {
+                state.rotation.y += 0.005;
+            }
+
+            if (mesh) {
+                mesh.rotation.x = state.rotation.x;
+                mesh.rotation.y = state.rotation.y;
+            }
+            if (edges) {
+                edges.rotation.x = state.rotation.x;
+                edges.rotation.y = state.rotation.y;
+            }
+
+            // Update rotation display
+            const degX = ((state.rotation.x * 180 / Math.PI) % 360).toFixed(0);
+            const degY = ((state.rotation.y * 180 / Math.PI) % 360).toFixed(0);
+            document.getElementById('rotation-display').textContent = `${degX}°, ${degY}°`;
+
+            renderer.render(scene, camera);
+        }
+
+        // Initialize
+        updateMesh();
+        showParamControls();
+        animate();
+    </script>
+</body>
+</html>

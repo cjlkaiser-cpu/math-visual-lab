@@ -1,0 +1,922 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ecuaciones Diferenciales - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+        .edo-btn {
+            padding: 10px 12px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: left;
+        }
+        .edo-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .edo-btn:hover:not(.active) {
+            background: #374151;
+        }
+        #canvas {
+            cursor: crosshair;
+        }
+        .legend-item {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.75rem;
+        }
+        .legend-color {
+            width: 20px;
+            height: 3px;
+            border-radius: 2px;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Ecuaciones</span> Diferenciales
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm">
+                    <span class="text-gray-500">Método: <span id="method-display" class="text-cyan-400 mono">RK4</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative bg-gray-950">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+            <div class="absolute bottom-4 left-4 bg-black/70 backdrop-blur-sm rounded-lg p-3">
+                <div class="legend-item mb-2">
+                    <div class="legend-color bg-violet-500"></div>
+                    <span class="text-gray-400">Campo de pendientes</span>
+                </div>
+                <div class="legend-item mb-2">
+                    <div class="legend-color bg-cyan-400"></div>
+                    <span class="text-gray-400">Solución (click para añadir)</span>
+                </div>
+                <div class="legend-item">
+                    <div class="legend-color bg-emerald-400"></div>
+                    <span class="text-gray-400">Isoclinas</span>
+                </div>
+            </div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-96 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Visualizador de EDOs</h2>
+
+            <!-- Equation Selection -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Ecuación Diferencial</label>
+                <div class="space-y-2">
+                    <button class="edo-btn w-full active" data-edo="exponential">
+                        <div class="font-medium text-violet-300 mb-1">Crecimiento Exponencial</div>
+                        <div class="mono text-xs">dy/dx = k·y</div>
+                    </button>
+                    <button class="edo-btn w-full" data-edo="logistic">
+                        <div class="font-medium text-violet-300 mb-1">Crecimiento Logístico</div>
+                        <div class="mono text-xs">dy/dx = r·y·(1 - y/K)</div>
+                    </button>
+                    <button class="edo-btn w-full" data-edo="harmonic">
+                        <div class="font-medium text-violet-300 mb-1">Oscilador Armónico</div>
+                        <div class="mono text-xs">dy/dx = v, dv/dx = -ω²y</div>
+                    </button>
+                    <button class="edo-btn w-full" data-edo="vanderpol">
+                        <div class="font-medium text-violet-300 mb-1">Oscilador Van der Pol</div>
+                        <div class="mono text-xs">dy/dx = v, dv/dx = μ(1-y²)v - y</div>
+                    </button>
+                    <button class="edo-btn w-full" data-edo="lotka">
+                        <div class="font-medium text-violet-300 mb-1">Lotka-Volterra</div>
+                        <div class="mono text-xs">dx/dt = αx - βxy, dy/dt = δxy - γy</div>
+                    </button>
+                    <button class="edo-btn w-full" data-edo="pendulum">
+                        <div class="font-medium text-violet-300 mb-1">Péndulo No Lineal</div>
+                        <div class="mono text-xs">dθ/dt = ω, dω/dt = -g/L·sin(θ)</div>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Parameters -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Parámetros</label>
+
+                <div class="mb-4" id="param-k-container">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500" id="param-k-label">k (tasa de crecimiento)</span>
+                        <span class="text-violet-400 mono" id="param-k-value">0.5</span>
+                    </div>
+                    <input type="range" id="param-k" min="-2" max="2" value="0.5" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-r-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">r (tasa intrínseca)</span>
+                        <span class="text-violet-400 mono" id="param-r-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-r" min="0.1" max="3" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-K-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">K (capacidad de carga)</span>
+                        <span class="text-violet-400 mono" id="param-K-value">5.0</span>
+                    </div>
+                    <input type="range" id="param-K" min="1" max="10" value="5" step="0.5" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-omega-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">ω (frecuencia angular)</span>
+                        <span class="text-violet-400 mono" id="param-omega-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-omega" min="0.1" max="3" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-mu-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">μ (no linealidad)</span>
+                        <span class="text-violet-400 mono" id="param-mu-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-mu" min="0.1" max="5" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-alpha-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">α (crecimiento presas)</span>
+                        <span class="text-violet-400 mono" id="param-alpha-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-alpha" min="0.1" max="3" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-beta-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">β (depredación)</span>
+                        <span class="text-violet-400 mono" id="param-beta-value">0.5</span>
+                    </div>
+                    <input type="range" id="param-beta" min="0.1" max="2" value="0.5" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4" id="param-gL-container" style="display: none;">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">g/L (gravedad/longitud)</span>
+                        <span class="text-violet-400 mono" id="param-gL-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-gL" min="0.1" max="3" value="1" step="0.1" class="w-full">
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Visualización</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-field" checked class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Campo de pendientes
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-isoclines" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Isoclinas (dy/dx = c)
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-nullclines" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Nulclinas (dy/dx = 0)
+                    </label>
+                </div>
+            </div>
+
+            <!-- Numerical Method -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Método Numérico</label>
+                <div class="flex gap-2">
+                    <button id="method-euler" class="flex-1 py-2 bg-gray-800 hover:bg-gray-700 rounded text-xs transition">Euler</button>
+                    <button id="method-rk4" class="flex-1 py-2 bg-violet-600 rounded text-xs transition">RK4</button>
+                </div>
+                <p class="text-xs text-gray-600 mt-2">
+                    Euler: simple pero menos preciso. RK4: 4to orden, muy preciso.
+                </p>
+            </div>
+
+            <!-- View Range -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Rango de Vista</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-gray-500">x mín</label>
+                        <input type="number" id="x-min" value="-5" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">x máx</label>
+                        <input type="number" id="x-max" value="5" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">y mín</label>
+                        <input type="number" id="y-min" value="-5" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">y máx</label>
+                        <input type="number" id="y-max" value="5" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Actions -->
+            <div class="mb-6">
+                <button id="clear-solutions" class="w-full py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm transition mb-2">
+                    Limpiar soluciones
+                </button>
+                <p class="text-xs text-gray-600">
+                    Haz clic en el canvas para agregar soluciones con diferentes condiciones iniciales.
+                </p>
+            </div>
+
+            <!-- Current Equation -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Ecuación Actual</label>
+                <div class="math-box rounded-lg p-4 text-center">
+                    <div class="mono text-violet-300" id="current-equation">dy/dx = 0.5·y</div>
+                    <div class="text-xs text-gray-500 mt-2" id="equation-type">EDO de primer orden</div>
+                </div>
+            </div>
+
+            <!-- Guide Link -->
+            <a href="guides/ecuaciones-diferenciales.html" class="guide-link">
+                <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">?</span>
+                <span>Guía pedagógica</span>
+            </a>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        const state = {
+            currentEdo: 'exponential',
+            params: {
+                k: 0.5,
+                r: 1.0,
+                K: 5.0,
+                omega: 1.0,
+                mu: 1.0,
+                alpha: 1.0,
+                beta: 0.5,
+                gamma: 0.5,
+                delta: 0.5,
+                gL: 1.0
+            },
+            xMin: -5, xMax: 5,
+            yMin: -5, yMax: 5,
+            showField: true,
+            showIsoclines: false,
+            showNullclines: false,
+            method: 'rk4',
+            solutions: [],
+            is2D: false
+        };
+
+        // EDO definitions
+        const edos = {
+            exponential: {
+                name: 'Crecimiento Exponencial',
+                equation: () => `dy/dx = ${state.params.k}·y`,
+                type: 'EDO de primer orden',
+                is2D: false,
+                f: (x, y) => state.params.k * y,
+                params: ['k']
+            },
+            logistic: {
+                name: 'Crecimiento Logístico',
+                equation: () => `dy/dx = ${state.params.r}·y·(1 - y/${state.params.K})`,
+                type: 'EDO no lineal de primer orden',
+                is2D: false,
+                f: (x, y) => state.params.r * y * (1 - y / state.params.K),
+                params: ['r', 'K']
+            },
+            harmonic: {
+                name: 'Oscilador Armónico',
+                equation: () => `d²y/dx² = -${state.params.omega}²·y`,
+                type: 'Sistema lineal de segundo orden',
+                is2D: true,
+                fx: (x, y, v) => v,
+                fy: (x, y, v) => -state.params.omega * state.params.omega * y,
+                params: ['omega']
+            },
+            vanderpol: {
+                name: 'Oscilador Van der Pol',
+                equation: () => `d²y/dx² = ${state.params.mu}(1-y²)·dy/dx - y`,
+                type: 'Sistema no lineal, ciclo límite',
+                is2D: true,
+                fx: (x, y, v) => v,
+                fy: (x, y, v) => state.params.mu * (1 - y * y) * v - y,
+                params: ['mu']
+            },
+            lotka: {
+                name: 'Lotka-Volterra',
+                equation: () => `dx/dt = ${state.params.alpha}x - ${state.params.beta}xy`,
+                type: 'Sistema depredador-presa',
+                is2D: true,
+                fx: (t, x, y) => state.params.alpha * x - state.params.beta * x * y,
+                fy: (t, x, y) => state.params.delta * x * y - state.params.gamma * y,
+                params: ['alpha', 'beta']
+            },
+            pendulum: {
+                name: 'Péndulo No Lineal',
+                equation: () => `d²θ/dt² = -${state.params.gL}·sin(θ)`,
+                type: 'Sistema no lineal de segundo orden',
+                is2D: true,
+                fx: (t, theta, omega) => omega,
+                fy: (t, theta, omega) => -state.params.gL * Math.sin(theta),
+                params: ['gL']
+            }
+        };
+
+        // Resize canvas
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.offsetWidth * dpr;
+            canvas.height = canvas.offsetHeight * dpr;
+            ctx.scale(dpr, dpr);
+            draw();
+        }
+
+        // Coordinate transformations
+        function toCanvas(x, y) {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const px = ((x - state.xMin) / (state.xMax - state.xMin)) * W;
+            const py = H - ((y - state.yMin) / (state.yMax - state.yMin)) * H;
+            return [px, py];
+        }
+
+        function toMath(px, py) {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const x = state.xMin + (px / W) * (state.xMax - state.xMin);
+            const y = state.yMax - (py / H) * (state.yMax - state.yMin);
+            return [x, y];
+        }
+
+        // Numerical methods
+        function eulerStep(x, y, h, f) {
+            return y + h * f(x, y);
+        }
+
+        function rk4Step(x, y, h, f) {
+            const k1 = f(x, y);
+            const k2 = f(x + h/2, y + h/2 * k1);
+            const k3 = f(x + h/2, y + h/2 * k2);
+            const k4 = f(x + h, y + h * k3);
+            return y + (h/6) * (k1 + 2*k2 + 2*k3 + k4);
+        }
+
+        function eulerStep2D(t, x, y, h, fx, fy) {
+            const dx = fx(t, x, y);
+            const dy = fy(t, x, y);
+            return [x + h * dx, y + h * dy];
+        }
+
+        function rk4Step2D(t, x, y, h, fx, fy) {
+            const k1x = fx(t, x, y);
+            const k1y = fy(t, x, y);
+
+            const k2x = fx(t + h/2, x + h/2*k1x, y + h/2*k1y);
+            const k2y = fy(t + h/2, x + h/2*k1x, y + h/2*k1y);
+
+            const k3x = fx(t + h/2, x + h/2*k2x, y + h/2*k2y);
+            const k3y = fy(t + h/2, x + h/2*k2x, y + h/2*k2y);
+
+            const k4x = fx(t + h, x + h*k3x, y + h*k3y);
+            const k4y = fy(t + h, x + h*k3x, y + h*k3y);
+
+            return [
+                x + (h/6) * (k1x + 2*k2x + 2*k3x + k4x),
+                y + (h/6) * (k1y + 2*k2y + 2*k3y + k4y)
+            ];
+        }
+
+        // Solve ODE from initial condition
+        function solveSolution(x0, y0) {
+            const edo = edos[state.currentEdo];
+            const h = 0.02;
+            const steps = 2000;
+            const points = [[x0, y0]];
+
+            if (edo.is2D) {
+                // Phase portrait: x = variable, y = velocity (or second variable)
+                let t = 0;
+                let x = x0, y = y0;
+
+                // Forward
+                for (let i = 0; i < steps; i++) {
+                    if (state.method === 'euler') {
+                        [x, y] = eulerStep2D(t, x, y, h, edo.fx, edo.fy);
+                    } else {
+                        [x, y] = rk4Step2D(t, x, y, h, edo.fx, edo.fy);
+                    }
+                    t += h;
+
+                    if (!isFinite(x) || !isFinite(y)) break;
+                    if (Math.abs(x) > 50 || Math.abs(y) > 50) break;
+
+                    points.push([x, y]);
+                }
+
+                // Backward
+                t = 0;
+                x = x0; y = y0;
+                const backPoints = [];
+                for (let i = 0; i < steps; i++) {
+                    if (state.method === 'euler') {
+                        [x, y] = eulerStep2D(t, x, y, -h, edo.fx, edo.fy);
+                    } else {
+                        [x, y] = rk4Step2D(t, x, y, -h, edo.fx, edo.fy);
+                    }
+                    t -= h;
+
+                    if (!isFinite(x) || !isFinite(y)) break;
+                    if (Math.abs(x) > 50 || Math.abs(y) > 50) break;
+
+                    backPoints.unshift([x, y]);
+                }
+
+                return [...backPoints, ...points];
+            } else {
+                let x = x0, y = y0;
+
+                // Forward
+                for (let i = 0; i < steps; i++) {
+                    if (state.method === 'euler') {
+                        y = eulerStep(x, y, h, edo.f);
+                    } else {
+                        y = rk4Step(x, y, h, edo.f);
+                    }
+                    x += h;
+
+                    if (!isFinite(y)) break;
+                    if (Math.abs(y) > 100) break;
+
+                    points.push([x, y]);
+                }
+
+                // Backward
+                x = x0; y = y0;
+                const backPoints = [];
+                for (let i = 0; i < steps; i++) {
+                    if (state.method === 'euler') {
+                        y = eulerStep(x, y, -h, edo.f);
+                    } else {
+                        y = rk4Step(x, y, -h, edo.f);
+                    }
+                    x -= h;
+
+                    if (!isFinite(y)) break;
+                    if (Math.abs(y) > 100) break;
+
+                    backPoints.unshift([x, y]);
+                }
+
+                return [...backPoints, ...points];
+            }
+        }
+
+        // Draw everything
+        function draw() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const edo = edos[state.currentEdo];
+
+            // Background
+            ctx.fillStyle = '#030712';
+            ctx.fillRect(0, 0, W, H);
+
+            // Grid
+            drawGrid();
+
+            // Axes
+            drawAxes();
+
+            // Nullclines
+            if (state.showNullclines) {
+                drawNullclines();
+            }
+
+            // Isoclines
+            if (state.showIsoclines) {
+                drawIsoclines();
+            }
+
+            // Slope field
+            if (state.showField) {
+                drawSlopeField();
+            }
+
+            // Solutions
+            state.solutions.forEach((sol, idx) => {
+                drawSolution(sol, idx);
+            });
+        }
+
+        function drawGrid() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+
+            const xStep = Math.pow(10, Math.floor(Math.log10(state.xMax - state.xMin)) - 1);
+            for (let x = Math.ceil(state.xMin / xStep) * xStep; x <= state.xMax; x += xStep) {
+                const [px] = toCanvas(x, 0);
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, H);
+                ctx.stroke();
+            }
+
+            const yStep = Math.pow(10, Math.floor(Math.log10(state.yMax - state.yMin)) - 1);
+            for (let y = Math.ceil(state.yMin / yStep) * yStep; y <= state.yMax; y += yStep) {
+                const [, py] = toCanvas(0, y);
+                ctx.beginPath();
+                ctx.moveTo(0, py);
+                ctx.lineTo(W, py);
+                ctx.stroke();
+            }
+        }
+
+        function drawAxes() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+
+            ctx.strokeStyle = '#4b5563';
+            ctx.lineWidth = 2;
+
+            // X axis
+            if (state.yMin <= 0 && state.yMax >= 0) {
+                const [, py] = toCanvas(0, 0);
+                ctx.beginPath();
+                ctx.moveTo(0, py);
+                ctx.lineTo(W, py);
+                ctx.stroke();
+            }
+
+            // Y axis
+            if (state.xMin <= 0 && state.xMax >= 0) {
+                const [px] = toCanvas(0, 0);
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, H);
+                ctx.stroke();
+            }
+
+            // Labels
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '11px JetBrains Mono';
+
+            const xStep = Math.pow(10, Math.floor(Math.log10(state.xMax - state.xMin)));
+            for (let x = Math.ceil(state.xMin / xStep) * xStep; x <= state.xMax; x += xStep) {
+                if (Math.abs(x) < 0.001) continue;
+                const [px, py] = toCanvas(x, 0);
+                ctx.textAlign = 'center';
+                ctx.fillText(x.toFixed(0), px, Math.min(py + 15, H - 5));
+            }
+
+            const yStep = Math.pow(10, Math.floor(Math.log10(state.yMax - state.yMin)));
+            for (let y = Math.ceil(state.yMin / yStep) * yStep; y <= state.yMax; y += yStep) {
+                if (Math.abs(y) < 0.001) continue;
+                const [px, py] = toCanvas(0, y);
+                ctx.textAlign = 'right';
+                ctx.fillText(y.toFixed(0), Math.max(px - 5, 25), py + 4);
+            }
+        }
+
+        function drawSlopeField() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const edo = edos[state.currentEdo];
+
+            const gridSize = 25;
+            const lineLength = 12;
+
+            for (let px = gridSize; px < W; px += gridSize) {
+                for (let py = gridSize; py < H; py += gridSize) {
+                    const [x, y] = toMath(px, py);
+
+                    let slope;
+                    if (edo.is2D) {
+                        // For 2D systems, show dx/dt, dy/dt direction
+                        const dx = edo.fx(0, x, y);
+                        const dy = edo.fy(0, x, y);
+                        const mag = Math.sqrt(dx * dx + dy * dy);
+                        if (mag > 0.001) {
+                            slope = dy / dx;
+                        } else {
+                            continue;
+                        }
+                    } else {
+                        slope = edo.f(x, y);
+                    }
+
+                    if (!isFinite(slope)) continue;
+
+                    const angle = Math.atan(slope);
+                    const dx = Math.cos(angle) * lineLength / 2;
+                    const dy = Math.sin(angle) * lineLength / 2;
+
+                    // Color based on slope magnitude
+                    const intensity = Math.min(Math.abs(slope), 3) / 3;
+                    ctx.strokeStyle = `rgba(168, 85, 247, ${0.3 + intensity * 0.5})`;
+                    ctx.lineWidth = 1.5;
+
+                    ctx.beginPath();
+                    ctx.moveTo(px - dx, py + dy);
+                    ctx.lineTo(px + dx, py - dy);
+                    ctx.stroke();
+                }
+            }
+        }
+
+        function drawNullclines() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const edo = edos[state.currentEdo];
+
+            ctx.strokeStyle = '#ef4444';
+            ctx.lineWidth = 2;
+
+            // Draw where dy/dx = 0
+            const resolution = 200;
+            ctx.beginPath();
+
+            for (let px = 0; px < W; px++) {
+                for (let py = 0; py < H; py += 5) {
+                    const [x, y] = toMath(px, py);
+                    let slope;
+
+                    if (edo.is2D) {
+                        slope = edo.fy(0, x, y);
+                    } else {
+                        slope = edo.f(x, y);
+                    }
+
+                    if (Math.abs(slope) < 0.1) {
+                        ctx.fillStyle = 'rgba(239, 68, 68, 0.5)';
+                        ctx.fillRect(px, py, 2, 2);
+                    }
+                }
+            }
+        }
+
+        function drawIsoclines() {
+            const W = canvas.offsetWidth;
+            const edo = edos[state.currentEdo];
+
+            // Draw isoclines for slopes -2, -1, 0, 1, 2
+            const slopes = [-2, -1, 0, 1, 2];
+            const colors = ['#f87171', '#fb923c', '#4ade80', '#38bdf8', '#a78bfa'];
+
+            slopes.forEach((targetSlope, i) => {
+                ctx.fillStyle = colors[i] + '40';
+
+                for (let px = 0; px < W; px += 3) {
+                    for (let py = 0; py < canvas.offsetHeight; py += 3) {
+                        const [x, y] = toMath(px, py);
+                        let slope;
+
+                        if (edo.is2D) {
+                            const dx = edo.fx(0, x, y);
+                            const dy = edo.fy(0, x, y);
+                            slope = dy / dx;
+                        } else {
+                            slope = edo.f(x, y);
+                        }
+
+                        if (Math.abs(slope - targetSlope) < 0.15) {
+                            ctx.fillRect(px, py, 3, 3);
+                        }
+                    }
+                }
+            });
+        }
+
+        function drawSolution(points, idx) {
+            if (points.length < 2) return;
+
+            const colors = ['#22d3ee', '#f472b6', '#a3e635', '#fb923c', '#a78bfa'];
+            const color = colors[idx % colors.length];
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = 2;
+            ctx.beginPath();
+
+            let started = false;
+            points.forEach(([x, y]) => {
+                const [px, py] = toCanvas(x, y);
+                if (px < -100 || px > canvas.offsetWidth + 100) return;
+                if (py < -100 || py > canvas.offsetHeight + 100) return;
+
+                if (!started) {
+                    ctx.moveTo(px, py);
+                    started = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+            });
+
+            ctx.stroke();
+
+            // Draw initial point
+            const [x0, y0] = points[Math.floor(points.length / 2)];
+            const [px0, py0] = toCanvas(x0, y0);
+            ctx.fillStyle = color;
+            ctx.beginPath();
+            ctx.arc(px0, py0, 5, 0, Math.PI * 2);
+            ctx.fill();
+        }
+
+        function updateUI() {
+            const edo = edos[state.currentEdo];
+
+            document.getElementById('current-equation').textContent = edo.equation();
+            document.getElementById('equation-type').textContent = edo.type;
+
+            // Show/hide parameter containers
+            const allParams = ['k', 'r', 'K', 'omega', 'mu', 'alpha', 'beta', 'gL'];
+            allParams.forEach(p => {
+                const container = document.getElementById(`param-${p}-container`);
+                if (container) {
+                    container.style.display = edo.params.includes(p) ? 'block' : 'none';
+                }
+            });
+
+            state.is2D = edo.is2D;
+        }
+
+        function showParamControls() {
+            updateUI();
+        }
+
+        // Event listeners
+        document.querySelectorAll('.edo-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.edo-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.currentEdo = btn.dataset.edo;
+                state.solutions = [];
+                showParamControls();
+                draw();
+            });
+        });
+
+        // Parameter sliders
+        ['k', 'r', 'K', 'omega', 'mu', 'alpha', 'beta', 'gL'].forEach(param => {
+            const slider = document.getElementById(`param-${param}`);
+            if (slider) {
+                slider.addEventListener('input', (e) => {
+                    state.params[param] = parseFloat(e.target.value);
+                    document.getElementById(`param-${param}-value`).textContent = state.params[param].toFixed(1);
+                    // Recalculate solutions
+                    const initialConditions = state.solutions.map(sol => sol[Math.floor(sol.length / 2)]);
+                    state.solutions = initialConditions.map(([x, y]) => solveSolution(x, y));
+                    updateUI();
+                    draw();
+                });
+            }
+        });
+
+        document.getElementById('show-field').addEventListener('change', (e) => {
+            state.showField = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('show-isoclines').addEventListener('change', (e) => {
+            state.showIsoclines = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('show-nullclines').addEventListener('change', (e) => {
+            state.showNullclines = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('method-euler').addEventListener('click', () => {
+            state.method = 'euler';
+            document.getElementById('method-euler').classList.add('bg-violet-600');
+            document.getElementById('method-euler').classList.remove('bg-gray-800');
+            document.getElementById('method-rk4').classList.remove('bg-violet-600');
+            document.getElementById('method-rk4').classList.add('bg-gray-800');
+            document.getElementById('method-display').textContent = 'Euler';
+            // Recalculate solutions
+            const initialConditions = state.solutions.map(sol => sol[Math.floor(sol.length / 2)]);
+            state.solutions = initialConditions.map(([x, y]) => solveSolution(x, y));
+            draw();
+        });
+
+        document.getElementById('method-rk4').addEventListener('click', () => {
+            state.method = 'rk4';
+            document.getElementById('method-rk4').classList.add('bg-violet-600');
+            document.getElementById('method-rk4').classList.remove('bg-gray-800');
+            document.getElementById('method-euler').classList.remove('bg-violet-600');
+            document.getElementById('method-euler').classList.add('bg-gray-800');
+            document.getElementById('method-display').textContent = 'RK4';
+            // Recalculate solutions
+            const initialConditions = state.solutions.map(sol => sol[Math.floor(sol.length / 2)]);
+            state.solutions = initialConditions.map(([x, y]) => solveSolution(x, y));
+            draw();
+        });
+
+        ['x-min', 'x-max', 'y-min', 'y-max'].forEach(id => {
+            document.getElementById(id).addEventListener('change', (e) => {
+                const key = id.replace('-', '').replace('min', 'Min').replace('max', 'Max');
+                state[key] = parseFloat(e.target.value);
+                draw();
+            });
+        });
+
+        document.getElementById('clear-solutions').addEventListener('click', () => {
+            state.solutions = [];
+            draw();
+        });
+
+        // Click to add solution
+        canvas.addEventListener('click', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const px = e.clientX - rect.left;
+            const py = e.clientY - rect.top;
+            const [x, y] = toMath(px, py);
+
+            const solution = solveSolution(x, y);
+            state.solutions.push(solution);
+            draw();
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initialize
+        showParamControls();
+        resizeCanvas();
+    </script>
+</body>
+</html>

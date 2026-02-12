@@ -1,0 +1,212 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 2: Pitágoras y el Misterio de los Números | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-01.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="./leccion-03.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Layout -->
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
+                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
+                    
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>2/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 33.3%"></div>
+                        </div>
+                    </div>
+
+                    <nav class="space-y-2">
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Content -->
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 2</span>
+                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">Pitágoras y el Misterio de los Números</h1>
+                        <p class="text-gray-400 text-lg">Explora la conexión entre geometría y números que los pitagóricos descubrieron hace más de 2500 años.</p>
+                    </div>
+
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">La Escuela Pitagórica</h2>
+                        <p class="text-gray-300 mb-4">
+                            La historia de los sólidos platónicos comienza con los pitagóricos, quienes creían que "<em class="text-platonic-cyan">todo es número</em>". Para ellos, la matemática era una forma de comprender la armonía del universo.
+                        </p>
+
+                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 border-l-4 border-platonic-cyan">
+                            <p class="text-lg italic text-gray-300">
+                                "Los números gobiernan el universo."
+                            </p>
+                            <p class="text-sm text-gray-500 mt-2">— Pitágoras (c. 570-495 a.C.)</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Los Números Perfectos de los Sólidos</h3>
+                        <p class="text-gray-300 mb-4">
+                            Los pitagóricos descubrieron que los sólidos platónicos tenían propiedades numéricas extraordinarias. Cada sólido está relacionado con números especiales:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Número 4 — Tetraedro</h4>
+                                <p class="text-sm text-gray-400">El número de la manifestación. 4 elementos, 4 direcciones, 4 vértices.</p>
+                            </div>
+                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Número 6 — Cubo</h4>
+                                <p class="text-sm text-gray-400">Número perfecto. 1+2+3 = 6. 6 caras perfectas.</p>
+                            </div>
+                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Número 8 — Octaedro</h4>
+                                <p class="text-sm text-gray-400">El primer número cúbico después de 1 (2³ = 8).</p>
+                            </div>
+                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
+                                <h4 class="font-semibold text-platonic-purple mb-2">Número 12 — Dodecaedro</h4>
+                                <p class="text-sm text-gray-400">12 meses, 12 signos zodiacales. El más misterioso.</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Teorema de Pitágoras en 3D</h3>
+                        <p class="text-gray-300 mb-4">
+                            Los pitagóricos desarrollaron el famoso teorema a² + b² = c². En tres dimensiones, esta relación se extiende a los sólidos:
+                        </p>
+
+                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-purple mb-3">Relación Pitagórica en el Cubo:</h4>
+                            <p class="text-gray-300 mb-2">Para un cubo con arista <strong>a</strong>:</p>
+                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
+                                <li>Diagonal de cara: d² = a² + a² = 2a² → d = a√2</li>
+                                <li>Diagonal espacial: D² = d² + a² = 3a² → D = a√3</li>
+                            </ul>
+                            <p class="text-gray-400 mt-3 text-sm">Esta es la base del radio circunscrito del cubo: R = a√3/2</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Proporción Áurea</h3>
+                        <p class="text-gray-300 mb-4">
+                            Un descubrimiento crucial fue la <strong class="text-platonic-cyan">Proporción Áurea (φ)</strong>, que aparece en el dodecaedro e icosaedro:
+                        </p>
+
+                        <div class="bg-gray-800/50 rounded-lg p-4 mb-6 text-center">
+                            <p class="text-2xl font-mono text-platonic-purple mb-2">φ = (1 + √5) / 2 ≈ 1.618</p>
+                            <p class="text-sm text-gray-400">Propiedad especial: φ = 1 + 1/φ</p>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            El dodecaedro contiene pentágonos, y la diagonal de un pentágono se relaciona con φ. Esta proporción "perfecta" aparece en toda la naturaleza.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio: La Magia de los Números</h3>
+                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-platonic-cyan mb-3">Calcula y verifica:</h4>
+                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
+                                <li>Para un tetraedro con a = 1, el volumen es √2/12 ≈ 0.1179</li>
+                                <li>Verifica que φ² = φ + 1</li>
+                                <li>Comprueba que 1/φ = φ - 1</li>
+                                <li>La suma de vértices de todos los sólidos: 4+8+6+20+12 = 50</li>
+                            </ol>
+                        </div>
+                    </div>
+
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
+                            <span class="mr-2">🔬</span> LAB: Proporciones Geométricas
+                        </h2>
+                        <p class="text-gray-400 mb-4">Explora las relaciones numéricas en PlatonicLab. Observa las medidas calculadas.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                        <div class="mt-4 flex gap-2">
+                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({tab: 'calc'}, '*')" class="px-4 py-2 bg-platonic-purple hover:bg-purple-600 rounded text-sm">Abrir Calculadora</button>
+                        </div>
+                    </div>
+
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-01.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                            ← Anterior: Introducción
+                        </a>
+                        <a href="./leccion-03.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                            Siguiente: Platón y el Timeo →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">
+                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
+            </p>
+        </div>
+    </footer>
+</body>
+</html>

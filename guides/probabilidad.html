@@ -1,0 +1,529 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Probabilidad y Distribuciones - Math Visual Lab</title>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: 'Inter', system-ui, sans-serif;
+            background: linear-gradient(135deg, #030712 0%, #0f172a 100%);
+            min-height: 100vh;
+            color: #e2e8f0;
+            line-height: 1.7;
+        }
+        .container {
+            max-width: 900px;
+            margin: 0 auto;
+            padding: 40px 24px;
+        }
+        .breadcrumb {
+            font-size: 0.8rem;
+            color: #64748b;
+            margin-bottom: 24px;
+        }
+        .breadcrumb a {
+            color: #a855f7;
+            text-decoration: none;
+        }
+        .breadcrumb a:hover { text-decoration: underline; }
+        .hero {
+            text-align: center;
+            margin-bottom: 48px;
+            padding: 48px 24px;
+            background: rgba(168, 85, 247, 0.05);
+            border-radius: 20px;
+            border: 1px solid rgba(168, 85, 247, 0.15);
+        }
+        h1 {
+            font-size: 2.5rem;
+            font-weight: 300;
+            margin-bottom: 16px;
+            letter-spacing: -1px;
+        }
+        h1 span { color: #a855f7; font-weight: 600; }
+        .hero-subtitle {
+            font-size: 1.1rem;
+            color: #94a3b8;
+            max-width: 600px;
+            margin: 0 auto 24px;
+        }
+        .equation-hero {
+            font-family: 'JetBrains Mono', monospace;
+            font-size: 1.3rem;
+            color: #a855f7;
+            padding: 20px 32px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 12px;
+            display: inline-block;
+        }
+        h2 {
+            font-size: 1.5rem;
+            font-weight: 500;
+            margin: 48px 0 20px;
+            color: #f1f5f9;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h2::before {
+            content: '';
+            width: 4px;
+            height: 28px;
+            background: #a855f7;
+            border-radius: 2px;
+        }
+        h3 {
+            font-size: 1.15rem;
+            font-weight: 500;
+            margin: 32px 0 16px;
+            color: #e2e8f0;
+        }
+        p {
+            margin-bottom: 16px;
+            color: #cbd5e1;
+        }
+        .concept-box {
+            background: rgba(168, 85, 247, 0.08);
+            border: 1px solid rgba(168, 85, 247, 0.2);
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .concept-box h4 {
+            color: #a855f7;
+            font-size: 0.9rem;
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 12px;
+        }
+        .equation {
+            font-family: 'JetBrains Mono', monospace;
+            background: rgba(0,0,0,0.3);
+            padding: 16px 24px;
+            border-radius: 8px;
+            margin: 16px 0;
+            color: #a855f7;
+            font-size: 0.95rem;
+            overflow-x: auto;
+        }
+        .experiment {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 24px;
+            margin: 24px 0;
+        }
+        .experiment-number {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 32px;
+            height: 32px;
+            background: #a855f7;
+            color: #000;
+            font-weight: 700;
+            border-radius: 8px;
+            margin-right: 12px;
+        }
+        .experiment h4 {
+            display: inline;
+            font-size: 1.1rem;
+            color: #f1f5f9;
+        }
+        .experiment p {
+            margin-top: 16px;
+            padding-left: 44px;
+        }
+        .experiment ul {
+            margin: 12px 0 0 44px;
+            padding-left: 20px;
+        }
+        .experiment li {
+            color: #94a3b8;
+            margin-bottom: 8px;
+        }
+        .dist-card {
+            background: rgba(255,255,255,0.02);
+            border: 1px solid #1e293b;
+            border-radius: 12px;
+            padding: 20px;
+            margin: 16px 0;
+        }
+        .dist-card h4 {
+            color: #22d3ee;
+            margin-bottom: 8px;
+        }
+        .dist-card .equation {
+            margin: 8px 0;
+            padding: 10px 14px;
+            font-size: 0.85rem;
+        }
+        .dist-card p {
+            font-size: 0.9rem;
+            margin-bottom: 8px;
+        }
+        .connection {
+            display: flex;
+            align-items: flex-start;
+            gap: 16px;
+            padding: 20px;
+            background: rgba(255,255,255,0.02);
+            border-radius: 12px;
+            margin: 16px 0;
+            border-left: 3px solid #a855f7;
+        }
+        .connection-icon {
+            font-size: 1.5rem;
+            flex-shrink: 0;
+        }
+        .connection h4 {
+            color: #f1f5f9;
+            margin-bottom: 4px;
+        }
+        .connection p {
+            font-size: 0.9rem;
+            margin: 0;
+        }
+        .warning {
+            background: rgba(251, 191, 36, 0.1);
+            border: 1px solid rgba(251, 191, 36, 0.3);
+            border-radius: 12px;
+            padding: 20px;
+            margin: 24px 0;
+        }
+        .warning h4 {
+            color: #fbbf24;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .warning p {
+            font-size: 0.9rem;
+        }
+        .back-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 8px;
+            color: #a855f7;
+            text-decoration: none;
+            padding: 12px 20px;
+            background: rgba(168, 85, 247, 0.1);
+            border-radius: 8px;
+            font-weight: 500;
+            transition: all 0.2s;
+            margin-top: 48px;
+        }
+        .back-btn:hover {
+            background: rgba(168, 85, 247, 0.2);
+        }
+        .highlight {
+            color: #a855f7;
+            font-weight: 500;
+        }
+        .reflection {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.1));
+            border-radius: 16px;
+            padding: 32px;
+            margin: 48px 0;
+            text-align: center;
+        }
+        .reflection h3 {
+            margin-top: 0;
+            font-size: 1.3rem;
+        }
+        .reflection p {
+            font-size: 1.05rem;
+            font-style: italic;
+            max-width: 700px;
+            margin: 0 auto;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <nav class="breadcrumb">
+            <a href="../index.html">Math Visual Lab</a> /
+            <a href="../probabilidad.html">Probabilidad</a> /
+            Guia
+        </nav>
+
+        <div class="hero">
+            <h1>Probabilidad y <span>Distribuciones</span></h1>
+            <p class="hero-subtitle">
+                Las distribuciones de probabilidad describen como se reparten los valores
+                de una variable aleatoria. Son el puente entre la incertidumbre y la
+                prediccion matematica.
+            </p>
+            <div class="equation-hero">
+                f(x) = (1/sigma*sqrt(2*pi)) * e^(-(x-mu)^2 / 2*sigma^2)
+            </div>
+        </div>
+
+        <h2>Fundamentos Teoricos</h2>
+
+        <p>
+            Una <span class="highlight">variable aleatoria</span> es una funcion que asigna
+            un numero real a cada resultado de un experimento aleatorio. La
+            <span class="highlight">distribucion de probabilidad</span> describe la probabilidad
+            de cada valor posible.
+        </p>
+
+        <div class="concept-box">
+            <h4>Funcion de Densidad de Probabilidad (PDF)</h4>
+            <p>
+                Para variables continuas, la PDF f(x) describe la "densidad" de probabilidad
+                en cada punto. La probabilidad de caer en un intervalo [a,b] es:
+            </p>
+            <div class="equation">
+                P(a <= X <= b) = integral de a hasta b de f(x) dx
+            </div>
+            <p>
+                La integral total debe ser 1: integral de -inf a +inf de f(x) dx = 1
+            </p>
+        </div>
+
+        <h3>Las Distribuciones en la Simulacion</h3>
+
+        <div class="dist-card">
+            <h4>Normal (Gaussiana)</h4>
+            <div class="equation">f(x) = (1/sigma*sqrt(2*pi)) * exp(-(x-mu)^2 / 2*sigma^2)</div>
+            <p><strong>Parametros:</strong> mu (media), sigma (desviacion estandar)</p>
+            <p><strong>Uso:</strong> Errores de medicion, alturas, CI, fenomenos naturales</p>
+        </div>
+
+        <div class="dist-card">
+            <h4>Uniforme</h4>
+            <div class="equation">f(x) = 1/(b-a) para a <= x <= b</div>
+            <p><strong>Parametros:</strong> a (minimo), b (maximo)</p>
+            <p><strong>Uso:</strong> Numeros aleatorios, tiempos de espera sin memoria</p>
+        </div>
+
+        <div class="dist-card">
+            <h4>Exponencial</h4>
+            <div class="equation">f(x) = lambda * exp(-lambda * x) para x >= 0</div>
+            <p><strong>Parametros:</strong> lambda (tasa)</p>
+            <p><strong>Uso:</strong> Tiempo entre eventos, vida util, decaimiento radiactivo</p>
+        </div>
+
+        <div class="dist-card">
+            <h4>Poisson (Discreta)</h4>
+            <div class="equation">P(X=k) = (lambda^k * e^(-lambda)) / k!</div>
+            <p><strong>Parametros:</strong> lambda (tasa media)</p>
+            <p><strong>Uso:</strong> Conteo de eventos raros: llamadas, accidentes, mutaciones</p>
+        </div>
+
+        <div class="dist-card">
+            <h4>Binomial (Discreta)</h4>
+            <div class="equation">P(X=k) = C(n,k) * p^k * (1-p)^(n-k)</div>
+            <p><strong>Parametros:</strong> n (ensayos), p (probabilidad de exito)</p>
+            <p><strong>Uso:</strong> Numero de exitos en n ensayos: monedas, tests, encuestas</p>
+        </div>
+
+        <div class="dist-card">
+            <h4>Beta</h4>
+            <div class="equation">f(x) = x^(alpha-1) * (1-x)^(beta-1) / B(alpha, beta)</div>
+            <p><strong>Parametros:</strong> alpha, beta (parametros de forma)</p>
+            <p><strong>Uso:</strong> Modelar proporciones, probabilidades a priori en estadistica bayesiana</p>
+        </div>
+
+        <h2>Experimentos Guiados</h2>
+
+        <div class="experiment">
+            <span class="experiment-number">1</span>
+            <h4>La Ley de los Grandes Numeros</h4>
+            <p>
+                Selecciona la distribucion Normal con mu=0 y sigma=1. Genera muestras
+                y observa como la media muestral converge a mu.
+            </p>
+            <ul>
+                <li>Con 10 muestras, la media fluctua bastante</li>
+                <li>Con 100 muestras, se acerca a 0</li>
+                <li>Con 1000+ muestras, esta muy cerca de mu</li>
+                <li>La varianza muestral tambien converge a sigma^2</li>
+                <li>Esto es la base de toda la estadistica inferencial</li>
+            </ul>
+        </div>
+
+        <div class="experiment">
+            <span class="experiment-number">2</span>
+            <h4>El Histograma se Aproxima a la PDF</h4>
+            <p>
+                Activa el muestreo automatico y observa como el histograma
+                converge a la curva teorica.
+            </p>
+            <ul>
+                <li>Con pocas muestras: histograma irregular</li>
+                <li>Con muchas muestras: forma similar a la PDF</li>
+                <li>La normalizacion hace que areas iguales tengan probabilidades iguales</li>
+                <li>Este es el principio del metodo de Monte Carlo</li>
+            </ul>
+        </div>
+
+        <div class="experiment">
+            <span class="experiment-number">3</span>
+            <h4>Efecto de los Parametros</h4>
+            <p>
+                Cambia los parametros de cada distribucion y observa como afectan
+                la forma de la PDF.
+            </p>
+            <ul>
+                <li>Normal: mu desplaza el centro, sigma ensancha/estrecha</li>
+                <li>Exponencial: lambda mayor = cola mas corta</li>
+                <li>Binomial: p=0.5 es simetrica, p cercano a 0 o 1 es asimetrica</li>
+                <li>Beta: alpha=beta es simetrica, valores diferentes la sesgan</li>
+            </ul>
+        </div>
+
+        <div class="experiment">
+            <span class="experiment-number">4</span>
+            <h4>Distribuciones Discretas vs Continuas</h4>
+            <p>
+                Compara Poisson/Binomial (discretas) con Normal/Exponencial (continuas).
+            </p>
+            <ul>
+                <li>Discretas: barras separadas, solo valores enteros</li>
+                <li>Continuas: curva suave, cualquier valor real</li>
+                <li>Binomial con n grande se aproxima a Normal (TCL)</li>
+                <li>Poisson con lambda grande tambien se aproxima a Normal</li>
+            </ul>
+        </div>
+
+        <div class="experiment">
+            <span class="experiment-number">5</span>
+            <h4>La Distribucion Beta</h4>
+            <p>
+                Explora la versatilidad de la distribucion Beta en el intervalo [0,1].
+            </p>
+            <ul>
+                <li>alpha=beta=1: Uniforme</li>
+                <li>alpha=beta=2: Forma de campana en [0,1]</li>
+                <li>alpha=1, beta=3: Sesgo hacia 0</li>
+                <li>alpha=5, beta=1: Sesgo hacia 1</li>
+                <li>alpha,beta menor 1: Forma de U (bimodal)</li>
+            </ul>
+        </div>
+
+        <h2>Conexiones Interdisciplinarias</h2>
+
+        <div class="connection">
+            <span class="connection-icon">🎲</span>
+            <div>
+                <h4>Fisica: Mecanica Estadistica</h4>
+                <p>
+                    La distribucion de Maxwell-Boltzmann describe las velocidades de moleculas
+                    en un gas. Es una distribucion Chi con 3 grados de libertad.
+                </p>
+            </div>
+        </div>
+
+        <div class="connection">
+            <span class="connection-icon">🧬</span>
+            <div>
+                <h4>Biologia: Genetica de Poblaciones</h4>
+                <p>
+                    La distribucion binomial modela la herencia mendeliana. Las frecuencias
+                    alelicas siguen distribuciones Beta en modelos bayesianos.
+                </p>
+            </div>
+        </div>
+
+        <div class="connection">
+            <span class="connection-icon">📊</span>
+            <div>
+                <h4>Finanzas: Modelos de Riesgo</h4>
+                <p>
+                    Los retornos de acciones se modelan con distribuciones normales (o
+                    log-normales). El VaR (Value at Risk) usa percentiles de estas distribuciones.
+                </p>
+            </div>
+        </div>
+
+        <div class="connection">
+            <span class="connection-icon">🤖</span>
+            <div>
+                <h4>Machine Learning: Modelos Probabilisticos</h4>
+                <p>
+                    Naive Bayes, Redes Bayesianas, y modelos generativos usan distribuciones
+                    de probabilidad como bloques fundamentales.
+                </p>
+            </div>
+        </div>
+
+        <div class="connection">
+            <span class="connection-icon">📡</span>
+            <div>
+                <h4>Telecomunicaciones: Ruido y Señales</h4>
+                <p>
+                    El ruido termico sigue una distribucion normal (Gaussiana). La teoria
+                    de la informacion de Shannon esta basada en probabilidades.
+                </p>
+            </div>
+        </div>
+
+        <h2>Teoremas Fundamentales</h2>
+
+        <div class="concept-box">
+            <h4>Teorema Central del Limite (TCL)</h4>
+            <p>
+                La suma (o promedio) de muchas variables aleatorias independientes tiende
+                a una distribucion normal, sin importar la distribucion original:
+            </p>
+            <div class="equation">
+                (X1 + X2 + ... + Xn - n*mu) / (sigma*sqrt(n)) --> N(0,1)
+            </div>
+            <p>
+                Este es uno de los teoremas mas importantes de la matematica. Explica
+                por que la normal aparece en tantos fenomenos naturales.
+            </p>
+        </div>
+
+        <h2>Limitaciones del Modelo</h2>
+
+        <div class="warning">
+            <h4>⚠ Generadores Pseudoaleatorios</h4>
+            <p>
+                Los numeros "aleatorios" de la computadora son pseudoaleatorios,
+                generados por algoritmos deterministas. Para aplicaciones criptograficas
+                se necesitan fuentes de entropia real.
+            </p>
+        </div>
+
+        <div class="warning">
+            <h4>⚠ Discretizacion del Histograma</h4>
+            <p>
+                El numero de bins afecta la apariencia del histograma. Muy pocos bins
+                ocultan detalles; demasiados crean ruido visual.
+            </p>
+        </div>
+
+        <div class="warning">
+            <h4>⚠ Colas Pesadas</h4>
+            <p>
+                Muchos fenomenos reales tienen "colas pesadas" (eventos extremos mas
+                frecuentes que lo predicho por la normal). Las distribuciones de la
+                simulacion son idealizaciones.
+            </p>
+        </div>
+
+        <div class="reflection">
+            <h3>Para Reflexionar</h3>
+            <p>
+                "¿Por que la distribucion normal aparece en tantos fenomenos naturales?
+                ¿Es una propiedad fundamental del universo o un artefacto de como
+                medimos y modelamos?"
+            </p>
+        </div>
+
+        <a href="../probabilidad.html" class="back-btn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M19 12H5M12 19l-7-7 7-7"/>
+            </svg>
+            Volver a la simulacion
+        </a>
+    </div>
+</body>
+</html>

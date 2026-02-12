@@ -1,0 +1,440 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Geometría 3D - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-6 py-4">
+            <div class="flex items-center gap-4">
+                <a href="../geometria-3d.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Volver a simulación
+                </a>
+                <div class="h-4 w-px bg-gray-800"></div>
+                <span class="text-sm text-gray-500">Guía Pedagógica</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <h1 class="text-4xl font-light mb-2">
+            <span class="text-violet-400 font-medium">Geometría</span> 3D
+        </h1>
+        <p class="text-gray-400 text-lg mb-12">Sólidos, volúmenes y áreas superficiales</p>
+
+        <!-- Introducción -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Introducción</h2>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                La <strong>geometría tridimensional</strong> estudia las propiedades de objetos en el espacio.
+                Mientras que la geometría plana trabaja con figuras de dos dimensiones (largo y ancho),
+                la geometría 3D añade la <em>profundidad</em> como tercera dimensión.
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Esta simulación te permite explorar sólidos fundamentales: desde los <strong>poliedros platónicos</strong>
+                (tetraedro, cubo, octaedro, dodecaedro, icosaedro) hasta <strong>superficies de revolución</strong>
+                (esfera, cilindro, cono, toro). Cada forma tiene propiedades matemáticas únicas.
+            </p>
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <h3 class="text-lg font-medium text-violet-300 mb-3">Conceptos Clave</h3>
+                <ul class="space-y-2 text-gray-400">
+                    <li><span class="text-emerald-400">Volumen</span> - Cantidad de espacio que ocupa el sólido (en unidades³)</li>
+                    <li><span class="text-cyan-400">Área superficial</span> - Total de "piel" que recubre el sólido (en unidades²)</li>
+                    <li><span class="text-violet-400">Vértices</span> - Puntos donde se encuentran las aristas</li>
+                    <li><span class="text-violet-400">Aristas</span> - Líneas donde se unen dos caras</li>
+                    <li><span class="text-violet-400">Caras</span> - Superficies planas que limitan el sólido</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Sólidos Platónicos -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Sólidos Platónicos</h2>
+            <p class="text-gray-300 leading-relaxed mb-6">
+                Los <strong>sólidos platónicos</strong> son los únicos cinco poliedros regulares convexos
+                que existen. "Regular" significa que todas sus caras son polígonos regulares idénticos,
+                y "convexo" significa que no tiene hendiduras.
+            </p>
+
+            <div class="overflow-x-auto mb-6">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-500 border-b border-gray-800">
+                            <th class="pb-3 pr-4">Sólido</th>
+                            <th class="pb-3 pr-4">Caras</th>
+                            <th class="pb-3 pr-4">Vértices</th>
+                            <th class="pb-3 pr-4">Aristas</th>
+                            <th class="pb-3">Tipo de Cara</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-400">
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-3 pr-4 text-violet-300">Tetraedro</td>
+                            <td class="py-3 pr-4">4</td>
+                            <td class="py-3 pr-4">4</td>
+                            <td class="py-3 pr-4">6</td>
+                            <td class="py-3">Triángulo equilátero</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-3 pr-4 text-violet-300">Cubo (Hexaedro)</td>
+                            <td class="py-3 pr-4">6</td>
+                            <td class="py-3 pr-4">8</td>
+                            <td class="py-3 pr-4">12</td>
+                            <td class="py-3">Cuadrado</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-3 pr-4 text-violet-300">Octaedro</td>
+                            <td class="py-3 pr-4">8</td>
+                            <td class="py-3 pr-4">6</td>
+                            <td class="py-3 pr-4">12</td>
+                            <td class="py-3">Triángulo equilátero</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-3 pr-4 text-violet-300">Dodecaedro</td>
+                            <td class="py-3 pr-4">12</td>
+                            <td class="py-3 pr-4">20</td>
+                            <td class="py-3 pr-4">30</td>
+                            <td class="py-3">Pentágono regular</td>
+                        </tr>
+                        <tr>
+                            <td class="py-3 pr-4 text-violet-300">Icosaedro</td>
+                            <td class="py-3 pr-4">20</td>
+                            <td class="py-3 pr-4">12</td>
+                            <td class="py-3 pr-4">30</td>
+                            <td class="py-3">Triángulo equilátero</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="bg-gray-900/50 border border-cyan-500/30 rounded-xl p-6">
+                <h3 class="text-lg font-medium text-cyan-400 mb-2">Fórmula de Euler</h3>
+                <p class="text-gray-400 mb-3">
+                    Para todo poliedro convexo se cumple:
+                </p>
+                <div class="text-center mono text-xl text-cyan-300 mb-3">V - A + C = 2</div>
+                <p class="text-gray-500 text-sm">
+                    Donde V = vértices, A = aristas, C = caras. Verifica esta fórmula con los sólidos platónicos.
+                </p>
+            </div>
+        </section>
+
+        <!-- Superficies de Revolución -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Superficies de Revolución</h2>
+            <p class="text-gray-300 leading-relaxed mb-6">
+                Estas superficies se generan al <strong>rotar una curva</strong> alrededor de un eje.
+                Son fundamentales en ingeniería y fabricación.
+            </p>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-emerald-400 mb-2">Esfera</h3>
+                    <p class="text-gray-500 text-sm mb-3">Semicírculo rotando alrededor de su diámetro.</p>
+                    <div class="mono text-xs text-gray-400">
+                        <p>V = (4/3)πr³</p>
+                        <p>A = 4πr²</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-cyan-400 mb-2">Cilindro</h3>
+                    <p class="text-gray-500 text-sm mb-3">Rectángulo rotando alrededor de un lado.</p>
+                    <div class="mono text-xs text-gray-400">
+                        <p>V = πr²h</p>
+                        <p>A = 2πr(r + h)</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-amber-400 mb-2">Cono</h3>
+                    <p class="text-gray-500 text-sm mb-3">Triángulo rectángulo rotando alrededor de un cateto.</p>
+                    <div class="mono text-xs text-gray-400">
+                        <p>V = (1/3)πr²h</p>
+                        <p>A = πr(r + √(r² + h²))</p>
+                    </div>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-rose-400 mb-2">Toro</h3>
+                    <p class="text-gray-500 text-sm mb-3">Círculo rotando alrededor de un eje exterior.</p>
+                    <div class="mono text-xs text-gray-400">
+                        <p>V = 2π²Rr²</p>
+                        <p>A = 4π²Rr</p>
+                    </div>
+                </div>
+            </div>
+        </section>
+
+        <!-- Secciones Transversales -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Secciones Transversales</h2>
+            <p class="text-gray-300 leading-relaxed mb-6">
+                Una <strong>sección transversal</strong> es la figura que resulta de cortar un sólido
+                con un plano. Estudiar secciones nos ayuda a entender la estructura interna de los objetos.
+            </p>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-violet-400 mb-2">Secciones de una Esfera</h3>
+                    <p class="text-gray-500 text-sm">
+                        Cualquier plano que corte una esfera produce un <strong>círculo</strong>.
+                        El círculo máximo se obtiene cuando el plano pasa por el centro.
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-cyan-400 mb-2">Secciones de un Cilindro</h3>
+                    <p class="text-gray-500 text-sm">
+                        Paralelo a la base: <strong>círculo</strong>.
+                        Perpendicular a la base: <strong>rectángulo</strong>.
+                        Diagonal: <strong>elipse</strong>.
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-emerald-400 mb-2">Secciones Cónicas</h3>
+                    <p class="text-gray-500 text-sm">
+                        Un cono cortado por planos produce las famosas <strong>cónicas</strong>:
+                        círculo, elipse, parábola e hipérbola, dependiendo del ángulo del corte.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experimentos -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Experimentos Sugeridos</h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-emerald-400 mb-2">1. Verificar Euler</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Para cada sólido platónico, comprueba que V - A + C = 2.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Tetraedro: 4 - 6 + 4 = 2 ✓</li>
+                        <li>Cubo: 8 - 12 + 6 = 2 ✓</li>
+                        <li>Prueba con octaedro, dodecaedro e icosaedro</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-cyan-400 mb-2">2. Relación Volumen/Área</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Observa cómo cambia la relación V/A al escalar un sólido.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Duplica el tamaño del cubo</li>
+                        <li>El volumen se multiplica por 8 (2³)</li>
+                        <li>El área se multiplica por 4 (2²)</li>
+                        <li>La relación V/A aumenta: los sólidos grandes son más "eficientes"</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-amber-400 mb-2">3. Dualidad Platónica</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Algunos sólidos son "duales": uno tiene tantas caras como vértices tiene el otro.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Cubo (6 caras, 8 vértices) ↔ Octaedro (8 caras, 6 vértices)</li>
+                        <li>Dodecaedro (12 caras, 20 vértices) ↔ Icosaedro (20 caras, 12 vértices)</li>
+                        <li>El tetraedro es autodual (4 caras, 4 vértices)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-rose-400 mb-2">4. Secciones del Toro</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Activa la sección transversal en un toro y explora:
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Corte horizontal por el centro → dos círculos</li>
+                        <li>Corte vertical por el centro → dos círculos separados</li>
+                        <li>Corte tangente → forma de "limón" (lemniscata)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-violet-400 mb-2">5. Isoperimetría 3D</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        ¿Qué sólido encierra más volumen para una superficie dada?
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Compara V/A para esfera, cubo y cilindro del mismo radio/lado</li>
+                        <li>La esfera es óptima: maximiza V para A fija</li>
+                        <li>Por eso las burbujas son esféricas</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conexiones -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Conexiones</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="../topologia.html" class="guide-link">
+                    <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">M</span>
+                    <span>Topología - Möbius y Klein</span>
+                </a>
+                <a href="../trigonometria.html" class="guide-link">
+                    <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">M</span>
+                    <span>Trigonometría - Funciones en 3D</span>
+                </a>
+                <a href="../../Physics/Physics Visual Lab/ondas.html" class="guide-link">
+                    <span class="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">F</span>
+                    <span>Ondas - Vibraciones en sólidos</span>
+                </a>
+                <a href="../../Chemistry/Chemistry Visual Lab/cristales.html" class="guide-link">
+                    <span class="w-5 h-5 bg-cyan-500 rounded-full flex items-center justify-center text-xs font-bold">Q</span>
+                    <span>Cristales - Estructura atómica 3D</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Advertencias -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-amber-400 mb-4">Limitaciones del Modelo</h2>
+            <ul class="space-y-3 text-gray-400">
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>La sección transversal es una <strong>visualización aproximada</strong>.
+                    No calcula la intersección real del plano con el sólido, solo muestra el plano de corte.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>Las fórmulas para dodecaedro e icosaedro usan aproximaciones numéricas
+                    porque involucran el número áureo φ = (1+√5)/2.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>Para esfera, cilindro, cono y toro, los valores de vértices/aristas/caras
+                    son "∞" porque son superficies curvas continuas, no poliedros.</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Historia -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Contexto Histórico</h2>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Los <strong>sólidos platónicos</strong> fueron estudiados por Platón (427-347 a.C.),
+                quien los asoció con los elementos: tetraedro=fuego, cubo=tierra, octaedro=aire,
+                icosaedro=agua, dodecaedro=cosmos.
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                <strong>Euclides</strong> demostró en los Elementos (300 a.C.) que solo existen
+                cinco sólidos platónicos. La prueba usa el hecho de que la suma de ángulos
+                en cada vértice debe ser menor que 360°.
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                <strong>Arquímedes</strong> (287-212 a.C.) descubrió 13 sólidos "arquimedianos"
+                semi-regulares, y estudió las fórmulas de volumen para esfera y cilindro.
+                Su famoso "Eureka" fue al descubrir el principio de desplazamiento de fluidos.
+            </p>
+            <p class="text-gray-300 leading-relaxed">
+                <strong>Euler</strong> (1707-1783) demostró su famosa fórmula V - A + C = 2 para poliedros,
+                uno de los primeros teoremas de la topología moderna.
+            </p>
+        </section>
+
+        <!-- Referencia -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Fórmulas de Referencia</h2>
+            <div class="bg-gray-900 rounded-xl p-6 overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-500 border-b border-gray-800">
+                            <th class="pb-3 pr-4">Sólido</th>
+                            <th class="pb-3 pr-4">Volumen</th>
+                            <th class="pb-3">Área Superficial</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-400 mono text-xs">
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Cubo (a)</td>
+                            <td class="py-2 pr-4">a³</td>
+                            <td class="py-2">6a²</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Esfera (r)</td>
+                            <td class="py-2 pr-4">(4/3)πr³</td>
+                            <td class="py-2">4πr²</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Cilindro (r, h)</td>
+                            <td class="py-2 pr-4">πr²h</td>
+                            <td class="py-2">2πr(r + h)</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Cono (r, h)</td>
+                            <td class="py-2 pr-4">(1/3)πr²h</td>
+                            <td class="py-2">πr(r + √(r² + h²))</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Toro (R, r)</td>
+                            <td class="py-2 pr-4">2π²Rr²</td>
+                            <td class="py-2">4π²Rr</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Tetraedro (a)</td>
+                            <td class="py-2 pr-4">a³/(6√2)</td>
+                            <td class="py-2">√3·a²</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Octaedro (a)</td>
+                            <td class="py-2 pr-4">(√2/3)a³</td>
+                            <td class="py-2">2√3·a²</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">Dodecaedro (a)</td>
+                            <td class="py-2 pr-4">≈ 7.66a³</td>
+                            <td class="py-2">≈ 20.65a²</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 text-violet-300">Icosaedro (a)</td>
+                            <td class="py-2 pr-4">≈ 2.18a³</td>
+                            <td class="py-2">5√3·a²</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-gray-900 pt-8 text-center text-gray-600 text-sm">
+            <p>Math Visual Lab - EigenLab</p>
+        </footer>
+    </main>
+</body>
+</html>

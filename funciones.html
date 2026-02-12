@@ -1,0 +1,782 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Funciones Matemáticas - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+        .func-btn {
+            padding: 8px 12px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .func-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .func-btn:hover:not(.active) {
+            background: #374151;
+        }
+        #canvas {
+            cursor: crosshair;
+        }
+        .analysis-item {
+            display: flex;
+            justify-content: space-between;
+            padding: 8px 0;
+            border-bottom: 1px solid #1e293b;
+        }
+        .analysis-item:last-child {
+            border-bottom: none;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Funciones</span> Matemáticas
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Cursor: (<span id="cursor-x" class="text-violet-400">0</span>, <span id="cursor-y" class="text-cyan-400">0</span>)</span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative bg-gray-950">
+            <canvas id="canvas" class="w-full h-full"></canvas>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-96 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Explorador de Funciones</h2>
+
+            <!-- Function Input -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Función f(x)</label>
+                <input type="text" id="func-input" value="sin(x)"
+                    class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 mono text-violet-300 focus:border-violet-500 focus:outline-none"
+                    placeholder="sin(x), x^2, exp(-x)...">
+                <p class="text-xs text-gray-600 mt-2">
+                    Usa: sin, cos, tan, exp, log, sqrt, abs, x^n, pi, e
+                </p>
+            </div>
+
+            <!-- Second Function (optional) -->
+            <div class="mb-6">
+                <label class="flex items-center gap-2 text-sm text-gray-400 mb-2">
+                    <input type="checkbox" id="show-g" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                    Función g(x)
+                </label>
+                <input type="text" id="func-g-input" value="cos(x)" disabled
+                    class="w-full bg-gray-900 border border-gray-700 rounded-lg px-4 py-3 mono text-cyan-300 focus:border-cyan-500 focus:outline-none disabled:opacity-50">
+            </div>
+
+            <!-- Presets -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Funciones Predefinidas</label>
+                <div class="grid grid-cols-3 gap-2">
+                    <button class="func-btn" data-func="x">x</button>
+                    <button class="func-btn" data-func="x^2">x²</button>
+                    <button class="func-btn" data-func="x^3">x³</button>
+                    <button class="func-btn active" data-func="sin(x)">sin(x)</button>
+                    <button class="func-btn" data-func="cos(x)">cos(x)</button>
+                    <button class="func-btn" data-func="tan(x)">tan(x)</button>
+                    <button class="func-btn" data-func="exp(x)">eˣ</button>
+                    <button class="func-btn" data-func="log(x)">ln(x)</button>
+                    <button class="func-btn" data-func="sqrt(x)">√x</button>
+                    <button class="func-btn" data-func="1/x">1/x</button>
+                    <button class="func-btn" data-func="abs(x)">|x|</button>
+                    <button class="func-btn" data-func="floor(x)">⌊x⌋</button>
+                </div>
+            </div>
+
+            <!-- Transformations -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Transformaciones</label>
+
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">a · f(x) (escala vertical)</span>
+                        <span class="text-violet-400 mono" id="a-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-a" min="-3" max="3" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">f(b · x) (escala horizontal)</span>
+                        <span class="text-violet-400 mono" id="b-value">1.0</span>
+                    </div>
+                    <input type="range" id="param-b" min="0.1" max="5" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">f(x - h) (traslación horiz.)</span>
+                        <span class="text-violet-400 mono" id="h-value">0.0</span>
+                    </div>
+                    <input type="range" id="param-h" min="-5" max="5" value="0" step="0.1" class="w-full">
+                </div>
+
+                <div class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">f(x) + k (traslación vert.)</span>
+                        <span class="text-violet-400 mono" id="k-value">0.0</span>
+                    </div>
+                    <input type="range" id="param-k" min="-5" max="5" value="0" step="0.1" class="w-full">
+                </div>
+
+                <button id="reset-transforms" class="w-full px-3 py-2 bg-gray-800 hover:bg-gray-700 rounded-lg text-sm transition">
+                    Resetear Transformaciones
+                </button>
+            </div>
+
+            <!-- View Controls -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Ventana de Vista</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div>
+                        <label class="text-xs text-gray-500">x mín</label>
+                        <input type="number" id="x-min" value="-10" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">x máx</label>
+                        <input type="number" id="x-max" value="10" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">y mín</label>
+                        <input type="number" id="y-min" value="-5" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                    <div>
+                        <label class="text-xs text-gray-500">y máx</label>
+                        <input type="number" id="y-max" value="5" class="w-full bg-gray-900 border border-gray-700 rounded px-2 py-1 mono text-sm">
+                    </div>
+                </div>
+            </div>
+
+            <!-- Display Options -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Opciones de Visualización</label>
+                <div class="space-y-2">
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-grid" checked class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Mostrar cuadrícula
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-derivative" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Mostrar derivada f'(x)
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-integral" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Mostrar área bajo curva
+                    </label>
+                    <label class="flex items-center gap-2 text-sm text-gray-300">
+                        <input type="checkbox" id="show-tangent" class="rounded bg-gray-800 border-gray-600 text-violet-500">
+                        Recta tangente en cursor
+                    </label>
+                </div>
+            </div>
+
+            <!-- Analysis -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Análisis de f(x)</label>
+                <div class="bg-gray-900 rounded-lg p-4">
+                    <div class="analysis-item">
+                        <span class="text-gray-500">Función:</span>
+                        <span class="mono text-violet-300" id="analysis-func">sin(x)</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="text-gray-500">Transformada:</span>
+                        <span class="mono text-violet-300 text-xs" id="analysis-transform">f(x)</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="text-gray-500">f(0):</span>
+                        <span class="mono text-cyan-400" id="analysis-f0">0</span>
+                    </div>
+                    <div class="analysis-item">
+                        <span class="text-gray-500">Ceros visibles:</span>
+                        <span class="mono text-emerald-400" id="analysis-zeros">-π, 0, π</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Guide Link -->
+            <a href="guides/funciones.html" class="guide-link">
+                <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">?</span>
+                <span>Guía pedagógica</span>
+            </a>
+        </aside>
+    </main>
+
+    <script>
+        const canvas = document.getElementById('canvas');
+        const ctx = canvas.getContext('2d');
+
+        // State
+        let state = {
+            funcStr: 'sin(x)',
+            funcGStr: 'cos(x)',
+            showG: false,
+            a: 1, b: 1, h: 0, k: 0,
+            xMin: -10, xMax: 10,
+            yMin: -5, yMax: 5,
+            showGrid: true,
+            showDerivative: false,
+            showIntegral: false,
+            showTangent: false,
+            mouseX: null,
+            mouseY: null
+        };
+
+        // Parse and evaluate function
+        function evalFunc(expr, x) {
+            try {
+                // Replace common math functions
+                let e = expr
+                    .replace(/\^/g, '**')
+                    .replace(/sin/g, 'Math.sin')
+                    .replace(/cos/g, 'Math.cos')
+                    .replace(/tan/g, 'Math.tan')
+                    .replace(/exp/g, 'Math.exp')
+                    .replace(/log/g, 'Math.log')
+                    .replace(/sqrt/g, 'Math.sqrt')
+                    .replace(/abs/g, 'Math.abs')
+                    .replace(/floor/g, 'Math.floor')
+                    .replace(/ceil/g, 'Math.ceil')
+                    .replace(/pi/g, 'Math.PI')
+                    .replace(/(?<![a-zA-Z])e(?![a-zA-Z])/g, 'Math.E');
+
+                return eval(e);
+            } catch {
+                return NaN;
+            }
+        }
+
+        // Transformed function
+        function f(x) {
+            const transformedX = state.b * (x - state.h);
+            return state.a * evalFunc(state.funcStr, transformedX) + state.k;
+        }
+
+        function g(x) {
+            return evalFunc(state.funcGStr, x);
+        }
+
+        // Numerical derivative
+        function derivative(x, dx = 0.0001) {
+            return (f(x + dx) - f(x - dx)) / (2 * dx);
+        }
+
+        // Resize canvas
+        function resizeCanvas() {
+            const dpr = window.devicePixelRatio || 1;
+            canvas.width = canvas.offsetWidth * dpr;
+            canvas.height = canvas.offsetHeight * dpr;
+            ctx.scale(dpr, dpr);
+            draw();
+        }
+
+        // Convert math coords to canvas coords
+        function toCanvas(x, y) {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const px = ((x - state.xMin) / (state.xMax - state.xMin)) * W;
+            const py = H - ((y - state.yMin) / (state.yMax - state.yMin)) * H;
+            return [px, py];
+        }
+
+        // Convert canvas coords to math coords
+        function toMath(px, py) {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+            const x = state.xMin + (px / W) * (state.xMax - state.xMin);
+            const y = state.yMax - (py / H) * (state.yMax - state.yMin);
+            return [x, y];
+        }
+
+        // Draw everything
+        function draw() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+
+            // Background
+            ctx.fillStyle = '#030712';
+            ctx.fillRect(0, 0, W, H);
+
+            // Grid
+            if (state.showGrid) {
+                drawGrid();
+            }
+
+            // Axes
+            drawAxes();
+
+            // Integral (area under curve)
+            if (state.showIntegral) {
+                drawIntegral();
+            }
+
+            // Function f(x)
+            drawFunction(f, '#a855f7', 2.5);
+
+            // Derivative
+            if (state.showDerivative) {
+                drawFunction(derivative, '#22d3ee', 1.5);
+            }
+
+            // Second function g(x)
+            if (state.showG) {
+                drawFunction(g, '#22d3ee', 2);
+            }
+
+            // Tangent line
+            if (state.showTangent && state.mouseX !== null) {
+                drawTangent();
+            }
+
+            // Cursor point
+            if (state.mouseX !== null) {
+                drawCursorPoint();
+            }
+
+            updateAnalysis();
+        }
+
+        function drawGrid() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+
+            ctx.strokeStyle = '#1e293b';
+            ctx.lineWidth = 1;
+
+            // Vertical lines
+            const xStep = Math.pow(10, Math.floor(Math.log10(state.xMax - state.xMin)) - 1);
+            for (let x = Math.ceil(state.xMin / xStep) * xStep; x <= state.xMax; x += xStep) {
+                const [px] = toCanvas(x, 0);
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, H);
+                ctx.stroke();
+            }
+
+            // Horizontal lines
+            const yStep = Math.pow(10, Math.floor(Math.log10(state.yMax - state.yMin)) - 1);
+            for (let y = Math.ceil(state.yMin / yStep) * yStep; y <= state.yMax; y += yStep) {
+                const [, py] = toCanvas(0, y);
+                ctx.beginPath();
+                ctx.moveTo(0, py);
+                ctx.lineTo(W, py);
+                ctx.stroke();
+            }
+        }
+
+        function drawAxes() {
+            const W = canvas.offsetWidth;
+            const H = canvas.offsetHeight;
+
+            ctx.strokeStyle = '#4b5563';
+            ctx.lineWidth = 2;
+
+            // X axis
+            if (state.yMin <= 0 && state.yMax >= 0) {
+                const [, py] = toCanvas(0, 0);
+                ctx.beginPath();
+                ctx.moveTo(0, py);
+                ctx.lineTo(W, py);
+                ctx.stroke();
+
+                // Arrow
+                ctx.beginPath();
+                ctx.moveTo(W - 10, py - 5);
+                ctx.lineTo(W, py);
+                ctx.lineTo(W - 10, py + 5);
+                ctx.stroke();
+            }
+
+            // Y axis
+            if (state.xMin <= 0 && state.xMax >= 0) {
+                const [px] = toCanvas(0, 0);
+                ctx.beginPath();
+                ctx.moveTo(px, 0);
+                ctx.lineTo(px, H);
+                ctx.stroke();
+
+                // Arrow
+                ctx.beginPath();
+                ctx.moveTo(px - 5, 10);
+                ctx.lineTo(px, 0);
+                ctx.lineTo(px + 5, 10);
+                ctx.stroke();
+            }
+
+            // Labels
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '12px JetBrains Mono';
+
+            // X axis labels
+            const xStep = Math.pow(10, Math.floor(Math.log10(state.xMax - state.xMin)));
+            for (let x = Math.ceil(state.xMin / xStep) * xStep; x <= state.xMax; x += xStep) {
+                if (Math.abs(x) < 0.001) continue;
+                const [px, py] = toCanvas(x, 0);
+                ctx.textAlign = 'center';
+                ctx.fillText(x.toFixed(0), px, Math.min(py + 15, H - 5));
+            }
+
+            // Y axis labels
+            const yStep = Math.pow(10, Math.floor(Math.log10(state.yMax - state.yMin)));
+            for (let y = Math.ceil(state.yMin / yStep) * yStep; y <= state.yMax; y += yStep) {
+                if (Math.abs(y) < 0.001) continue;
+                const [px, py] = toCanvas(0, y);
+                ctx.textAlign = 'right';
+                ctx.fillText(y.toFixed(0), Math.max(px - 5, 25), py + 4);
+            }
+        }
+
+        function drawFunction(fn, color, lineWidth) {
+            const W = canvas.offsetWidth;
+            const resolution = W * 2;
+
+            ctx.strokeStyle = color;
+            ctx.lineWidth = lineWidth;
+            ctx.beginPath();
+
+            let started = false;
+            let prevY = null;
+
+            for (let i = 0; i <= resolution; i++) {
+                const x = state.xMin + (i / resolution) * (state.xMax - state.xMin);
+                const y = fn(x);
+
+                if (isNaN(y) || !isFinite(y)) {
+                    started = false;
+                    prevY = null;
+                    continue;
+                }
+
+                // Detect discontinuities
+                if (prevY !== null && Math.abs(y - prevY) > (state.yMax - state.yMin) * 0.5) {
+                    started = false;
+                }
+
+                const [px, py] = toCanvas(x, y);
+
+                if (!started) {
+                    ctx.moveTo(px, py);
+                    started = true;
+                } else {
+                    ctx.lineTo(px, py);
+                }
+
+                prevY = y;
+            }
+
+            ctx.stroke();
+        }
+
+        function drawIntegral() {
+            const W = canvas.offsetWidth;
+            const resolution = W;
+
+            ctx.fillStyle = 'rgba(168, 85, 247, 0.15)';
+            ctx.beginPath();
+
+            const [startPx, zeroPy] = toCanvas(state.xMin, 0);
+            ctx.moveTo(startPx, zeroPy);
+
+            for (let i = 0; i <= resolution; i++) {
+                const x = state.xMin + (i / resolution) * (state.xMax - state.xMin);
+                let y = f(x);
+                if (isNaN(y) || !isFinite(y)) y = 0;
+                const [px, py] = toCanvas(x, y);
+                ctx.lineTo(px, py);
+            }
+
+            const [endPx] = toCanvas(state.xMax, 0);
+            ctx.lineTo(endPx, zeroPy);
+            ctx.closePath();
+            ctx.fill();
+        }
+
+        function drawTangent() {
+            const x0 = state.mouseX;
+            const y0 = f(x0);
+            const m = derivative(x0);
+
+            if (isNaN(y0) || isNaN(m) || !isFinite(m)) return;
+
+            // Tangent line: y - y0 = m(x - x0)
+            const x1 = state.xMin;
+            const y1 = y0 + m * (x1 - x0);
+            const x2 = state.xMax;
+            const y2 = y0 + m * (x2 - x0);
+
+            const [px1, py1] = toCanvas(x1, y1);
+            const [px2, py2] = toCanvas(x2, y2);
+
+            ctx.strokeStyle = '#fbbf24';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([5, 5]);
+            ctx.beginPath();
+            ctx.moveTo(px1, py1);
+            ctx.lineTo(px2, py2);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Slope label
+            const [px0, py0] = toCanvas(x0, y0);
+            ctx.fillStyle = '#fbbf24';
+            ctx.font = '11px JetBrains Mono';
+            ctx.textAlign = 'left';
+            ctx.fillText(`m = ${m.toFixed(3)}`, px0 + 10, py0 - 10);
+        }
+
+        function drawCursorPoint() {
+            const x = state.mouseX;
+            const y = f(x);
+
+            if (isNaN(y) || !isFinite(y)) return;
+
+            const [px, py] = toCanvas(x, y);
+
+            // Point
+            ctx.fillStyle = '#a855f7';
+            ctx.beginPath();
+            ctx.arc(px, py, 6, 0, Math.PI * 2);
+            ctx.fill();
+
+            ctx.fillStyle = '#fff';
+            ctx.beginPath();
+            ctx.arc(px, py, 3, 0, Math.PI * 2);
+            ctx.fill();
+
+            // Coordinates
+            ctx.fillStyle = '#e5e7eb';
+            ctx.font = '11px JetBrains Mono';
+            ctx.textAlign = 'left';
+            ctx.fillText(`(${x.toFixed(2)}, ${y.toFixed(2)})`, px + 10, py - 15);
+        }
+
+        function updateAnalysis() {
+            document.getElementById('analysis-func').textContent = state.funcStr;
+
+            // Build transform string
+            let transform = '';
+            if (state.a !== 1) transform += `${state.a}·`;
+            transform += 'f(';
+            if (state.b !== 1) transform += `${state.b}·`;
+            transform += 'x';
+            if (state.h !== 0) transform += state.h > 0 ? ` - ${state.h}` : ` + ${-state.h}`;
+            transform += ')';
+            if (state.k !== 0) transform += state.k > 0 ? ` + ${state.k}` : ` - ${-state.k}`;
+            document.getElementById('analysis-transform').textContent = transform || 'f(x)';
+
+            // f(0)
+            const f0 = f(0);
+            document.getElementById('analysis-f0').textContent = isNaN(f0) ? 'indefinido' : f0.toFixed(4);
+
+            // Find zeros (simple scan)
+            const zeros = [];
+            const step = (state.xMax - state.xMin) / 1000;
+            let prevSign = Math.sign(f(state.xMin));
+            for (let x = state.xMin + step; x <= state.xMax; x += step) {
+                const currSign = Math.sign(f(x));
+                if (prevSign !== 0 && currSign !== 0 && prevSign !== currSign) {
+                    zeros.push(x.toFixed(2));
+                }
+                prevSign = currSign;
+            }
+            document.getElementById('analysis-zeros').textContent = zeros.length > 0 ? zeros.slice(0, 5).join(', ') + (zeros.length > 5 ? '...' : '') : 'ninguno visible';
+        }
+
+        // Event listeners
+        document.getElementById('func-input').addEventListener('input', (e) => {
+            state.funcStr = e.target.value;
+            draw();
+        });
+
+        document.getElementById('func-g-input').addEventListener('input', (e) => {
+            state.funcGStr = e.target.value;
+            draw();
+        });
+
+        document.getElementById('show-g').addEventListener('change', (e) => {
+            state.showG = e.target.checked;
+            document.getElementById('func-g-input').disabled = !e.target.checked;
+            draw();
+        });
+
+        document.querySelectorAll('.func-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.func-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.funcStr = btn.dataset.func;
+                document.getElementById('func-input').value = state.funcStr;
+                draw();
+            });
+        });
+
+        // Transformation sliders
+        ['a', 'b', 'h', 'k'].forEach(param => {
+            document.getElementById(`param-${param}`).addEventListener('input', (e) => {
+                state[param] = parseFloat(e.target.value);
+                document.getElementById(`${param}-value`).textContent = state[param].toFixed(1);
+                draw();
+            });
+        });
+
+        document.getElementById('reset-transforms').addEventListener('click', () => {
+            state.a = 1; state.b = 1; state.h = 0; state.k = 0;
+            document.getElementById('param-a').value = 1;
+            document.getElementById('param-b').value = 1;
+            document.getElementById('param-h').value = 0;
+            document.getElementById('param-k').value = 0;
+            document.getElementById('a-value').textContent = '1.0';
+            document.getElementById('b-value').textContent = '1.0';
+            document.getElementById('h-value').textContent = '0.0';
+            document.getElementById('k-value').textContent = '0.0';
+            draw();
+        });
+
+        // View controls
+        ['x-min', 'x-max', 'y-min', 'y-max'].forEach(id => {
+            document.getElementById(id).addEventListener('change', (e) => {
+                const key = id.replace('-', '').replace('min', 'Min').replace('max', 'Max');
+                state[key] = parseFloat(e.target.value);
+                draw();
+            });
+        });
+
+        // Display options
+        document.getElementById('show-grid').addEventListener('change', (e) => {
+            state.showGrid = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('show-derivative').addEventListener('change', (e) => {
+            state.showDerivative = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('show-integral').addEventListener('change', (e) => {
+            state.showIntegral = e.target.checked;
+            draw();
+        });
+
+        document.getElementById('show-tangent').addEventListener('change', (e) => {
+            state.showTangent = e.target.checked;
+            draw();
+        });
+
+        // Mouse tracking
+        canvas.addEventListener('mousemove', (e) => {
+            const rect = canvas.getBoundingClientRect();
+            const px = e.clientX - rect.left;
+            const py = e.clientY - rect.top;
+            const [x, y] = toMath(px, py);
+
+            state.mouseX = x;
+            state.mouseY = y;
+
+            document.getElementById('cursor-x').textContent = x.toFixed(2);
+            document.getElementById('cursor-y').textContent = y.toFixed(2);
+
+            draw();
+        });
+
+        canvas.addEventListener('mouseleave', () => {
+            state.mouseX = null;
+            state.mouseY = null;
+            draw();
+        });
+
+        // Zoom with wheel
+        canvas.addEventListener('wheel', (e) => {
+            e.preventDefault();
+            const factor = e.deltaY > 0 ? 1.1 : 0.9;
+
+            const rect = canvas.getBoundingClientRect();
+            const px = e.clientX - rect.left;
+            const py = e.clientY - rect.top;
+            const [mx, my] = toMath(px, py);
+
+            state.xMin = mx + (state.xMin - mx) * factor;
+            state.xMax = mx + (state.xMax - mx) * factor;
+            state.yMin = my + (state.yMin - my) * factor;
+            state.yMax = my + (state.yMax - my) * factor;
+
+            document.getElementById('x-min').value = state.xMin.toFixed(1);
+            document.getElementById('x-max').value = state.xMax.toFixed(1);
+            document.getElementById('y-min').value = state.yMin.toFixed(1);
+            document.getElementById('y-max').value = state.yMax.toFixed(1);
+
+            draw();
+        });
+
+        window.addEventListener('resize', resizeCanvas);
+
+        // Initialize
+        resizeCanvas();
+    </script>
+</body>
+</html>

@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 18: Ejes de Rotación y Reflexión | Matemáticas Visuales</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        platonic: {
+                            purple: '#8b5cf6',
+                            cyan: '#06b6d4',
+                            dark: '#1a1a2e',
+                            card: '#16213e'
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        .gradient-text {
+            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+        .lab-container {
+            border: 2px solid #8b5cf6;
+            border-radius: 12px;
+            overflow: hidden;
+        }
+        .progress-bar {
+            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
+        }
+    </style>
+</head>
+<body class="bg-platonic-dark text-gray-100 min-h-screen">
+    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex items-center justify-between h-16">
+                <div class="flex items-center">
+                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
+                    <span class="mx-4 text-gray-500">|</span>
+                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                </div>
+                <nav class="flex space-x-4 text-sm">
+                    <a href="./leccion-17.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
+                    <a href="../modulo-04/leccion-19.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente Módulo →</a>
+                </nav>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 3</h3>
+                    <p class="text-sm text-gray-400 mb-4">Dualidad y Simetría</p>
+                    <div class="mb-6">
+                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                            <span>Progreso</span>
+                            <span>6/6</span>
+                        </div>
+                        <div class="w-full bg-gray-700 rounded-full h-2">
+                            <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
+                        </div>
+                    </div>
+                    <div class="mb-4 p-3 bg-green-900/30 border border-green-500/30 rounded-lg">
+                        <p class="text-green-400 text-sm font-semibold text-center">✓ Módulo completado</p>
+                    </div>
+                    <nav class="space-y-2">
+                        <a href="./leccion-13.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">13. Concepto de Dualidad</a>
+                        <a href="./leccion-14.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">14. El Tetraedro Autodual</a>
+                        <a href="./leccion-15.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">15. Cubo y Octaedro</a>
+                        <a href="./leccion-16.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">16. Dodecaedro e Icosaedro</a>
+                        <a href="./leccion-17.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">17. Grupos de Simetría</a>
+                        <a href="./leccion-18.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">18. Ejes de Rotación</a>
+                    </nav>
+                </div>
+            </aside>
+            <main class="lg:col-span-3">
+                <article class="bg-platonic-card rounded-lg p-8">
+                    <div class="mb-8">
+                        <div class="flex items-center justify-between mb-4">
+                            <span class="text-platonic-cyan text-sm font-medium">Lección 18</span>
+                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold mb-4 gradient-text">Ejes de Rotación y Reflexión</h1>
+                        <p class="text-gray-400 text-lg">Las líneas y planos de simetría de los sólidos platónicos.</p>
+                    </div>
+                    <div class="prose prose-invert max-w-none">
+                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Tipos de Ejes de Simetría</h2>
+                        <p class="text-gray-300 mb-4">Los sólidos platónicos tienen tres tipos de ejes de rotación:</p>
+                        <div class="grid grid-cols-1 gap-4 mb-6">
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h3 class="font-semibold text-platonic-cyan mb-2">Ejes por Vértices</h3>
+                                <p class="text-sm text-gray-300">Pasan por vértices opuestos. Rotaciones de 360°/q donde q es el número de caras por vértice.</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h3 class="font-semibold text-platonic-cyan mb-2">Ejes por Caras</h3>
+                                <p class="text-sm text-gray-300">Pasan por centros de caras opuestas. Rotaciones de 360°/p donde p es el número de lados de la cara.</p>
+                            </div>
+                            <div class="bg-gray-800/50 p-4 rounded-lg">
+                                <h3 class="font-semibold text-platonic-cyan mb-2">Ejes por Aristas</h3>
+                                <p class="text-sm text-gray-300">Pasan por puntos medios de aristas opuestas. Rotaciones de 180°.</p>
+                            </div>
+                        </div>
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejes del Cubo</h3>
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-800">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">Tipo</th>
+                                        <th class="px-4 py-2 text-center">Cantidad</th>
+                                        <th class="px-4 py-2 text-center">Ángulos</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-700">
+                                    <tr><td class="px-4 py-2">Por caras (90°)</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">90°, 180°, 270°</td></tr>
+                                    <tr><td class="px-4 py-2">Por vértices (120°)</td><td class="px-4 py-2 text-center">4</td><td class="px-4 py-2 text-center">120°, 240°</td></tr>
+                                    <tr><td class="px-4 py-2">Por aristas (180°)</td><td class="px-4 py-2 text-center">6</td><td class="px-4 py-2 text-center">180°</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-4 mb-6">
+                            <p class="text-gray-300 text-center">Total de ejes: 3 + 4 + 6 = 13 ejes de simetría</p>
+                            <p class="text-sm text-gray-400 text-center mt-1">Cada eje genera múltiples rotaciones (incluyendo la identidad)</p>
+                        </div>
+                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Planos de Reflexión</h3>
+                        <p class="text-gray-300 mb-4">Además de rotaciones, los sólidos tienen planos de simetría donde una reflexión deja el sólido invariante:</p>
+                        <ul class="list-disc list-inside space-y-1 text-gray-300 mb-6 ml-4">
+                            <li>Cubo: 9 planos de simetría</li>
+                            <li>Tetraedro: 6 planos de simetría</li>
+                            <li>Icosaedro: 15 planos de simetría</li>
+                        </ul>
+                    </div>
+                    <div class="mt-10">
+                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Ejes de Simetría</h2>
+                        <p class="text-gray-400 mb-4">Visualiza los ejes de rotación en PlatonicLab.</p>
+                        <div class="lab-container">
+                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        </div>
+                    </div>
+                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
+                        <a href="./leccion-17.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
+                        <a href="../modulo-04/leccion-19.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Módulo 4: Cuarta Dimensión →</a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+        </div>
+    </footer>
+</body>
+</html>

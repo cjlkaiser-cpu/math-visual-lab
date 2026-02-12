@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Probabilidad y Distribuciones - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+        .dist-btn {
+            padding: 8px 12px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .dist-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .dist-btn:hover:not(.active) {
+            background: #374151;
+        }
+        .sample-dot {
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: #a855f7;
+            border-radius: 50%;
+            transform: translate(-50%, -50%);
+            opacity: 0.8;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Probabilidad</span> y Distribuciones
+                    </h1>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">Muestras: <span id="sample-count" class="text-violet-400">0</span></span>
+                    <span class="text-gray-500">μ: <span id="mean-display" class="text-cyan-400">--</span></span>
+                    <span class="text-gray-500">σ: <span id="std-display" class="text-emerald-400">--</span></span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div class="flex-1 relative bg-gray-950">
+            <canvas id="histCanvas" class="absolute top-0 left-0 w-full h-1/2"></canvas>
+            <canvas id="pdfCanvas" class="absolute bottom-0 left-0 w-full h-1/2 border-t border-gray-800"></canvas>
+            <div class="absolute top-2 left-4 text-xs text-gray-500 mono">Histograma de Muestras</div>
+            <div class="absolute bottom-2 left-4 text-xs text-gray-500 mono" style="bottom: calc(50% + 8px)">Función de Densidad (PDF)</div>
+        </div>
+
+        <!-- Control Panel -->
+        <aside class="w-96 border-l border-gray-900 bg-gray-950 p-6 overflow-y-auto">
+            <h2 class="text-lg font-medium mb-6 text-violet-400 glow-text">Distribuciones</h2>
+
+            <!-- Distribution Type -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Tipo de Distribución</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button class="dist-btn active" data-dist="normal">Normal</button>
+                    <button class="dist-btn" data-dist="uniform">Uniforme</button>
+                    <button class="dist-btn" data-dist="exponential">Exponencial</button>
+                    <button class="dist-btn" data-dist="poisson">Poisson</button>
+                    <button class="dist-btn" data-dist="binomial">Binomial</button>
+                    <button class="dist-btn" data-dist="beta">Beta</button>
+                </div>
+            </div>
+
+            <!-- Equations Box -->
+            <div class="math-box rounded-xl p-4 mb-6">
+                <div class="text-xs text-gray-500 uppercase tracking-wider mb-2">Función de Densidad</div>
+                <div id="equation" class="mono text-violet-300 text-sm leading-relaxed">
+                    f(x) = (1/σ√2π) e^(-(x-μ)²/2σ²)
+                </div>
+            </div>
+
+            <!-- Parameters -->
+            <div class="mb-6" id="params-container">
+                <label class="block text-sm text-gray-400 mb-3">Parámetros</label>
+
+                <div id="param-mu" class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">μ (media)</span>
+                        <span class="text-violet-400 mono" id="mu-value">0</span>
+                    </div>
+                    <input type="range" id="mu" min="-5" max="5" value="0" step="0.1" class="w-full">
+                </div>
+
+                <div id="param-sigma" class="mb-4">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">σ (desv. estándar)</span>
+                        <span class="text-violet-400 mono" id="sigma-value">1</span>
+                    </div>
+                    <input type="range" id="sigma" min="0.1" max="3" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div id="param-lambda" class="mb-4 hidden">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">λ (tasa)</span>
+                        <span class="text-violet-400 mono" id="lambda-value">1</span>
+                    </div>
+                    <input type="range" id="lambda" min="0.1" max="5" value="1" step="0.1" class="w-full">
+                </div>
+
+                <div id="param-n" class="mb-4 hidden">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">n (ensayos)</span>
+                        <span class="text-violet-400 mono" id="n-value">10</span>
+                    </div>
+                    <input type="range" id="n" min="1" max="50" value="10" step="1" class="w-full">
+                </div>
+
+                <div id="param-p" class="mb-4 hidden">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">p (probabilidad)</span>
+                        <span class="text-violet-400 mono" id="p-value">0.5</span>
+                    </div>
+                    <input type="range" id="p" min="0.01" max="0.99" value="0.5" step="0.01" class="w-full">
+                </div>
+
+                <div id="param-alpha" class="mb-4 hidden">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">α</span>
+                        <span class="text-violet-400 mono" id="alpha-value">2</span>
+                    </div>
+                    <input type="range" id="alpha" min="0.1" max="10" value="2" step="0.1" class="w-full">
+                </div>
+
+                <div id="param-beta" class="mb-4 hidden">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">β</span>
+                        <span class="text-violet-400 mono" id="beta-value">2</span>
+                    </div>
+                    <input type="range" id="beta" min="0.1" max="10" value="2" step="0.1" class="w-full">
+                </div>
+
+                <div id="param-a" class="mb-4 hidden">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">a (mínimo)</span>
+                        <span class="text-violet-400 mono" id="a-value">0</span>
+                    </div>
+                    <input type="range" id="a" min="-5" max="4" value="0" step="0.5" class="w-full">
+                </div>
+
+                <div id="param-b" class="mb-4 hidden">
+                    <div class="flex justify-between text-sm mb-1">
+                        <span class="text-gray-500">b (máximo)</span>
+                        <span class="text-violet-400 mono" id="b-value">5</span>
+                    </div>
+                    <input type="range" id="b" min="-4" max="10" value="5" step="0.5" class="w-full">
+                </div>
+            </div>
+
+            <!-- Sampling Controls -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Muestreo</label>
+                <div class="grid grid-cols-3 gap-2 mb-3">
+                    <button id="btn-sample-1" class="px-3 py-2 bg-violet-600 hover:bg-violet-500 rounded-lg text-sm transition">+1</button>
+                    <button id="btn-sample-10" class="px-3 py-2 bg-violet-600 hover:bg-violet-500 rounded-lg text-sm transition">+10</button>
+                    <button id="btn-sample-100" class="px-3 py-2 bg-violet-600 hover:bg-violet-500 rounded-lg text-sm transition">+100</button>
+                </div>
+                <div class="grid grid-cols-2 gap-2">
+                    <button id="btn-auto" class="px-3 py-2 bg-emerald-600 hover:bg-emerald-500 rounded-lg text-sm transition">▶ Auto</button>
+                    <button id="btn-clear" class="px-3 py-2 bg-gray-700 hover:bg-gray-600 rounded-lg text-sm transition">Limpiar</button>
+                </div>
+            </div>
+
+            <!-- Statistics -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-3">Estadísticas Muestrales</label>
+                <div class="grid grid-cols-2 gap-3">
+                    <div class="bg-gray-900 rounded-lg p-3 text-center">
+                        <div class="text-xs text-gray-500 mb-1">Media (x̄)</div>
+                        <div class="text-lg mono text-cyan-400" id="stat-mean">--</div>
+                    </div>
+                    <div class="bg-gray-900 rounded-lg p-3 text-center">
+                        <div class="text-xs text-gray-500 mb-1">Varianza (s²)</div>
+                        <div class="text-lg mono text-emerald-400" id="stat-var">--</div>
+                    </div>
+                    <div class="bg-gray-900 rounded-lg p-3 text-center">
+                        <div class="text-xs text-gray-500 mb-1">Mínimo</div>
+                        <div class="text-lg mono text-amber-400" id="stat-min">--</div>
+                    </div>
+                    <div class="bg-gray-900 rounded-lg p-3 text-center">
+                        <div class="text-xs text-gray-500 mb-1">Máximo</div>
+                        <div class="text-lg mono text-rose-400" id="stat-max">--</div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Law of Large Numbers -->
+            <div class="mb-6">
+                <label class="block text-sm text-gray-400 mb-2">Ley de los Grandes Números</label>
+                <p class="text-xs text-gray-600 leading-relaxed">
+                    A medida que aumentan las muestras, la media muestral (x̄) converge a la media poblacional (μ).
+                    Observa cómo el histograma se aproxima a la curva teórica.
+                </p>
+            </div>
+
+            <!-- Guide Link -->
+            <a href="guides/probabilidad.html" class="guide-link">
+                <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">?</span>
+                <span>Guía pedagógica</span>
+            </a>
+        </aside>
+    </main>
+
+    <script>
+        // Canvases
+        const histCanvas = document.getElementById('histCanvas');
+        const pdfCanvas = document.getElementById('pdfCanvas');
+        const histCtx = histCanvas.getContext('2d');
+        const pdfCtx = pdfCanvas.getContext('2d');
+
+        // State
+        let state = {
+            distribution: 'normal',
+            samples: [],
+            autoSampling: false,
+            params: {
+                mu: 0,
+                sigma: 1,
+                lambda: 1,
+                n: 10,
+                p: 0.5,
+                alpha: 2,
+                beta: 2,
+                a: 0,
+                b: 5
+            }
+        };
+
+        // Distribution equations
+        const equations = {
+            normal: 'f(x) = (1/σ√2π) e^(-(x-μ)²/2σ²)',
+            uniform: 'f(x) = 1/(b-a) para a ≤ x ≤ b',
+            exponential: 'f(x) = λe^(-λx) para x ≥ 0',
+            poisson: 'P(X=k) = (λ^k e^(-λ))/k!',
+            binomial: 'P(X=k) = C(n,k) p^k (1-p)^(n-k)',
+            beta: 'f(x) = x^(α-1)(1-x)^(β-1)/B(α,β)'
+        };
+
+        // Resize canvases
+        function resizeCanvases() {
+            const dpr = window.devicePixelRatio || 1;
+            const container = histCanvas.parentElement;
+
+            histCanvas.width = container.offsetWidth * dpr;
+            histCanvas.height = (container.offsetHeight / 2) * dpr;
+            histCanvas.style.height = `${container.offsetHeight / 2}px`;
+            histCtx.scale(dpr, dpr);
+
+            pdfCanvas.width = container.offsetWidth * dpr;
+            pdfCanvas.height = (container.offsetHeight / 2) * dpr;
+            pdfCanvas.style.height = `${container.offsetHeight / 2}px`;
+            pdfCtx.scale(dpr, dpr);
+
+            draw();
+        }
+
+        // Random number generators
+        function randomNormal(mu, sigma) {
+            // Box-Muller transform
+            const u1 = Math.random();
+            const u2 = Math.random();
+            const z = Math.sqrt(-2 * Math.log(u1)) * Math.cos(2 * Math.PI * u2);
+            return mu + sigma * z;
+        }
+
+        function randomUniform(a, b) {
+            return a + Math.random() * (b - a);
+        }
+
+        function randomExponential(lambda) {
+            return -Math.log(Math.random()) / lambda;
+        }
+
+        function randomPoisson(lambda) {
+            const L = Math.exp(-lambda);
+            let k = 0;
+            let p = 1;
+            do {
+                k++;
+                p *= Math.random();
+            } while (p > L);
+            return k - 1;
+        }
+
+        function randomBinomial(n, p) {
+            let successes = 0;
+            for (let i = 0; i < n; i++) {
+                if (Math.random() < p) successes++;
+            }
+            return successes;
+        }
+
+        function randomBeta(alpha, beta) {
+            // Using gamma distribution method
+            const gammaAlpha = randomGamma(alpha);
+            const gammaBeta = randomGamma(beta);
+            return gammaAlpha / (gammaAlpha + gammaBeta);
+        }
+
+        function randomGamma(shape) {
+            if (shape < 1) {
+                return randomGamma(shape + 1) * Math.pow(Math.random(), 1 / shape);
+            }
+            const d = shape - 1/3;
+            const c = 1 / Math.sqrt(9 * d);
+            while (true) {
+                let x, v;
+                do {
+                    x = randomNormal(0, 1);
+                    v = 1 + c * x;
+                } while (v <= 0);
+                v = v * v * v;
+                const u = Math.random();
+                if (u < 1 - 0.0331 * x * x * x * x) return d * v;
+                if (Math.log(u) < 0.5 * x * x + d * (1 - v + Math.log(v))) return d * v;
+            }
+        }
+
+        // Generate sample based on current distribution
+        function generateSample() {
+            const p = state.params;
+            switch (state.distribution) {
+                case 'normal': return randomNormal(p.mu, p.sigma);
+                case 'uniform': return randomUniform(p.a, p.b);
+                case 'exponential': return randomExponential(p.lambda);
+                case 'poisson': return randomPoisson(p.lambda);
+                case 'binomial': return randomBinomial(p.n, p.p);
+                case 'beta': return randomBeta(p.alpha, p.beta);
+            }
+        }
+
+        // PDF functions
+        function pdf(x) {
+            const p = state.params;
+            switch (state.distribution) {
+                case 'normal':
+                    const z = (x - p.mu) / p.sigma;
+                    return Math.exp(-0.5 * z * z) / (p.sigma * Math.sqrt(2 * Math.PI));
+                case 'uniform':
+                    return (x >= p.a && x <= p.b) ? 1 / (p.b - p.a) : 0;
+                case 'exponential':
+                    return x >= 0 ? p.lambda * Math.exp(-p.lambda * x) : 0;
+                case 'poisson':
+                    if (x < 0 || x !== Math.floor(x)) return 0;
+                    let fact = 1;
+                    for (let i = 2; i <= x; i++) fact *= i;
+                    return Math.pow(p.lambda, x) * Math.exp(-p.lambda) / fact;
+                case 'binomial':
+                    if (x < 0 || x > p.n || x !== Math.floor(x)) return 0;
+                    const comb = factorial(p.n) / (factorial(x) * factorial(p.n - x));
+                    return comb * Math.pow(p.p, x) * Math.pow(1 - p.p, p.n - x);
+                case 'beta':
+                    if (x <= 0 || x >= 1) return 0;
+                    const B = gamma(p.alpha) * gamma(p.beta) / gamma(p.alpha + p.beta);
+                    return Math.pow(x, p.alpha - 1) * Math.pow(1 - x, p.beta - 1) / B;
+            }
+        }
+
+        function factorial(n) {
+            if (n <= 1) return 1;
+            let result = 1;
+            for (let i = 2; i <= n; i++) result *= i;
+            return result;
+        }
+
+        function gamma(z) {
+            // Lanczos approximation
+            const g = 7;
+            const C = [0.99999999999980993, 676.5203681218851, -1259.1392167224028,
+                771.32342877765313, -176.61502916214059, 12.507343278686905,
+                -0.13857109526572012, 9.9843695780195716e-6, 1.5056327351493116e-7];
+            if (z < 0.5) return Math.PI / (Math.sin(Math.PI * z) * gamma(1 - z));
+            z -= 1;
+            let x = C[0];
+            for (let i = 1; i < g + 2; i++) x += C[i] / (z + i);
+            const t = z + g + 0.5;
+            return Math.sqrt(2 * Math.PI) * Math.pow(t, z + 0.5) * Math.exp(-t) * x;
+        }
+
+        // Get x range for current distribution
+        function getXRange() {
+            const p = state.params;
+            switch (state.distribution) {
+                case 'normal': return [p.mu - 4 * p.sigma, p.mu + 4 * p.sigma];
+                case 'uniform': return [p.a - 1, p.b + 1];
+                case 'exponential': return [0, 5 / p.lambda];
+                case 'poisson': return [0, Math.max(20, p.lambda * 3)];
+                case 'binomial': return [0, p.n];
+                case 'beta': return [0, 1];
+            }
+        }
+
+        // Draw histogram
+        function drawHistogram() {
+            const W = histCanvas.offsetWidth;
+            const H = histCanvas.offsetHeight;
+
+            histCtx.fillStyle = '#030712';
+            histCtx.fillRect(0, 0, W, H);
+
+            if (state.samples.length === 0) {
+                histCtx.fillStyle = '#4b5563';
+                histCtx.font = '14px Inter';
+                histCtx.textAlign = 'center';
+                histCtx.fillText('Presiona los botones para generar muestras', W / 2, H / 2);
+                return;
+            }
+
+            const margin = { left: 60, right: 40, top: 40, bottom: 50 };
+            const plotW = W - margin.left - margin.right;
+            const plotH = H - margin.top - margin.bottom;
+
+            const [xMin, xMax] = getXRange();
+            const numBins = Math.min(50, Math.max(10, Math.floor(state.samples.length / 10)));
+            const binWidth = (xMax - xMin) / numBins;
+            const bins = new Array(numBins).fill(0);
+
+            state.samples.forEach(s => {
+                const binIdx = Math.floor((s - xMin) / binWidth);
+                if (binIdx >= 0 && binIdx < numBins) bins[binIdx]++;
+            });
+
+            const maxCount = Math.max(...bins);
+
+            // Draw bars
+            const barWidth = plotW / numBins;
+            bins.forEach((count, i) => {
+                const barH = (count / maxCount) * plotH * 0.9;
+                const x = margin.left + i * barWidth;
+                const y = margin.top + plotH - barH;
+
+                histCtx.fillStyle = 'rgba(168, 85, 247, 0.6)';
+                histCtx.fillRect(x, y, barWidth - 1, barH);
+
+                histCtx.strokeStyle = '#a855f7';
+                histCtx.lineWidth = 1;
+                histCtx.strokeRect(x, y, barWidth - 1, barH);
+            });
+
+            // Axes
+            histCtx.strokeStyle = '#4b5563';
+            histCtx.lineWidth = 1;
+            histCtx.beginPath();
+            histCtx.moveTo(margin.left, margin.top);
+            histCtx.lineTo(margin.left, margin.top + plotH);
+            histCtx.lineTo(margin.left + plotW, margin.top + plotH);
+            histCtx.stroke();
+
+            // X axis labels
+            histCtx.fillStyle = '#9ca3af';
+            histCtx.font = '11px JetBrains Mono';
+            histCtx.textAlign = 'center';
+            for (let i = 0; i <= 5; i++) {
+                const x = margin.left + (i / 5) * plotW;
+                const val = xMin + (i / 5) * (xMax - xMin);
+                histCtx.fillText(val.toFixed(1), x, margin.top + plotH + 20);
+            }
+
+            // Y axis label
+            histCtx.save();
+            histCtx.translate(20, margin.top + plotH / 2);
+            histCtx.rotate(-Math.PI / 2);
+            histCtx.textAlign = 'center';
+            histCtx.fillText('Frecuencia', 0, 0);
+            histCtx.restore();
+
+            // Title
+            histCtx.fillStyle = '#e5e7eb';
+            histCtx.font = '13px Inter';
+            histCtx.textAlign = 'center';
+            histCtx.fillText(`Histograma (n = ${state.samples.length})`, W / 2, 25);
+        }
+
+        // Draw PDF
+        function drawPDF() {
+            const W = pdfCanvas.offsetWidth;
+            const H = pdfCanvas.offsetHeight;
+
+            pdfCtx.fillStyle = '#0a0a0f';
+            pdfCtx.fillRect(0, 0, W, H);
+
+            const margin = { left: 60, right: 40, top: 30, bottom: 50 };
+            const plotW = W - margin.left - margin.right;
+            const plotH = H - margin.top - margin.bottom;
+
+            const [xMin, xMax] = getXRange();
+            const isDiscrete = ['poisson', 'binomial'].includes(state.distribution);
+
+            // Find max PDF value
+            let maxPdf = 0;
+            if (isDiscrete) {
+                for (let k = Math.floor(xMin); k <= Math.ceil(xMax); k++) {
+                    maxPdf = Math.max(maxPdf, pdf(k));
+                }
+            } else {
+                for (let i = 0; i <= 200; i++) {
+                    const x = xMin + (i / 200) * (xMax - xMin);
+                    maxPdf = Math.max(maxPdf, pdf(x));
+                }
+            }
+
+            // Draw PDF
+            if (isDiscrete) {
+                // Bar chart for discrete
+                for (let k = Math.floor(xMin); k <= Math.ceil(xMax); k++) {
+                    const pdfVal = pdf(k);
+                    const x = margin.left + ((k - xMin) / (xMax - xMin)) * plotW;
+                    const barH = (pdfVal / maxPdf) * plotH * 0.9;
+                    const barW = plotW / (xMax - xMin) * 0.8;
+
+                    pdfCtx.fillStyle = 'rgba(34, 211, 238, 0.5)';
+                    pdfCtx.fillRect(x - barW / 2, margin.top + plotH - barH, barW, barH);
+                    pdfCtx.strokeStyle = '#22d3ee';
+                    pdfCtx.lineWidth = 1;
+                    pdfCtx.strokeRect(x - barW / 2, margin.top + plotH - barH, barW, barH);
+                }
+            } else {
+                // Continuous curve
+                pdfCtx.beginPath();
+                pdfCtx.strokeStyle = '#22d3ee';
+                pdfCtx.lineWidth = 2;
+
+                for (let i = 0; i <= 200; i++) {
+                    const x = xMin + (i / 200) * (xMax - xMin);
+                    const pdfVal = pdf(x);
+                    const px = margin.left + (i / 200) * plotW;
+                    const py = margin.top + plotH - (pdfVal / maxPdf) * plotH * 0.9;
+
+                    if (i === 0) pdfCtx.moveTo(px, py);
+                    else pdfCtx.lineTo(px, py);
+                }
+                pdfCtx.stroke();
+
+                // Fill area
+                pdfCtx.lineTo(margin.left + plotW, margin.top + plotH);
+                pdfCtx.lineTo(margin.left, margin.top + plotH);
+                pdfCtx.closePath();
+                pdfCtx.fillStyle = 'rgba(34, 211, 238, 0.1)';
+                pdfCtx.fill();
+            }
+
+            // Mean line
+            const p = state.params;
+            let theoreticalMean;
+            switch (state.distribution) {
+                case 'normal': theoreticalMean = p.mu; break;
+                case 'uniform': theoreticalMean = (p.a + p.b) / 2; break;
+                case 'exponential': theoreticalMean = 1 / p.lambda; break;
+                case 'poisson': theoreticalMean = p.lambda; break;
+                case 'binomial': theoreticalMean = p.n * p.p; break;
+                case 'beta': theoreticalMean = p.alpha / (p.alpha + p.beta); break;
+            }
+
+            const meanX = margin.left + ((theoreticalMean - xMin) / (xMax - xMin)) * plotW;
+            if (meanX >= margin.left && meanX <= margin.left + plotW) {
+                pdfCtx.setLineDash([5, 5]);
+                pdfCtx.strokeStyle = '#fbbf24';
+                pdfCtx.lineWidth = 2;
+                pdfCtx.beginPath();
+                pdfCtx.moveTo(meanX, margin.top);
+                pdfCtx.lineTo(meanX, margin.top + plotH);
+                pdfCtx.stroke();
+                pdfCtx.setLineDash([]);
+
+                pdfCtx.fillStyle = '#fbbf24';
+                pdfCtx.font = '11px JetBrains Mono';
+                pdfCtx.textAlign = 'center';
+                pdfCtx.fillText('μ', meanX, margin.top - 8);
+            }
+
+            // Axes
+            pdfCtx.strokeStyle = '#4b5563';
+            pdfCtx.lineWidth = 1;
+            pdfCtx.beginPath();
+            pdfCtx.moveTo(margin.left, margin.top);
+            pdfCtx.lineTo(margin.left, margin.top + plotH);
+            pdfCtx.lineTo(margin.left + plotW, margin.top + plotH);
+            pdfCtx.stroke();
+
+            // X axis labels
+            pdfCtx.fillStyle = '#9ca3af';
+            pdfCtx.font = '11px JetBrains Mono';
+            pdfCtx.textAlign = 'center';
+            for (let i = 0; i <= 5; i++) {
+                const x = margin.left + (i / 5) * plotW;
+                const val = xMin + (i / 5) * (xMax - xMin);
+                pdfCtx.fillText(val.toFixed(1), x, margin.top + plotH + 20);
+            }
+
+            // Y axis label
+            pdfCtx.save();
+            pdfCtx.translate(20, margin.top + plotH / 2);
+            pdfCtx.rotate(-Math.PI / 2);
+            pdfCtx.textAlign = 'center';
+            pdfCtx.fillText('f(x)', 0, 0);
+            pdfCtx.restore();
+
+            // Title
+            pdfCtx.fillStyle = '#e5e7eb';
+            pdfCtx.font = '13px Inter';
+            pdfCtx.textAlign = 'center';
+            const distNames = {
+                normal: 'Normal',
+                uniform: 'Uniforme',
+                exponential: 'Exponencial',
+                poisson: 'Poisson',
+                binomial: 'Binomial',
+                beta: 'Beta'
+            };
+            pdfCtx.fillText(`Distribución ${distNames[state.distribution]}`, W / 2, 20);
+        }
+
+        // Draw all
+        function draw() {
+            drawHistogram();
+            drawPDF();
+            updateStats();
+        }
+
+        // Update statistics
+        function updateStats() {
+            document.getElementById('sample-count').textContent = state.samples.length;
+
+            if (state.samples.length === 0) {
+                document.getElementById('stat-mean').textContent = '--';
+                document.getElementById('stat-var').textContent = '--';
+                document.getElementById('stat-min').textContent = '--';
+                document.getElementById('stat-max').textContent = '--';
+                document.getElementById('mean-display').textContent = '--';
+                document.getElementById('std-display').textContent = '--';
+                return;
+            }
+
+            const n = state.samples.length;
+            const mean = state.samples.reduce((a, b) => a + b, 0) / n;
+            const variance = state.samples.reduce((a, b) => a + (b - mean) ** 2, 0) / (n - 1 || 1);
+            const min = Math.min(...state.samples);
+            const max = Math.max(...state.samples);
+
+            document.getElementById('stat-mean').textContent = mean.toFixed(3);
+            document.getElementById('stat-var').textContent = variance.toFixed(3);
+            document.getElementById('stat-min').textContent = min.toFixed(3);
+            document.getElementById('stat-max').textContent = max.toFixed(3);
+            document.getElementById('mean-display').textContent = mean.toFixed(2);
+            document.getElementById('std-display').textContent = Math.sqrt(variance).toFixed(2);
+        }
+
+        // Add samples
+        function addSamples(count) {
+            for (let i = 0; i < count; i++) {
+                state.samples.push(generateSample());
+            }
+            draw();
+        }
+
+        // Show/hide parameter inputs based on distribution
+        function updateParamVisibility() {
+            const allParams = ['mu', 'sigma', 'lambda', 'n', 'p', 'alpha', 'beta', 'a', 'b'];
+            allParams.forEach(p => {
+                document.getElementById(`param-${p}`).classList.add('hidden');
+            });
+
+            switch (state.distribution) {
+                case 'normal':
+                    document.getElementById('param-mu').classList.remove('hidden');
+                    document.getElementById('param-sigma').classList.remove('hidden');
+                    break;
+                case 'uniform':
+                    document.getElementById('param-a').classList.remove('hidden');
+                    document.getElementById('param-b').classList.remove('hidden');
+                    break;
+                case 'exponential':
+                case 'poisson':
+                    document.getElementById('param-lambda').classList.remove('hidden');
+                    break;
+                case 'binomial':
+                    document.getElementById('param-n').classList.remove('hidden');
+                    document.getElementById('param-p').classList.remove('hidden');
+                    break;
+                case 'beta':
+                    document.getElementById('param-alpha').classList.remove('hidden');
+                    document.getElementById('param-beta').classList.remove('hidden');
+                    break;
+            }
+
+            document.getElementById('equation').textContent = equations[state.distribution];
+        }
+
+        // Event listeners
+        document.querySelectorAll('.dist-btn').forEach(btn => {
+            btn.addEventListener('click', () => {
+                document.querySelectorAll('.dist-btn').forEach(b => b.classList.remove('active'));
+                btn.classList.add('active');
+                state.distribution = btn.dataset.dist;
+                state.samples = [];
+                updateParamVisibility();
+                draw();
+            });
+        });
+
+        // Parameter sliders
+        ['mu', 'sigma', 'lambda', 'n', 'p', 'alpha', 'beta', 'a', 'b'].forEach(param => {
+            const slider = document.getElementById(param);
+            if (slider) {
+                slider.addEventListener('input', () => {
+                    state.params[param] = parseFloat(slider.value);
+                    document.getElementById(`${param}-value`).textContent =
+                        param === 'p' ? slider.value : parseFloat(slider.value).toFixed(1);
+                    state.samples = [];
+                    draw();
+                });
+            }
+        });
+
+        document.getElementById('btn-sample-1').addEventListener('click', () => addSamples(1));
+        document.getElementById('btn-sample-10').addEventListener('click', () => addSamples(10));
+        document.getElementById('btn-sample-100').addEventListener('click', () => addSamples(100));
+
+        document.getElementById('btn-clear').addEventListener('click', () => {
+            state.samples = [];
+            draw();
+        });
+
+        let autoInterval = null;
+        document.getElementById('btn-auto').addEventListener('click', () => {
+            state.autoSampling = !state.autoSampling;
+            const btn = document.getElementById('btn-auto');
+            if (state.autoSampling) {
+                btn.textContent = '⏸ Pausar';
+                btn.classList.remove('bg-emerald-600', 'hover:bg-emerald-500');
+                btn.classList.add('bg-amber-600', 'hover:bg-amber-500');
+                autoInterval = setInterval(() => addSamples(5), 50);
+            } else {
+                btn.textContent = '▶ Auto';
+                btn.classList.remove('bg-amber-600', 'hover:bg-amber-500');
+                btn.classList.add('bg-emerald-600', 'hover:bg-emerald-500');
+                clearInterval(autoInterval);
+            }
+        });
+
+        window.addEventListener('resize', resizeCanvases);
+
+        // Initialize
+        resizeCanvases();
+        updateParamVisibility();
+    </script>
+</body>
+</html>

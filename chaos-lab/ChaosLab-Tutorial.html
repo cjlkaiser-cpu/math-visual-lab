@@ -1,0 +1,2478 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ChaosLab — Tutorial Completo de Atractores Extraños</title>
+    
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/katex@0.16.9/dist/katex.min.js"></script>
+
+    <style>
+    
+@import url('https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,400;0,500;0,600;0,700;1,400;1,500&family=Source+Sans+3:ital,wght@0,400;0,600;0,700;1,400&family=JetBrains+Mono:wght@400;500&display=swap');
+
+:root {
+    --primary: #5b21b6;
+    --primary-dark: #3b0764;
+    --primary-light: #8b5cf6;
+    --secondary: #4a5568;
+    --success: #276749;
+    --warning: #975a16;
+    --danger: #9b2c2c;
+    --bg-light: #faf9f7;
+    --bg-code: #1a1b2e;
+    --border: #d1d5db;
+    --text: #1a202c;
+    --text-light: #4a5568;
+    --accent: #0891b2;
+    --accent-light: #06b6d4;
+    --font-serif: 'Cormorant Garamond', 'Palatino Linotype', 'Book Antiqua', Palatino, Georgia, serif;
+    --font-sans: 'Source Sans 3', 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+    --font-mono: 'JetBrains Mono', 'SF Mono', 'Fira Code', Consolas, monospace;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    font-family: var(--font-serif);
+    font-size: 1.1rem;
+    line-height: 1.8;
+    color: var(--text);
+    background: var(--bg-light);
+    font-weight: 400;
+}
+
+/* Header */
+header {
+    background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+    color: white;
+    padding: 2.5rem 2rem;
+    text-align: center;
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    box-shadow: 0 4px 12px -2px rgba(0,0,0,0.25);
+    border-bottom: 3px solid var(--accent);
+}
+
+header h1 {
+    font-family: var(--font-serif);
+    font-size: 2.4rem;
+    font-weight: 600;
+    margin-bottom: 0.5rem;
+    letter-spacing: 0.02em;
+}
+
+header h1 .chaos { color: #c4b5fd; }
+header h1 .lab { color: #67e8f9; }
+
+header p {
+    font-family: var(--font-sans);
+    opacity: 0.95;
+    font-size: 1.05rem;
+    font-weight: 400;
+    letter-spacing: 0.01em;
+}
+
+/* Layout */
+.container {
+    display: flex;
+    max-width: 1600px;
+    margin: 0 auto;
+}
+
+/* Sidebar */
+.sidebar {
+    width: 280px;
+    background: white;
+    border-right: 1px solid var(--border);
+    height: calc(100vh - 100px);
+    position: sticky;
+    top: 100px;
+    overflow-y: auto;
+    padding: 1rem;
+    flex-shrink: 0;
+}
+
+.sidebar h3 {
+    font-family: var(--font-sans);
+    font-size: 0.8rem;
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 600;
+    color: var(--secondary);
+    margin-bottom: 1rem;
+    padding-bottom: 0.5rem;
+    border-bottom: 2px solid var(--border);
+}
+
+.sidebar ul { list-style: none; }
+
+.sidebar li { margin-bottom: 0.25rem; }
+
+.sidebar a {
+    display: block;
+    padding: 0.5rem 0.75rem;
+    color: var(--text);
+    text-decoration: none;
+    border-radius: 4px;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    transition: all 0.2s;
+}
+
+.sidebar a:hover {
+    background: var(--bg-light);
+    color: var(--primary);
+}
+
+.sidebar a.active {
+    background: var(--primary);
+    color: white;
+}
+
+.sidebar .sub-item a {
+    padding-left: 1.5rem;
+    font-size: 0.85rem;
+    color: var(--text-light);
+}
+
+/* Main Content */
+.main-content {
+    flex: 1;
+    padding: 2rem;
+    max-width: 960px;
+    min-width: 0;
+}
+
+/* Sections */
+section {
+    background: white;
+    border-radius: 4px;
+    padding: 2.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+    border: 1px solid var(--border);
+}
+
+/* Headings */
+h1 { font-size: 2rem; margin-bottom: 1rem; }
+
+h2 {
+    font-family: var(--font-serif);
+    color: var(--primary);
+    font-size: 1.8rem;
+    font-weight: 600;
+    margin-bottom: 1.5rem;
+    padding-bottom: 0.75rem;
+    border-bottom: 2px solid var(--primary);
+    letter-spacing: 0.01em;
+}
+
+h3 {
+    font-family: var(--font-serif);
+    color: var(--text);
+    font-size: 1.4rem;
+    font-weight: 600;
+    margin: 2rem 0 1rem;
+    letter-spacing: 0.01em;
+}
+
+h4 {
+    font-family: var(--font-sans);
+    color: var(--secondary);
+    font-size: 1rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    margin: 1.5rem 0 0.75rem;
+}
+
+h5 {
+    font-family: var(--font-sans);
+    color: var(--text-light);
+    font-size: 0.95rem;
+    font-weight: 600;
+    margin: 1rem 0 0.5rem;
+}
+
+/* Paragraphs */
+p {
+    margin-bottom: 1.2rem;
+    text-align: justify;
+    hyphens: auto;
+}
+
+/* Links */
+a { color: var(--primary); text-decoration: none; }
+a:hover { text-decoration: underline; }
+
+/* Code */
+pre {
+    background: var(--bg-code);
+    color: #e2e8f0;
+    padding: 1.5rem;
+    border-radius: 4px;
+    overflow-x: auto;
+    margin: 1.5rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    line-height: 1.7;
+    border-left: 4px solid var(--primary-light);
+}
+
+code {
+    background: #ede9fe;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    font-family: var(--font-mono);
+    font-size: 0.85em;
+    color: var(--primary-dark);
+}
+
+pre code {
+    background: none;
+    padding: 0;
+    color: inherit;
+}
+
+/* Blockquotes */
+blockquote {
+    border-left: 4px solid var(--accent);
+    margin: 1.5rem 0;
+    padding: 1.25rem 1.5rem;
+    background: #f0fdfa;
+    border-radius: 0 4px 4px 0;
+    font-style: italic;
+}
+
+blockquote p { margin-bottom: 0.5rem; text-align: left; }
+blockquote p:last-child { margin-bottom: 0; }
+
+/* Info boxes */
+.info-box {
+    padding: 1.5rem;
+    border-radius: 4px;
+    margin: 1.75rem 0;
+    border-left: 4px solid;
+    font-size: 1rem;
+    font-style: normal;
+}
+
+.info-box.concept { background: #f5f0ff; border-color: var(--primary); }
+.info-box.warning { background: #faf5eb; border-color: var(--warning); }
+.info-box.success { background: #f0f7f4; border-color: var(--success); }
+.info-box.danger { background: #fdf2f2; border-color: var(--danger); }
+
+/* Tables */
+table, .styled-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin: 1.5rem 0;
+    font-family: var(--font-sans);
+    font-size: 0.95rem;
+}
+
+th, td {
+    padding: 0.875rem 1rem;
+    text-align: left;
+    border-bottom: 1px solid var(--border);
+}
+
+th {
+    background: var(--primary);
+    color: white;
+    font-weight: 600;
+    text-transform: uppercase;
+    font-size: 0.75rem;
+    letter-spacing: 0.08em;
+}
+
+tr:nth-child(even) { background: #f8f9fa; }
+tr:hover { background: #ede9fe; }
+
+/* Lists */
+ul, ol {
+    margin: 1.25rem 0;
+    padding-left: 1.75rem;
+}
+
+li {
+    margin-bottom: 0.6rem;
+    line-height: 1.7;
+}
+
+/* Horizontal rules */
+hr, .section-divider {
+    border: none;
+    border-top: 1px solid var(--border);
+    margin: 2rem 0;
+}
+
+/* KaTeX math overrides */
+.katex-display {
+    margin: 1.5rem 0;
+    overflow-x: auto;
+    overflow-y: hidden;
+    padding: 0.5rem 0;
+}
+
+.katex { font-size: 1.1em; color: var(--text); }
+
+.katex-display > .katex { font-size: 1.15em; }
+
+/* Diagrams / ASCII art */
+pre.diagram, .diagram {
+    background: #f7f6f3;
+    color: var(--text);
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    padding: 1.5rem;
+    margin: 1.75rem 0;
+    font-family: var(--font-mono);
+    font-size: 0.85rem;
+    overflow-x: auto;
+    white-space: pre;
+    line-height: 1.5;
+    box-shadow: inset 0 1px 3px rgba(0,0,0,0.05);
+    border-left: 4px solid var(--accent);
+}
+
+/* Details/Summary expandable */
+details {
+    margin: 1.5rem 0;
+    border: 1px solid var(--border);
+    border-radius: 4px;
+    overflow: hidden;
+}
+
+summary {
+    padding: 1rem 1.25rem;
+    background: #f7f6f3;
+    cursor: pointer;
+    font-family: var(--font-serif);
+    font-weight: 600;
+    font-size: 1.1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+summary:hover { background: #eeeee8; }
+
+summary::marker { color: var(--primary); }
+
+details .detail-content {
+    padding: 1.25rem;
+    background: white;
+}
+
+/* Badges for attractor properties */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.25rem;
+    padding: 0.3rem 0.6rem;
+    border-radius: 3px;
+    font-family: var(--font-sans);
+    font-size: 0.7rem;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+}
+
+.badge.chaotic { background: #fce7f3; color: #9d174d; }
+.badge.symmetric { background: #dbeafe; color: #1e40af; }
+.badge.simple { background: #d1fae5; color: #065f46; }
+
+/* Responsive */
+@media (max-width: 1200px) {
+    .sidebar { display: none; }
+}
+
+@media (max-width: 768px) {
+    .main-content { padding: 1rem; }
+    section { padding: 1.5rem; }
+    header { padding: 1.5rem 1rem; }
+    header h1 { font-size: 1.8rem; }
+}
+
+/* Print */
+@media print {
+    .sidebar, header { display: none; }
+    .main-content { max-width: 100%; padding: 0; }
+    section { break-inside: avoid; box-shadow: none; border: none; padding: 1rem 0; }
+    body { font-size: 10pt; }
+}
+
+/* Attractor card header */
+.attractor-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    margin: 0.5rem 0 1rem;
+    font-family: var(--font-sans);
+    font-size: 0.9rem;
+    color: var(--text-light);
+}
+
+.attractor-meta span {
+    background: #f3f4f6;
+    padding: 0.25rem 0.75rem;
+    border-radius: 3px;
+    border: 1px solid #e5e7eb;
+}
+
+.attractor-meta .year { color: var(--primary); font-weight: 600; }
+.attractor-meta .symmetry { color: var(--accent); font-weight: 500; }
+
+/* Smooth scroll */
+html { scroll-behavior: smooth; }
+
+/* Scrollbar */
+.sidebar::-webkit-scrollbar { width: 4px; }
+.sidebar::-webkit-scrollbar-track { background: transparent; }
+.sidebar::-webkit-scrollbar-thumb { background: var(--border); border-radius: 2px; }
+
+    </style>
+</head>
+<body>
+    <header>
+        <h1><span class="chaos">Chaos</span><span class="lab">Lab</span> — Tutorial Completo</h1>
+        <p>Atractores Extraños y Sistemas Dinámicos Caóticos: Teoría, Análisis y Exploración Interactiva</p>
+    </header>
+
+    <div class="container">
+        <nav class="sidebar">
+<h3>Indice de Contenidos</h3>
+<ul>
+  <li><a href="#fundamentos-de-teoria-del-caos">1. Fundamentos de Teoría del
+Caos</a></li>
+  <li class="sub-item"><a href="#que-es-el-caos-determinista">1.1 ¿Qué es el caos
+determinista?</a></li>
+  <li class="sub-item"><a href="#espacio-de-fases-y-trayectorias">1.2 Espacio de fases y
+trayectorias</a></li>
+  <li class="sub-item"><a href="#atractores-y-atractores-extranos">1.3 Atractores y atractores
+extraños</a></li>
+  <li class="sub-item"><a href="#disipatividad-y-contraccion-de-volumen">1.4 Disipatividad y
+contracción de vo...</a></li>
+  <li><a href="#sistemas-dinamicos-continuos">2. Sistemas Dinámicos
+Continuos</a></li>
+  <li class="sub-item"><a href="#ecuaciones-diferenciales-ordinarias-ode">2.1 Ecuaciones
+diferenciales ordinari...</a></li>
+  <li class="sub-item"><a href="#puntos-de-equilibrio">2.2 Puntos de equilibrio</a></li>
+  <li class="sub-item"><a href="#teorema-de-poincare-bendixson-y-la-necesidad-de-3d">2.3 Teorema
+de Poincaré-Bendixson y l...</a></li>
+  <li class="sub-item"><a href="#dimension-fractal">2.4 Dimensión fractal</a></li>
+  <li><a href="#los-10-atractores-de-chaoslab">3. Los 10 Atractores de
+ChaosLab</a></li>
+  <li class="sub-item"><a href="#atractor-de-lorenz">3.1 Atractor de Lorenz</a></li>
+  <li class="sub-item"><a href="#atractor-de-rossler">3.2 Atractor de Rössler</a></li>
+  <li class="sub-item"><a href="#atractor-de-aizawa">3.3 Atractor de Aizawa</a></li>
+  <li class="sub-item"><a href="#atractor-de-thomas">3.4 Atractor de Thomas</a></li>
+  <li class="sub-item"><a href="#atractor-de-halvorsen">3.5 Atractor de Halvorsen</a></li>
+  <li class="sub-item"><a href="#atractor-de-sprott-b">3.6 Atractor de Sprott (B)</a></li>
+  <li><a href="#integracion-numerica-el-metodo-runge-kutta-de-orden-4">4.
+Integración Numérica: El Método Runge-Kutta de Orden 4</a></li>
+  <li class="sub-item"><a href="#el-problema-de-la-integracion-numerica">4.1 El problema de la
+integración num...</a></li>
+  <li class="sub-item"><a href="#derivacion-del-metodo-rk4">4.2 Derivación del método RK4</a></li>
+  <li class="sub-item"><a href="#interpretacion-geometrica">4.3 Interpretación geométrica</a></li>
+  <li class="sub-item"><a href="#implementacion-en-chaoslab">4.4 Implementación en ChaosLab</a></li>
+  <li class="sub-item"><a href="#eleccion-del-paso-temporal-delta-t">4.5 Elección del paso
+temporal \Delta t</a></li>
+  <li class="sub-item"><a href="#proteccion-contra-divergencia">4.6 Protección contra
+divergencia</a></li>
+  <li><a href="#herramientas-de-analisis">5. Herramientas de Análisis</a></li>
+  <li class="sub-item"><a href="#exponente-de-lyapunov">5.1 Exponente de Lyapunov</a></li>
+  <li class="sub-item"><a href="#diagramas-de-bifurcacion">5.2 Diagramas de Bifurcación</a></li>
+  <li class="sub-item"><a href="#divergencia-de-sensibilidad">5.3 Divergencia de
+Sensibilidad</a></li>
+  <li class="sub-item"><a href="#estadisticas-de-trayectoria">5.4 Estadísticas de
+Trayectoria</a></li>
+  <li><a href="#guia-de-uso-de-chaoslab">6. Guía de Uso de ChaosLab</a></li>
+  <li class="sub-item"><a href="#interfaz-principal">6.1 Interfaz principal</a></li>
+  <li class="sub-item"><a href="#controles-de-navegacion-3d">6.2 Controles de navegación 3D</a></li>
+  <li class="sub-item"><a href="#panel-explorar">6.3 Panel Explorar</a></li>
+  <li class="sub-item"><a href="#panel-analizar">6.4 Panel Analizar</a></li>
+  <li class="sub-item"><a href="#seleccion-de-sistema">6.5 Selección de sistema</a></li>
+  <li><a href="#ejercicios-explicativos">7. Ejercicios Explicativos</a></li>
+  <li><a href="#glosario">8. Glosario</a></li>
+  <li><a href="#referencias-bibliograficas">9. Referencias Bibliográficas</a></li>
+</ul>
+</nav>
+
+        <main class="main-content">
+            <h1
+id="chaoslab-tutorial-completo-de-atractores-extranos-y-sistemas-dinamicos-caoticos">ChaosLab
+— Tutorial Completo de Atractores Extraños y Sistemas Dinámicos
+Caóticos</h1>
+<blockquote>
+<p><strong>ChaosLab</strong> es un explorador interactivo de atractores
+extraños que visualiza en 3D las trayectorias de 10 sistemas dinámicos
+caóticos, con herramientas de análisis como exponentes de Lyapunov y
+diagramas de bifurcación.</p>
+</blockquote>
+<hr class="section-divider" />
+
+
+<section id="sec-fundamentos-de-teoria-del-caos">
+<h2 id="fundamentos-de-teoria-del-caos">1. Fundamentos de Teoría del
+Caos</h2>
+<h3 id="que-es-el-caos-determinista">1.1 ¿Qué es el caos
+determinista?</h3>
+<p>Un sistema <strong>caótico</strong> es un sistema determinista —
+gobernado por ecuaciones exactas sin componente aleatorio — cuyo
+comportamiento a largo plazo es <strong>impredecible</strong> debido a
+una sensibilidad extrema a las condiciones iniciales. Esto se conoce
+coloquialmente como el <strong>efecto mariposa</strong>: una diferencia
+infinitesimal en el estado inicial produce trayectorias que divergen
+exponencialmente con el tiempo.</p>
+<p>Formalmente, un sistema dinámico es caótico si cumple tres
+condiciones:</p>
+<ol type="1">
+<li><p><strong>Sensibilidad a condiciones iniciales</strong>: Existe un
+<span class="math inline">\delta > 0</span> tal que para cualquier
+estado <span class="math inline">\mathbf{x}</span> y cualquier
+vecindario de <span class="math inline">\mathbf{x}</span>, existe un
+estado <span class="math inline">\mathbf{y}</span> en ese vecindario y
+un tiempo <span class="math inline">t > 0</span> donde <span class="math inline">\|\Phi^t(\mathbf{x}) - \Phi^t(\mathbf{y})\| >
+\delta</span>.</p></li>
+<li><p><strong>Transitividad topológica</strong>: Para cualquier par de
+conjuntos abiertos <span class="math inline">U, V</span> en el espacio
+de fases, existe un tiempo <span class="math inline">t</span> tal que
+<span class="math inline">\Phi^t(U) \cap V \neq
+\emptyset</span>.</p></li>
+<li><p><strong>Densidad de órbitas periódicas</strong>: Las órbitas
+periódicas forman un subconjunto denso del espacio de fases.</p></li>
+</ol>
+<h3 id="espacio-de-fases-y-trayectorias">1.2 Espacio de fases y
+trayectorias</h3>
+<p>El <strong>espacio de fases</strong> de un sistema dinámico es el
+espacio de todos los estados posibles. Para un sistema tridimensional
+como los que visualiza ChaosLab, cada punto <span class="math inline">(x, y, z) \in \mathbb{R}^3</span> representa un
+estado completo del sistema en un instante dado.</p>
+<p>Una <strong>trayectoria</strong> (u <strong>órbita</strong>) es la
+curva que traza un punto inicial <span class="math inline">\mathbf{x}_0</span> al evolucionar bajo las
+ecuaciones del sistema:</p>
+<p><span class="math display">\mathbf{x}(t) = \Phi^t(\mathbf{x}_0),
+\quad t \geq 0</span></p>
+<p>donde <span class="math inline">\Phi^t</span> es el
+<strong>flujo</strong> del sistema — la función que mapea estados
+iniciales a estados futuros tras un tiempo <span class="math inline">t</span>.</p>
+<h3 id="atractores-y-atractores-extranos">1.3 Atractores y atractores
+extraños</h3>
+<p>Un <strong>atractor</strong> es un conjunto <span class="math inline">A</span> en el espacio de fases hacia el cual las
+trayectorias cercanas convergen con el paso del tiempo:</p>
+<p><span class="math display">\lim_{t \to \infty} d(\Phi^t(\mathbf{x}),
+A) = 0</span></p>
+<p>para todo <span class="math inline">\mathbf{x}</span> en una
+<strong>cuenca de atracción</strong> <span class="math inline">B(A)</span> — la región del espacio de fases cuyos
+puntos son atraídos hacia <span class="math inline">A</span>.</p>
+<p>Los tipos de atractores son:</p>
+<table class="styled-table">
+<colgroup>
+<col style="width: 23%" />
+<col style="width: 42%" />
+<col style="width: 34%" />
+</colgroup>
+<thead>
+<tr>
+<th>Tipo</th>
+<th>Geometría</th>
+<th>Ejemplo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Punto fijo</td>
+<td>0-dimensional</td>
+<td>Péndulo con fricción</td>
+</tr>
+<tr>
+<td>Ciclo límite</td>
+<td>1-dimensional (curva cerrada)</td>
+<td>Oscilador Van der Pol</td>
+</tr>
+<tr>
+<td>Toro</td>
+<td>2-dimensional (superficie)</td>
+<td>Movimiento cuasiperiódico</td>
+</tr>
+<tr>
+<td><strong>Atractor extraño</strong></td>
+<td><strong>Dimensión fractal</strong></td>
+<td><strong>Lorenz, Rössler, etc.</strong></td>
+</tr>
+</tbody>
+</table>
+<p>Un <strong>atractor extraño</strong> tiene estructura fractal: su
+dimensión topológica es fraccionaria (por ejemplo, ~2.06 para Lorenz).
+Las trayectorias nunca se repiten exactamente pero permanecen confinadas
+en una región acotada del espacio, creando las formas intrincadas que
+ChaosLab visualiza.</p>
+<h3 id="disipatividad-y-contraccion-de-volumen">1.4 Disipatividad y
+contracción de volumen</h3>
+<p>Todos los sistemas en ChaosLab son <strong>disipativos</strong>: el
+volumen de cualquier región del espacio de fases se contrae bajo la
+evolución temporal. Matemáticamente, la <strong>divergencia</strong> del
+campo vectorial es negativa:</p>
+<p><span class="math display">\nabla \cdot \mathbf{F} = \frac{\partial
+F_x}{\partial x} + \frac{\partial F_y}{\partial y} + \frac{\partial
+F_z}{\partial z} < 0</span></p>
+<p>Esto es necesario para la existencia de atractores: en sistemas
+conservativos (volumen constante), como los hamiltonianos, no existen
+atractores. La contracción de volumen implica que el flujo comprime las
+trayectorias hacia un conjunto de medida cero — el atractor.</p>
+<p><strong>Ejemplo para Lorenz:</strong></p>
+<p><span class="math display">\nabla \cdot \mathbf{F} = -\sigma - 1 -
+\beta = -10 - 1 - \frac{8}{3} \approx -13.67</span></p>
+<p>El volumen se contrae a un ritmo de <span class="math inline">e^{-13.67 \cdot t}</span>, lo que explica por qué
+las trayectorias colapsan rápidamente sobre el atractor.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-sistemas-dinamicos-continuos">
+<h2 id="sistemas-dinamicos-continuos">2. Sistemas Dinámicos
+Continuos</h2>
+<h3 id="ecuaciones-diferenciales-ordinarias-ode">2.1 Ecuaciones
+diferenciales ordinarias (ODE)</h3>
+<p>Los sistemas de ChaosLab están definidos como sistemas de EDO
+autónomas de primer orden:</p>
+<p><span class="math display">\frac{d\mathbf{x}}{dt} =
+\mathbf{F}(\mathbf{x}; \boldsymbol{\mu})</span></p>
+<p>donde: - <span class="math inline">\mathbf{x} = (x, y, z) \in
+\mathbb{R}^3</span> es el vector de estado - <span class="math inline">\mathbf{F}: \mathbb{R}^3 \to \mathbb{R}^3</span> es
+el campo vectorial - <span class="math inline">\boldsymbol{\mu}</span>
+es el vector de parámetros del sistema - <span class="math inline">t</span> es el tiempo (variable independiente)</p>
+<p>El sistema es <strong>autónomo</strong> porque <span class="math inline">\mathbf{F}</span> no depende explícitamente de <span class="math inline">t</span>.</p>
+<h3 id="puntos-de-equilibrio">2.2 Puntos de equilibrio</h3>
+<p>Un <strong>punto de equilibrio</strong> (o punto fijo) es un estado
+<span class="math inline">\mathbf{x}^*</span> donde el campo vectorial
+se anula:</p>
+<p><span class="math display">\mathbf{F}(\mathbf{x}^*) =
+\mathbf{0}</span></p>
+<p>La estabilidad de un punto de equilibrio se determina por los
+<strong>eigenvalores</strong> de la <strong>matriz jacobiana</strong>
+evaluada en ese punto:</p>
+<p><span class="math display">J(\mathbf{x}^*) = \begin{pmatrix}
+\frac{\partial F_x}{\partial x} & \frac{\partial F_x}{\partial y}
+& \frac{\partial F_x}{\partial z} \\ \frac{\partial F_y}{\partial x}
+& \frac{\partial F_y}{\partial y} & \frac{\partial F_y}{\partial
+z} \\ \frac{\partial F_z}{\partial x} & \frac{\partial F_z}{\partial
+y} & \frac{\partial F_z}{\partial z} \end{pmatrix}_{\mathbf{x} =
+\mathbf{x}^*}</span></p>
+<p>Si todos los eigenvalores tienen parte real negativa, el punto es
+<strong>estable</strong>. Si al menos uno tiene parte real positiva, es
+<strong>inestable</strong>. Para que exista un atractor extraño,
+típicamente todos los puntos de equilibrio deben ser inestables.</p>
+<h3 id="teorema-de-poincare-bendixson-y-la-necesidad-de-3d">2.3 Teorema
+de Poincaré-Bendixson y la necesidad de 3D</h3>
+<p>En sistemas bidimensionales autónomos, el teorema de
+Poincaré-Bendixson establece que las trayectorias acotadas solo pueden
+converger a puntos fijos o ciclos límite — <strong>no puede haber
+caos</strong>. Por eso todos los sistemas de ChaosLab son
+tridimensionales: se necesitan al menos 3 dimensiones para que un flujo
+continuo exhiba caos.</p>
+<h3 id="dimension-fractal">2.4 Dimensión fractal</h3>
+<p>La dimensión fractal de un atractor cuantifica su complejidad
+geométrica. La <strong>dimensión de correlación</strong> <span class="math inline">D_2</span> se estima frecuentemente con el algoritmo
+de Grassberger-Procaccia:</p>
+<p><span class="math display">C(r) = \lim_{N \to \infty} \frac{1}{N^2}
+\sum_{i \neq j} \Theta(r - \|\mathbf{x}_i - \mathbf{x}_j\|)</span></p>
+<p><span class="math display">D_2 = \lim_{r \to 0} \frac{\log C(r)}{\log
+r}</span></p>
+<p>donde <span class="math inline">\Theta</span> es la función escalón
+de Heaviside. Para el atractor de Lorenz, <span class="math inline">D_2
+\approx 2.06</span>, indicando que el atractor es “casi” una superficie
+bidimensional pero con estructura infinitamente plegada.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-los-10-atractores-de-chaoslab">
+<h2 id="los-10-atractores-de-chaoslab">3. Los 10 Atractores de
+ChaosLab</h2>
+<h3 id="atractor-de-lorenz">3.1 Atractor de Lorenz</h3>
+<p><strong>Descubierto por:</strong> Edward Lorenz (1963)
+<strong>Contexto:</strong> Modelo simplificado de convección atmosférica
+derivado de las ecuaciones de Navier-Stokes. <strong>Simetría:</strong>
+<span class="math inline">\mathbb{Z}_2</span> — invariante bajo la
+transformación <span class="math inline">(x, y, z) \to (-x, -y,
+z)</span>.</p>
+<h4 id="ecuaciones">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = \sigma(y - x)</span></p>
+<p><span class="math display">\dot{y} = x(\rho - z) - y</span></p>
+<p><span class="math display">\dot{z} = xy - \beta z</span></p>
+<h4 id="parametros-y-significado-fisico">Parámetros y significado
+físico</h4>
+<table class="styled-table">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 15%" />
+<col style="width: 32%" />
+<col style="width: 11%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Símbolo</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Número de Prandtl</td>
+<td><span class="math inline">\sigma</span></td>
+<td>10</td>
+<td>[0, 30]</td>
+<td>Relación entre difusividad de momento y térmica</td>
+</tr>
+<tr>
+<td>Número de Rayleigh</td>
+<td><span class="math inline">\rho</span></td>
+<td>28</td>
+<td>[0, 50]</td>
+<td>Fuerza de la convección (gradiente térmico)</td>
+</tr>
+<tr>
+<td>Factor geométrico</td>
+<td><span class="math inline">\beta</span></td>
+<td>8/3 ≈ 2.667</td>
+<td>[0, 10]</td>
+<td>Relación de aspecto de la celda convectiva</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (1, 1, 1)</span></p>
+<h4 id="puntos-de-equilibrio-1">Puntos de equilibrio</h4>
+<p>El sistema tiene tres puntos de equilibrio:</p>
+<ol type="1">
+<li><p><strong>Origen:</strong> <span class="math inline">\mathbf{x}^*_0
+= (0, 0, 0)</span> — siempre existe, inestable para <span class="math inline">\rho > 1</span>.</p></li>
+<li><p><strong>Puntos simétricos</strong> (para <span class="math inline">\rho > 1</span>):</p></li>
+</ol>
+<p><span class="math display">\mathbf{x}^*_{\pm} =
+\left(\pm\sqrt{\beta(\rho - 1)},\; \pm\sqrt{\beta(\rho - 1)},\; \rho -
+1\right)</span></p>
+<p>Con los valores por defecto (<span class="math inline">\rho = 28,
+\beta = 8/3</span>):</p>
+<p><span class="math display">\mathbf{x}^*_{\pm} = (\pm 8.485, \pm
+8.485, 27)</span></p>
+<p>Estos puntos son inestables (espirales inestables) para <span class="math inline">\rho > \rho_H \approx 24.74</span>, que es la
+bifurcación de Hopf subcrítica.</p>
+<h4 id="divergencia-disipatividad">Divergencia (disipatividad)</h4>
+<p><span class="math display">\nabla \cdot \mathbf{F} = -\sigma - 1 -
+\beta = -(10 + 1 + 2.667) = -13.667</span></p>
+<p>El volumen se contrae exponencialmente: <span class="math inline">V(t) = V(0) \cdot e^{-13.667t}</span>.</p>
+<h4 id="comportamiento-segun-rho">Comportamiento según <span class="math inline">\rho</span></h4>
+<table class="styled-table">
+<colgroup>
+<col style="width: 54%" />
+<col style="width: 45%" />
+</colgroup>
+<thead>
+<tr>
+<th>Rango de <span class="math inline">\rho</span></th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">0 < \rho < 1</span></td>
+<td>Punto fijo estable en el origen</td>
+</tr>
+<tr>
+<td><span class="math inline">1 < \rho < 13.926</span></td>
+<td>Dos puntos fijos estables (espirales)</td>
+</tr>
+<tr>
+<td><span class="math inline">13.926 < \rho < 24.06</span></td>
+<td>Coexistencia: puntos fijos estables + caos transitorio</td>
+</tr>
+<tr>
+<td><span class="math inline">24.06 < \rho < 24.74</span></td>
+<td>Ciclo límite estable + caos transitorio</td>
+</tr>
+<tr>
+<td><span class="math inline">\rho > 24.74</span></td>
+<td><strong>Atractor extraño</strong> (caos permanente, <span class="math inline">\lambda_1 \approx 0.9</span>)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ejemplo-de-uso-en-chaoslab">Ejemplo de uso en ChaosLab</h4>
+<p>Selecciona <strong>Lorenz</strong> en la barra de sistemas. Observa
+las dos “alas” del atractor — la trayectoria orbita un ala durante un
+número variable de vueltas antes de saltar a la otra. Prueba incrementar
+<span class="math inline">\rho</span> a 40: las alas se expanden y las
+transiciones se vuelven más frecuentes.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-rossler">3.2 Atractor de Rössler</h3>
+<p><strong>Descubierto por:</strong> Otto Rössler (1976)
+<strong>Contexto:</strong> Diseñado como el sistema caótico más simple
+posible — solo un término no lineal (<span class="math inline">xz</span>). <strong>Simetría:</strong> Ninguna
+(asimétrico).</p>
+<h4 id="ecuaciones-1">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = -(y + z)</span></p>
+<p><span class="math display">\dot{y} = x + ay</span></p>
+<p><span class="math display">\dot{z} = b + z(x - c)</span></p>
+<h4 id="parametros">Parámetros</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+<th>Efecto</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">a</span></td>
+<td>0.2</td>
+<td>[0, 1]</td>
+<td>Controla la espiral en el plano xy</td>
+</tr>
+<tr>
+<td><span class="math inline">b</span></td>
+<td>0.2</td>
+<td>[0, 1]</td>
+<td>Inyección de energía en z</td>
+</tr>
+<tr>
+<td><span class="math inline">c</span></td>
+<td>5.7</td>
+<td>[0, 20]</td>
+<td><strong>Parámetro de bifurcación principal</strong></td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-1">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (1, 1, 0)</span></p>
+<h4 id="analisis-del-no-linealismo">Análisis del no-linealismo</h4>
+<p>El único término no lineal es <span class="math inline">z \cdot
+x</span> en la ecuación de <span class="math inline">\dot{z}</span>.
+Cuando <span class="math inline">x < c</span>, el término <span class="math inline">z(x - c)</span> actúa como amortiguamiento sobre
+<span class="math inline">z</span>, manteniéndolo pequeño. Cuando <span class="math inline">x</span> supera temporalmente el umbral <span class="math inline">c</span>, la variable <span class="math inline">z</span> experimenta un crecimiento rápido —
+produciendo la “oreja” vertical del atractor donde la trayectoria se
+dispara hacia arriba antes de reinyectarse en la espiral principal.</p>
+<h4 id="diagrama-de-bifurcacion-segun-c">Diagrama de bifurcación según
+<span class="math inline">c</span></h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Rango de <span class="math inline">c</span></th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">c < 2.5</span></td>
+<td>Punto fijo estable</td>
+</tr>
+<tr>
+<td><span class="math inline">2.5 < c < 4.2</span></td>
+<td>Ciclo límite (oscilación periódica)</td>
+</tr>
+<tr>
+<td><span class="math inline">4.2 < c < 5.0</span></td>
+<td>Cascada de duplicación de periodo</td>
+</tr>
+<tr>
+<td><span class="math inline">c \approx 5.0</span></td>
+<td>Inicio del caos</td>
+</tr>
+<tr>
+<td><span class="math inline">5.0 < c < 5.7</span></td>
+<td><strong>Caos de banda simple</strong></td>
+</tr>
+<tr>
+<td><span class="math inline">c > 5.7</span></td>
+<td><strong>Caos de banda doble</strong> (con “reinserción”)</td>
+</tr>
+</tbody>
+</table>
+<h4 id="ruta-al-caos">Ruta al caos</h4>
+<p>El sistema de Rössler sigue la <strong>ruta de duplicación de
+periodo</strong> (ruta de Feigenbaum). Al incrementar <span class="math inline">c</span>, un ciclo límite estable se bifurca en un
+ciclo de periodo 2, luego 4, 8, 16… hasta alcanzar caos a través de
+infinitas bifurcaciones acumuladas en un intervalo finito del
+parámetro.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-aizawa">3.3 Atractor de Aizawa</h3>
+<p><strong>Descubierto por:</strong> Yoji Aizawa (1982)
+<strong>Contexto:</strong> Sistema con simetría rotacional que genera
+trayectorias toroidales deformadas. <strong>Simetría:</strong>
+Rotacional SO(2) — invariante bajo rotaciones en el plano <span class="math inline">(x, y)</span>.</p>
+<h4 id="ecuaciones-2">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = (z - b)x - dy</span></p>
+<p><span class="math display">\dot{y} = dx + (z - b)y</span></p>
+<p><span class="math display">\dot{z} = c + az - \frac{z^3}{3} - (x^2 +
+y^2)(1 + ez) + fzx^3</span></p>
+<p>donde <span class="math inline">r^2 = x^2 + y^2</span> es el radio en
+el plano ecuatorial.</p>
+<h4 id="parametros-1">Parámetros</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">a</span></td>
+<td>0.95</td>
+<td>[0, 2]</td>
+</tr>
+<tr>
+<td><span class="math inline">b</span></td>
+<td>0.7</td>
+<td>[0, 2]</td>
+</tr>
+<tr>
+<td><span class="math inline">c</span></td>
+<td>0.6</td>
+<td>[0, 2]</td>
+</tr>
+<tr>
+<td><span class="math inline">d</span></td>
+<td>3.5</td>
+<td>[0, 10]</td>
+</tr>
+<tr>
+<td><span class="math inline">e</span></td>
+<td>0.25</td>
+<td>[0, 1]</td>
+</tr>
+<tr>
+<td><span class="math inline">f</span></td>
+<td>0.1</td>
+<td>[0, 1]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-2">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (0.1, 0, 0)</span></p>
+<h4 id="estructura-geometrica">Estructura geométrica</h4>
+<p>El atractor de Aizawa tiene una morfología similar a un
+<strong>toroide deformado</strong> con una apertura. La simetría SO(2)
+de las primeras dos ecuaciones (estructura de rotación con frecuencia
+<span class="math inline">d</span>) genera un movimiento espiral
+alrededor del eje <span class="math inline">z</span>, mientras que la
+ecuación de <span class="math inline">z</span> contiene un potencial
+cúbico <span class="math inline">az - z^3/3</span> y el acoplamiento no
+lineal <span class="math inline">fzx^3</span> que rompe parcialmente la
+simetría, creando la forma asimétrica característica.</p>
+<p>Las ecuaciones para <span class="math inline">\dot{x}</span> y <span class="math inline">\dot{y}</span> pueden reescribirse en coordenadas
+polares <span class="math inline">(r, \theta)</span> con <span class="math inline">x = r\cos\theta</span>, <span class="math inline">y
+= r\sin\theta</span>:</p>
+<p><span class="math display">\dot{r} = (z - b)r + fr \cos^3\theta \cdot
+z</span></p>
+<p><span class="math display">\dot{\theta} = d</span></p>
+<p>La frecuencia angular <span class="math inline">\dot{\theta} = d =
+3.5</span> implica que la trayectoria completa aproximadamente una
+vuelta cada <span class="math inline">T = 2\pi/d \approx 1.8</span>
+unidades de tiempo.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-thomas">3.4 Atractor de Thomas</h3>
+<p><strong>Descubierto por:</strong> René Thomas (1999)
+<strong>Contexto:</strong> Sistema cíclicamente simétrico diseñado para
+estudiar la relación entre simetría y caos. <strong>Simetría:</strong>
+Cíclica <span class="math inline">\mathbb{Z}_3</span> — invariante bajo
+permutación cíclica <span class="math inline">(x, y, z) \to (y, z,
+x)</span>.</p>
+<h4 id="ecuaciones-3">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = \sin(y) - bx</span></p>
+<p><span class="math display">\dot{y} = \sin(z) - by</span></p>
+<p><span class="math display">\dot{z} = \sin(x) - bz</span></p>
+<h4 id="parametro">Parámetro</h4>
+<table class="styled-table">
+<colgroup>
+<col style="width: 18%" />
+<col style="width: 15%" />
+<col style="width: 32%" />
+<col style="width: 11%" />
+<col style="width: 22%" />
+</colgroup>
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Símbolo</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+<th>Significado</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Disipación</td>
+<td><span class="math inline">b</span></td>
+<td>0.208186</td>
+<td>[0, 1]</td>
+<td>Coeficiente de amortiguamiento</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-3">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (1, 0, 0)</span></p>
+<h4 id="estructura-y-simetria">Estructura y simetría</h4>
+<p>La elegancia del atractor de Thomas reside en su perfecta simetría
+cíclica: cada variable es amortiguada por <span class="math inline">-b</span> y forzada por el seno de la siguiente
+variable en el ciclo <span class="math inline">x \to y \to z \to
+x</span>. La función <span class="math inline">\sin(\cdot)</span>
+confina las fuerzas al rango <span class="math inline">[-1, 1]</span>,
+lo que acota naturalmente las trayectorias sin necesidad de términos
+cuadráticos o cúbicos.</p>
+<p>La simetría <span class="math inline">\mathbb{Z}_3</span> implica que
+si <span class="math inline">\mathbf{x}(t) = (x(t), y(t), z(t))</span>
+es solución, entonces <span class="math inline">(y(t), z(t),
+x(t))</span> y <span class="math inline">(z(t), x(t), y(t))</span>
+también son soluciones. El atractor hereda esta simetría, exhibiendo una
+estructura tridimensional con triple rotación.</p>
+<h4 id="comportamiento-segun-b">Comportamiento según <span class="math inline">b</span></h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Rango de <span class="math inline">b</span></th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">b > 1</span></td>
+<td>Punto fijo estable en el origen</td>
+</tr>
+<tr>
+<td><span class="math inline">0.32 < b < 1</span></td>
+<td>Punto fijo con espirales amortiguadas</td>
+</tr>
+<tr>
+<td><span class="math inline">0.208186 < b < 0.32</span></td>
+<td><strong>Atractor extraño</strong></td>
+</tr>
+<tr>
+<td><span class="math inline">b < 0.208186</span></td>
+<td>Atractor hipercaótico, cuenca extendida</td>
+</tr>
+</tbody>
+</table>
+<p>El valor <span class="math inline">b = 0.208186</span> es el valor
+“crítico” que produce un atractor particularmente estético y bien
+definido.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-halvorsen">3.5 Atractor de Halvorsen</h3>
+<p><strong>Descubierto por:</strong> Christian Halvorsen (2015)
+<strong>Contexto:</strong> Sistema cíclicamente simétrico con geometría
+de tres alas. <strong>Simetría:</strong> Cíclica <span class="math inline">\mathbb{Z}_3</span> — invariante bajo <span class="math inline">(x, y, z) \to (y, z, x)</span>.</p>
+<h4 id="ecuaciones-4">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = -ax - 4y - 4z - y^2</span></p>
+<p><span class="math display">\dot{y} = -ay - 4z - 4x - z^2</span></p>
+<p><span class="math display">\dot{z} = -az - 4x - 4y - x^2</span></p>
+<h4 id="parametro-1">Parámetro</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">a</span></td>
+<td>1.89</td>
+<td>[0.5, 3]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-4">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (-5, 0, 0)</span></p>
+<h4 id="analisis-de-la-simetria">Análisis de la simetría</h4>
+<p>Al igual que Thomas, Halvorsen tiene simetría cíclica <span class="math inline">\mathbb{Z}_3</span>. La estructura es más agresiva:
+los acoplamientos lineales <span class="math inline">-4y - 4z</span>
+(factor 4) dominan sobre la disipación <span class="math inline">-ax</span> (factor ~1.89), creando rotaciones
+rápidas. Los términos cuadráticos <span class="math inline">-y^2</span>,
+<span class="math inline">-z^2</span>, <span class="math inline">-x^2</span> rompen la simetría local y generan la
+estructura de tres “alas” o lóbulos del atractor.</p>
+<p>La divergencia del campo vectorial es:</p>
+<p><span class="math display">\nabla \cdot \mathbf{F} = -3a =
+-5.67</span></p>
+<p>lo que confirma la disipatividad uniforme del sistema.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-sprott-b">3.6 Atractor de Sprott (B)</h3>
+<p><strong>Descubierto por:</strong> Julien Clinton Sprott (1994)
+<strong>Contexto:</strong> Uno de los sistemas caóticos más simples
+conocidos, con solo 5 términos y 1 parámetro. <strong>Simetría:</strong>
+Ninguna.</p>
+<h4 id="ecuaciones-5">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = yz</span></p>
+<p><span class="math display">\dot{y} = x - y</span></p>
+<p><span class="math display">\dot{z} = a - xy</span></p>
+<h4 id="parametro-2">Parámetro</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">a</span></td>
+<td>1.0</td>
+<td>[0.1, 3]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-5">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (0.1, 0.1, 0.1)</span></p>
+<h4 id="minimalismo-caotico">Minimalismo caótico</h4>
+<p>Sprott catalogó 19 sistemas caóticos cuadráticos tridimensionales,
+etiquetados de la A a la S, cada uno con la menor cantidad posible de
+términos. El caso B es notable por su extrema simplicidad:</p>
+<ul>
+<li>Solo 5 términos (frente a los 7 de Lorenz)</li>
+<li>Solo 2 no-linealidades (<span class="math inline">yz</span> y <span class="math inline">xy</span>)</li>
+<li>1 solo parámetro</li>
+</ul>
+<p>La ecuación de <span class="math inline">\dot{y} = x - y</span> es un
+filtro paso bajo que suaviza <span class="math inline">y</span> hacia
+<span class="math inline">x</span>. La ecuación de <span class="math inline">\dot{x} = yz</span> acopla las dos variables
+restantes multiplicativamente, y <span class="math inline">\dot{z} = a -
+xy</span> proporciona una constante de “inyección” <span class="math inline">a</span> compensada por el producto <span class="math inline">xy</span>.</p>
+<h4 id="divergencia">Divergencia</h4>
+<p><span class="math display">\nabla \cdot \mathbf{F} = 0 + (-1) + 0 =
+-1</span></p>
+<p>La contracción volumétrica es constante e independiente del estado —
+el sistema es uniformemente disipativo con tasa de contracción <span class="math inline">e^{-t}</span>.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-chen">3.7 Atractor de Chen</h3>
+<p><strong>Descubierto por:</strong> Guanrong Chen (1999)
+<strong>Contexto:</strong> Generalización “dual” del sistema de Lorenz,
+parte de la familia unificada Lorenz-Chen-Lü. <strong>Simetría:</strong>
+<span class="math inline">\mathbb{Z}_2</span> — invariante bajo <span class="math inline">(x, y, z) \to (-x, -y, z)</span>.</p>
+<h4 id="ecuaciones-6">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = a(y - x)</span></p>
+<p><span class="math display">\dot{y} = (c - a)x - xz + cy</span></p>
+<p><span class="math display">\dot{z} = xy - bz</span></p>
+<h4 id="parametros-2">Parámetros</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">a</span></td>
+<td>35</td>
+<td>[20, 50]</td>
+</tr>
+<tr>
+<td><span class="math inline">b</span></td>
+<td>3</td>
+<td>[1, 10]</td>
+</tr>
+<tr>
+<td><span class="math inline">c</span></td>
+<td>28</td>
+<td>[15, 40]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-6">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (-10, 0, 37)</span></p>
+<h4 id="relacion-con-lorenz">Relación con Lorenz</h4>
+<p>El sistema de Chen fue diseñado como el “anti-Lorenz” en el sentido
+de la <strong>condición de Šilnikov</strong>: mientras que en Lorenz la
+matriz jacobiana en el punto de equilibrio tiene una particular
+estructura, Chen invierte esa relación. La <strong>familia
+unificada</strong> Lorenz-Chen-Lü se parametriza como:</p>
+<p><span class="math display">\dot{x} = (25\alpha + 10)(y -
+x)</span></p>
+<p><span class="math display">\dot{y} = (28 - 35\alpha)x - xz +
+(29\alpha - 1)y</span></p>
+<p><span class="math display">\dot{z} = xy - \frac{8 +
+\alpha}{3}z</span></p>
+<p>donde <span class="math inline">\alpha = 0</span> da Lorenz, <span class="math inline">\alpha = 0.8</span> da Lü, y <span class="math inline">\alpha = 1</span> da Chen.</p>
+<h4 id="puntos-de-equilibrio-2">Puntos de equilibrio</h4>
+<p>Para los valores por defecto (<span class="math inline">a=35, b=3,
+c=28</span>), el sistema tiene tres equilibrios:</p>
+<ol type="1">
+<li><p><span class="math inline">\mathbf{x}^*_0 = (0, 0, 0)</span> —
+tipo silla con eigenvalores reales mixtos.</p></li>
+<li><p><span class="math inline">\mathbf{x}^*_{\pm} = (\pm\sqrt{b(2c -
+a)}, \pm\sqrt{b(2c - a)}, 2c - a) = (\pm\sqrt{63}, \pm\sqrt{63},
+21)</span></p></li>
+</ol>
+<hr class="section-divider" />
+<h3 id="atractor-de-dadras">3.8 Atractor de Dadras</h3>
+<p><strong>Descubierto por:</strong> Sara Dadras (2010)
+<strong>Contexto:</strong> Sistema con cuatro puntos de equilibrio y
+atractor de doble ala. <strong>Simetría:</strong> Ninguna.</p>
+<h4 id="ecuaciones-7">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = y - ax + byz</span></p>
+<p><span class="math display">\dot{y} = cy - xz + z</span></p>
+<p><span class="math display">\dot{z} = dxy - ez</span></p>
+<h4 id="parametros-3">Parámetros</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">a</span></td>
+<td>3</td>
+<td>[1, 8]</td>
+</tr>
+<tr>
+<td><span class="math inline">b</span></td>
+<td>2.7</td>
+<td>[0.5, 5]</td>
+</tr>
+<tr>
+<td><span class="math inline">c</span></td>
+<td>1.7</td>
+<td>[0.5, 5]</td>
+</tr>
+<tr>
+<td><span class="math inline">d</span></td>
+<td>2</td>
+<td>[0.5, 5]</td>
+</tr>
+<tr>
+<td><span class="math inline">e</span></td>
+<td>9</td>
+<td>[1, 15]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-7">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (1, 1, 1)</span></p>
+<h4 id="riqueza-dinamica">Riqueza dinámica</h4>
+<p>El sistema de Dadras es notable por su riqueza paramétrica: con 5
+parámetros, ofrece un vasto espacio de comportamientos. El término <span class="math inline">byz</span> en <span class="math inline">\dot{x}</span> y el término <span class="math inline">-xz</span> en <span class="math inline">\dot{y}</span> crean acoplamientos bilineales
+cruzados que generan la estructura de doble ala.</p>
+<p>La divergencia es:</p>
+<p><span class="math display">\nabla \cdot \mathbf{F} = -a + c - e = -3
++ 1.7 - 9 = -10.3</span></p>
+<p>El sistema tiene cuatro puntos de equilibrio, de los cuales ninguno
+es estable, permitiendo la existencia del atractor caótico.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-lu-three-scroll">3.9 Atractor de Lü
+(Three-Scroll)</h3>
+<p><strong>Descubierto por:</strong> Jinhu Lü &amp; Guanrong Chen (2002)
+<strong>Contexto:</strong> Sistema unificado que representa el caso
+crítico entre Lorenz y Chen. <strong>Simetría:</strong> <span class="math inline">\mathbb{Z}_2</span> — invariante bajo <span class="math inline">(x, y, z) \to (-x, -y, z)</span>.</p>
+<h4 id="ecuaciones-8">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = a(y - x)</span></p>
+<p><span class="math display">\dot{y} = -xz + cy</span></p>
+<p><span class="math display">\dot{z} = xy - bz</span></p>
+<h4 id="parametros-4">Parámetros</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">a</span></td>
+<td>36</td>
+<td>[20, 50]</td>
+</tr>
+<tr>
+<td><span class="math inline">b</span></td>
+<td>3</td>
+<td>[1, 10]</td>
+</tr>
+<tr>
+<td><span class="math inline">c</span></td>
+<td>20</td>
+<td>[10, 30]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-8">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (-2, -2, 20)</span></p>
+<h4 id="caso-puente-lorenz-chen">Caso puente Lorenz-Chen</h4>
+<p>Comparación estructural con Lorenz y Chen:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th></th>
+<th>Lorenz</th>
+<th><strong>Lü</strong></th>
+<th>Chen</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\dot{y}</span></td>
+<td><span class="math inline">\rho x - xz - y</span></td>
+<td><span class="math inline">-xz + cy</span></td>
+<td><span class="math inline">(c-a)x - xz + cy</span></td>
+</tr>
+<tr>
+<td>Término lineal en <span class="math inline">\dot{y}</span></td>
+<td><span class="math inline">\rho x - y</span></td>
+<td><span class="math inline">cy</span></td>
+<td><span class="math inline">(c-a)x + cy</span></td>
+</tr>
+<tr>
+<td>Parámetro unificado <span class="math inline">\alpha</span></td>
+<td>0</td>
+<td>0.8</td>
+<td>1</td>
+</tr>
+</tbody>
+</table>
+<p>La diferencia clave es la ausencia del término <span class="math inline">x</span> lineal en <span class="math inline">\dot{y}</span> del sistema Lü (presente como <span class="math inline">\rho x</span> en Lorenz y <span class="math inline">(c-a)x</span> en Chen). Esto lo sitúa como un caso
+de transición algebraica.</p>
+<hr class="section-divider" />
+<h3 id="atractor-de-rabinovich-fabrikant">3.10 Atractor de
+Rabinovich-Fabrikant</h3>
+<p><strong>Descubierto por:</strong> Mikhail Rabinovich &amp; Anatoly
+Fabrikant (1979) <strong>Contexto:</strong> Modelo de inestabilidades
+modulacionales en ondas no lineales. <strong>Simetría:</strong> <span class="math inline">\mathbb{Z}_2</span> — invariante bajo <span class="math inline">(x, y, z) \to (-x, -y, z)</span>.</p>
+<h4 id="ecuaciones-9">Ecuaciones</h4>
+<p><span class="math display">\dot{x} = y(z - 1 + x^2) + \gamma
+x</span></p>
+<p><span class="math display">\dot{y} = x(3z + 1 - x^2) + \gamma
+y</span></p>
+<p><span class="math display">\dot{z} = -2z(\alpha + xy)</span></p>
+<h4 id="parametros-5">Parámetros</h4>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Parámetro</th>
+<th>Símbolo</th>
+<th>Valor por defecto</th>
+<th>Rango</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Alpha</td>
+<td><span class="math inline">\alpha</span></td>
+<td>1.1</td>
+<td>[0.01, 2]</td>
+</tr>
+<tr>
+<td>Gamma</td>
+<td><span class="math inline">\gamma</span></td>
+<td>0.87</td>
+<td>[0.01, 1.5]</td>
+</tr>
+</tbody>
+</table>
+<h4 id="estado-inicial-9">Estado inicial</h4>
+<p><span class="math display">\mathbf{x}_0 = (-1, 0, 0.5)</span></p>
+<h4 id="complejidad-del-sistema">Complejidad del sistema</h4>
+<p>Rabinovich-Fabrikant es uno de los sistemas más complicados de
+ChaosLab. Las no-linealidades incluyen términos cúbicos (<span class="math inline">x^3</span> aparece implícitamente como <span class="math inline">x \cdot x^2</span>) y acoplamientos triples (<span class="math inline">xyz</span> implícito en <span class="math inline">-2z \cdot xy</span>). Esto genera una geometría del
+atractor extremadamente intrincada con múltiples escalas.</p>
+<p>La ecuación de <span class="math inline">\dot{z}</span> tiene la
+forma <span class="math inline">\dot{z} = -2z(\alpha + xy)</span>, lo
+que implica que <span class="math inline">z = 0</span> es un plano
+invariante. Dado que <span class="math inline">\alpha > 0</span>,
+para estados donde <span class="math inline">xy > -\alpha</span>, la
+variable <span class="math inline">z</span> es atraída hacia cero,
+creando la estructura “aplastada” característica del atractor.</p>
+<h4 id="sensibilidad-parametrica">Sensibilidad paramétrica</h4>
+<p>Este sistema es particularmente sensible a sus parámetros. Pequeñas
+variaciones en <span class="math inline">\gamma</span> pueden cambiar el
+comportamiento de caótico a periódico y viceversa. Se recomienda
+explorar lentamente el slider de <span class="math inline">\gamma</span>
+en ChaosLab para observar estas transiciones.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-integracion-numerica-el-metodo-runge-kutta-de-orden-4">
+<h2 id="integracion-numerica-el-metodo-runge-kutta-de-orden-4">4.
+Integración Numérica: El Método Runge-Kutta de Orden 4</h2>
+<h3 id="el-problema-de-la-integracion-numerica">4.1 El problema de la
+integración numérica</h3>
+<p>Las ecuaciones diferenciales de los atractores no tienen solución
+analítica cerrada (de hecho, esa es parte de la esencia del caos).
+Debemos aproximar las soluciones numéricamente, avanzando paso a paso
+con un incremento de tiempo <span class="math inline">\Delta t</span>
+(llamado <code>dt</code> en ChaosLab).</p>
+<h3 id="derivacion-del-metodo-rk4">4.2 Derivación del método RK4</h3>
+<p>Dado el sistema <span class="math inline">\dot{\mathbf{x}} =
+\mathbf{F}(\mathbf{x})</span> con estado actual <span class="math inline">\mathbf{x}_n</span> en el tiempo <span class="math inline">t_n</span>, queremos estimar <span class="math inline">\mathbf{x}_{n+1}</span> en <span class="math inline">t_{n+1} = t_n + \Delta t</span>.</p>
+<p>El método RK4 computa cuatro “pendientes” intermedias:</p>
+<p><span class="math display">\mathbf{k}_1 =
+\mathbf{F}(\mathbf{x}_n)</span></p>
+<p><span class="math display">\mathbf{k}_2 =
+\mathbf{F}\!\left(\mathbf{x}_n + \frac{\Delta
+t}{2}\,\mathbf{k}_1\right)</span></p>
+<p><span class="math display">\mathbf{k}_3 =
+\mathbf{F}\!\left(\mathbf{x}_n + \frac{\Delta
+t}{2}\,\mathbf{k}_2\right)</span></p>
+<p><span class="math display">\mathbf{k}_4 =
+\mathbf{F}\!\left(\mathbf{x}_n + \Delta
+t\,\mathbf{k}_3\right)</span></p>
+<p>Y la actualización final es la media ponderada:</p>
+<p><span class="math display">\mathbf{x}_{n+1} = \mathbf{x}_n +
+\frac{\Delta t}{6}\left(\mathbf{k}_1 + 2\mathbf{k}_2 + 2\mathbf{k}_3 +
+\mathbf{k}_4\right)</span></p>
+<h3 id="interpretacion-geometrica">4.3 Interpretación geométrica</h3>
+<ul>
+<li><span class="math inline">\mathbf{k}_1</span>: pendiente al
+<strong>inicio</strong> del intervalo</li>
+<li><span class="math inline">\mathbf{k}_2</span>: pendiente en el
+<strong>punto medio</strong>, usando <span class="math inline">\mathbf{k}_1</span> para llegar allí</li>
+<li><span class="math inline">\mathbf{k}_3</span>: pendiente en el
+<strong>punto medio</strong>, usando <span class="math inline">\mathbf{k}_2</span> para llegar allí
+(corrección)</li>
+<li><span class="math inline">\mathbf{k}_4</span>: pendiente al
+<strong>final</strong> del intervalo, usando <span class="math inline">\mathbf{k}_3</span> para llegar allí</li>
+</ul>
+<p>La ponderación <span class="math inline">\frac{1}{6}(1, 2, 2,
+1)</span> da mayor peso a las pendientes del punto medio, lo que
+proporciona una precisión de orden 4: el error local es <span class="math inline">O(\Delta t^5)</span> y el error global es <span class="math inline">O(\Delta t^4)</span>.</p>
+<h3 id="implementacion-en-chaoslab">4.4 Implementación en ChaosLab</h3>
+<p>En <code>js/systems.js</code>, la función <code>rk4Step</code>
+implementa exactamente el esquema descrito:</p>
+<pre class="javascript"><code>function rk4Step(equations, state, params, dt) {
+    var k1 = equations(state, params);
+    var s2 = [
+        state[0] + k1[0] * dt * 0.5,
+        state[1] + k1[1] * dt * 0.5,
+        state[2] + k1[2] * dt * 0.5
+    ];
+    var k2 = equations(s2, params);
+    // ... (k3, k4 análogos)
+    return [
+        state[0] + (k1[0] + 2*k2[0] + 2*k3[0] + k4[0]) * dt / 6,
+        state[1] + (k1[1] + 2*k2[1] + 2*k3[1] + k4[1]) * dt / 6,
+        state[2] + (k1[2] + 2*k2[2] + 2*k3[2] + k4[2]) * dt / 6
+    ];
+}</code></pre>
+<h3 id="eleccion-del-paso-temporal-delta-t">4.5 Elección del paso
+temporal <span class="math inline">\Delta t</span></h3>
+<p>El valor <code>dt = 0.005</code> por defecto es un compromiso:</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th><span class="math inline">\Delta t</span></th>
+<th>Precisión</th>
+<th>Velocidad</th>
+<th>Estabilidad</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>0.0001</td>
+<td>Excelente</td>
+<td>Muy lenta (muchos pasos)</td>
+<td>Excelente</td>
+</tr>
+<tr>
+<td>0.001</td>
+<td>Muy buena</td>
+<td>Lenta</td>
+<td>Muy buena</td>
+</tr>
+<tr>
+<td><strong>0.005</strong></td>
+<td><strong>Buena</strong></td>
+<td><strong>Equilibrada</strong></td>
+<td><strong>Buena</strong></td>
+</tr>
+<tr>
+<td>0.01</td>
+<td>Aceptable</td>
+<td>Rápida</td>
+<td>Marginal para algunos sistemas</td>
+</tr>
+<tr>
+<td>0.05</td>
+<td>Pobre</td>
+<td>Muy rápida</td>
+<td>Inestable (diverge)</td>
+</tr>
+</tbody>
+</table>
+<p>Para sistemas “rápidos” como Lorenz o Chen (velocidades de derivada
+altas), se recomienda <span class="math inline">\Delta t \leq
+0.005</span>. Para sistemas “lentos” como Thomas (<span class="math inline">b \approx 0.2</span>, velocidades <span class="math inline">\leq 1</span>), se puede usar <span class="math inline">\Delta t = 0.01</span> sin pérdida de precisión.</p>
+<p><strong>Regla práctica:</strong> Si la trayectoria “explota” (diverge
+a infinito), reducir <span class="math inline">\Delta t</span> o
+verificar que los parámetros estén en el régimen caótico.</p>
+<h3 id="proteccion-contra-divergencia">4.6 Protección contra
+divergencia</h3>
+<p>La función <code>integrate()</code> incluye un mecanismo de seguridad
+que limita los valores:</p>
+<pre class="javascript"><code>if (!isFinite(state[j])) state[j] = 0;
+if (state[j] &gt; 1e6) state[j] = 1e6;
+if (state[j] &lt; -1e6) state[j] = -1e6;</code></pre>
+<p>Esto previene que valores <code>NaN</code> o <code>Infinity</code>
+corrompan el buffer de la GPU, aunque la trayectoria resultante ya no
+será físicamente significativa.</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-herramientas-de-analisis">
+<h2 id="herramientas-de-analisis">5. Herramientas de Análisis</h2>
+<h3 id="exponente-de-lyapunov">5.1 Exponente de Lyapunov</h3>
+<h4 id="definicion">Definición</h4>
+<p>El <strong>exponente máximo de Lyapunov</strong> <span class="math inline">\lambda_1</span> cuantifica la tasa promedio de
+separación exponencial de trayectorias infinitesimalmente cercanas:</p>
+<p><span class="math display">\lambda_1 = \lim_{t \to \infty}
+\frac{1}{t} \ln
+\frac{\|\delta\mathbf{x}(t)\|}{\|\delta\mathbf{x}(0)\|}</span></p>
+<p>donde <span class="math inline">\delta\mathbf{x}(t)</span> es la
+separación entre dos trayectorias que comienzan a distancia <span class="math inline">\|\delta\mathbf{x}(0)\| = \epsilon \to 0</span>.</p>
+<h4 id="interpretacion">Interpretación</h4>
+<table class="styled-table">
+<colgroup>
+<col style="width: 50%" />
+<col style="width: 50%" />
+</colgroup>
+<thead>
+<tr>
+<th><span class="math inline">\lambda_1</span></th>
+<th>Comportamiento</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">\lambda_1 < 0</span></td>
+<td>Punto fijo estable (atractor)</td>
+</tr>
+<tr>
+<td><span class="math inline">\lambda_1 = 0</span></td>
+<td>Ciclo límite o toro (movimiento periódico/cuasiperiódico)</td>
+</tr>
+<tr>
+<td><span class="math inline">\lambda_1 > 0</span></td>
+<td><strong>Caos</strong> — las trayectorias divergen
+exponencialmente</td>
+</tr>
+</tbody>
+</table>
+<p>Para el atractor de Lorenz con parámetros estándar: <span class="math inline">\lambda_1 \approx 0.9056</span>.</p>
+<p>Esto significa que la distancia entre trayectorias cercanas se
+multiplica por <span class="math inline">e \approx 2.718</span> cada
+<span class="math inline">1/\lambda_1 \approx 1.1</span> unidades de
+tiempo. Después de <span class="math inline">t = 10</span>, la
+separación crece por un factor de <span class="math inline">e^{9}
+\approx 8100</span>.</p>
+<h4 id="espectro-completo-de-lyapunov">Espectro completo de
+Lyapunov</h4>
+<p>Un sistema 3D tiene tres exponentes de Lyapunov <span class="math inline">\lambda_1 \geq \lambda_2 \geq \lambda_3</span>. Para
+un atractor extraño típico:</p>
+<ul>
+<li><span class="math inline">\lambda_1 > 0</span> (estiramiento —
+caos)</li>
+<li><span class="math inline">\lambda_2 = 0</span> (dirección del flujo
+— neutral)</li>
+<li><span class="math inline">\lambda_3 < 0</span> (contracción hacia
+el atractor)</li>
+</ul>
+<p>La <strong>dimensión de Kaplan-Yorke</strong> se estima como:</p>
+<p><span class="math display">D_{KY} = j + \frac{\sum_{i=1}^{j}
+\lambda_i}{|\lambda_{j+1}|}</span></p>
+<p>donde <span class="math inline">j</span> es el mayor entero tal que
+<span class="math inline">\sum_{i=1}^{j} \lambda_i \geq 0</span>.</p>
+<p>Para Lorenz: <span class="math inline">\lambda_1 \approx
+0.906</span>, <span class="math inline">\lambda_2 = 0</span>, <span class="math inline">\lambda_3 \approx -14.57</span>, lo que da <span class="math inline">D_{KY} \approx 2 + 0.906/14.57 \approx
+2.062</span>.</p>
+<h4 id="algoritmo-en-chaoslab">Algoritmo en ChaosLab</h4>
+<p>ChaosLab estima <span class="math inline">\lambda_1</span> con el
+método de <strong>renormalización de trayectoria
+perturbada</strong>:</p>
+<ol type="1">
+<li>Evolucionar un estado de referencia <span class="math inline">\mathbf{x}</span> durante un
+<strong>transitorio</strong> (1000 pasos) para que alcance el
+atractor.</li>
+<li>Crear una copia perturbada <span class="math inline">\mathbf{x}'
+= \mathbf{x} + (\epsilon, 0, 0)</span> con <span class="math inline">\epsilon = 10^{-7}</span>.</li>
+<li>Evolucionar ambos durante <span class="math inline">N</span> pasos
+(5000 por defecto). En cada paso:
+<ul>
+<li>Medir la distancia <span class="math inline">d_n =
+\|\mathbf{x}'_n - \mathbf{x}_n\|</span>.</li>
+<li>Acumular <span class="math inline">\sum \ln(d_n /
+\epsilon)</span>.</li>
+<li><strong>Renormalizar</strong>: reposicionar <span class="math inline">\mathbf{x}'</span> a distancia <span class="math inline">\epsilon</span> de <span class="math inline">\mathbf{x}</span> en la misma dirección.</li>
+</ul></li>
+<li>El exponente es <span class="math inline">\lambda_1 = \frac{1}{N
+\cdot \Delta t} \sum_{n=1}^{N} \ln\frac{d_n}{\epsilon}</span>.</li>
+</ol>
+<p>La renormalización es esencial: sin ella, la distancia crecería hasta
+saturar y dejaría de reflejar la divergencia local.</p>
+<h3 id="diagramas-de-bifurcacion">5.2 Diagramas de Bifurcación</h3>
+<h4 id="concepto">Concepto</h4>
+<p>Un <strong>diagrama de bifurcación</strong> muestra cómo cambia el
+comportamiento asintótico de un sistema al variar un parámetro. Se
+grafica:</p>
+<ul>
+<li>Eje horizontal: valor del parámetro <span class="math inline">\mu</span></li>
+<li>Eje vertical: valores visitados por una variable (típicamente <span class="math inline">x</span>) después de pasar el transitorio</li>
+</ul>
+<h4 id="construccion">Construcción</h4>
+<p>Para cada valor de <span class="math inline">\mu</span> en un rango
+discretizado:</p>
+<ol type="1">
+<li>Inicializar el estado en <span class="math inline">\mathbf{x}_0</span>.</li>
+<li>Evolucionar <span class="math inline">n_{\text{trans}}</span> pasos
+(transitorio) para que la trayectoria llegue al atractor.</li>
+<li>Evolucionar <span class="math inline">n_{\text{cap}}</span> pasos
+adicionales, registrando los valores de <span class="math inline">x</span>.</li>
+<li>Graficar los puntos <span class="math inline">(\mu, x)</span>.</li>
+</ol>
+<p><strong>Resultado visual:</strong> - <strong>Punto fijo</strong> → un
+solo punto por valor de <span class="math inline">\mu</span> -
+<strong>Ciclo periodo-2</strong> → dos puntos - <strong>Ciclo
+periodo-<span class="math inline">2^n</span></strong> → <span class="math inline">2^n</span> puntos - <strong>Caos</strong> → nube
+densa de puntos</p>
+<h4 id="cascada-de-duplicacion-de-periodo">Cascada de duplicación de
+periodo</h4>
+<p>La secuencia de bifurcaciones <span class="math inline">1 \to 2 \to 4
+\to 8 \to \cdots \to 2^n \to \cdots \to \text{caos}</span> sigue la
+<strong>constante de Feigenbaum</strong>:</p>
+<p><span class="math display">\delta = \lim_{n \to \infty} \frac{\mu_n -
+\mu_{n-1}}{\mu_{n+1} - \mu_n} \approx 4.669201\ldots</span></p>
+<p>donde <span class="math inline">\mu_n</span> es el valor del
+parámetro donde ocurre la bifurcación de periodo <span class="math inline">2^n</span>. Esta constante es
+<strong>universal</strong> — independiente del sistema particular.</p>
+<h4 id="implementacion-en-chaoslab-1">Implementación en ChaosLab</h4>
+<p>El botón “Bifurcación” en la pestaña Analizar barre el primer
+parámetro del sistema actual (por ejemplo, <span class="math inline">\sigma</span> para Lorenz) sobre su rango completo
+con 200 muestras, 500 pasos de transitorio y 100 pasos de captura por
+muestra.</p>
+<h3 id="divergencia-de-sensibilidad">5.3 Divergencia de
+Sensibilidad</h3>
+<p>La función <code>sensitivityDivergence</code> mide la
+<strong>separación temporal</strong> entre dos trayectorias que
+comienzan a distancia <span class="math inline">\epsilon</span> una de
+la otra. A diferencia del cálculo de Lyapunov (que renormaliza), aquí se
+deja que la divergencia crezca libremente, produciendo una curva
+exponencial:</p>
+<p><span class="math display">\|\delta\mathbf{x}(t)\| \sim \epsilon
+\cdot e^{\lambda_1 t}</span></p>
+<p>En escala logarítmica, la pendiente de esta curva da directamente
+<span class="math inline">\lambda_1</span>. Las desviaciones de la
+linealidad indican la estructura de plegamiento del atractor.</p>
+<h3 id="estadisticas-de-trayectoria">5.4 Estadísticas de
+Trayectoria</h3>
+<p>La función <code>trajectoryStats</code> calcula sobre el buffer de
+posiciones del trail:</p>
+<ul>
+<li><strong>Centroide</strong>: <span class="math inline">\bar{\mathbf{x}} =
+\frac{1}{N}\sum_{i=1}^{N}\mathbf{x}_i</span> — centro de masa del
+atractor muestreado.</li>
+<li><strong>Bounding box</strong>: <span class="math inline">[\mathbf{x}_{\min}, \mathbf{x}_{\max}]</span> — la
+caja alineada con los ejes que contiene el atractor.</li>
+<li><strong>Spread</strong>: <span class="math inline">\sqrt{(\Delta
+x)^2 + (\Delta y)^2 + (\Delta z)^2}</span> donde <span class="math inline">\Delta = \max - \min</span> — diagonal de la
+bounding box, medida del “tamaño” del atractor.</li>
+</ul>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-guia-de-uso-de-chaoslab">
+<h2 id="guia-de-uso-de-chaoslab">6. Guía de Uso de ChaosLab</h2>
+<h3 id="interfaz-principal">6.1 Interfaz principal</h3>
+<div class="diagram">┌──────────────────────────────────────────────────────────────┐
+│ ChaosLab  │ Lorenz  Rössler  Aizawa  Thomas  ...  │ nombre │
+├────────────────────────────────────┬─────────────────────────┤
+│                                    │ [Explorar] [Analizar]   │
+│                                    ├─────────────────────────┤
+│                                    │ Parámetros del sistema  │
+│         Viewport 3D                │  σ ────●──────── 10.00  │
+│         (canvas WebGL)             │  ρ ──────●────── 28.00  │
+│                                    │  β ──●────────── 2.67   │
+│         Arrastrar = orbitar        │                         │
+│         Scroll = zoom              │ dt: 0.005               │
+│                                    │ Trail length: 50000     │
+│                                    │ Velocidad: 20           │
+│                                    │                         │
+│                                    │ ☑ Auto-rotar            │
+│                                    │ ☑ Mostrar ejes          │
+│                                    │ ☑ Color por velocidad   │
+│                                    │ ☐ Mostrar puntos        │
+│                                    │                         │
+│                                    │ Ecuaciones (KaTeX)      │
+│                                    ├─────────────────────────┤
+│                                    │ Propiedades             │
+│                                    │  Nombre: Lorenz         │
+│                                    │  Tipo: Continuo (ODE)   │
+│                                    │  ...                    │
+└────────────────────────────────────┴─────────────────────────┘</div>
+<h3 id="controles-de-navegacion-3d">6.2 Controles de navegación 3D</h3>
+<table class="styled-table">
+<colgroup>
+<col style="width: 36%" />
+<col style="width: 31%" />
+<col style="width: 31%" />
+</colgroup>
+<thead>
+<tr>
+<th>Acción</th>
+<th>Mouse</th>
+<th>Touch</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>Orbitar (rotar la vista)</td>
+<td>Arrastrar con botón izquierdo</td>
+<td>Arrastrar con un dedo</td>
+</tr>
+<tr>
+<td>Zoom (acercar/alejar)</td>
+<td>Rueda del ratón</td>
+<td>—</td>
+</tr>
+</tbody>
+</table>
+<p>La cámara orbita en coordenadas esféricas <span class="math inline">(\theta, \phi, r)</span> alrededor del centroide del
+atractor, donde: - <span class="math inline">\theta</span> es el ángulo
+azimutal (rotación horizontal) - <span class="math inline">\phi</span>
+es el ángulo polar (elevación) - <span class="math inline">r</span> es
+la distancia radial (zoom)</p>
+<h3 id="panel-explorar">6.3 Panel Explorar</h3>
+<h4 id="parametros-del-sistema">Parámetros del sistema</h4>
+<p>Sliders generados dinámicamente según el sistema seleccionado. Cada
+slider muestra la etiqueta del parámetro (por ejemplo, σ, ρ, β) y su
+valor actual. <strong>Los cambios son en tiempo real</strong> — el
+atractor se deforma mientras arrastras el slider.</p>
+<h4 id="controles-globales">Controles globales</h4>
+<ul>
+<li><strong>dt</strong>: Paso temporal del integrador. Reducir para
+mayor precisión, aumentar para velocidad.</li>
+<li><strong>Trail length</strong>: Número máximo de puntos en la estela.
+Más puntos = atractor más definido pero más uso de GPU.</li>
+<li><strong>Velocidad</strong>: Pasos de integración por frame de
+animación. Más pasos = el atractor se dibuja más rápido.</li>
+</ul>
+<h4 id="opciones-de-visualizacion">Opciones de visualización</h4>
+<ul>
+<li><strong>Auto-rotar</strong>: La cámara gira automáticamente
+0.17°/frame para ver el atractor desde todos los ángulos.</li>
+<li><strong>Mostrar ejes</strong>: Ejes X (rojo), Y (verde), Z (azul)
+con etiquetas.</li>
+<li><strong>Color por velocidad</strong>: Colorea la trayectoria según
+la velocidad local: azul (lento) → rojo (rápido).</li>
+<li><strong>Mostrar puntos</strong>: Superpone una nube de puntos sobre
+la línea del trail.</li>
+</ul>
+<h3 id="panel-analizar">6.4 Panel Analizar</h3>
+<h4 id="exponente-de-lyapunov-1">Exponente de Lyapunov</h4>
+<p>Haz clic en “Calcular Lyapunov” para estimar el exponente máximo. El
+resultado se muestra en color: - <strong>Rojo</strong>: Positivo → el
+sistema es caótico. - <strong>Cian</strong>: No positivo → el sistema es
+periódico o convergente.</p>
+<h4 id="diagrama-de-bifurcacion">Diagrama de bifurcación</h4>
+<p>Haz clic en “Bifurcación” para generar un diagrama que barre el
+primer parámetro del sistema. La visualización aparece en el canvas
+inferior.</p>
+<h4 id="estadisticas">Estadísticas</h4>
+<p>Se actualizan automáticamente cada 30 frames: -
+<strong>Centroide</strong>: Centro de masa del atractor. -
+<strong>Spread</strong>: Tamaño de la diagonal de la caja envolvente. -
+<strong>Puntos</strong>: Número actual de puntos en el trail.</p>
+<h3 id="seleccion-de-sistema">6.5 Selección de sistema</h3>
+<p>Haz clic en cualquier botón de la barra superior para cambiar de
+sistema. Al cambiar: 1. Se resetea el trail (nueva estela desde cero) 2.
+Se actualizan los sliders de parámetros 3. Se renderizan las ecuaciones
+en KaTeX 4. Se actualizan las propiedades 5. El estado del integrador se
+reinicia a las condiciones iniciales del sistema</p>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-ejercicios-explicativos">
+<h2 id="ejercicios-explicativos">7. Ejercicios Explicativos</h2>
+<h3 id="ejercicio-1-el-efecto-mariposa-en-lorenz">Ejercicio 1: El efecto
+mariposa en Lorenz</h3>
+<p><strong>Objetivo:</strong> Demostrar experimentalmente la
+sensibilidad a condiciones iniciales.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona el sistema
+<strong>Lorenz</strong> con parámetros por defecto (<span class="math inline">\sigma = 10</span>, <span class="math inline">\rho =
+28</span>, <span class="math inline">\beta = 2.667</span>). 2. Deja que
+el atractor se dibuje durante ~10 segundos. 3. Ve a la pestaña
+<strong>Analizar</strong> y haz clic en “Calcular Lyapunov”. 4. Anota el
+valor obtenido: <span class="math inline">\lambda_1 \approx</span>
+__________.</p>
+<p><strong>Preguntas:</strong> - a) Si el exponente de Lyapunov es <span class="math inline">\lambda_1 \approx 0.9</span>, ¿por cuánto se
+multiplica la distancia entre dos trayectorias cercanas después de <span class="math inline">t = 5</span> unidades de tiempo?</p>
+<p><strong>Solución:</strong> La separación crece como <span class="math inline">\delta(t) = \delta_0 \cdot e^{\lambda_1 t}</span>.
+Para <span class="math inline">t = 5</span>:</p>
+<p><span class="math display">\frac{\delta(5)}{\delta_0} = e^{0.9 \times
+5} = e^{4.5} \approx 90</span></p>
+<p>La distancia se multiplica por ~90 en 5 unidades de tiempo.</p>
+<ul>
+<li><ol start="2" type="a">
+<li>Si partimos de dos condiciones iniciales que difieren en <span class="math inline">10^{-10}</span> (una parte en diez mil millones),
+¿cuánto tiempo tarda la diferencia en alcanzar el tamaño del atractor
+(~30 unidades)?</li>
+</ol>
+<p><strong>Solución:</strong> Resolvemos <span class="math inline">30 =
+10^{-10} \cdot e^{0.9 t}</span>:</p>
+<p><span class="math display">e^{0.9 t} = 3 \times 10^{11}</span></p>
+<p><span class="math display">0.9 t = \ln(3 \times 10^{11}) \approx
+26.4</span></p>
+<p><span class="math display">t \approx 29.4 \text{ unidades de
+tiempo}</span></p>
+<p>Después de ~30 unidades de tiempo, las trayectorias son completamente
+independientes.</p></li>
+</ul>
+<hr class="section-divider" />
+<h3
+id="ejercicio-2-cascada-de-duplicacion-de-periodo-en-rossler">Ejercicio
+2: Cascada de duplicación de periodo en Rössler</h3>
+<p><strong>Objetivo:</strong> Observar la ruta al caos de
+Feigenbaum.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona
+<strong>Rössler</strong>. 2. Fija <span class="math inline">a =
+0.2</span>, <span class="math inline">b = 0.2</span>. 3. Varía el
+parámetro <span class="math inline">c</span> lentamente desde <span class="math inline">c = 2</span> hasta <span class="math inline">c =
+6</span>, observando la trayectoria.</p>
+<p><strong>Observaciones esperadas:</strong></p>
+<table class="styled-table">
+<thead>
+<tr>
+<th>Valor de <span class="math inline">c</span></th>
+<th>Comportamiento observado</th>
+<th>Tipo</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><span class="math inline">c = 2.5</span></td>
+<td>Órbita circular simple</td>
+<td>Ciclo periodo-1</td>
+</tr>
+<tr>
+<td><span class="math inline">c = 3.5</span></td>
+<td>Órbita que se cierra tras 2 vueltas</td>
+<td>Ciclo periodo-2</td>
+</tr>
+<tr>
+<td><span class="math inline">c = 4.2</span></td>
+<td>Órbita que se cierra tras 4 vueltas</td>
+<td>Ciclo periodo-4</td>
+</tr>
+<tr>
+<td><span class="math inline">c = 4.5</span></td>
+<td>Órbita que parece no cerrarse</td>
+<td>Inicio del caos</td>
+</tr>
+<tr>
+<td><span class="math inline">c = 5.7</span></td>
+<td>Estructura de banda con “reinserción”</td>
+<td>Caos de banda</td>
+</tr>
+</tbody>
+</table>
+<p><strong>Preguntas:</strong> - a) ¿Por qué no puede haber caos en un
+sistema bidimensional autónomo, pero sí en el sistema de Rössler que es
+3D?</p>
+<p><strong>Respuesta:</strong> El teorema de Poincaré-Bendixson
+establece que en <span class="math inline">\mathbb{R}^2</span> las
+trayectorias acotadas solo pueden converger a puntos fijos o ciclos
+límite. En <span class="math inline">\mathbb{R}^3</span>, las
+trayectorias tienen suficiente libertad para “esquivarse” sin cruzarse
+(por unicidad de soluciones), permitiendo la dinámica caótica.</p>
+<ul>
+<li><ol start="2" type="a">
+<li>Genera el diagrama de bifurcación para <span class="math inline">c</span>. ¿Puedes identificar las bifurcaciones de
+duplicación de periodo?</li>
+</ol>
+<strong>Procedimiento:</strong> En la pestaña Analizar, haz clic en
+“Bifurcación”. El diagrama mostrará cómo el atractor pasa de un punto a
+dos ramas, luego cuatro, y finalmente una nube densa.</li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-3-simetria-ciclica-en-thomas-vs.-halvorsen">Ejercicio
+3: Simetría cíclica en Thomas vs. Halvorsen</h3>
+<p><strong>Objetivo:</strong> Comparar dos sistemas con simetría <span class="math inline">\mathbb{Z}_3</span>.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona <strong>Thomas</strong>
+(<span class="math inline">b = 0.208186</span>). Observa la forma del
+atractor. 2. Selecciona <strong>Halvorsen</strong> (<span class="math inline">a = 1.89</span>). Observa la forma del atractor.</p>
+<p><strong>Preguntas:</strong> - a) Ambos sistemas son invariantes bajo
+<span class="math inline">(x, y, z) \to (y, z, x)</span>. ¿Cómo se
+manifiesta esta simetría visualmente?</p>
+<p><strong>Respuesta:</strong> El atractor tiene tres “brazos” o
+“lóbulos” idénticos, dispuestos con simetría de rotación de 120°
+alrededor del eje <span class="math inline">(1, 1, 1)/\sqrt{3}</span>.
+Si giras el atractor 120° alrededor de este eje diagonal, luce
+idéntico.</p>
+<ul>
+<li><ol start="2" type="a">
+<li>¿Qué diferencia fundamental hay entre las no-linealidades de Thomas
+(<span class="math inline">\sin</span>) y Halvorsen (<span class="math inline">x^2</span>)?</li>
+</ol>
+<p><strong>Respuesta:</strong> La función seno de Thomas es
+<strong>acotada</strong> (<span class="math inline">|\sin(x)| \leq
+1</span>), lo que confina naturalmente las trayectorias a una región
+compacta del espacio de fases. En cambio, los términos cuadráticos de
+Halvorsen son <strong>no acotados</strong>, requiriendo que el
+amortiguamiento lineal <span class="math inline">-a</span> sea
+suficientemente fuerte para prevenir la divergencia. Esto hace que
+Halvorsen sea más sensible al valor de <span class="math inline">a</span> y que la transición de caos a divergencia
+sea más abrupta.</p></li>
+<li><ol start="3" type="a">
+<li>Cambia <span class="math inline">b</span> de Thomas a 0.3. ¿Qué
+ocurre? ¿Y a 0.15?</li>
+</ol>
+<p><strong>Respuesta esperada:</strong> Con <span class="math inline">b
+= 0.3</span>, el atractor se simplifica (posiblemente a un ciclo límite
+o punto fijo, dado que el amortiguamiento es mayor). Con <span class="math inline">b = 0.15</span>, el atractor se expande y se vuelve
+más complejo, ocupando un volumen mayor en el espacio de fases.</p></li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-4-error-de-integracion-y-paso-temporal">Ejercicio 4:
+Error de integración y paso temporal</h3>
+<p><strong>Objetivo:</strong> Verificar experimentalmente el efecto del
+paso temporal <span class="math inline">\Delta t</span> en la
+precisión.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona <strong>Lorenz</strong>
+con parámetros por defecto. 2. Usa <span class="math inline">\Delta t =
+0.005</span> (por defecto). Deja correr 5 segundos. Calcula el exponente
+de Lyapunov y anota: <span class="math inline">\lambda_1 \approx</span>
+__________. 3. Cambia <span class="math inline">\Delta t = 0.001</span>.
+Resetea y repite. Anota: <span class="math inline">\lambda_1
+\approx</span> __________. 4. Cambia <span class="math inline">\Delta t
+= 0.05</span>. Resetea y repite. Anota: <span class="math inline">\lambda_1 \approx</span> __________.</p>
+<p><strong>Preguntas:</strong> - a) ¿Cuánto varían los exponentes de
+Lyapunov entre los tres valores de <span class="math inline">\Delta
+t</span>?</p>
+<p><strong>Explicación:</strong> Para <span class="math inline">\Delta t
+= 0.005</span> y <span class="math inline">\Delta t = 0.001</span>, los
+valores deberían ser similares (dentro de ~5% de diferencia), ya que RK4
+es preciso a orden 4. Para <span class="math inline">\Delta t =
+0.05</span>, el error de integración es mucho mayor y puede producir un
+valor de Lyapunov significativamente diferente (o incluso negativo si la
+trayectoria diverge y se “clampa”).</p>
+<ul>
+<li><ol start="2" type="a">
+<li>El error global de RK4 es <span class="math inline">O(\Delta
+t^4)</span>. Si el error con <span class="math inline">\Delta t =
+0.005</span> es <span class="math inline">E</span>, ¿cuál debería ser
+con <span class="math inline">\Delta t = 0.001</span>?</li>
+</ol>
+<strong>Solución:</strong> <span class="math inline">E_{0.001} /
+E_{0.005} \approx (0.001/0.005)^4 = (0.2)^4 = 0.0016</span>. El error se
+reduce por un factor de ~625.</li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-5-familia-unificada-lorenz-lu-chen">Ejercicio 5:
+Familia unificada Lorenz-Lü-Chen</h3>
+<p><strong>Objetivo:</strong> Explorar la continuidad entre tres
+sistemas aparentemente distintos.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona <strong>Lorenz</strong>
+(<span class="math inline">\sigma = 10</span>, <span class="math inline">\rho = 28</span>, <span class="math inline">\beta =
+8/3</span>). Observa el atractor de doble ala. 2. Selecciona <strong>Lü
+(Three-Scroll)</strong> (<span class="math inline">a = 36</span>, <span class="math inline">b = 3</span>, <span class="math inline">c =
+20</span>). Observa el cambio de forma. 3. Selecciona
+<strong>Chen</strong> (<span class="math inline">a = 35</span>, <span class="math inline">b = 3</span>, <span class="math inline">c =
+28</span>). Compara con los anteriores.</p>
+<p><strong>Preguntas:</strong> - a) Escribe las ecuaciones de los tres
+sistemas uno al lado del otro. ¿Cuál es la diferencia estructural en la
+ecuación de <span class="math inline">\dot{y}</span>?</p>
+<table class="styled-table">
+<thead>
+<tr>
+<th></th>
+<th><span class="math inline">\dot{y}</span></th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Lorenz</strong></td>
+<td><span class="math inline">x(\rho - z) - y</span></td>
+</tr>
+<tr>
+<td><strong>Lü</strong></td>
+<td><span class="math inline">-xz + cy</span></td>
+</tr>
+<tr>
+<td><strong>Chen</strong></td>
+<td><span class="math inline">(c - a)x - xz + cy</span></td>
+</tr>
+</tbody>
+</table>
+<p>La diferencia está en los términos lineales: Lorenz tiene <span class="math inline">\rho x - y</span>, Lü elimina el término <span class="math inline">x</span> y usa <span class="math inline">cy</span>,
+y Chen tiene <span class="math inline">(c-a)x + cy</span>.</p>
+<ul>
+<li><ol start="2" type="a">
+<li>¿Por qué estos tres sistemas comparten la simetría <span class="math inline">\mathbb{Z}_2</span> bajo <span class="math inline">(x, y, z) \to (-x, -y, z)</span>?</li>
+</ol>
+<strong>Respuesta:</strong> En las tres ecuaciones, <span class="math inline">\dot{x}</span> y <span class="math inline">\dot{y}</span> son combinaciones de términos
+lineales en <span class="math inline">x</span>, <span class="math inline">y</span> y el producto <span class="math inline">xz</span>. Si sustituimos <span class="math inline">x \to -x</span> y <span class="math inline">y \to
+-y</span>: los términos lineales cambian de signo (correcto), <span class="math inline">xz \to (-x)z = -xz</span> cambia de signo
+(correcto), y <span class="math inline">xy \to (-x)(-y) = xy</span> no
+cambia (correcto, aparece en <span class="math inline">\dot{z}</span>).
+Por lo tanto, <span class="math inline">\dot{z}</span> no cambia y <span class="math inline">\dot{x}</span>, <span class="math inline">\dot{y}</span> cambian de signo — la simetría se
+preserva.</li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-6-complejidad-de-rabinovich-fabrikant">Ejercicio 6:
+Complejidad de Rabinovich-Fabrikant</h3>
+<p><strong>Objetivo:</strong> Explorar el sistema más complejo de
+ChaosLab.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona <strong>R-F</strong>
+(Rabinovich-Fabrikant) con <span class="math inline">\alpha =
+1.1</span>, <span class="math inline">\gamma = 0.87</span>. 2. Observa
+el atractor — debería mostrar una estructura intrincada y no simétrica
+en apariencia. 3. Varía <span class="math inline">\gamma</span>
+lentamente de 0.87 a 0.10.</p>
+<p><strong>Preguntas:</strong> - a) ¿Por qué la ecuación <span class="math inline">\dot{z} = -2z(\alpha + xy)</span> implica que <span class="math inline">z</span> tiende a cero cuando <span class="math inline">xy > -\alpha</span>?</p>
+<p><strong>Respuesta:</strong> Si <span class="math inline">xy >
+-\alpha</span>, entonces <span class="math inline">\alpha + xy >
+0</span>, y <span class="math inline">\dot{z} = -2z(\alpha + xy)</span>.
+Si <span class="math inline">z > 0</span>, entonces <span class="math inline">\dot{z} < 0</span> (z decrece). Si <span class="math inline">z < 0</span>, entonces <span class="math inline">\dot{z} > 0</span> (z crece hacia cero). Por
+tanto, <span class="math inline">z = 0</span> es un atractor para esta
+ecuación cuando <span class="math inline">\alpha + xy > 0</span>, lo
+que ocurre la mayor parte del tiempo dado que <span class="math inline">\alpha = 1.1 > 0</span>.</p>
+<ul>
+<li><ol start="2" type="a">
+<li>Para <span class="math inline">\gamma = 0.1</span>, ¿el sistema
+sigue siendo caótico? Calcula el exponente de Lyapunov y verifica.</li>
+</ol>
+<strong>Procedimiento:</strong> Ajusta <span class="math inline">\gamma
+= 0.1</span>, espera que el atractor se estabilice, y calcula Lyapunov.
+Para valores bajos de <span class="math inline">\gamma</span>, el
+sistema puede transitionar a comportamiento periódico (<span class="math inline">\lambda_1 \leq 0</span>).</li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-7-sprott-minimalismo-y-caos">Ejercicio 7: Sprott —
+Minimalismo y caos</h3>
+<p><strong>Objetivo:</strong> Demostrar que el caos no requiere
+ecuaciones complicadas.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona <strong>Sprott
+(B)</strong> con <span class="math inline">a = 1.0</span>. 2. Observa el
+atractor — a pesar de tener solo 5 términos, la dinámica es caótica.</p>
+<p><strong>Preguntas:</strong> - a) ¿Cuántas evaluaciones de funciones
+trigonométricas, exponenciales, o raíces cuadradas requiere una
+iteración RK4 del sistema de Sprott?</p>
+<p><strong>Respuesta:</strong> Cero. Sprott solo usa multiplicación
+(<span class="math inline">yz</span>, <span class="math inline">xy</span>), suma y resta. Cada evaluación del campo
+vectorial requiere 2 multiplicaciones y 3 sumas/restas. Con 4
+evaluaciones por paso RK4, son 8 multiplicaciones + 12 sumas por paso —
+extremadamente eficiente.</p>
+<ul>
+<li><ol start="2" type="a">
+<li>¿Cuál es la divergencia del campo vectorial? ¿Es constante o depende
+del estado?</li>
+</ol>
+<p><strong>Solución:</strong></p>
+<p><span class="math display">\nabla \cdot \mathbf{F} =
+\frac{\partial(yz)}{\partial x} + \frac{\partial(x - y)}{\partial y} +
+\frac{\partial(a - xy)}{\partial z} = 0 + (-1) + 0 = -1</span></p>
+<p>La divergencia es <strong>constante</strong> (<span class="math inline">-1</span>), independiente del estado. El volumen en
+el espacio de fases se contrae a tasa <span class="math inline">e^{-t}</span> uniformemente.</p></li>
+<li><ol start="3" type="a">
+<li>Cambia <span class="math inline">a</span> de 1.0 a 0.5, luego a 2.0.
+¿Cómo cambia el atractor?</li>
+</ol>
+<p><strong>Indicación:</strong> Para <span class="math inline">a</span>
+bajos, el sistema puede perder la caoticidad. Para <span class="math inline">a</span> altos, el atractor puede expandirse.
+Observa el tamaño (spread) en las estadísticas.</p></li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-8-diagrama-de-bifurcacion-del-lorenz">Ejercicio 8:
+Diagrama de bifurcación del Lorenz</h3>
+<p><strong>Objetivo:</strong> Construir un diagrama de bifurcación y
+localizar la transición al caos.</p>
+<p><strong>Procedimiento:</strong> 1. Selecciona
+<strong>Lorenz</strong>. Ve a la pestaña <strong>Analizar</strong>. 2.
+Haz clic en <strong>Bifurcación</strong>. El diagrama barre <span class="math inline">\sigma</span> de 0 a 30. 3. Observa el diagrama
+resultante.</p>
+<p><strong>Preguntas:</strong> - a) ¿Puedes identificar regiones de
+comportamiento periódico (líneas delgadas) y caótico (nubes densas)?</p>
+<p><strong>Indicación:</strong> Para <span class="math inline">\sigma</span> bajo, el sistema puede converger a un
+punto fijo (un solo punto por valor de <span class="math inline">\sigma</span>). A medida que <span class="math inline">\sigma</span> aumenta, aparecen bifurcaciones y
+eventualmente caos.</p>
+<ul>
+<li><ol start="2" type="a">
+<li>¿El parámetro más interesante para el diagrama de bifurcación de
+Lorenz es <span class="math inline">\sigma</span> o <span class="math inline">\rho</span>? ¿Por qué?</li>
+</ol>
+<strong>Respuesta:</strong> <span class="math inline">\rho</span> es el
+parámetro de bifurcación clásico de Lorenz, ya que controla directamente
+la transición de convección estable a caos (es el número de Rayleigh
+normalizado). Sin embargo, ChaosLab barre por defecto el primer
+parámetro (<span class="math inline">\sigma</span>). Para un análisis
+más revelador, se podría modificar el código para barrer <span class="math inline">\rho</span>.</li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-9-buffer-circular-y-visualizacion">Ejercicio 9: Buffer
+circular y visualización</h3>
+<p><strong>Objetivo:</strong> Entender cómo ChaosLab gestiona la memoria
+de visualización.</p>
+<p><strong>Preguntas teóricas:</strong></p>
+<ul>
+<li><ol type="a">
+<li>Si el trail length es 50,000 puntos y cada punto ocupa 3 componentes
+<code>float32</code> (x, y, z) para posición más 3 para color, ¿cuánta
+memoria GPU consume un trail?</li>
+</ol>
+<p><strong>Solución:</strong></p>
+<p><span class="math display">\text{Memoria} = 50{,}000 \times 3 \times
+4 \text{ bytes (posición)} + 50{,}000 \times 3 \times 4 \text{ bytes
+(color)}</span></p>
+<p><span class="math display">= 600{,}000 + 600{,}000 = 1{,}200{,}000
+\text{ bytes} \approx 1.14 \text{ MB}</span></p></li>
+<li><ol start="2" type="a">
+<li>Con <code>stepsPerFrame = 20</code> y <code>dt = 0.005</code>,
+¿cuánto tiempo simulado pasa por frame de animación (asumiendo 60
+fps)?</li>
+</ol>
+<p><strong>Solución:</strong></p>
+<ul>
+<li>Tiempo simulado por frame: <span class="math inline">20 \times 0.005
+= 0.1</span> unidades.</li>
+<li>A 60 fps: <span class="math inline">0.1 \times 60 = 6</span>
+unidades de tiempo simulado por segundo real.</li>
+<li>Para llenar 50,000 puntos: <span class="math inline">50{,}000 / 20 =
+2{,}500</span> frames = ~42 segundos a 60 fps.</li>
+</ul></li>
+<li><ol start="3" type="a">
+<li>¿Por qué el buffer circular produce un artefacto visual de “línea
+cruzada” cuando se llena por completo?</li>
+</ol>
+<p><strong>Respuesta:</strong> Cuando el buffer circular se llena, el
+puntero <code>head</code> vuelve a la posición 0 y sobrescribe los
+puntos más antiguos. <code>THREE.Line</code> dibuja los puntos en orden
+de índice (0, 1, 2, …, N-1). En el punto donde <code>head</code> ha
+hecho wrap-around, el punto <code>head-1</code> (recién escrito) está
+lejos espacialmente del punto <code>head</code> (antiguo, a punto de ser
+sobrescrito), creando un segmento de línea largo que cruza el espacio.
+Con 50,000 puntos, este único segmento errante es prácticamente
+imperceptible entre miles de segmentos legítimos.</p></li>
+</ul>
+<hr class="section-divider" />
+<h3 id="ejercicio-10-aizawa-coordenadas-polares">Ejercicio 10: Aizawa —
+Coordenadas polares</h3>
+<p><strong>Objetivo:</strong> Analizar matemáticamente la estructura
+rotacional del sistema de Aizawa.</p>
+<p><strong>Preguntas:</strong></p>
+<ul>
+<li><ol type="a">
+<li>Reescribe las ecuaciones de <span class="math inline">\dot{x}</span>
+y <span class="math inline">\dot{y}</span> del sistema de Aizawa en
+coordenadas polares <span class="math inline">(r, \theta)</span> donde
+<span class="math inline">x = r\cos\theta</span>, <span class="math inline">y = r\sin\theta</span>.</li>
+</ol>
+<p><strong>Solución:</strong> Las ecuaciones son: <span class="math display">\dot{x} = (z - b)x - dy</span> <span class="math display">\dot{y} = dx + (z - b)y</span></p>
+<p>Esto es una rotación con frecuencia <span class="math inline">d</span> modulada por el factor <span class="math inline">(z - b)</span>:</p>
+<p><span class="math display">\dot{r} = (z - b)r</span></p>
+<p><span class="math display">\dot{\theta} = d</span></p>
+<p>(Ignorando el término <span class="math inline">fzx^3</span> que
+rompe la simetría perfecta.)</p>
+<p>La velocidad angular es constante <span class="math inline">\dot{\theta} = d = 3.5</span> rad/s, y el radio
+crece exponencialmente cuando <span class="math inline">z > b =
+0.7</span> y decrece cuando <span class="math inline">z <
+b</span>.</p></li>
+<li><ol start="2" type="a">
+<li>¿Cuántas vueltas completa la trayectoria alrededor del eje <span class="math inline">z</span> por unidad de tiempo?</li>
+</ol>
+<p><strong>Solución:</strong></p>
+<p><span class="math display">\text{Frecuencia} = \frac{d}{2\pi} =
+\frac{3.5}{2\pi} \approx 0.557 \text{ vueltas/unidad de
+tiempo}</span></p>
+<p>O equivalentemente, una vuelta completa cada <span class="math inline">T = 2\pi / 3.5 \approx 1.80</span> unidades de
+tiempo.</p></li>
+</ul>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-glosario">
+<h2 id="glosario">8. Glosario</h2>
+<table class="styled-table">
+<colgroup>
+<col style="width: 45%" />
+<col style="width: 55%" />
+</colgroup>
+<thead>
+<tr>
+<th>Término</th>
+<th>Definición</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><strong>Atractor</strong></td>
+<td>Conjunto en el espacio de fases hacia el cual convergen las
+trayectorias cercanas</td>
+</tr>
+<tr>
+<td><strong>Atractor extraño</strong></td>
+<td>Atractor con dimensión fractal y sensibilidad a condiciones
+iniciales</td>
+</tr>
+<tr>
+<td><strong>Bifurcación</strong></td>
+<td>Cambio cualitativo en el comportamiento del sistema al variar un
+parámetro</td>
+</tr>
+<tr>
+<td><strong>Buffer circular</strong></td>
+<td>Estructura de datos de tamaño fijo donde el puntero de escritura
+vuelve al inicio al llegar al final</td>
+</tr>
+<tr>
+<td><strong>Campo vectorial</strong></td>
+<td>Función <span class="math inline">\mathbf{F}: \mathbb{R}^3 \to
+\mathbb{R}^3</span> que asigna una “velocidad” a cada punto del espacio
+de fases</td>
+</tr>
+<tr>
+<td><strong>Caos</strong></td>
+<td>Comportamiento aperiódico acotado de un sistema determinista con
+sensibilidad exponencial a condiciones iniciales</td>
+</tr>
+<tr>
+<td><strong>Ciclo límite</strong></td>
+<td>Trayectoria cerrada aislada hacia la cual convergen trayectorias
+cercanas</td>
+</tr>
+<tr>
+<td><strong>Condiciones iniciales</strong></td>
+<td>Estado <span class="math inline">\mathbf{x}_0</span> del sistema en
+<span class="math inline">t = 0</span></td>
+</tr>
+<tr>
+<td><strong>Cuenca de atracción</strong></td>
+<td>Región del espacio de fases cuyos puntos convergen a un atractor
+dado</td>
+</tr>
+<tr>
+<td><strong>Dimensión de correlación</strong></td>
+<td>Medida fractal del atractor basada en la distribución de distancias
+entre puntos</td>
+</tr>
+<tr>
+<td><strong>Dimensión de Kaplan-Yorke</strong></td>
+<td>Estimación de la dimensión fractal a partir del espectro de
+Lyapunov</td>
+</tr>
+<tr>
+<td><strong>Disipativo</strong></td>
+<td>Sistema donde el volumen del espacio de fases se contrae (<span class="math inline">\nabla \cdot \mathbf{F} < 0</span>)</td>
+</tr>
+<tr>
+<td><strong>Divergencia</strong></td>
+<td><span class="math inline">\nabla \cdot \mathbf{F}</span> — tasa de
+cambio de volumen en el espacio de fases</td>
+</tr>
+<tr>
+<td><strong>Duplicación de periodo</strong></td>
+<td>Bifurcación donde un ciclo de periodo <span class="math inline">T</span> se convierte en uno de periodo <span class="math inline">2T</span></td>
+</tr>
+<tr>
+<td><strong>Efecto mariposa</strong></td>
+<td>Sensibilidad extrema a condiciones iniciales en sistemas
+caóticos</td>
+</tr>
+<tr>
+<td><strong>Eigenvalor</strong></td>
+<td>Valor propio de la matriz jacobiana; determina la estabilidad
+local</td>
+</tr>
+<tr>
+<td><strong>Espacio de fases</strong></td>
+<td>Espacio de todos los estados posibles del sistema</td>
+</tr>
+<tr>
+<td><strong>Exponente de Lyapunov</strong></td>
+<td>Tasa promedio de divergencia/convergencia exponencial de
+trayectorias cercanas</td>
+</tr>
+<tr>
+<td><strong>Feigenbaum (constante de)</strong></td>
+<td><span class="math inline">\delta \approx 4.669</span> — razón de
+convergencia universal de las bifurcaciones de duplicación de
+periodo</td>
+</tr>
+<tr>
+<td><strong>Flujo</strong></td>
+<td>Mapa <span class="math inline">\Phi^t</span> que evoluciona estados
+iniciales un tiempo <span class="math inline">t</span></td>
+</tr>
+<tr>
+<td><strong>Jacobiana</strong></td>
+<td>Matriz de derivadas parciales del campo vectorial</td>
+</tr>
+<tr>
+<td><strong>ODE</strong></td>
+<td>Ecuación diferencial ordinaria</td>
+</tr>
+<tr>
+<td><strong>Poincaré-Bendixson</strong></td>
+<td>Teorema que prohibe el caos en sistemas 2D autónomos</td>
+</tr>
+<tr>
+<td><strong>Punto de equilibrio</strong></td>
+<td>Estado <span class="math inline">\mathbf{x}^*</span> donde <span class="math inline">\mathbf{F}(\mathbf{x}^*) = 0</span></td>
+</tr>
+<tr>
+<td><strong>Renormalización</strong></td>
+<td>Técnica de reescalar la perturbación para evitar saturación en el
+cálculo de Lyapunov</td>
+</tr>
+<tr>
+<td><strong>RK4</strong></td>
+<td>Método Runge-Kutta de orden 4 — integrador numérico con error <span class="math inline">O(\Delta t^4)</span></td>
+</tr>
+<tr>
+<td><strong>Simetría <span class="math inline">\mathbb{Z}_2</span></strong></td>
+<td>Invariancia bajo inversión de signo de un par de variables</td>
+</tr>
+<tr>
+<td><strong>Simetría <span class="math inline">\mathbb{Z}_3</span></strong></td>
+<td>Invariancia bajo permutación cíclica de las tres variables</td>
+</tr>
+<tr>
+<td><strong>Trayectoria</strong></td>
+<td>Curva que traza un punto del espacio de fases al evolucionar bajo el
+flujo</td>
+</tr>
+<tr>
+<td><strong>Transitorio</strong></td>
+<td>Evolución inicial antes de que la trayectoria alcance el
+atractor</td>
+</tr>
+</tbody>
+</table>
+<hr class="section-divider" />
+
+</section>
+<section id="sec-referencias-bibliograficas">
+<h2 id="referencias-bibliograficas">9. Referencias Bibliográficas</h2>
+<h3 id="articulos-originales-de-los-sistemas">Artículos originales de
+los sistemas</h3>
+<ol type="1">
+<li><p><strong>Lorenz, E. N.</strong> (1963). “Deterministic Nonperiodic
+Flow.” <em>Journal of the Atmospheric Sciences</em>, 20(2),
+130–141.</p></li>
+<li><p><strong>Rössler, O. E.</strong> (1976). “An Equation for
+Continuous Chaos.” <em>Physics Letters A</em>, 57(5), 397–398.</p></li>
+<li><p><strong>Aizawa, Y.</strong> (1982). “Global Aspects of the
+Dissipative Dynamical Systems.” <em>Progress of Theoretical Physics
+Supplement</em>, 72, 7–82.</p></li>
+<li><p><strong>Thomas, R.</strong> (1999). “Deterministic Chaos Seen in
+Terms of Feedback Circuits: Analysis, Synthesis, ‘Labyrinth Chaos’.”
+<em>International Journal of Bifurcation and Chaos</em>, 9(10),
+1889–1905.</p></li>
+<li><p><strong>Halvorsen, C.</strong> (2015). Comunicación personal.
+Sistema cíclicamente simétrico con tres alas.</p></li>
+<li><p><strong>Sprott, J. C.</strong> (1994). “Some Simple Chaotic
+Flows.” <em>Physical Review E</em>, 50(2), R647–R650.</p></li>
+<li><p><strong>Chen, G. &amp; Ueta, T.</strong> (1999). “Yet Another
+Chaotic Attractor.” <em>International Journal of Bifurcation and
+Chaos</em>, 9(7), 1465–1466.</p></li>
+<li><p><strong>Dadras, S. &amp; Momeni, H. R.</strong> (2010). “A Novel
+Three-Dimensional Autonomous Chaotic System.” <em>Physics Letters
+A</em>, 374(13-14), 1368–1373.</p></li>
+<li><p><strong>Lü, J. &amp; Chen, G.</strong> (2002). “A New Chaotic
+Attractor Coined.” <em>International Journal of Bifurcation and
+Chaos</em>, 12(3), 659–661.</p></li>
+<li><p><strong>Rabinovich, M. I. &amp; Fabrikant, A. L.</strong> (1979).
+“Stochastic Self-Modulation of Waves in Nonequilibrium Media.”
+<em>Journal of Experimental and Theoretical Physics (JETP)</em>, 77,
+617–629.</p></li>
+</ol>
+<h3 id="libros-de-referencia">Libros de referencia</h3>
+<ul>
+<li><p><strong>Strogatz, S. H.</strong> <em>Nonlinear Dynamics and
+Chaos</em> (2nd ed., 2015). Westview Press. — Texto introductorio
+accesible y completo.</p></li>
+<li><p><strong>Ott, E.</strong> <em>Chaos in Dynamical Systems</em> (2nd
+ed., 2002). Cambridge University Press. — Tratamiento matemático
+riguroso.</p></li>
+<li><p><strong>Sprott, J. C.</strong> <em>Elegant Chaos: Algebraically
+Simple Chaotic Flows</em> (2010). World Scientific. — Catálogo de
+sistemas caóticos simples.</p></li>
+<li><p><strong>Hilborn, R. C.</strong> <em>Chaos and Nonlinear
+Dynamics</em> (2nd ed., 2000). Oxford University Press. — Enfoque
+experimental y computacional.</p></li>
+</ul>
+<h3 id="recursos-computacionales">Recursos computacionales</h3>
+<ul>
+<li><p><strong>Press, W. H. et al.</strong> <em>Numerical Recipes</em>
+(3rd ed., 2007). Cambridge University Press. — Referencia para
+implementación de RK4.</p></li>
+<li><p><strong>Three.js</strong> (r128). Biblioteca WebGL utilizada para
+el renderizado 3D. https://threejs.org/</p></li>
+<li><p><strong>KaTeX</strong>. Biblioteca de renderizado de LaTeX
+utilizada para las ecuaciones. https://katex.org/</p></li>
+</ul>
+<hr class="section-divider" />
+<p><em>Tutorial generado para ChaosLab — Explorador de Atractores
+Extraños.</em> <em>Rama: feature/visualization</em></p>
+
+</section>
+        </main>
+    </div>
+
+    
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Render all inline math
+    document.querySelectorAll('.math.inline').forEach(function(el) {
+        try {
+            katex.render(el.textContent, el, { displayMode: false, throwOnError: false });
+        } catch(e) { console.warn('KaTeX inline error:', e); }
+    });
+    // Render all display math
+    document.querySelectorAll('.math.display').forEach(function(el) {
+        try {
+            katex.render(el.textContent, el, { displayMode: true, throwOnError: false });
+        } catch(e) { console.warn('KaTeX display error:', e); }
+    });
+});
+</script>
+
+    
+<script>
+// Sidebar active state on scroll
+document.addEventListener('DOMContentLoaded', function() {
+    const links = document.querySelectorAll('.sidebar a');
+    const sections = document.querySelectorAll('section[id]');
+
+    function updateActive() {
+        let current = '';
+        sections.forEach(sec => {
+            const top = sec.offsetTop - 150;
+            if (window.scrollY >= top) {
+                current = sec.id;
+            }
+        });
+        links.forEach(link => {
+            link.classList.remove('active');
+            if (link.getAttribute('href') === '#' + current ||
+                link.getAttribute('href').substring(1) === current.replace('sec-', '')) {
+                link.classList.add('active');
+            }
+        });
+    }
+
+    window.addEventListener('scroll', updateActive);
+    updateActive();
+});
+</script>
+
+</body>
+</html>

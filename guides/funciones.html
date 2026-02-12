@@ -1,0 +1,432 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Funciones Matemáticas - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .guide-link {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 10px 12px;
+            background: rgba(168, 85, 247, 0.1);
+            border: 1px solid rgba(168, 85, 247, 0.3);
+            border-radius: 8px;
+            color: #c4b5fd;
+            text-decoration: none;
+            font-size: 0.8rem;
+            transition: all 0.3s;
+        }
+        .guide-link:hover {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-4xl mx-auto px-6 py-4">
+            <div class="flex items-center gap-4">
+                <a href="../funciones.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                    </svg>
+                    Volver a simulación
+                </a>
+                <div class="h-4 w-px bg-gray-800"></div>
+                <span class="text-sm text-gray-500">Guía Pedagógica</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-4xl mx-auto px-6 py-12">
+        <h1 class="text-4xl font-light mb-2">
+            <span class="text-violet-400 font-medium">Funciones</span> Matemáticas
+        </h1>
+        <p class="text-gray-400 text-lg mb-12">Exploración visual de funciones y sus transformaciones</p>
+
+        <!-- Introducción -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Introducción</h2>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Una <strong>función</strong> es una relación que asigna a cada valor de entrada exactamente un valor de salida.
+                Si escribimos <span class="mono text-violet-300">f(x) = sin(x)</span>, para cada número <em>x</em>
+                obtenemos un único resultado <em>f(x)</em>.
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                Esta simulación te permite explorar el comportamiento de funciones matemáticas fundamentales y
+                visualizar cómo las <strong>transformaciones</strong> afectan su forma. Comprender funciones
+                es esencial para el cálculo, la física, la economía y prácticamente toda la ciencia aplicada.
+            </p>
+            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                <h3 class="text-lg font-medium text-violet-300 mb-3">Notación de Funciones</h3>
+                <ul class="space-y-2 text-gray-400">
+                    <li><span class="mono text-violet-300">f(x)</span> - Valor de la función en el punto x</li>
+                    <li><span class="mono text-violet-300">f(0)</span> - Ordenada al origen (donde cruza el eje Y)</li>
+                    <li><span class="mono text-violet-300">f(x) = 0</span> - Ceros o raíces (donde cruza el eje X)</li>
+                    <li><span class="mono text-violet-300">f'(x)</span> - Derivada (pendiente instantánea)</li>
+                </ul>
+            </div>
+        </section>
+
+        <!-- Familias de Funciones -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Familias de Funciones</h2>
+
+            <div class="space-y-6">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-emerald-400 mb-2">Polinómicas</h3>
+                    <p class="text-gray-400 mb-3">Combinaciones de potencias enteras de x.</p>
+                    <ul class="space-y-1 text-gray-500 text-sm mono">
+                        <li>x - Lineal (recta)</li>
+                        <li>x² - Cuadrática (parábola)</li>
+                        <li>x³ - Cúbica (punto de inflexión en origen)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-cyan-400 mb-2">Trigonométricas</h3>
+                    <p class="text-gray-400 mb-3">Funciones periódicas basadas en el círculo unitario.</p>
+                    <ul class="space-y-1 text-gray-500 text-sm mono">
+                        <li>sin(x) - Seno, oscila entre -1 y 1, periodo 2π</li>
+                        <li>cos(x) - Coseno, igual que seno pero desfasado π/2</li>
+                        <li>tan(x) - Tangente, asíntotas en π/2 + nπ</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-amber-400 mb-2">Exponenciales y Logarítmicas</h3>
+                    <p class="text-gray-400 mb-3">Funciones inversas entre sí.</p>
+                    <ul class="space-y-1 text-gray-500 text-sm mono">
+                        <li>exp(x) = eˣ - Crecimiento exponencial, siempre positiva</li>
+                        <li>log(x) = ln(x) - Logaritmo natural, solo para x > 0</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-rose-400 mb-2">Otras Funciones</h3>
+                    <ul class="space-y-1 text-gray-500 text-sm mono">
+                        <li>sqrt(x) = √x - Raíz cuadrada, solo para x ≥ 0</li>
+                        <li>abs(x) = |x| - Valor absoluto, forma de V</li>
+                        <li>1/x - Hipérbola, asíntotas en ejes</li>
+                        <li>floor(x) = ⌊x⌋ - Función escalón (mayor entero ≤ x)</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Transformaciones -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Transformaciones</h2>
+            <p class="text-gray-300 leading-relaxed mb-6">
+                Las transformaciones nos permiten mover, estirar, comprimir o reflejar cualquier función
+                de forma predecible. La forma general es:
+            </p>
+
+            <div class="bg-gray-900 border border-violet-500/30 rounded-xl p-6 mb-6 text-center">
+                <span class="text-2xl mono text-violet-300">y = a · f(b(x - h)) + k</span>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-4">
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="mono text-xl text-violet-400">a</span>
+                        <span class="text-gray-300 font-medium">Escala Vertical</span>
+                    </div>
+                    <ul class="space-y-1 text-sm text-gray-500">
+                        <li>|a| > 1: Estira verticalmente</li>
+                        <li>0 < |a| < 1: Comprime verticalmente</li>
+                        <li>a < 0: Refleja respecto al eje X</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="mono text-xl text-violet-400">b</span>
+                        <span class="text-gray-300 font-medium">Escala Horizontal</span>
+                    </div>
+                    <ul class="space-y-1 text-sm text-gray-500">
+                        <li>b > 1: Comprime horizontalmente</li>
+                        <li>0 < b < 1: Estira horizontalmente</li>
+                        <li>b < 0: Refleja respecto al eje Y</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="mono text-xl text-violet-400">h</span>
+                        <span class="text-gray-300 font-medium">Traslación Horizontal</span>
+                    </div>
+                    <ul class="space-y-1 text-sm text-gray-500">
+                        <li>h > 0: Mueve hacia la derecha</li>
+                        <li>h < 0: Mueve hacia la izquierda</li>
+                        <li>Nota: es (x - h), no (x + h)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-5">
+                    <div class="flex items-center gap-3 mb-2">
+                        <span class="mono text-xl text-violet-400">k</span>
+                        <span class="text-gray-300 font-medium">Traslación Vertical</span>
+                    </div>
+                    <ul class="space-y-1 text-sm text-gray-500">
+                        <li>k > 0: Mueve hacia arriba</li>
+                        <li>k < 0: Mueve hacia abajo</li>
+                        <li>Afecta la ordenada al origen</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Derivada e Integral -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Derivada e Integral</h2>
+
+            <div class="grid md:grid-cols-2 gap-6">
+                <div class="bg-gray-900/50 border border-cyan-500/30 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-cyan-400 mb-3">Derivada f'(x)</h3>
+                    <p class="text-gray-400 text-sm mb-3">
+                        La derivada mide la <strong>tasa de cambio instantánea</strong> de la función.
+                        Geométricamente, es la pendiente de la recta tangente.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li><span class="text-cyan-400">f'(x) > 0</span> → función creciente</li>
+                        <li><span class="text-cyan-400">f'(x) < 0</span> → función decreciente</li>
+                        <li><span class="text-cyan-400">f'(x) = 0</span> → posible máximo/mínimo</li>
+                    </ul>
+                    <p class="text-gray-600 text-xs mt-3">
+                        Calculada numéricamente: f'(x) ≈ [f(x+Δx) - f(x-Δx)] / 2Δx
+                    </p>
+                </div>
+
+                <div class="bg-gray-900/50 border border-violet-500/30 rounded-xl p-6">
+                    <h3 class="text-lg font-medium text-violet-400 mb-3">Integral (Área)</h3>
+                    <p class="text-gray-400 text-sm mb-3">
+                        La integral definida representa el <strong>área bajo la curva</strong>.
+                        Es la operación inversa de la derivada.
+                    </p>
+                    <ul class="space-y-2 text-sm text-gray-500">
+                        <li>Área sobre eje X: positiva</li>
+                        <li>Área bajo eje X: negativa</li>
+                        <li>El área total es la integral definida ∫f(x)dx</li>
+                    </ul>
+                    <p class="text-gray-600 text-xs mt-3">
+                        La simulación colorea el área entre f(x) y el eje X.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Experimentos -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Experimentos Sugeridos</h2>
+
+            <div class="space-y-4">
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-emerald-400 mb-2">1. Simetría de Funciones</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Explora funciones pares (simétricas respecto al eje Y) e impares (simétricas respecto al origen).
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Prueba <span class="mono text-violet-300">x^2</span> → par</li>
+                        <li>Prueba <span class="mono text-violet-300">x^3</span> → impar</li>
+                        <li>Prueba <span class="mono text-violet-300">cos(x)</span> → par</li>
+                        <li>Prueba <span class="mono text-violet-300">sin(x)</span> → impar</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-cyan-400 mb-2">2. Cambio de Periodo en Trigonométricas</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Usa sin(x) y modifica el parámetro b para ver cómo cambia el periodo.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>b = 1: Periodo = 2π ≈ 6.28</li>
+                        <li>b = 2: Periodo = π ≈ 3.14 (el doble de frecuencia)</li>
+                        <li>b = 0.5: Periodo = 4π ≈ 12.57 (la mitad de frecuencia)</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-amber-400 mb-2">3. Derivada de sin(x)</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Activa "Mostrar derivada f'(x)" con sin(x) como función principal.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Observa que la derivada de sin(x) es cos(x)</li>
+                        <li>Donde sin(x) tiene máximo, cos(x) = 0</li>
+                        <li>Donde sin(x) cruza cero con pendiente positiva, cos(x) = 1</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-rose-400 mb-2">4. Comparación f(x) vs g(x)</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Activa la segunda función para comparar dos funciones simultáneamente.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>f(x) = sin(x), g(x) = cos(x) → desfase de π/2</li>
+                        <li>f(x) = exp(x), g(x) = log(x) → funciones inversas</li>
+                        <li>f(x) = x^2, g(x) = sqrt(x) → inversas para x ≥ 0</li>
+                    </ul>
+                </div>
+
+                <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                    <h3 class="font-medium text-violet-400 mb-2">5. Recta Tangente Dinámica</h3>
+                    <p class="text-gray-400 text-sm mb-2">
+                        Activa "Recta tangente en cursor" y mueve el ratón sobre la gráfica.
+                    </p>
+                    <ul class="text-sm text-gray-500 space-y-1">
+                        <li>Observa cómo la pendiente m cambia en cada punto</li>
+                        <li>En máximos y mínimos, m = 0</li>
+                        <li>Donde la curva es más empinada, |m| es mayor</li>
+                    </ul>
+                </div>
+            </div>
+        </section>
+
+        <!-- Conexiones -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Conexiones</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+                <a href="../probabilidad.html" class="guide-link">
+                    <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">P</span>
+                    <span>Probabilidad - Distribuciones como funciones</span>
+                </a>
+                <a href="../../Physics/Physics Visual Lab/pendulo-simple.html" class="guide-link">
+                    <span class="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">F</span>
+                    <span>Péndulo - Funciones trigonométricas</span>
+                </a>
+                <a href="../../Physics/Physics Visual Lab/ondas.html" class="guide-link">
+                    <span class="w-5 h-5 bg-emerald-500 rounded-full flex items-center justify-center text-xs font-bold">F</span>
+                    <span>Ondas - Funciones sinusoidales</span>
+                </a>
+                <a href="../lorenz.html" class="guide-link">
+                    <span class="w-5 h-5 bg-violet-500 rounded-full flex items-center justify-center text-xs font-bold">M</span>
+                    <span>Lorenz - Ecuaciones diferenciales</span>
+                </a>
+            </div>
+        </section>
+
+        <!-- Advertencias -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-amber-400 mb-4">Limitaciones del Modelo</h2>
+            <ul class="space-y-3 text-gray-400">
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>La derivada se calcula <strong>numéricamente</strong> con diferencias finitas,
+                    no simbólicamente. Puede haber pequeños errores cerca de discontinuidades.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>Las funciones con <strong>asíntotas</strong> (como tan(x) o 1/x) pueden mostrar
+                    líneas verticales artificiales debido a la resolución de dibujo.</span>
+                </li>
+                <li class="flex items-start gap-3">
+                    <span class="text-amber-400 mt-1">⚠</span>
+                    <span>La detección de <strong>ceros</strong> se hace por cambio de signo,
+                    puede fallar en ceros de multiplicidad par (como x² en x=0).</span>
+                </li>
+            </ul>
+        </section>
+
+        <!-- Historia -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Contexto Histórico</h2>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                El concepto moderno de función fue desarrollado gradualmente. <strong>Leibniz</strong> (1692)
+                introdujo el término "función" para describir cantidades geométricas que dependen de una curva.
+                <strong>Euler</strong> (1748) fue el primero en usar la notación f(x).
+            </p>
+            <p class="text-gray-300 leading-relaxed mb-4">
+                La definición rigurosa llegó con <strong>Dirichlet</strong> (1837), quien describió una función
+                como una correspondencia que asigna a cada elemento del dominio un único elemento del codominio.
+                Esta definición permite funciones "extrañas" que no tienen fórmula algebraica.
+            </p>
+            <p class="text-gray-300 leading-relaxed">
+                Las <strong>transformaciones de funciones</strong> son fundamentales en el análisis de Fourier
+                (descomposición de señales en senos y cosenos), en la teoría de sistemas lineales, y en
+                el procesamiento de señales moderno.
+            </p>
+        </section>
+
+        <!-- Referencia Rápida -->
+        <section class="mb-12">
+            <h2 class="text-2xl font-medium text-violet-400 mb-4">Referencia Rápida</h2>
+            <div class="bg-gray-900 rounded-xl p-6 overflow-x-auto">
+                <table class="w-full text-sm">
+                    <thead>
+                        <tr class="text-left text-gray-500 border-b border-gray-800">
+                            <th class="pb-3 pr-4">Función</th>
+                            <th class="pb-3 pr-4">Dominio</th>
+                            <th class="pb-3 pr-4">Rango</th>
+                            <th class="pb-3">Derivada</th>
+                        </tr>
+                    </thead>
+                    <tbody class="text-gray-400 mono text-xs">
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">x^n</td>
+                            <td class="py-2 pr-4">ℝ</td>
+                            <td class="py-2 pr-4">depende de n</td>
+                            <td class="py-2">n·x^(n-1)</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">sin(x)</td>
+                            <td class="py-2 pr-4">ℝ</td>
+                            <td class="py-2 pr-4">[-1, 1]</td>
+                            <td class="py-2">cos(x)</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">cos(x)</td>
+                            <td class="py-2 pr-4">ℝ</td>
+                            <td class="py-2 pr-4">[-1, 1]</td>
+                            <td class="py-2">-sin(x)</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">tan(x)</td>
+                            <td class="py-2 pr-4">x ≠ π/2 + nπ</td>
+                            <td class="py-2 pr-4">ℝ</td>
+                            <td class="py-2">1/cos²(x)</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">exp(x)</td>
+                            <td class="py-2 pr-4">ℝ</td>
+                            <td class="py-2 pr-4">(0, ∞)</td>
+                            <td class="py-2">exp(x)</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">log(x)</td>
+                            <td class="py-2 pr-4">(0, ∞)</td>
+                            <td class="py-2 pr-4">ℝ</td>
+                            <td class="py-2">1/x</td>
+                        </tr>
+                        <tr class="border-b border-gray-800/50">
+                            <td class="py-2 pr-4 text-violet-300">sqrt(x)</td>
+                            <td class="py-2 pr-4">[0, ∞)</td>
+                            <td class="py-2 pr-4">[0, ∞)</td>
+                            <td class="py-2">1/(2√x)</td>
+                        </tr>
+                        <tr>
+                            <td class="py-2 pr-4 text-violet-300">1/x</td>
+                            <td class="py-2 pr-4">x ≠ 0</td>
+                            <td class="py-2 pr-4">ℝ \ {0}</td>
+                            <td class="py-2">-1/x²</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </section>
+
+        <!-- Footer -->
+        <footer class="border-t border-gray-900 pt-8 text-center text-gray-600 text-sm">
+            <p>Math Visual Lab - EigenLab</p>
+        </footer>
+    </main>
+</body>
+</html>

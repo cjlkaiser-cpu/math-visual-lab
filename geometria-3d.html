@@ -245,6 +245,20 @@
                 </div>
             </div>
 
+            <!-- Export STL -->
+            <div class="mb-6">
+                <button id="export-stl-btn"
+                        class="w-full px-3 py-2.5 text-sm bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 rounded-lg border border-violet-500/30 transition-colors font-medium flex items-center justify-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Exportar STL (3D Print)
+                </button>
+                <p class="text-xs text-gray-600 mt-1 text-center">Descarga el sólido actual para impresión 3D</p>
+            </div>
+
             <!-- Properties -->
             <div class="mb-6">
                 <label class="block text-sm text-gray-400 mb-3">Propiedades</label>
@@ -770,6 +784,68 @@
 
             renderer.render(scene, camera);
         }
+
+        // ==================== STL EXPORTER ====================
+        function exportSTL(geometry, filename, scaleMM) {
+            const pos = geometry.getAttribute('position');
+            const idx = geometry.getIndex();
+            const triCount = idx ? idx.count / 3 : pos.count / 3;
+            const bufSize = 80 + 4 + triCount * 50;
+            const buf = new ArrayBuffer(bufSize);
+            const dv = new DataView(buf);
+
+            const hdr = 'Binary STL - Math Visual Lab';
+            for (let i = 0; i < 80; i++) dv.setUint8(i, i < hdr.length ? hdr.charCodeAt(i) : 0);
+            dv.setUint32(80, triCount, true);
+
+            let off = 84;
+            const s = scaleMM || 50;
+            const v = (i, c) => pos['get' + c](i) * s;
+
+            for (let t = 0; t < triCount; t++) {
+                const a = idx ? idx.getX(t * 3) : t * 3;
+                const b = idx ? idx.getX(t * 3 + 1) : t * 3 + 1;
+                const c = idx ? idx.getX(t * 3 + 2) : t * 3 + 2;
+
+                const v0 = [v(a,'X'), v(a,'Y'), v(a,'Z')];
+                const v1 = [v(b,'X'), v(b,'Y'), v(b,'Z')];
+                const v2 = [v(c,'X'), v(c,'Y'), v(c,'Z')];
+
+                // Face normal via cross product
+                const e1 = [v1[0]-v0[0], v1[1]-v0[1], v1[2]-v0[2]];
+                const e2 = [v2[0]-v0[0], v2[1]-v0[1], v2[2]-v0[2]];
+                const nx = e1[1]*e2[2] - e1[2]*e2[1];
+                const ny = e1[2]*e2[0] - e1[0]*e2[2];
+                const nz = e1[0]*e2[1] - e1[1]*e2[0];
+                const len = Math.sqrt(nx*nx + ny*ny + nz*nz) || 1;
+
+                dv.setFloat32(off, nx/len, true); off += 4;
+                dv.setFloat32(off, ny/len, true); off += 4;
+                dv.setFloat32(off, nz/len, true); off += 4;
+                for (const vt of [v0, v1, v2]) {
+                    dv.setFloat32(off, vt[0], true); off += 4;
+                    dv.setFloat32(off, vt[1], true); off += 4;
+                    dv.setFloat32(off, vt[2], true); off += 4;
+                }
+                dv.setUint16(off, 0, true); off += 2;
+            }
+
+            const blob = new Blob([buf], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const link = document.createElement('a');
+            link.href = url;
+            link.download = filename;
+            document.body.appendChild(link);
+            link.click();
+            document.body.removeChild(link);
+            URL.revokeObjectURL(url);
+        }
+
+        document.getElementById('export-stl-btn').addEventListener('click', () => {
+            if (!mesh) return;
+            const scaleMM = state.size * 50;
+            exportSTL(mesh.geometry, `${state.currentShape}.stl`, scaleMM);
+        });
 
         // Initialize
         updateMesh();

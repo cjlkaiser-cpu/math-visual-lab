@@ -116,9 +116,7 @@
                     <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
                         <div class="card-border"></div>
                         <div class="p-5">
-                            <div class="w-full h-32 bg-gradient-to-br from-yellow-500/10 to-orange-500/10 rounded-lg mb-4 flex items-center justify-center">
-                                <span class="text-5xl">⬡</span>
-                            </div>
+                            <canvas id="preview-platonic" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
                             <span class="category-tag bg-yellow-500/10 text-yellow-400">Geometría 3D</span>
                             <h3 class="text-lg font-medium mb-1 mt-2">Platonic Lab</h3>
                             <p class="text-gray-500 text-sm mb-3">Los 5 sólidos platónicos, operadores de Conway, poliedros arquimedianos, politopos 4D, diagramas de Schlegel y sintetizador de Kepler.</p>
@@ -140,9 +138,7 @@
                     <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
                         <div class="card-border"></div>
                         <div class="p-5">
-                            <div class="w-full h-32 bg-gradient-to-br from-violet-500/10 to-pink-500/10 rounded-lg mb-4 flex items-center justify-center">
-                                <span class="text-5xl">🦋</span>
-                            </div>
+                            <canvas id="preview-chaos" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
                             <span class="category-tag bg-violet-500/20 text-violet-400">Sistemas Dinámicos</span>
                             <h3 class="text-lg font-medium mb-1 mt-2">Chaos Lab</h3>
                             <p class="text-gray-500 text-sm mb-3">Atractores extraños, exponentes de Lyapunov, diagramas de bifurcación, análisis de sensibilidad y sistemas caóticos interactivos.</p>
@@ -164,9 +160,7 @@
                     <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
                         <div class="card-border"></div>
                         <div class="p-5">
-                            <div class="w-full h-32 bg-gradient-to-br from-cyan-500/10 to-blue-500/10 rounded-lg mb-4 flex items-center justify-center">
-                                <span class="text-5xl">🔮</span>
-                            </div>
+                            <canvas id="preview-polytope" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
                             <span class="category-tag bg-cyan-500/10 text-cyan-400">Dimensiones Superiores</span>
                             <h3 class="text-lg font-medium mb-1 mt-2">Polytope XD</h3>
                             <p class="text-gray-500 text-sm mb-3">Politopos en dimensiones arbitrarias: teseracto, 24-cell, 120-cell, 600-cell. Secciones, proyecciones y rotaciones 4D.</p>
@@ -1016,6 +1010,74 @@
                     rendered: false
                 };
                 renderMiniEDO(previews.edo);
+            }
+
+            // Platonic Lab - Rotating icosahedron
+            const platonic = document.getElementById('preview-platonic');
+            if (platonic) {
+                const PHI = (1 + Math.sqrt(5)) / 2;
+                previews.platonic = {
+                    ctx: platonic.getContext('2d'),
+                    w: platonic.width = platonic.offsetWidth * 2,
+                    h: platonic.height = platonic.offsetHeight * 2,
+                    angle: 0,
+                    // Icosahedron vertices (3 golden rectangles)
+                    vertices: [
+                        [0, 1, PHI], [0, 1, -PHI], [0, -1, PHI], [0, -1, -PHI],
+                        [1, PHI, 0], [1, -PHI, 0], [-1, PHI, 0], [-1, -PHI, 0],
+                        [PHI, 0, 1], [PHI, 0, -1], [-PHI, 0, 1], [-PHI, 0, -1]
+                    ],
+                    edges: [
+                        [0,2],[0,4],[0,6],[0,8],[0,10],[2,5],[2,7],[2,8],[2,10],
+                        [1,3],[1,4],[1,6],[1,9],[1,11],[3,5],[3,7],[3,9],[3,11],
+                        [4,6],[4,8],[4,9],[5,7],[5,8],[5,9],[6,10],[6,11],[7,10],[7,11],
+                        [8,9],[10,11]
+                    ]
+                };
+            }
+
+            // Chaos Lab - Lorenz attractor
+            const chaos = document.getElementById('preview-chaos');
+            if (chaos) {
+                previews.chaos = {
+                    ctx: chaos.getContext('2d'),
+                    w: chaos.width = chaos.offsetWidth * 2,
+                    h: chaos.height = chaos.offsetHeight * 2,
+                    x: 0.1, y: 0, z: 0,
+                    trail: []
+                };
+            }
+
+            // Polytope XD - Rotating tesseract
+            const polytope = document.getElementById('preview-polytope');
+            if (polytope) {
+                // 16 vertices of a tesseract (4D hypercube)
+                const verts = [];
+                for (let i = 0; i < 16; i++) {
+                    verts.push([
+                        (i & 1) ? 1 : -1,
+                        (i & 2) ? 1 : -1,
+                        (i & 4) ? 1 : -1,
+                        (i & 8) ? 1 : -1
+                    ]);
+                }
+                // Edges: connect vertices that differ in exactly one coordinate
+                const edges = [];
+                for (let i = 0; i < 16; i++) {
+                    for (let j = i + 1; j < 16; j++) {
+                        let diff = 0;
+                        for (let k = 0; k < 4; k++) diff += Math.abs(verts[i][k] - verts[j][k]);
+                        if (diff === 2) edges.push([i, j]);
+                    }
+                }
+                previews.polytope = {
+                    ctx: polytope.getContext('2d'),
+                    w: polytope.width = polytope.offsetWidth * 2,
+                    h: polytope.height = polytope.offsetHeight * 2,
+                    vertices: verts,
+                    edges: edges,
+                    angle: 0
+                };
             }
         }
 
@@ -2269,6 +2331,152 @@
                     g.ctx.beginPath();
                     g.ctx.arc(px, py, 4, 0, Math.PI * 2);
                     g.ctx.fill();
+                });
+            }
+
+            // Platonic Lab - Rotating icosahedron wireframe
+            if (previews.platonic) {
+                const p = previews.platonic;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h / 2;
+                const size = Math.min(p.w, p.h) * 0.3;
+                p.angle += 0.012;
+                const cosA = Math.cos(p.angle);
+                const sinA = Math.sin(p.angle);
+                const cosB = Math.cos(p.angle * 0.6);
+                const sinB = Math.sin(p.angle * 0.6);
+
+                const projected = p.vertices.map(([x, y, z]) => {
+                    const rx = x * cosA - z * sinA;
+                    const rz = x * sinA + z * cosA;
+                    const ry = y * cosB - rz * sinB;
+                    const rz2 = y * sinB + rz * cosB;
+                    const s = 2.5 / (4 - rz2);
+                    return [cx + rx * size * s, cy + ry * size * s, rz2];
+                });
+
+                p.edges.forEach(([a, b]) => {
+                    const avgZ = (projected[a][2] + projected[b][2]) / 2;
+                    const alpha = 0.2 + (avgZ + 2) * 0.2;
+                    p.ctx.strokeStyle = `rgba(250, 204, 21, ${alpha})`;
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(projected[a][0], projected[a][1]);
+                    p.ctx.lineTo(projected[b][0], projected[b][1]);
+                    p.ctx.stroke();
+                });
+
+                projected.forEach(([px, py, pz]) => {
+                    const alpha = 0.4 + (pz + 2) * 0.15;
+                    p.ctx.fillStyle = `rgba(250, 204, 21, ${alpha})`;
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, 3, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+            }
+
+            // Chaos Lab - Lorenz attractor
+            if (previews.chaos) {
+                const c = previews.chaos;
+                const sigma = 10, rho = 28, beta = 8 / 3;
+                const dt = 0.005;
+
+                for (let i = 0; i < 8; i++) {
+                    const dx = sigma * (c.y - c.x);
+                    const dy = c.x * (rho - c.z) - c.y;
+                    const dz = c.x * c.y - beta * c.z;
+                    c.x += dx * dt;
+                    c.y += dy * dt;
+                    c.z += dz * dt;
+                    c.trail.push({ x: c.x, y: c.y, z: c.z });
+                }
+                if (c.trail.length > 800) c.trail.splice(0, 8);
+
+                c.ctx.fillStyle = 'rgba(0,0,0,0.06)';
+                c.ctx.fillRect(0, 0, c.w, c.h);
+
+                const cx = c.w / 2, cy = c.h / 2;
+                const scale = Math.min(c.w, c.h) / 55;
+                const rotY = time * 0.15;
+
+                if (c.trail.length > 1) {
+                    for (let i = 1; i < c.trail.length; i++) {
+                        const p = c.trail[i];
+                        const prev = c.trail[i - 1];
+                        const rx = p.x * Math.cos(rotY) - (p.z - 25) * Math.sin(rotY);
+                        const prx = prev.x * Math.cos(rotY) - (prev.z - 25) * Math.sin(rotY);
+
+                        const hue = 270 + (p.z / 50) * 60;
+                        const alpha = i / c.trail.length;
+                        c.ctx.strokeStyle = `hsla(${hue}, 80%, 60%, ${alpha * 0.8})`;
+                        c.ctx.lineWidth = 1.5;
+                        c.ctx.beginPath();
+                        c.ctx.moveTo(cx + prx * scale, cy - prev.y * scale + 30);
+                        c.ctx.lineTo(cx + rx * scale, cy - p.y * scale + 30);
+                        c.ctx.stroke();
+                    }
+                }
+            }
+
+            // Polytope XD - Rotating tesseract
+            if (previews.polytope) {
+                const p = previews.polytope;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h / 2;
+                const size = Math.min(p.w, p.h) * 0.22;
+                p.angle += 0.01;
+
+                // 4D rotation in XW and YZ planes
+                const cosXW = Math.cos(p.angle);
+                const sinXW = Math.sin(p.angle);
+                const cosYZ = Math.cos(p.angle * 0.7);
+                const sinYZ = Math.sin(p.angle * 0.7);
+
+                const projected = p.vertices.map(([x, y, z, w]) => {
+                    // Rotate in XW plane
+                    const rx = x * cosXW - w * sinXW;
+                    const rw = x * sinXW + w * cosXW;
+                    // Rotate in YZ plane
+                    const ry = y * cosYZ - z * sinYZ;
+                    const rz = y * sinYZ + z * cosYZ;
+                    // Perspective projection 4D→3D
+                    const d4 = 3 / (3.5 - rw);
+                    const x3 = rx * d4;
+                    const y3 = ry * d4;
+                    const z3 = rz * d4;
+                    // 3D rotation for viewing angle
+                    const cosV = Math.cos(0.4);
+                    const sinV = Math.sin(0.4);
+                    const ry2 = y3 * cosV - z3 * sinV;
+                    const rz2 = y3 * sinV + z3 * cosV;
+                    // 3D→2D perspective
+                    const d3 = 2.5 / (4 - rz2);
+                    return [cx + x3 * size * d3, cy + ry2 * size * d3, rz2, rw];
+                });
+
+                p.edges.forEach(([a, b]) => {
+                    const avgW = (projected[a][3] + projected[b][3]) / 2;
+                    const hue = 190 + avgW * 20;
+                    const alpha = 0.3 + (avgW + 1.5) * 0.2;
+                    p.ctx.strokeStyle = `hsla(${hue}, 70%, 55%, ${alpha})`;
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(projected[a][0], projected[a][1]);
+                    p.ctx.lineTo(projected[b][0], projected[b][1]);
+                    p.ctx.stroke();
+                });
+
+                projected.forEach(([px, py, pz, pw]) => {
+                    const hue = 190 + pw * 20;
+                    const alpha = 0.4 + (pw + 1.5) * 0.2;
+                    p.ctx.fillStyle = `hsla(${hue}, 70%, 60%, ${alpha})`;
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                    p.ctx.fill();
                 });
             }
 

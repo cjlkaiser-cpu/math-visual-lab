@@ -147,6 +147,20 @@
                 </label>
             </div>
 
+            <!-- Export STL -->
+            <div class="mb-6">
+                <button id="export-stl-btn"
+                        class="w-full px-3 py-2.5 text-sm bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 rounded-lg border border-violet-500/30 transition-colors font-medium flex items-center justify-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Exportar STL (3D Print)
+                </button>
+                <p class="text-xs text-gray-600 mt-1 text-center">Exporta el nudo tubular para impresión 3D</p>
+            </div>
+
             <div class="mb-6 p-4 bg-gray-900 rounded-lg" id="knot-info">
                 <h3 class="text-sm font-medium text-gray-300 mb-2">Información del Nudo</h3>
                 <div class="text-xs text-gray-500 space-y-1">
@@ -605,6 +619,91 @@
         });
 
         window.addEventListener('resize', resize);
+
+        // ==================== STL EXPORTER ====================
+        function generateKnotSTL(scaleMM) {
+            const tubeSeg = 16; // higher than render for smooth print
+            const uSteps = Math.max(resolution, 120);
+            const s = scaleMM || 50;
+
+            // Generate tube vertices grid [uSteps][tubeSeg] = {x,y,z}
+            const grid = [];
+            for (let i = 0; i < uSteps; i++) {
+                const t = i / uSteps;
+                const frame = computeFrame(t, currentKnot);
+                const ring = [];
+                for (let j = 0; j < tubeSeg; j++) {
+                    const theta = (j / tubeSeg) * 2 * Math.PI;
+                    const cosT = Math.cos(theta);
+                    const sinT = Math.sin(theta);
+                    ring.push({
+                        x: (frame.center.x + tubeRadius * (cosT * frame.N.x + sinT * frame.B.x)) * s,
+                        y: (frame.center.y + tubeRadius * (cosT * frame.N.y + sinT * frame.B.y)) * s,
+                        z: (frame.center.z + tubeRadius * (cosT * frame.N.z + sinT * frame.B.z)) * s
+                    });
+                }
+                grid.push(ring);
+            }
+
+            // Count triangles: uSteps * tubeSeg * 2 (quad → 2 tris)
+            const triCount = uSteps * tubeSeg * 2;
+            const buf = new ArrayBuffer(80 + 4 + triCount * 50);
+            const dv = new DataView(buf);
+
+            const hdr = 'Binary STL - Mathematical Knot - Math Visual Lab';
+            for (let i = 0; i < 80; i++) dv.setUint8(i, i < hdr.length ? hdr.charCodeAt(i) : 0);
+            dv.setUint32(80, triCount, true);
+
+            let off = 84;
+
+            function writeTri(a, b, c) {
+                const e1 = [b.x-a.x, b.y-a.y, b.z-a.z];
+                const e2 = [c.x-a.x, c.y-a.y, c.z-a.z];
+                const nx = e1[1]*e2[2] - e1[2]*e2[1];
+                const ny = e1[2]*e2[0] - e1[0]*e2[2];
+                const nz = e1[0]*e2[1] - e1[1]*e2[0];
+                const len = Math.sqrt(nx*nx + ny*ny + nz*nz) || 1;
+
+                dv.setFloat32(off, nx/len, true); off += 4;
+                dv.setFloat32(off, ny/len, true); off += 4;
+                dv.setFloat32(off, nz/len, true); off += 4;
+
+                for (const v of [a, b, c]) {
+                    dv.setFloat32(off, v.x, true); off += 4;
+                    dv.setFloat32(off, v.y, true); off += 4;
+                    dv.setFloat32(off, v.z, true); off += 4;
+                }
+                dv.setUint16(off, 0, true); off += 2;
+            }
+
+            for (let i = 0; i < uSteps; i++) {
+                const i2 = (i + 1) % uSteps;
+                for (let j = 0; j < tubeSeg; j++) {
+                    const j2 = (j + 1) % tubeSeg;
+                    const p1 = grid[i][j];
+                    const p2 = grid[i][j2];
+                    const p3 = grid[i2][j2];
+                    const p4 = grid[i2][j];
+                    writeTri(p1, p4, p3);
+                    writeTri(p1, p3, p2);
+                }
+            }
+
+            return buf;
+        }
+
+        document.getElementById('export-stl-btn').addEventListener('click', () => {
+            const buf = generateKnotSTL(50);
+            const blob = new Blob([buf], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${currentKnot}-knot.stl`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
 
         // Initialize
         resize();

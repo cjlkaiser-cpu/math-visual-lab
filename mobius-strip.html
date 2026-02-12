@@ -160,6 +160,20 @@
                 </label>
             </div>
 
+            <!-- Export STL -->
+            <div class="mb-6">
+                <button id="export-stl-btn"
+                        class="w-full px-3 py-2.5 text-sm bg-violet-500/10 hover:bg-violet-500/20 text-violet-400 rounded-lg border border-violet-500/30 transition-colors font-medium flex items-center justify-center gap-2">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                        <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                        <polyline points="7 10 12 15 17 10"/>
+                        <line x1="12" y1="15" x2="12" y2="3"/>
+                    </svg>
+                    Exportar STL (3D Print)
+                </button>
+                <p class="text-xs text-gray-600 mt-1 text-center">Exporta la superficie con los parámetros actuales</p>
+            </div>
+
             <div class="mb-6 p-4 bg-gray-900 rounded-lg">
                 <h3 class="text-sm font-medium text-gray-300 mb-2">Propiedades Topológicas</h3>
                 <ul class="text-xs text-gray-500 space-y-1">
@@ -533,6 +547,77 @@
         });
 
         window.addEventListener('resize', resize);
+
+        // ==================== STL EXPORTER ====================
+        function generateSurfaceSTL(scaleMM) {
+            const uSteps = resolution;
+            const vSteps = Math.max(10, Math.floor(resolution / 3));
+            const triangles = [];
+
+            for (let i = 0; i < uSteps; i++) {
+                for (let j = 0; j < vSteps; j++) {
+                    const u1 = (i / uSteps) * 2 * Math.PI;
+                    const u2 = ((i + 1) / uSteps) * 2 * Math.PI;
+                    const v1 = -stripWidth + (j / vSteps) * 2 * stripWidth;
+                    const v2 = -stripWidth + ((j + 1) / vSteps) * 2 * stripWidth;
+
+                    const p1 = getSurfacePoint(u1, v1);
+                    const p2 = getSurfacePoint(u2, v1);
+                    const p3 = getSurfacePoint(u2, v2);
+                    const p4 = getSurfacePoint(u1, v2);
+
+                    // Split quad into 2 triangles
+                    triangles.push([p1, p2, p3]);
+                    triangles.push([p1, p3, p4]);
+                }
+            }
+
+            const triCount = triangles.length;
+            const buf = new ArrayBuffer(80 + 4 + triCount * 50);
+            const dv = new DataView(buf);
+
+            const hdr = 'Binary STL - Mobius Strip - Math Visual Lab';
+            for (let i = 0; i < 80; i++) dv.setUint8(i, i < hdr.length ? hdr.charCodeAt(i) : 0);
+            dv.setUint32(80, triCount, true);
+
+            let off = 84;
+            const s = scaleMM || 50;
+
+            for (const tri of triangles) {
+                const e1 = [tri[1].x - tri[0].x, tri[1].y - tri[0].y, tri[1].z - tri[0].z];
+                const e2 = [tri[2].x - tri[0].x, tri[2].y - tri[0].y, tri[2].z - tri[0].z];
+                const nx = e1[1]*e2[2] - e1[2]*e2[1];
+                const ny = e1[2]*e2[0] - e1[0]*e2[2];
+                const nz = e1[0]*e2[1] - e1[1]*e2[0];
+                const len = Math.sqrt(nx*nx + ny*ny + nz*nz) || 1;
+
+                dv.setFloat32(off, nx/len, true); off += 4;
+                dv.setFloat32(off, ny/len, true); off += 4;
+                dv.setFloat32(off, nz/len, true); off += 4;
+
+                for (const v of tri) {
+                    dv.setFloat32(off, v.x * s, true); off += 4;
+                    dv.setFloat32(off, v.y * s, true); off += 4;
+                    dv.setFloat32(off, v.z * s, true); off += 4;
+                }
+                dv.setUint16(off, 0, true); off += 2;
+            }
+
+            return buf;
+        }
+
+        document.getElementById('export-stl-btn').addEventListener('click', () => {
+            const buf = generateSurfaceSTL(50);
+            const blob = new Blob([buf], { type: 'application/octet-stream' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `${surfaceType}-${twists}twists.stl`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        });
 
         // Initialize
         resize();

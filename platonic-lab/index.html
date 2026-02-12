@@ -411,6 +411,20 @@
                     </div>
                 </div>
 
+                <!-- Export STL -->
+                <div>
+                    <button id="export-stl-btn"
+                            class="w-full px-3 py-2 text-xs bg-accent/10 hover:bg-accent/20 text-accent rounded-lg border border-accent/30 transition-colors font-medium flex items-center justify-center gap-2">
+                        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                            <polyline points="7 10 12 15 17 10"/>
+                            <line x1="12" y1="15" x2="12" y2="3"/>
+                        </svg>
+                        Exportar STL (3D Print)
+                    </button>
+                    <p class="text-xs text-gray-600 mt-1 text-center">Descarga el sólido actual listo para imprimir</p>
+                </div>
+
                 <!-- Properties Table -->
                 <div>
                     <label class="text-xs text-gray-500 uppercase tracking-wider mb-2 block">Propiedades</label>
@@ -480,6 +494,7 @@
     <script src="js/conway.js"></script>
     <script src="js/polytopes4d.js"></script>
     <script src="js/schlegel.js"></script>
+    <script src="js/stl-exporter.js"></script>
     <script src="js/main.js"></script>
 </body>
 </html>

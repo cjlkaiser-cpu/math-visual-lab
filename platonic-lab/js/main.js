@@ -1466,6 +1466,35 @@
                 alert('Exportar LaTeX — Próximamente');
             });
         }
+
+        // STL Export
+        const stlBtn = document.getElementById('export-stl-btn');
+        if (stlBtn) {
+            stlBtn.addEventListener('click', () => {
+                const STL = window.STLExporter;
+                if (!STL) return;
+
+                let geometry = null;
+                let name = '';
+
+                if (state.mode === 'conway' && conwayMesh) {
+                    geometry = conwayMesh.geometry;
+                    const op = state.conwayOp || 'seed';
+                    name = `${state.conwaySeed}-${op}`;
+                } else if (primaryMesh) {
+                    geometry = primaryMesh.geometry;
+                    name = state.currentSolid;
+                }
+
+                if (!geometry) {
+                    alert('No hay geometría para exportar');
+                    return;
+                }
+
+                const scaleMM = state.edgeLength * 50; // 50mm per unit edge
+                STL.exportSTL(geometry, `${name}.stl`, scaleMM);
+            });
+        }
     }
 
     // ==================== INIT ====================

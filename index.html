@@ -196,7 +196,7 @@
                     <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
                         <div class="card-border"></div>
                         <div class="p-5">
-                            <div class="w-full h-32 bg-black rounded-lg mb-4 flex items-center justify-center text-4xl">🧩</div>
+                            <canvas id="preview-puzzle" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
                             <span class="category-tag bg-orange-500/10 text-orange-400">Puzzles 3D</span><span class="stl-badge">3D Print</span>
                             <h3 class="text-lg font-medium mb-1 mt-2">Puzzle Lab</h3>
                             <p class="text-gray-500 text-sm mb-3">Engranajes involute, cubo Soma, laberintos, curvas de Reuleaux, teselaciones de Penrose, tangrams, kaleidociclos y orrery mecánico.</p>
@@ -218,7 +218,7 @@
                     <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
                         <div class="card-border"></div>
                         <div class="p-5">
-                            <div class="w-full h-32 bg-black rounded-lg mb-4 flex items-center justify-center text-4xl">🗿</div>
+                            <canvas id="preview-sculpt" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
                             <span class="category-tag bg-pink-500/10 text-pink-400">Superficies 3D</span><span class="stl-badge">3D Print</span>
                             <h3 class="text-lg font-medium mb-1 mt-2">Sculpt Lab</h3>
                             <p class="text-gray-500 text-sm mb-3">Superficies TPMS (Gyroid, Schwarz), curvas Lissajous 3D, superficies mínimas, poliedros estrellados y superficies algebraicas.</p>
@@ -1135,6 +1135,40 @@
                     h: polytope.height = polytope.offsetHeight * 2,
                     vertices: verts,
                     edges: edges,
+                    angle: 0
+                };
+            }
+
+            // Puzzle Lab - Two interlocking gears
+            const puzzle = document.getElementById('preview-puzzle');
+            if (puzzle) {
+                previews.puzzle = {
+                    ctx: puzzle.getContext('2d'),
+                    w: puzzle.width = puzzle.offsetWidth * 2,
+                    h: puzzle.height = puzzle.offsetHeight * 2,
+                    angle: 0,
+                    t1: 12, t2: 18 // tooth counts
+                };
+            }
+
+            // Sculpt Lab - 3D Lissajous curve
+            const sculpt = document.getElementById('preview-sculpt');
+            if (sculpt) {
+                const pts = [];
+                const N = 300;
+                for (let i = 0; i <= N; i++) {
+                    const t = (i / N) * Math.PI * 2;
+                    pts.push([
+                        Math.sin(3 * t + Math.PI / 4),
+                        Math.sin(2 * t),
+                        Math.cos(5 * t)
+                    ]);
+                }
+                previews.sculpt = {
+                    ctx: sculpt.getContext('2d'),
+                    w: sculpt.width = sculpt.offsetWidth * 2,
+                    h: sculpt.height = sculpt.offsetHeight * 2,
+                    points: pts,
                     angle: 0
                 };
             }
@@ -2537,6 +2571,116 @@
                     p.ctx.arc(px, py, 2.5, 0, Math.PI * 2);
                     p.ctx.fill();
                 });
+            }
+
+            // Puzzle Lab - Two interlocking gears
+            if (previews.puzzle) {
+                const g = previews.puzzle;
+                g.ctx.fillStyle = '#000';
+                g.ctx.fillRect(0, 0, g.w, g.h);
+                g.angle += 0.015;
+
+                const cx = g.w / 2, cy = g.h / 2;
+                const mod = Math.min(g.w, g.h) * 0.018;
+                const r1 = g.t1 * mod / 2, r2 = g.t2 * mod / 2;
+                const spacing = r1 + r2 + mod * 0.15;
+                const gx1 = cx - spacing * 0.42, gx2 = cx + spacing * 0.42;
+
+                // Draw gear function
+                function drawGear(x, y, teeth, r, angle, color) {
+                    const addendum = mod;
+                    const dedendum = mod * 1.25;
+                    g.ctx.beginPath();
+                    for (let i = 0; i < teeth * 2; i++) {
+                        const a = angle + (i * Math.PI) / teeth;
+                        const ro = (i % 2 === 0) ? r + addendum : r - dedendum;
+                        const px = x + ro * Math.cos(a);
+                        const py = y + ro * Math.sin(a);
+                        if (i === 0) g.ctx.moveTo(px, py);
+                        else g.ctx.lineTo(px, py);
+                    }
+                    g.ctx.closePath();
+                    g.ctx.fillStyle = color;
+                    g.ctx.fill();
+                    g.ctx.strokeStyle = color.replace('0.25', '0.7');
+                    g.ctx.lineWidth = 1.5;
+                    g.ctx.stroke();
+                    // Center hole
+                    g.ctx.beginPath();
+                    g.ctx.arc(x, y, mod * 1.5, 0, Math.PI * 2);
+                    g.ctx.fillStyle = '#000';
+                    g.ctx.fill();
+                    // Axle dot
+                    g.ctx.beginPath();
+                    g.ctx.arc(x, y, mod * 0.5, 0, Math.PI * 2);
+                    g.ctx.fillStyle = color.replace('0.25', '0.5');
+                    g.ctx.fill();
+                }
+
+                const a1 = g.angle;
+                const a2 = -g.angle * (g.t1 / g.t2) + Math.PI / g.t2;
+                drawGear(gx1, cy, g.t1, r1, a1, 'rgba(249, 115, 22, 0.25)');
+                drawGear(gx2, cy, g.t2, r2, a2, 'rgba(251, 191, 36, 0.25)');
+
+                // Wireframe outlines
+                function drawGearWire(x, y, teeth, r, angle, color) {
+                    const addendum = mod;
+                    const dedendum = mod * 1.25;
+                    g.ctx.beginPath();
+                    for (let i = 0; i < teeth * 2; i++) {
+                        const a = angle + (i * Math.PI) / teeth;
+                        const ro = (i % 2 === 0) ? r + addendum : r - dedendum;
+                        const px = x + ro * Math.cos(a);
+                        const py = y + ro * Math.sin(a);
+                        if (i === 0) g.ctx.moveTo(px, py);
+                        else g.ctx.lineTo(px, py);
+                    }
+                    g.ctx.closePath();
+                    g.ctx.strokeStyle = color;
+                    g.ctx.lineWidth = 1.5;
+                    g.ctx.stroke();
+                }
+                drawGearWire(gx1, cy, g.t1, r1, a1, 'rgba(249, 115, 22, 0.8)');
+                drawGearWire(gx2, cy, g.t2, r2, a2, 'rgba(251, 191, 36, 0.8)');
+            }
+
+            // Sculpt Lab - Rotating 3D Lissajous curve
+            if (previews.sculpt) {
+                const s = previews.sculpt;
+                s.ctx.fillStyle = '#000';
+                s.ctx.fillRect(0, 0, s.w, s.h);
+
+                const cx = s.w / 2, cy = s.h / 2;
+                const size = Math.min(s.w, s.h) * 0.32;
+                s.angle += 0.008;
+
+                const cosA = Math.cos(s.angle);
+                const sinA = Math.sin(s.angle);
+                const cosB = Math.cos(s.angle * 0.5);
+                const sinB = Math.sin(s.angle * 0.5);
+
+                const projected = s.points.map(([x, y, z]) => {
+                    const rx = x * cosA - z * sinA;
+                    const rz = x * sinA + z * cosA;
+                    const ry = y * cosB - rz * sinB;
+                    const rz2 = y * sinB + rz * cosB;
+                    const d = 2.5 / (4 - rz2);
+                    return [cx + rx * size * d, cy + ry * size * d, rz2];
+                });
+
+                for (let i = 1; i < projected.length; i++) {
+                    const [ax, ay, az] = projected[i - 1];
+                    const [bx, by, bz] = projected[i];
+                    const avgZ = (az + bz) / 2;
+                    const hue = 330 + avgZ * 30;
+                    const alpha = 0.3 + (avgZ + 1.5) * 0.25;
+                    s.ctx.strokeStyle = `hsla(${hue}, 75%, 60%, ${alpha})`;
+                    s.ctx.lineWidth = 2;
+                    s.ctx.beginPath();
+                    s.ctx.moveTo(ax, ay);
+                    s.ctx.lineTo(bx, by);
+                    s.ctx.stroke();
+                }
             }
 
             requestAnimationFrame(animate);

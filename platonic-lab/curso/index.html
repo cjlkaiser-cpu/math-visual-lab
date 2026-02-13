@@ -4,296 +4,283 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Curso: Matemáticas Visuales — De Platón a 4D</title>
-    
-    <!-- Fonts -->
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-    
-    <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    fontFamily: {
-                        sans: ['Inter', 'system-ui', 'sans-serif'],
-                        mono: ['JetBrains Mono', 'monospace'],
-                    },
-                    colors: {
-                        primary: { DEFAULT: '#8b5cf6', light: '#a78bfa', dark: '#7c3aed' },
-                        secondary: { DEFAULT: '#06b6d4', light: '#22d3ee' },
-                        accent: { DEFAULT: '#f59e0b', light: '#fbbf24' },
-                    }
-                }
-            }
-        };
-    </script>
-    
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6 0%, #06b6d4 100%);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .card {
+            transition: all 0.3s ease;
+            cursor: pointer;
         }
-        .hero-gradient {
-            background: radial-gradient(ellipse at top, #1e1b4b 0%, #0f0f1a 50%, #000000 100%);
+        .card:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.15);
         }
-        .solid-icon {
-            transition: transform 0.3s ease, filter 0.3s ease;
+        .card-link {
+            text-decoration: none;
+            color: inherit;
+            display: block;
         }
-        .solid-icon:hover {
-            transform: scale(1.1) rotate(5deg);
-            filter: drop-shadow(0 0 20px rgba(139, 92, 246, 0.5));
+        .card:hover .card-border {
+            opacity: 1;
+        }
+        .card-border {
+            position: absolute;
+            inset: 0;
+            border-radius: 1rem;
+            padding: 2px;
+            background: linear-gradient(135deg, #a855f7, #22d3ee, #a3e635);
+            -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+            -webkit-mask-composite: xor;
+            mask-composite: exclude;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+        .preview-canvas {
+            border-radius: 0.5rem;
+        }
+        .equation {
+            font-family: 'JetBrains Mono', monospace;
+            font-style: normal;
+        }
+        .category-tag {
+            font-size: 0.65rem;
+            padding: 2px 8px;
+            border-radius: 9999px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+        }
+        .glow-text {
+            text-shadow: 0 0 20px rgba(168, 85, 247, 0.5);
+        }
+        .math-symbol {
+            font-family: 'Times New Roman', serif;
+            font-size: 1.5rem;
         }
     </style>
 </head>
-<body class="bg-gray-950 text-gray-200 font-sans min-h-screen">
-    
-    <!-- Navigation -->
-    <nav class="fixed top-0 w-full z-50 bg-gray-950/80 backdrop-blur-md border-b border-gray-800">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center gap-2">
-                    <span class="text-2xl">◆</span>
-                    <span class="font-bold text-xl tracking-tight">
-                        <span class="text-primary">Platonic</span><span class="text-gray-400">Lab</span>
-                    </span>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Curso</span>
+                    </nav>
+                    <h1 class="text-2xl font-light">
+                        <span class="text-violet-400 font-medium glow-text">Curso</span> Matematicas Visuales
+                    </h1>
+                    <p class="text-gray-600 text-sm mono">De Platon a la Cuarta Dimension</p>
                 </div>
-                <div class="flex items-center gap-6">
-                    <a href="#curriculum" class="text-sm text-gray-400 hover:text-white transition-colors">Contenido</a>
-                    <a href="#modulos" class="text-sm text-gray-400 hover:text-white transition-colors">Módulos</a>
-                    <a href="modulo-01/leccion-01.html" class="px-4 py-2 bg-primary hover:bg-primary-dark text-white text-sm font-medium rounded-lg transition-colors">
-                        Comenzar Curso →
-                    </a>
+                <div class="flex items-center gap-3">
+                    <span class="math-symbol text-yellow-400">&#9670;</span>
+                    <span class="text-gray-600 mono text-xs">{3,3} {4,3} {5,3}</span>
                 </div>
             </div>
         </div>
-    </nav>
-    
-    <!-- Hero Section -->
-    <section class="hero-gradient pt-32 pb-20 px-4">
-        <div class="max-w-5xl mx-auto text-center">
-            <div class="flex justify-center gap-8 mb-8">
-                <div class="solid-icon text-6xl" title="Tetraedro">🔺</div>
-                <div class="solid-icon text-6xl" title="Cubo">🎲</div>
-                <div class="solid-icon text-6xl" title="Octaedro">💎</div>
-                <div class="solid-icon text-6xl" title="Dodecaedro">⬡</div>
-                <div class="solid-icon text-6xl" title="Icosaedro">⚽</div>
-            </div>
-            
-            <h1 class="text-5xl md:text-7xl font-bold mb-6 leading-tight">
-                <span class="gradient-text">Matemáticas Visuales</span>
-            </h1>
-            <p class="text-2xl md:text-3xl text-gray-400 mb-4 font-light">
-                De Platón a la Cuarta Dimensión
+    </header>
+
+    <main class="max-w-6xl mx-auto px-6 py-12">
+        <!-- Hero -->
+        <section class="text-center mb-16">
+            <h2 class="text-4xl font-light mb-4">
+                Matematicas <span class="text-violet-400 font-medium glow-text">Visuales</span>
+            </h2>
+            <p class="text-gray-500 max-w-2xl mx-auto mb-6">
+                Un viaje interactivo a traves de los solidos platonicos, desde la antigua Grecia hasta las geometrias multidimensionales modernas.
             </p>
-            <p class="text-lg text-gray-500 max-w-2xl mx-auto mb-10">
-                Un viaje interactivo a través de los sólidos platónicos, desde la antigua Grecia hasta las geometrías multidimensionales modernas.
-            </p>
-            
-            <div class="flex flex-col sm:flex-row gap-4 justify-center">
-                <a href="modulo-01/leccion-01.html" class="px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all transform hover:scale-105 shadow-lg shadow-primary/20">
-                    🚀 Comenzar el Curso
+            <div class="flex flex-wrap justify-center gap-6 text-sm">
+                <span><span class="text-violet-400 font-medium">33</span> <span class="text-gray-600">lecciones</span></span>
+                <span class="text-gray-800">·</span>
+                <span><span class="text-cyan-400 font-medium">6</span> <span class="text-gray-600">modulos</span></span>
+                <span class="text-gray-800">·</span>
+                <span><span class="text-lime-400 font-medium">33h</span> <span class="text-gray-600">duracion</span></span>
+                <span class="text-gray-800">·</span>
+                <span><span class="text-green-400 font-medium">100%</span> <span class="text-gray-600">interactivo</span></span>
+            </div>
+        </section>
+
+        <!-- Modulos Grid -->
+        <section class="mb-16">
+            <h3 class="text-xl font-light mb-2 text-center">
+                <span class="text-cyan-400 font-medium">Estructura</span> del Curso
+            </h3>
+            <p class="text-gray-600 text-sm text-center mb-8">6 modulos progresivos con visualizaciones interactivas</p>
+
+            <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                <!-- Modulo 01: Guardianes -->
+                <a href="modulo-01/leccion-01.html" class="card-link">
+                    <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                        <div class="card-border"></div>
+                        <div class="p-5">
+                            <canvas id="preview-mod01" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
+                            <span class="category-tag bg-violet-500/10 text-violet-400">Historia</span>
+                            <h3 class="text-lg font-medium mb-1 mt-2">01 — Los Guardianes de la Geometria</h3>
+                            <p class="text-gray-500 text-sm mb-3">Historia y filosofia de los solidos platonicos desde Pitagoras hasta Platon.</p>
+                            <div class="flex flex-wrap gap-1 mb-2">
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Pitagoras</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Platon</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Timeo</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Euclides</span>
+                            </div>
+                            <span class="equation text-xs text-gray-600 block mb-3">{p,q}: 1/p + 1/q > 1/2</span>
+                            <div class="flex items-center justify-between text-xs text-gray-600 mb-3">
+                                <span>6 lecciones · ~5h</span>
+                            </div>
+                            <span class="block w-full text-center py-2 bg-violet-500/10 text-violet-400 rounded-lg hover:bg-violet-500/20 transition text-sm font-medium">
+                                Comenzar →
+                            </span>
+                        </div>
+                    </div>
                 </a>
-                <a href="#preview" class="px-8 py-4 bg-gray-800 hover:bg-gray-700 text-white font-semibold rounded-xl transition-all border border-gray-700">
-                    👁️ Ver Demo
+
+                <!-- Modulo 02: Euler -->
+                <a href="modulo-02/leccion-01.html" class="card-link">
+                    <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                        <div class="card-border"></div>
+                        <div class="p-5">
+                            <canvas id="preview-mod02" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
+                            <span class="category-tag bg-cyan-500/10 text-cyan-400">Topologia</span>
+                            <h3 class="text-lg font-medium mb-1 mt-2">02 — La Formula de Euler</h3>
+                            <p class="text-gray-500 text-sm mb-3">V - E + F = 2. El teorema que unifica la geometria y la demostracion de unicidad.</p>
+                            <div class="flex flex-wrap gap-1 mb-2">
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Euler</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Poliedros</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Demostracion</span>
+                            </div>
+                            <span class="equation text-xs text-gray-600 block mb-3">V - E + F = 2</span>
+                            <div class="flex items-center justify-between text-xs text-gray-600 mb-3">
+                                <span>6 lecciones · ~6h</span>
+                            </div>
+                            <span class="block w-full text-center py-2 bg-cyan-500/10 text-cyan-400 rounded-lg hover:bg-cyan-500/20 transition text-sm font-medium">
+                                Proximo
+                            </span>
+                        </div>
+                    </div>
                 </a>
+
+                <!-- Modulo 03: Dualidad -->
+                <a href="modulo-03/leccion-01.html" class="card-link">
+                    <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                        <div class="card-border"></div>
+                        <div class="p-5">
+                            <canvas id="preview-mod03" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
+                            <span class="category-tag bg-yellow-500/10 text-yellow-400">Simetria</span>
+                            <h3 class="text-lg font-medium mb-1 mt-2">03 — Dualidad y Simetria</h3>
+                            <p class="text-gray-500 text-sm mb-3">Las relaciones ocultas entre los solidos y sus grupos de simetria algebraicos.</p>
+                            <div class="flex flex-wrap gap-1 mb-2">
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Dual</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Orbitas</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">T_d, O_h, I_h</span>
+                            </div>
+                            <span class="equation text-xs text-gray-600 block mb-3">|G| = 24, 48, 120</span>
+                            <div class="flex items-center justify-between text-xs text-gray-600 mb-3">
+                                <span>6 lecciones · ~6h</span>
+                            </div>
+                            <span class="block w-full text-center py-2 bg-yellow-500/10 text-yellow-400 rounded-lg hover:bg-yellow-500/20 transition text-sm font-medium">
+                                Proximo
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Modulo 04: 4D -->
+                <a href="modulo-04/leccion-01.html" class="card-link">
+                    <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                        <div class="card-border"></div>
+                        <div class="p-5">
+                            <canvas id="preview-mod04" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
+                            <span class="category-tag bg-green-500/10 text-green-400">4D</span>
+                            <h3 class="text-lg font-medium mb-1 mt-2">04 — Mas Alla de la Tercera Dimension</h3>
+                            <p class="text-gray-500 text-sm mb-3">Politopos 4D y proyecciones estereograficas. Navegando el hiperespacio.</p>
+                            <div class="flex flex-wrap gap-1 mb-2">
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Teseracto</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">24-cell</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">120-cell</span>
+                            </div>
+                            <span class="equation text-xs text-gray-600 block mb-3">xw-rotation</span>
+                            <div class="flex items-center justify-between text-xs text-gray-600 mb-3">
+                                <span>6 lecciones · ~6h</span>
+                            </div>
+                            <span class="block w-full text-center py-2 bg-green-500/10 text-green-400 rounded-lg hover:bg-green-500/20 transition text-sm font-medium">
+                                Proximo
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Modulo 05: Grafos -->
+                <a href="modulo-05/leccion-01.html" class="card-link">
+                    <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                        <div class="card-border"></div>
+                        <div class="p-5">
+                            <canvas id="preview-mod05" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
+                            <span class="category-tag bg-pink-500/10 text-pink-400">Grafos</span>
+                            <h3 class="text-lg font-medium mb-1 mt-2">05 — Teoria de Grafos Aplicada</h3>
+                            <p class="text-gray-500 text-sm mb-3">Los solidos como redes. Diagramas de Schlegel y caminos hamiltonianos.</p>
+                            <div class="flex flex-wrap gap-1 mb-2">
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Schlegel</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Hamilton</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Cromatico</span>
+                            </div>
+                            <span class="equation text-xs text-gray-600 block mb-3">chi(G) &le; 4</span>
+                            <div class="flex items-center justify-between text-xs text-gray-600 mb-3">
+                                <span>5 lecciones · ~5h</span>
+                            </div>
+                            <span class="block w-full text-center py-2 bg-pink-500/10 text-pink-400 rounded-lg hover:bg-pink-500/20 transition text-sm font-medium">
+                                Proximo
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
+                <!-- Modulo 06: Moderno -->
+                <a href="modulo-06/leccion-01.html" class="card-link">
+                    <div class="card relative bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                        <div class="card-border"></div>
+                        <div class="p-5">
+                            <canvas id="preview-mod06" class="preview-canvas w-full h-32 bg-black rounded-lg mb-4"></canvas>
+                            <span class="category-tag bg-orange-500/10 text-orange-400">Aplicaciones</span>
+                            <h3 class="text-lg font-medium mb-1 mt-2">06 — De Platon al Mundo Moderno</h3>
+                            <p class="text-gray-500 text-sm mb-3">Aplicaciones en cristalografia, virologia, fullerenos y quasicristales.</p>
+                            <div class="flex flex-wrap gap-1 mb-2">
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Fullereno</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Virus</span>
+                                <span class="text-xs px-2 py-0.5 bg-gray-800 rounded-full text-gray-400">Cristal</span>
+                            </div>
+                            <span class="equation text-xs text-gray-600 block mb-3">C60</span>
+                            <div class="flex items-center justify-between text-xs text-gray-600 mb-3">
+                                <span>4 lecciones · ~5h</span>
+                            </div>
+                            <span class="block w-full text-center py-2 bg-orange-500/10 text-orange-400 rounded-lg hover:bg-orange-500/20 transition text-sm font-medium">
+                                Proximo
+                            </span>
+                        </div>
+                    </div>
+                </a>
+
             </div>
-        </div>
-    </section>
-    
-    <!-- Stats -->
-    <section class="py-12 border-y border-gray-800 bg-gray-900/50">
-        <div class="max-w-6xl mx-auto px-4">
-            <div class="grid grid-cols-2 md:grid-cols-4 gap-8 text-center">
-                <div>
-                    <div class="text-3xl font-bold text-primary mb-1">33</div>
-                    <div class="text-sm text-gray-500">Lecciones</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-secondary mb-1">6</div>
-                    <div class="text-sm text-gray-500">Módulos</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-accent mb-1">33h</div>
-                    <div class="text-sm text-gray-500">Duración</div>
-                </div>
-                <div>
-                    <div class="text-3xl font-bold text-green-500 mb-1">100%</div>
-                    <div class="text-sm text-gray-500">Interactivo</div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- About -->
-    <section id="curriculum" class="py-20 px-4">
-        <div class="max-w-4xl mx-auto">
-            <h2 class="text-3xl font-bold text-center mb-12">
-                <span class="gradient-text">¿Qué Aprenderás?</span>
-            </h2>
-            
-            <div class="grid md:grid-cols-2 gap-6">
-                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-primary/50 transition-colors">
-                    <div class="text-3xl mb-4">📜</div>
-                    <h3 class="text-lg font-semibold mb-2">Historia y Filosofía</h3>
-                    <p class="text-gray-400 text-sm">Desde Pitágoras y Platón hasta las matemáticas modernas. La evolución de la geometría sagrada.</p>
-                </div>
-                
-                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-secondary/50 transition-colors">
-                    <div class="text-3xl mb-4">🧮</div>
-                    <h3 class="text-lg font-semibold mb-2">Fórmula de Euler</h3>
-                    <p class="text-gray-400 text-sm">V - E + F = 2. La relación que conecta todos los poliedros convexos y su demostración visual.</p>
-                </div>
-                
-                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-accent/50 transition-colors">
-                    <div class="text-3xl mb-4">🔄</div>
-                    <h3 class="text-lg font-semibold mb-2">Dualidad y Simetría</h3>
-                    <p class="text-gray-400 text-sm">Las relaciones ocultas entre los sólidos y sus grupos de simetría algebraicos.</p>
-                </div>
-                
-                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-green-500/50 transition-colors">
-                    <div class="text-3xl mb-4">🔮</div>
-                    <h3 class="text-lg font-semibold mb-2">Geometría 4D</h3>
-                    <p class="text-gray-400 text-sm">Politopos de cuatro dimensiones: teseractos, 24-celdas y proyecciones estereográficas.</p>
-                </div>
-                
-                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-pink-500/50 transition-colors">
-                    <div class="text-3xl mb-4">🕸️</div>
-                    <h3 class="text-lg font-semibold mb-2">Teoría de Grafos</h3>
-                    <p class="text-gray-400 text-sm">Los sólidos como redes: caminos hamiltonianos, coloración y diagramas de Schlegel.</p>
-                </div>
-                
-                <div class="bg-gray-900/50 border border-gray-800 rounded-xl p-6 hover:border-yellow-500/50 transition-colors">
-                    <div class="text-3xl mb-4">🔬</div>
-                    <h3 class="text-lg font-semibold mb-2">Aplicaciones Modernas</h3>
-                    <p class="text-gray-400 text-sm">Cristalografía, virología, fullerenos y quasicristales en la ciencia actual.</p>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Modules Overview -->
-    <section id="modulos" class="py-20 px-4 bg-gray-900/30">
-        <div class="max-w-5xl mx-auto">
-            <h2 class="text-3xl font-bold text-center mb-12">
-                <span class="gradient-text">Estructura del Curso</span>
-            </h2>
-            
-            <div class="space-y-4">
-                <!-- Módulo 1 -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-primary/30 transition-all">
-                    <div class="p-6 flex items-start gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-primary/20 rounded-lg flex items-center justify-center text-primary font-bold text-lg">01</div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold mb-2">Los Guardianes de la Geometría</h3>
-                            <p class="text-gray-400 mb-3">Historia y filosofía de los sólidos platónicos desde Pitágoras hasta Platón.</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                <span>📚 6 lecciones</span>
-                                <span>⏱️ ~5 horas</span>
-                            </div>
-                        </div>
-                        <a href="modulo-01/leccion-01.html" class="px-4 py-2 bg-gray-800 hover:bg-primary text-gray-300 hover:text-white rounded-lg transition-colors text-sm">
-                            Comenzar →
-                        </a>
-                    </div>
-                </div>
-                
-                <!-- Módulo 2 -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-secondary/30 transition-all">
-                    <div class="p-6 flex items-start gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-secondary/20 rounded-lg flex items-center justify-center text-secondary font-bold text-lg">02</div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold mb-2">La Fórmula de Euler</h3>
-                            <p class="text-gray-400 mb-3">V - E + F = 2. El teorema que unifica la geometría y la demostración de unicidad.</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                <span>📚 6 lecciones</span>
-                                <span>⏱️ ~6 horas</span>
-                            </div>
-                        </div>
-                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
-                    </div>
-                </div>
-                
-                <!-- Módulo 3 -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-accent/30 transition-all">
-                    <div class="p-6 flex items-start gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-accent/20 rounded-lg flex items-center justify-center text-accent font-bold text-lg">03</div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold mb-2">Dualidad y Simetría</h3>
-                            <p class="text-gray-400 mb-3">Las relaciones ocultas entre los sólidos y sus grupos de simetría algebraicos.</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                <span>📚 6 lecciones</span>
-                                <span>⏱️ ~6 horas</span>
-                            </div>
-                        </div>
-                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
-                    </div>
-                </div>
-                
-                <!-- Módulo 4 -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-green-500/30 transition-all">
-                    <div class="p-6 flex items-start gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-green-500/20 rounded-lg flex items-center justify-center text-green-500 font-bold text-lg">04</div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold mb-2">Más Allá de la Tercera Dimensión</h3>
-                            <p class="text-gray-400 mb-3">Politopos 4D y proyecciones estereográficas. Navegando el hiperespacio.</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                <span>📚 6 lecciones</span>
-                                <span>⏱️ ~6 horas</span>
-                            </div>
-                        </div>
-                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
-                    </div>
-                </div>
-                
-                <!-- Módulo 5 -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-pink-500/30 transition-all">
-                    <div class="p-6 flex items-start gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-pink-500/20 rounded-lg flex items-center justify-center text-pink-500 font-bold text-lg">05</div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold mb-2">Teoría de Grafos Aplicada</h3>
-                            <p class="text-gray-400 mb-3">Los sólidos como redes. Diagramas de Schlegel y caminos hamiltonianos.</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                <span>📚 5 lecciones</span>
-                                <span>⏱️ ~5 horas</span>
-                            </div>
-                        </div>
-                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
-                    </div>
-                </div>
-                
-                <!-- Módulo 6 -->
-                <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden hover:border-yellow-500/30 transition-all">
-                    <div class="p-6 flex items-start gap-4">
-                        <div class="flex-shrink-0 w-12 h-12 bg-yellow-500/20 rounded-lg flex items-center justify-center text-yellow-500 font-bold text-lg">06</div>
-                        <div class="flex-1">
-                            <h3 class="text-xl font-semibold mb-2">De Platón al Mundo Moderno</h3>
-                            <p class="text-gray-400 mb-3">Aplicaciones en cristalografía, virología, fullerenos y quasicristales.</p>
-                            <div class="flex items-center gap-4 text-sm text-gray-500">
-                                <span>📚 4 lecciones</span>
-                                <span>⏱️ ~5 horas</span>
-                            </div>
-                        </div>
-                        <span class="px-4 py-2 bg-gray-800 text-gray-500 rounded-lg text-sm">Próximo</span>
-                    </div>
-                </div>
-            </div>
-        </div>
-    </section>
-    
-    <!-- Interactive Demo -->
-    <section id="preview" class="py-20 px-4">
-        <div class="max-w-6xl mx-auto">
-            <h2 class="text-3xl font-bold text-center mb-4">
-                <span class="gradient-text">Experiencia Interactiva</span>
-            </h2>
-            <p class="text-gray-400 text-center mb-8">Cada lección incluye PlatonicLab embebido para explorar los conceptos en tiempo real</p>
-            
-            <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden shadow-2xl shadow-primary/10">
-                <div class="bg-gray-800 px-4 py-2 flex items-center gap-2 border-b border-gray-700">
+        </section>
+
+        <!-- Experiencia Interactiva -->
+        <section class="mb-16">
+            <h3 class="text-xl font-light mb-2 text-center">
+                <span class="text-violet-400 font-medium">Experiencia</span> Interactiva
+            </h3>
+            <p class="text-gray-600 text-sm text-center mb-8">Cada leccion incluye PlatonicLab embebido para explorar los conceptos en tiempo real</p>
+
+            <div class="bg-gray-950 border border-gray-900 rounded-2xl overflow-hidden">
+                <div class="bg-gray-900 px-4 py-2 flex items-center gap-2 border-b border-gray-800">
                     <div class="flex gap-1.5">
                         <div class="w-3 h-3 rounded-full bg-red-500"></div>
                         <div class="w-3 h-3 rounded-full bg-yellow-500"></div>
@@ -301,37 +288,550 @@
                     </div>
                     <span class="ml-4 text-sm text-gray-400">PlatonicLab — Icosaedro</span>
                 </div>
-                <div class="aspect-video bg-gray-950">
+                <div class="aspect-video bg-black">
                     <iframe src="../index.html" class="w-full h-full border-0" title="PlatonicLab Demo"></iframe>
                 </div>
             </div>
-            
-            <div class="text-center mt-8">
-                <a href="modulo-01/leccion-01.html" class="inline-flex items-center gap-2 px-8 py-4 bg-primary hover:bg-primary-dark text-white font-semibold rounded-xl transition-all transform hover:scale-105">
-                    🎓 Comenzar el Curso Ahora
-                    <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7l5 5m0 0l-5 5m5-5H6"></path></svg>
-                </a>
-            </div>
-        </div>
-    </section>
-    
+        </section>
+    </main>
+
     <!-- Footer -->
-    <footer class="py-12 px-4 border-t border-gray-800 bg-gray-950">
-        <div class="max-w-4xl mx-auto text-center">
-            <div class="flex items-center justify-center gap-2 mb-4">
-                <span class="text-2xl">◆</span>
-                <span class="font-bold text-xl">
-                    <span class="text-primary">Platonic</span><span class="text-gray-400">Lab</span>
-                </span>
-            </div>
-            <p class="text-gray-500 text-sm">
-                Curso de Matemáticas Visuales • De Platón a 4D
-            </p>
-            <p class="text-gray-600 text-xs mt-2">
-                Explorando la belleza geométrica desde la antigua Grecia hasta la geometría moderna.
-            </p>
+    <footer class="border-t border-gray-900 py-6">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Curso</span>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Curso de Matematicas Visuales · De Platon a 4D</p>
         </div>
     </footer>
-    
+
+    <script>
+        const previews = {};
+        let time = 0;
+
+        function initPreviews() {
+            // Modulo 01 — Icosaedro wireframe rotando
+            const mod01 = document.getElementById('preview-mod01');
+            if (mod01) {
+                const PHI = (1 + Math.sqrt(5)) / 2;
+                previews.mod01 = {
+                    ctx: mod01.getContext('2d'),
+                    w: mod01.width = mod01.offsetWidth * 2,
+                    h: mod01.height = mod01.offsetHeight * 2,
+                    angle: 0,
+                    vertices: [
+                        [0, 1, PHI], [0, 1, -PHI], [0, -1, PHI], [0, -1, -PHI],
+                        [1, PHI, 0], [1, -PHI, 0], [-1, PHI, 0], [-1, -PHI, 0],
+                        [PHI, 0, 1], [PHI, 0, -1], [-PHI, 0, 1], [-PHI, 0, -1]
+                    ],
+                    edges: [
+                        [0,2],[0,4],[0,6],[0,8],[0,10],[2,5],[2,7],[2,8],[2,10],
+                        [1,3],[1,4],[1,6],[1,9],[1,11],[3,5],[3,7],[3,9],[3,11],
+                        [4,6],[4,8],[4,9],[5,7],[5,8],[5,9],[6,10],[6,11],[7,10],[7,11],
+                        [8,9],[10,11]
+                    ]
+                };
+            }
+
+            // Modulo 02 — Euler V-E+F (cubo wireframe con conteo)
+            const mod02 = document.getElementById('preview-mod02');
+            if (mod02) {
+                previews.mod02 = {
+                    ctx: mod02.getContext('2d'),
+                    w: mod02.width = mod02.offsetWidth * 2,
+                    h: mod02.height = mod02.offsetHeight * 2,
+                    angle: 0,
+                    vertices: [
+                        [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],
+                        [-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]
+                    ],
+                    edges: [
+                        [0,1],[1,2],[2,3],[3,0],
+                        [4,5],[5,6],[6,7],[7,4],
+                        [0,4],[1,5],[2,6],[3,7]
+                    ],
+                    faces: [
+                        [0,1,2,3],[4,5,6,7],[0,1,5,4],[2,3,7,6],[0,3,7,4],[1,2,6,5]
+                    ]
+                };
+            }
+
+            // Modulo 03 — Cubo + octaedro dual superpuestos
+            const mod03 = document.getElementById('preview-mod03');
+            if (mod03) {
+                previews.mod03 = {
+                    ctx: mod03.getContext('2d'),
+                    w: mod03.width = mod03.offsetWidth * 2,
+                    h: mod03.height = mod03.offsetHeight * 2,
+                    angle: 0,
+                    cubeVerts: [
+                        [-1,-1,-1],[1,-1,-1],[1,1,-1],[-1,1,-1],
+                        [-1,-1,1],[1,-1,1],[1,1,1],[-1,1,1]
+                    ],
+                    cubeEdges: [
+                        [0,1],[1,2],[2,3],[3,0],
+                        [4,5],[5,6],[6,7],[7,4],
+                        [0,4],[1,5],[2,6],[3,7]
+                    ],
+                    octaVerts: [
+                        [1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]
+                    ],
+                    octaEdges: [
+                        [0,2],[0,3],[0,4],[0,5],
+                        [1,2],[1,3],[1,4],[1,5],
+                        [2,4],[2,5],[3,4],[3,5]
+                    ]
+                };
+            }
+
+            // Modulo 04 — Teseracto rotando
+            const mod04 = document.getElementById('preview-mod04');
+            if (mod04) {
+                const verts = [];
+                for (let i = 0; i < 16; i++) {
+                    verts.push([
+                        (i & 1) ? 1 : -1,
+                        (i & 2) ? 1 : -1,
+                        (i & 4) ? 1 : -1,
+                        (i & 8) ? 1 : -1
+                    ]);
+                }
+                const edges = [];
+                for (let i = 0; i < 16; i++) {
+                    for (let j = i + 1; j < 16; j++) {
+                        let diff = 0;
+                        for (let k = 0; k < 4; k++) diff += Math.abs(verts[i][k] - verts[j][k]);
+                        if (diff === 2) edges.push([i, j]);
+                    }
+                }
+                previews.mod04 = {
+                    ctx: mod04.getContext('2d'),
+                    w: mod04.width = mod04.offsetWidth * 2,
+                    h: mod04.height = mod04.offsetHeight * 2,
+                    vertices: verts,
+                    edges: edges,
+                    angle: 0
+                };
+            }
+
+            // Modulo 05 — Schlegel dodecaedro (grafo planar)
+            const mod05 = document.getElementById('preview-mod05');
+            if (mod05) {
+                // Dodecahedron Schlegel diagram: 20 vertices arranged in 3 concentric pentagons + 5 connectors
+                const verts = [];
+                // Outer pentagon (5 vertices)
+                for (let i = 0; i < 5; i++) {
+                    const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                    verts.push([Math.cos(a) * 0.9, Math.sin(a) * 0.9]);
+                }
+                // Middle pentagon (5 vertices), rotated
+                for (let i = 0; i < 5; i++) {
+                    const a = (i / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                    verts.push([Math.cos(a) * 0.55, Math.sin(a) * 0.55]);
+                }
+                // Inner pentagon (5 vertices)
+                for (let i = 0; i < 5; i++) {
+                    const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                    verts.push([Math.cos(a) * 0.3, Math.sin(a) * 0.3]);
+                }
+                // Inner-most pentagon (5 vertices), rotated
+                for (let i = 0; i < 5; i++) {
+                    const a = (i / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                    verts.push([Math.cos(a) * 0.12, Math.sin(a) * 0.12]);
+                }
+
+                const edges = [
+                    // Outer pentagon
+                    [0,1],[1,2],[2,3],[3,4],[4,0],
+                    // Outer to middle
+                    [0,5],[1,6],[2,7],[3,8],[4,9],
+                    // Middle connections
+                    [5,6],[6,7],[7,8],[8,9],[9,5],
+                    // Middle to inner
+                    [5,10],[6,11],[7,12],[8,13],[9,14],
+                    // Inner pentagon
+                    [10,11],[11,12],[12,13],[13,14],[14,10],
+                    // Inner to innermost
+                    [10,15],[11,16],[12,17],[13,18],[14,19],
+                    // Innermost pentagon
+                    [15,16],[16,17],[17,18],[18,19],[19,15]
+                ];
+
+                previews.mod05 = {
+                    ctx: mod05.getContext('2d'),
+                    w: mod05.width = mod05.offsetWidth * 2,
+                    h: mod05.height = mod05.offsetHeight * 2,
+                    vertices: verts,
+                    edges: edges
+                };
+            }
+
+            // Modulo 06 — Fullereno C60 (icosaedro truncado wireframe)
+            const mod06 = document.getElementById('preview-mod06');
+            if (mod06) {
+                // Generate truncated icosahedron (C60) vertices
+                const PHI = (1 + Math.sqrt(5)) / 2;
+                const c60Verts = [];
+                const c60Edges = [];
+
+                // Permutations of (0, +-1, +-3phi)
+                const perms3 = [
+                    [0, 1, 3*PHI], [0, 1, -3*PHI], [0, -1, 3*PHI], [0, -1, -3*PHI],
+                    [1, 3*PHI, 0], [-1, 3*PHI, 0], [1, -3*PHI, 0], [-1, -3*PHI, 0],
+                    [3*PHI, 0, 1], [3*PHI, 0, -1], [-3*PHI, 0, 1], [-3*PHI, 0, -1]
+                ];
+                // Permutations of (+-2, +-(1+2phi), +-phi)
+                const a = 1 + 2*PHI, b = PHI;
+                const perms2 = [];
+                for (const s1 of [1, -1]) {
+                    for (const s2 of [1, -1]) {
+                        for (const s3 of [1, -1]) {
+                            perms2.push([2*s1, a*s2, b*s3]);
+                            perms2.push([b*s1, 2*s2, a*s3]);
+                            perms2.push([a*s1, b*s2, 2*s3]);
+                        }
+                    }
+                }
+                // Permutations of (+-1, +-(2+phi), +-2phi)
+                const c = 2 + PHI, d = 2*PHI;
+                const perms1 = [];
+                for (const s1 of [1, -1]) {
+                    for (const s2 of [1, -1]) {
+                        for (const s3 of [1, -1]) {
+                            perms1.push([s1, c*s2, d*s3]);
+                            perms1.push([d*s1, s2, c*s3]);
+                            perms1.push([c*s1, d*s2, s3]);
+                        }
+                    }
+                }
+
+                const allVerts = [...perms3, ...perms2, ...perms1];
+                // Normalize to unit sphere
+                const maxR = Math.max(...allVerts.map(v => Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2])));
+                allVerts.forEach(v => { v[0] /= maxR; v[1] /= maxR; v[2] /= maxR; });
+
+                // Find edges: connect vertices at the shortest distance
+                const dists = [];
+                for (let i = 0; i < allVerts.length; i++) {
+                    for (let j = i + 1; j < allVerts.length; j++) {
+                        const dx = allVerts[i][0]-allVerts[j][0];
+                        const dy = allVerts[i][1]-allVerts[j][1];
+                        const dz = allVerts[i][2]-allVerts[j][2];
+                        dists.push(Math.sqrt(dx*dx+dy*dy+dz*dz));
+                    }
+                }
+                const minDist = Math.min(...dists);
+                const threshold = minDist * 1.1;
+
+                for (let i = 0; i < allVerts.length; i++) {
+                    for (let j = i + 1; j < allVerts.length; j++) {
+                        const dx = allVerts[i][0]-allVerts[j][0];
+                        const dy = allVerts[i][1]-allVerts[j][1];
+                        const dz = allVerts[i][2]-allVerts[j][2];
+                        if (Math.sqrt(dx*dx+dy*dy+dz*dz) < threshold) {
+                            c60Edges.push([i, j]);
+                        }
+                    }
+                }
+
+                previews.mod06 = {
+                    ctx: mod06.getContext('2d'),
+                    w: mod06.width = mod06.offsetWidth * 2,
+                    h: mod06.height = mod06.offsetHeight * 2,
+                    vertices: allVerts,
+                    edges: c60Edges,
+                    angle: 0
+                };
+            }
+        }
+
+        function project3D(vertices, angle, angleB, cx, cy, size) {
+            const cosA = Math.cos(angle);
+            const sinA = Math.sin(angle);
+            const cosB = Math.cos(angleB);
+            const sinB = Math.sin(angleB);
+            return vertices.map(([x, y, z]) => {
+                const rx = x * cosA - z * sinA;
+                const rz = x * sinA + z * cosA;
+                const ry = y * cosB - rz * sinB;
+                const rz2 = y * sinB + rz * cosB;
+                const s = 2.5 / (4 - rz2);
+                return [cx + rx * size * s, cy + ry * size * s, rz2];
+            });
+        }
+
+        function animate() {
+            time += 0.02;
+
+            // Modulo 01 — Icosaedro rotando
+            if (previews.mod01) {
+                const p = previews.mod01;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h / 2;
+                const size = Math.min(p.w, p.h) * 0.3;
+                p.angle += 0.012;
+
+                const projected = project3D(p.vertices, p.angle, p.angle * 0.6, cx, cy, size);
+
+                p.edges.forEach(([a, b]) => {
+                    const avgZ = (projected[a][2] + projected[b][2]) / 2;
+                    const alpha = 0.2 + (avgZ + 2) * 0.2;
+                    p.ctx.strokeStyle = `rgba(250, 204, 21, ${alpha})`;
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(projected[a][0], projected[a][1]);
+                    p.ctx.lineTo(projected[b][0], projected[b][1]);
+                    p.ctx.stroke();
+                });
+
+                projected.forEach(([px, py, pz]) => {
+                    const alpha = 0.4 + (pz + 2) * 0.15;
+                    p.ctx.fillStyle = `rgba(250, 204, 21, ${alpha})`;
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, 3, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+            }
+
+            // Modulo 02 — Euler V-E+F cubo con conteo
+            if (previews.mod02) {
+                const p = previews.mod02;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h * 0.42;
+                const size = Math.min(p.w, p.h) * 0.2;
+                p.angle += 0.008;
+
+                const projected = project3D(p.vertices, p.angle, p.angle * 0.4, cx, cy, size);
+
+                // Draw faces (semitransparent)
+                const pulse = 0.08 + Math.sin(time * 2) * 0.04;
+                p.faces.forEach(face => {
+                    p.ctx.fillStyle = `rgba(34, 211, 238, ${pulse})`;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(projected[face[0]][0], projected[face[0]][1]);
+                    for (let i = 1; i < face.length; i++) {
+                        p.ctx.lineTo(projected[face[i]][0], projected[face[i]][1]);
+                    }
+                    p.ctx.closePath();
+                    p.ctx.fill();
+                });
+
+                // Draw edges
+                p.edges.forEach(([a, b]) => {
+                    p.ctx.strokeStyle = 'rgba(34, 211, 238, 0.5)';
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(projected[a][0], projected[a][1]);
+                    p.ctx.lineTo(projected[b][0], projected[b][1]);
+                    p.ctx.stroke();
+                });
+
+                // Draw vertices (pulsing)
+                const vPulse = 3 + Math.sin(time * 3) * 1;
+                projected.forEach(([px, py]) => {
+                    p.ctx.fillStyle = '#22d3ee';
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, vPulse, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+
+                // Euler formula text
+                p.ctx.font = `${Math.max(16, p.w * 0.035)}px 'JetBrains Mono', monospace`;
+                p.ctx.fillStyle = '#22d3ee';
+                p.ctx.textAlign = 'center';
+                p.ctx.fillText('V=8  E=12  F=6', p.w / 2, p.h - p.h * 0.12);
+                p.ctx.font = `${Math.max(14, p.w * 0.03)}px 'JetBrains Mono', monospace`;
+                p.ctx.fillStyle = '#9ca3af';
+                p.ctx.fillText('8 - 12 + 6 = 2', p.w / 2, p.h - p.h * 0.04);
+            }
+
+            // Modulo 03 — Cubo + octaedro dual
+            if (previews.mod03) {
+                const p = previews.mod03;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h / 2;
+                const size = Math.min(p.w, p.h) * 0.22;
+                p.angle += 0.01;
+
+                const cubeProj = project3D(p.cubeVerts, p.angle, p.angle * 0.5, cx, cy, size);
+                const octaProj = project3D(p.octaVerts, p.angle, p.angle * 0.5, cx, cy, size);
+
+                // Draw cube in yellow
+                p.cubeEdges.forEach(([a, b]) => {
+                    const avgZ = (cubeProj[a][2] + cubeProj[b][2]) / 2;
+                    const alpha = 0.2 + (avgZ + 2) * 0.15;
+                    p.ctx.strokeStyle = `rgba(250, 204, 21, ${alpha})`;
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(cubeProj[a][0], cubeProj[a][1]);
+                    p.ctx.lineTo(cubeProj[b][0], cubeProj[b][1]);
+                    p.ctx.stroke();
+                });
+
+                // Draw octahedron in cyan
+                p.octaEdges.forEach(([a, b]) => {
+                    const avgZ = (octaProj[a][2] + octaProj[b][2]) / 2;
+                    const alpha = 0.3 + (avgZ + 1.5) * 0.2;
+                    p.ctx.strokeStyle = `rgba(34, 211, 238, ${alpha})`;
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(octaProj[a][0], octaProj[a][1]);
+                    p.ctx.lineTo(octaProj[b][0], octaProj[b][1]);
+                    p.ctx.stroke();
+                });
+
+                // Vertices
+                cubeProj.forEach(([px, py]) => {
+                    p.ctx.fillStyle = 'rgba(250, 204, 21, 0.6)';
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+                octaProj.forEach(([px, py]) => {
+                    p.ctx.fillStyle = 'rgba(34, 211, 238, 0.7)';
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, 3, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+            }
+
+            // Modulo 04 — Teseracto (copied from Math Visual Lab)
+            if (previews.mod04) {
+                const p = previews.mod04;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h / 2;
+                const size = Math.min(p.w, p.h) * 0.22;
+                p.angle += 0.01;
+
+                const cosXW = Math.cos(p.angle);
+                const sinXW = Math.sin(p.angle);
+                const cosYZ = Math.cos(p.angle * 0.7);
+                const sinYZ = Math.sin(p.angle * 0.7);
+
+                const projected = p.vertices.map(([x, y, z, w]) => {
+                    const rx = x * cosXW - w * sinXW;
+                    const rw = x * sinXW + w * cosXW;
+                    const ry = y * cosYZ - z * sinYZ;
+                    const rz = y * sinYZ + z * cosYZ;
+                    const d4 = 3 / (3.5 - rw);
+                    const x3 = rx * d4;
+                    const y3 = ry * d4;
+                    const z3 = rz * d4;
+                    const cosV = Math.cos(0.4);
+                    const sinV = Math.sin(0.4);
+                    const ry2 = y3 * cosV - z3 * sinV;
+                    const rz2 = y3 * sinV + z3 * cosV;
+                    const d3 = 2.5 / (4 - rz2);
+                    return [cx + x3 * size * d3, cy + ry2 * size * d3, rz2, rw];
+                });
+
+                p.edges.forEach(([a, b]) => {
+                    const avgW = (projected[a][3] + projected[b][3]) / 2;
+                    const hue = 190 + avgW * 20;
+                    const alpha = 0.3 + (avgW + 1.5) * 0.2;
+                    p.ctx.strokeStyle = `hsla(${hue}, 70%, 55%, ${alpha})`;
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(projected[a][0], projected[a][1]);
+                    p.ctx.lineTo(projected[b][0], projected[b][1]);
+                    p.ctx.stroke();
+                });
+
+                projected.forEach(([px, py, pz, pw]) => {
+                    const hue = 190 + pw * 20;
+                    const alpha = 0.4 + (pw + 1.5) * 0.2;
+                    p.ctx.fillStyle = `hsla(${hue}, 70%, 60%, ${alpha})`;
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, 2.5, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+            }
+
+            // Modulo 05 — Schlegel dodecaedro
+            if (previews.mod05) {
+                const p = previews.mod05;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h / 2;
+                const size = Math.min(p.w, p.h) * 0.42;
+                const pulse = 2.5 + Math.sin(time * 2) * 0.8;
+
+                // Draw edges
+                p.edges.forEach(([a, b]) => {
+                    const va = p.vertices[a], vb = p.vertices[b];
+                    p.ctx.strokeStyle = 'rgba(236, 72, 153, 0.4)';
+                    p.ctx.lineWidth = 1.5;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(cx + va[0] * size, cy + va[1] * size);
+                    p.ctx.lineTo(cx + vb[0] * size, cy + vb[1] * size);
+                    p.ctx.stroke();
+                });
+
+                // Draw vertices (pulsing)
+                p.vertices.forEach(([vx, vy]) => {
+                    p.ctx.fillStyle = '#ec4899';
+                    p.ctx.beginPath();
+                    p.ctx.arc(cx + vx * size, cy + vy * size, pulse, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+            }
+
+            // Modulo 06 — Fullereno C60 rotando
+            if (previews.mod06) {
+                const p = previews.mod06;
+                p.ctx.fillStyle = '#000';
+                p.ctx.fillRect(0, 0, p.w, p.h);
+
+                const cx = p.w / 2, cy = p.h / 2;
+                const size = Math.min(p.w, p.h) * 0.35;
+                p.angle += 0.008;
+
+                const projected = project3D(p.vertices, p.angle, p.angle * 0.6, cx, cy, size);
+
+                p.edges.forEach(([a, b]) => {
+                    const avgZ = (projected[a][2] + projected[b][2]) / 2;
+                    const alpha = 0.15 + (avgZ + 1.5) * 0.2;
+                    p.ctx.strokeStyle = `rgba(249, 115, 22, ${Math.max(0.05, alpha)})`;
+                    p.ctx.lineWidth = 1;
+                    p.ctx.beginPath();
+                    p.ctx.moveTo(projected[a][0], projected[a][1]);
+                    p.ctx.lineTo(projected[b][0], projected[b][1]);
+                    p.ctx.stroke();
+                });
+
+                projected.forEach(([px, py, pz]) => {
+                    const alpha = 0.3 + (pz + 1.5) * 0.2;
+                    p.ctx.fillStyle = `rgba(249, 115, 22, ${Math.max(0.1, alpha)})`;
+                    p.ctx.beginPath();
+                    p.ctx.arc(px, py, 1.5, 0, Math.PI * 2);
+                    p.ctx.fill();
+                });
+            }
+
+            requestAnimationFrame(animate);
+        }
+
+        window.addEventListener('load', () => {
+            initPreviews();
+            animate();
+        });
+
+        window.addEventListener('resize', initPreviews);
+    </script>
 </body>
 </html>

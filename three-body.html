@@ -147,6 +147,36 @@
                 </label>
             </div>
 
+            <!-- STL Export -->
+            <div class="mb-6">
+                <button id="stl-toggle" class="w-full py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Exportar STL
+                </button>
+                <div id="stl-panel" class="hidden mt-3 p-3 bg-gray-900 rounded-lg space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Tubo ⌀: <span id="tube-val" class="text-emerald-400 mono">0.8</span> mm</label>
+                        <input type="range" id="tube-diam" min="0.4" max="2.0" step="0.1" value="0.8" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Tamaño: <span id="size-val" class="text-emerald-400 mono">100</span> mm</label>
+                        <input type="range" id="stl-size" min="60" max="150" step="10" value="100" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Pasos (×1k): <span id="steps-val" class="text-emerald-400 mono">20</span></label>
+                        <input type="range" id="stl-steps" min="5" max="50" step="5" value="20" class="w-full">
+                    </div>
+                    <label class="flex items-center gap-2 cursor-pointer">
+                        <input type="checkbox" id="stl-spheres" checked class="w-3 h-3 rounded bg-gray-900 border-gray-700 text-emerald-500">
+                        <span class="text-xs text-gray-400">Incluir esferas</span>
+                    </label>
+                    <button id="stl-export" class="w-full py-2 bg-emerald-500/30 hover:bg-emerald-500/40 text-emerald-400 rounded-lg text-xs transition">Generar y descargar</button>
+                    <p id="stl-status" class="text-xs text-gray-600 text-center"></p>
+                </div>
+            </div>
+
             <div class="mb-6 p-4 bg-gray-900 rounded-lg">
                 <h3 class="text-sm font-medium text-gray-300 mb-3">Masas</h3>
                 <div class="space-y-2">
@@ -440,7 +470,7 @@
                 b.x = pos0[i].x + (vel0[i].vx + 2*vel2[i].vx + 2*vel3[i].vx + vel4[i].vx) * dt / 6;
                 b.y = pos0[i].y + (vel0[i].vy + 2*vel2[i].vy + 2*vel3[i].vy + vel4[i].vy) * dt / 6;
                 b.vx = vel0[i].vx + (acc1[i].ax + 2*acc2[i].ax + 2*acc3[i].ax + acc4[i].ax) * dt / 6;
-                b.vy = vel0[i].ay + (acc1[i].ay + 2*acc2[i].ay + 2*acc3[i].ay + acc4[i].ay) * dt / 6;
+                b.vy = vel0[i].vy + (acc1[i].ay + 2*acc2[i].ay + 2*acc3[i].ay + acc4[i].ay) * dt / 6;
 
                 // Store trail
                 b.trail.push({ x: b.x, y: b.y });
@@ -601,6 +631,216 @@
         document.getElementById('follow-cm').addEventListener('change', (e) => {
             followCM = e.target.checked;
         });
+
+        // === STL Export ===
+        function buildSTL(tris) {
+            const buf = new ArrayBuffer(84 + tris.length * 50);
+            const v = new DataView(buf);
+            const hdr = 'Binary STL - EigenLab';
+            for (let i = 0; i < hdr.length; i++) v.setUint8(i, hdr.charCodeAt(i));
+            v.setUint32(80, tris.length, true);
+            let o = 84;
+            for (const [a, b, c] of tris) {
+                const u0=b[0]-a[0],u1=b[1]-a[1],u2=b[2]-a[2];
+                const w0=c[0]-a[0],w1=c[1]-a[1],w2=c[2]-a[2];
+                let nx=u1*w2-u2*w1, ny=u2*w0-u0*w2, nz=u0*w1-u1*w0;
+                const l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                if(l>0){nx/=l;ny/=l;nz/=l;}
+                v.setFloat32(o,nx,true);o+=4; v.setFloat32(o,ny,true);o+=4; v.setFloat32(o,nz,true);o+=4;
+                for(const p of[a,b,c]){v.setFloat32(o,p[0],true);o+=4;v.setFloat32(o,p[1],true);o+=4;v.setFloat32(o,p[2],true);o+=4;}
+                v.setUint16(o,0,true);o+=2;
+            }
+            return new Blob([buf],{type:'application/octet-stream'});
+        }
+
+        function exportThreeBodySTL() {
+            const TR = parseFloat(document.getElementById('tube-diam').value)/2;
+            const totalSize = parseFloat(document.getElementById('stl-size').value);
+            const nSteps = parseInt(document.getElementById('stl-steps').value) * 1000;
+            const addSpheres = document.getElementById('stl-spheres').checked;
+            const st = document.getElementById('stl-status');
+            st.textContent = 'Simulando trayectorias...';
+
+            setTimeout(() => {
+                const vsub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+                const vscl=(v,s)=>[v[0]*s,v[1]*s,v[2]*s];
+                const vdot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+                const vcross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+                const vlen=v=>Math.sqrt(vdot(v,v));
+                const vnorm=v=>{const l=vlen(v);return l>1e-12?vscl(v,1/l):[1,0,0];};
+
+                // Init simulation from preset (canonical ICs) or current state (random)
+                const preset = document.getElementById('preset-select').value;
+                const sim = [];
+                if (preset !== 'random' && presets[preset]) {
+                    const p = presets[preset];
+                    for (let i = 0; i < 3; i++) sim.push({
+                        x: p.positions[i][0], y: p.positions[i][1],
+                        vx: p.velocities[i][0], vy: p.velocities[i][1],
+                        mass: p.masses[i]
+                    });
+                    let px=0,py=0,tm=0;
+                    sim.forEach(b=>{px+=b.mass*b.vx;py+=b.mass*b.vy;tm+=b.mass;});
+                    sim.forEach(b=>{b.vx-=px/tm;b.vy-=py/tm;});
+                } else {
+                    for (let i = 0; i < 3; i++) sim.push({
+                        x: bodies[i].x, y: bodies[i].y,
+                        vx: bodies[i].vx, vy: bodies[i].vy,
+                        mass: bodies[i].mass
+                    });
+                }
+
+                // Local RK4
+                function simAccel(pos) {
+                    const acc = pos.map(()=>({ax:0,ay:0}));
+                    for(let i=0;i<3;i++) for(let j=i+1;j<3;j++){
+                        const dx=pos[j].x-pos[i].x, dy=pos[j].y-pos[i].y;
+                        const r2=dx*dx+dy*dy+0.0001, r=Math.sqrt(r2), r3=r2*r;
+                        const fx=dx/r3, fy=dy/r3;
+                        acc[i].ax+=sim[j].mass*fx; acc[i].ay+=sim[j].mass*fy;
+                        acc[j].ax-=sim[i].mass*fx; acc[j].ay-=sim[i].mass*fy;
+                    }
+                    return acc;
+                }
+                function simStep(dt) {
+                    const p0=sim.map(b=>({x:b.x,y:b.y}));
+                    const v0=sim.map(b=>({vx:b.vx,vy:b.vy}));
+                    const a1=simAccel(p0);
+                    const p2=p0.map((p,i)=>({x:p.x+v0[i].vx*dt/2,y:p.y+v0[i].vy*dt/2}));
+                    const v2=v0.map((v,i)=>({vx:v.vx+a1[i].ax*dt/2,vy:v.vy+a1[i].ay*dt/2}));
+                    const a2=simAccel(p2);
+                    const p3=p0.map((p,i)=>({x:p.x+v2[i].vx*dt/2,y:p.y+v2[i].vy*dt/2}));
+                    const v3=v0.map((v,i)=>({vx:v.vx+a2[i].ax*dt/2,vy:v.vy+a2[i].ay*dt/2}));
+                    const a3=simAccel(p3);
+                    const p4=p0.map((p,i)=>({x:p.x+v3[i].vx*dt,y:p.y+v3[i].vy*dt}));
+                    const v4=v0.map((v,i)=>({vx:v.vx+a3[i].ax*dt,vy:v.vy+a3[i].ay*dt}));
+                    const a4=simAccel(p4);
+                    sim.forEach((b,i)=>{
+                        b.x=p0[i].x+(v0[i].vx+2*v2[i].vx+2*v3[i].vx+v4[i].vx)*dt/6;
+                        b.y=p0[i].y+(v0[i].vy+2*v2[i].vy+2*v3[i].vy+v4[i].vy)*dt/6;
+                        b.vx=v0[i].vx+(a1[i].ax+2*a2[i].ax+2*a3[i].ax+a4[i].ax)*dt/6;
+                        b.vy=v0[i].vy+(a1[i].ay+2*a2[i].ay+2*a3[i].ay+a4[i].ay)*dt/6;
+                    });
+                }
+
+                // Run simulation, collect trails as 3D points (z=0)
+                const trails = [[],[],[]];
+                const dt = 0.005;
+                for (let s = 0; s < nSteps; s++) {
+                    simStep(dt);
+                    for (let i = 0; i < 3; i++) trails[i].push([sim[i].x, sim[i].y, 0]);
+                }
+
+                // Decimate to uniform spacing
+                const minD = 0.015;
+                const dTrails = trails.map(tr => {
+                    const dec = [tr[0]];
+                    for (let i = 1; i < tr.length; i++) {
+                        if (vlen(vsub(tr[i], dec[dec.length-1])) >= minD) dec.push(tr[i]);
+                    }
+                    return dec;
+                });
+
+                // Scale & center
+                let bMinX=Infinity,bMinY=Infinity,bMaxX=-Infinity,bMaxY=-Infinity;
+                for (const tr of dTrails) for (const p of tr) {
+                    bMinX=Math.min(bMinX,p[0]); bMinY=Math.min(bMinY,p[1]);
+                    bMaxX=Math.max(bMaxX,p[0]); bMaxY=Math.max(bMaxY,p[1]);
+                }
+                const span = Math.max(bMaxX-bMinX, bMaxY-bMinY);
+                if (span < 1e-6) { st.textContent = 'Error: trayectoria degenerada'; return; }
+                const sc = totalSize / span;
+                const cx = (bMinX+bMaxX)/2, cy = (bMinY+bMaxY)/2;
+                for (const tr of dTrails) for (const p of tr) {
+                    p[0] = (p[0]-cx)*sc; p[1] = (p[1]-cy)*sc; p[2] = TR;
+                }
+                // Final positions for spheres (after scaling)
+                const finalPos = dTrails.map(tr => tr[tr.length-1].slice());
+
+                st.textContent = `Generando tubos (${dTrails.map(t=>t.length).join('+')} pts)...`;
+                setTimeout(() => {
+                    const TSEGS = 8;
+                    const tris = [];
+
+                    function makeTube(pts) {
+                        if (pts.length < 2) return;
+                        const T=[], Ns=[];
+                        for(let i=0;i<pts.length;i++){
+                            if(i===0)T.push(vnorm(vsub(pts[1],pts[0])));
+                            else if(i===pts.length-1)T.push(vnorm(vsub(pts[i],pts[i-1])));
+                            else T.push(vnorm(vsub(pts[i+1],pts[i-1])));
+                        }
+                        // Trajectory is in XY plane — Z is always perpendicular
+                        Ns.push([0,0,1]);
+                        for(let i=1;i<pts.length;i++){
+                            let Np=vsub(Ns[i-1],vscl(T[i],vdot(Ns[i-1],T[i])));
+                            const l=vlen(Np); Np=l>1e-6?vscl(Np,1/l):Ns[i-1]; Ns.push(Np);
+                        }
+                        function ringAt(i){
+                            const n=Ns[i], b=vcross(T[i],n), ring=[];
+                            for(let j=0;j<TSEGS;j++){
+                                const a2=(j/TSEGS)*2*Math.PI, co=Math.cos(a2), si=Math.sin(a2);
+                                ring.push([pts[i][0]+TR*(co*n[0]+si*b[0]),pts[i][1]+TR*(co*n[1]+si*b[1]),pts[i][2]+TR*(co*n[2]+si*b[2])]);
+                            }
+                            return ring;
+                        }
+                        for(let i=0;i<pts.length-1;i++){
+                            const r1=ringAt(i),r2=ringAt(i+1);
+                            for(let j=0;j<TSEGS;j++){const jn=(j+1)%TSEGS;tris.push([r1[j],r2[j],r2[jn]],[r1[j],r2[jn],r1[jn]]);}
+                        }
+                        const r0=ringAt(0), rE=ringAt(pts.length-1);
+                        for(let j=0;j<TSEGS;j++){const jn=(j+1)%TSEGS;tris.push([pts[0],r0[jn],r0[j]],[pts[pts.length-1],rE[j],rE[jn]]);}
+                    }
+
+                    for (const tr of dTrails) makeTube(tr);
+
+                    // Optional spheres at final body positions
+                    if (addSpheres) {
+                        const SR = TR * 4;
+                        const SLAT = 10, SLON = 14;
+                        for (let bi = 0; bi < 3; bi++) {
+                            const c = finalPos[bi];
+                            const sv = [];
+                            for (let la=0;la<=SLAT;la++){
+                                const th=Math.PI*la/SLAT, st2=Math.sin(th), ct=Math.cos(th);
+                                const row=[];
+                                for(let lo=0;lo<=SLON;lo++){
+                                    const ph=2*Math.PI*lo/SLON;
+                                    row.push([c[0]+SR*st2*Math.cos(ph), c[1]+SR*st2*Math.sin(ph), c[2]+SR*ct]);
+                                }
+                                sv.push(row);
+                            }
+                            for(let la=0;la<SLAT;la++) for(let lo=0;lo<SLON;lo++){
+                                tris.push([sv[la][lo],sv[la+1][lo],sv[la+1][lo+1]]);
+                                tris.push([sv[la][lo],sv[la+1][lo+1],sv[la][lo+1]]);
+                            }
+                        }
+                    }
+
+                    const blob = buildSTL(tris);
+                    const name = `3-body-${preset}-${nSteps/1000}k.stl`;
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = name;
+                    a.click();
+                    st.textContent = `${name} (${(blob.size/1024).toFixed(0)} KB, ${tris.length} tri)`;
+                }, 10);
+            }, 10);
+        }
+
+        document.getElementById('stl-toggle').addEventListener('click',()=>{
+            document.getElementById('stl-panel').classList.toggle('hidden');
+        });
+        document.getElementById('tube-diam').addEventListener('input',e=>{
+            document.getElementById('tube-val').textContent=parseFloat(e.target.value).toFixed(1);
+        });
+        document.getElementById('stl-size').addEventListener('input',e=>{
+            document.getElementById('size-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-steps').addEventListener('input',e=>{
+            document.getElementById('steps-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-export').addEventListener('click',exportThreeBodySTL);
 
         window.addEventListener('resize', resize);
 

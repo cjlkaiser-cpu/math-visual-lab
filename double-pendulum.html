@@ -238,6 +238,32 @@
                     </button>
                 </div>
 
+                <!-- STL Export -->
+                <div class="control-group">
+                    <button id="stl-toggle" class="w-full py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                        <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                        </svg>
+                        Exportar STL
+                    </button>
+                    <div id="stl-panel" class="hidden mt-3 space-y-3">
+                        <div>
+                            <label class="block text-xs text-purple-400/70 mb-1">Tubo ⌀: <span id="tube-val" class="text-emerald-400 font-mono">1.0</span> mm</label>
+                            <input type="range" id="tube-diam" min="0.4" max="2.0" step="0.1" value="1.0" class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-purple-400/70 mb-1">Tamaño: <span id="size-val" class="text-emerald-400 font-mono">100</span> mm</label>
+                            <input type="range" id="stl-size" min="60" max="150" step="10" value="100" class="w-full">
+                        </div>
+                        <div>
+                            <label class="block text-xs text-purple-400/70 mb-1">Tiempo (s): <span id="time-val" class="text-emerald-400 font-mono">30</span></label>
+                            <input type="range" id="stl-time" min="10" max="120" step="5" value="30" class="w-full">
+                        </div>
+                        <button id="stl-export" class="w-full py-2 bg-emerald-500/30 hover:bg-emerald-500/40 text-emerald-400 rounded-lg text-xs transition">Generar y descargar</button>
+                        <p id="stl-status" class="text-xs text-gray-600 text-center"></p>
+                    </div>
+                </div>
+
                 <!-- Info -->
                 <div class="control-group">
                     <h3 class="text-purple-400 font-medium mb-2">Caos determinista</h3>
@@ -736,6 +762,142 @@
         });
 
         document.getElementById('reset').addEventListener('click', reset);
+
+        // === STL Export ===
+        function buildSTL(tris) {
+            const buf = new ArrayBuffer(84 + tris.length * 50);
+            const v = new DataView(buf);
+            const hdr = 'Binary STL - EigenLab';
+            for (let i = 0; i < hdr.length; i++) v.setUint8(i, hdr.charCodeAt(i));
+            v.setUint32(80, tris.length, true);
+            let o = 84;
+            for (const [a, b, c] of tris) {
+                const u0=b[0]-a[0],u1=b[1]-a[1],u2=b[2]-a[2];
+                const w0=c[0]-a[0],w1=c[1]-a[1],w2=c[2]-a[2];
+                let nx=u1*w2-u2*w1, ny=u2*w0-u0*w2, nz=u0*w1-u1*w0;
+                const l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                if(l>0){nx/=l;ny/=l;nz/=l;}
+                v.setFloat32(o,nx,true);o+=4; v.setFloat32(o,ny,true);o+=4; v.setFloat32(o,nz,true);o+=4;
+                for(const p of[a,b,c]){v.setFloat32(o,p[0],true);o+=4;v.setFloat32(o,p[1],true);o+=4;v.setFloat32(o,p[2],true);o+=4;}
+                v.setUint16(o,0,true);o+=2;
+            }
+            return new Blob([buf],{type:'application/octet-stream'});
+        }
+
+        function exportPendulumSTL() {
+            const TR = parseFloat(document.getElementById('tube-diam').value)/2;
+            const totalSize = parseFloat(document.getElementById('stl-size').value);
+            const simTime = parseFloat(document.getElementById('stl-time').value);
+            const stEl = document.getElementById('stl-status');
+            stEl.textContent = 'Simulando trayectoria...';
+
+            setTimeout(() => {
+                const vsub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+                const vscl=(v,s)=>[v[0]*s,v[1]*s,v[2]*s];
+                const vdot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+                const vcross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+                const vlen=v=>Math.sqrt(vdot(v,v));
+                const vnorm=v=>{const l=vlen(v);return l>1e-12?vscl(v,1/l):[1,0,0];};
+
+                // Read current params
+                const params = getParams();
+                const toRad = Math.PI / 180;
+                let th1 = parseFloat(document.getElementById('angle1').value) * toRad;
+                let th2 = parseFloat(document.getElementById('angle2').value) * toRad;
+                let w1 = 0, w2 = 0;
+
+                // RK4 simulation collecting tip position
+                const dt = 0.002;
+                const nSteps = Math.round(simTime / dt);
+                const raw = [];
+                for (let s = 0; s < nSteps; s++) {
+                    const ns = rk4Step(th1, th2, w1, w2, dt, params);
+                    th1 = ns.theta1; th2 = ns.theta2; w1 = ns.omega1; w2 = ns.omega2;
+                    // Tip position in sim units (Y up)
+                    const x = params.l1 * Math.sin(th1) + params.l2 * Math.sin(th2);
+                    const y = -(params.l1 * Math.cos(th1) + params.l2 * Math.cos(th2));
+                    raw.push([x, y, 0]);
+                }
+
+                // Decimate to uniform spacing
+                const minD = 0.01;
+                const pts = [raw[0]];
+                for (let i = 1; i < raw.length; i++) {
+                    if (vlen(vsub(raw[i], pts[pts.length-1])) >= minD) pts.push(raw[i]);
+                }
+
+                // Scale & center
+                let bMinX=Infinity,bMinY=Infinity,bMaxX=-Infinity,bMaxY=-Infinity;
+                for (const p of pts) {
+                    bMinX=Math.min(bMinX,p[0]); bMinY=Math.min(bMinY,p[1]);
+                    bMaxX=Math.max(bMaxX,p[0]); bMaxY=Math.max(bMaxY,p[1]);
+                }
+                const span = Math.max(bMaxX-bMinX, bMaxY-bMinY);
+                if (span < 1e-6) { stEl.textContent = 'Error: trayectoria degenerada'; return; }
+                const sc = totalSize / span;
+                const cx = (bMinX+bMaxX)/2, cy = (bMinY+bMaxY)/2;
+                for (const p of pts) { p[0]=(p[0]-cx)*sc; p[1]=(p[1]-cy)*sc; p[2]=TR; }
+
+                stEl.textContent = `Generando tubo (${pts.length} pts)...`;
+                setTimeout(() => {
+                    const TSEGS = 8;
+                    const tris = [];
+
+                    // Tangents
+                    const T=[], Ns=[];
+                    for(let i=0;i<pts.length;i++){
+                        if(i===0)T.push(vnorm(vsub(pts[1],pts[0])));
+                        else if(i===pts.length-1)T.push(vnorm(vsub(pts[i],pts[i-1])));
+                        else T.push(vnorm(vsub(pts[i+1],pts[i-1])));
+                    }
+                    // Parallel transport frame
+                    Ns.push([0,0,1]);
+                    for(let i=1;i<pts.length;i++){
+                        let Np=vsub(Ns[i-1],vscl(T[i],vdot(Ns[i-1],T[i])));
+                        const l=vlen(Np); Np=l>1e-6?vscl(Np,1/l):Ns[i-1]; Ns.push(Np);
+                    }
+                    function ringAt(i){
+                        const n=Ns[i], b=vcross(T[i],n), ring=[];
+                        for(let j=0;j<TSEGS;j++){
+                            const a2=(j/TSEGS)*2*Math.PI, co=Math.cos(a2), si=Math.sin(a2);
+                            ring.push([pts[i][0]+TR*(co*n[0]+si*b[0]),pts[i][1]+TR*(co*n[1]+si*b[1]),pts[i][2]+TR*(co*n[2]+si*b[2])]);
+                        }
+                        return ring;
+                    }
+                    for(let i=0;i<pts.length-1;i++){
+                        const r1=ringAt(i),r2=ringAt(i+1);
+                        for(let j=0;j<TSEGS;j++){const jn=(j+1)%TSEGS;tris.push([r1[j],r2[j],r2[jn]],[r1[j],r2[jn],r1[jn]]);}
+                    }
+                    // End caps
+                    const r0=ringAt(0), rE=ringAt(pts.length-1);
+                    for(let j=0;j<TSEGS;j++){const jn=(j+1)%TSEGS;tris.push([pts[0],r0[jn],r0[j]],[pts[pts.length-1],rE[j],rE[jn]]);}
+
+                    const blob = buildSTL(tris);
+                    const a1v = document.getElementById('angle1').value;
+                    const a2v = document.getElementById('angle2').value;
+                    const name = `pendulum-${a1v}-${a2v}-${simTime}s.stl`;
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = name;
+                    a.click();
+                    stEl.textContent = `${name} (${(blob.size/1024).toFixed(0)} KB, ${tris.length} tri)`;
+                }, 10);
+            }, 10);
+        }
+
+        document.getElementById('stl-toggle').addEventListener('click',()=>{
+            document.getElementById('stl-panel').classList.toggle('hidden');
+        });
+        document.getElementById('tube-diam').addEventListener('input',e=>{
+            document.getElementById('tube-val').textContent=parseFloat(e.target.value).toFixed(1);
+        });
+        document.getElementById('stl-size').addEventListener('input',e=>{
+            document.getElementById('size-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-time').addEventListener('input',e=>{
+            document.getElementById('time-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-export').addEventListener('click',exportPendulumSTL);
 
         window.addEventListener('resize', resize);
 

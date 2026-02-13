@@ -197,6 +197,35 @@
                 </button>
             </div>
 
+            <!-- STL Export -->
+            <div class="mb-6">
+                <button id="stl-toggle" class="w-full py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/></svg>
+                    Exportar STL
+                </button>
+                <div id="stl-panel" class="hidden mt-3 p-3 bg-gray-900 rounded-lg space-y-3">
+                    <p class="text-xs text-gray-500">Relieve del árbol (modo árbol orgánico)</p>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Resolución: <span id="res-val" class="text-emerald-400 mono">300</span></label>
+                        <input type="range" id="stl-res" min="200" max="500" step="50" value="300" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Relieve: <span id="relief-val" class="text-emerald-400 mono">8</span> mm</label>
+                        <input type="range" id="stl-relief" min="3" max="15" step="1" value="8" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Base: <span id="base-val" class="text-emerald-400 mono">2</span> mm</label>
+                        <input type="range" id="stl-base" min="1" max="3" step="0.5" value="2" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Ancho: <span id="width-val" class="text-emerald-400 mono">80</span> mm</label>
+                        <input type="range" id="stl-width" min="60" max="120" step="10" value="80" class="w-full">
+                    </div>
+                    <button id="stl-export" class="w-full py-2 bg-emerald-500/30 hover:bg-emerald-500/40 text-emerald-400 rounded-lg text-xs transition">Generar y descargar</button>
+                    <p id="stl-status" class="text-xs text-gray-600 text-center"></p>
+                </div>
+            </div>
+
             <!-- Math Section -->
             <div class="math-box rounded-xl p-4">
                 <h3 class="text-sm font-medium text-cyan-400 mb-3">La Conjetura</h3>
@@ -652,6 +681,122 @@
                 traceNumber(n);
             }
         });
+
+        // === STL Export ===
+        function buildSTL(tris) {
+            const buf = new ArrayBuffer(84 + tris.length * 50);
+            const v = new DataView(buf);
+            const hdr = 'Binary STL - EigenLab';
+            for (let i = 0; i < hdr.length; i++) v.setUint8(i, hdr.charCodeAt(i));
+            v.setUint32(80, tris.length, true);
+            let o = 84;
+            for (const [a, b, c] of tris) {
+                const u0=b[0]-a[0],u1=b[1]-a[1],u2=b[2]-a[2];
+                const w0=c[0]-a[0],w1=c[1]-a[1],w2=c[2]-a[2];
+                let nx=u1*w2-u2*w1,ny=u2*w0-u0*w2,nz=u0*w1-u1*w0;
+                const l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                if(l>0){nx/=l;ny/=l;nz/=l;}
+                v.setFloat32(o,nx,true);o+=4;v.setFloat32(o,ny,true);o+=4;v.setFloat32(o,nz,true);o+=4;
+                for(const p of[a,b,c]){v.setFloat32(o,p[0],true);o+=4;v.setFloat32(o,p[1],true);o+=4;v.setFloat32(o,p[2],true);o+=4;}
+                v.setUint16(o,0,true);o+=2;
+            }
+            return new Blob([buf],{type:'application/octet-stream'});
+        }
+
+        function exportCollatzSTL() {
+            const res = parseInt(document.getElementById('stl-res').value);
+            const reliefH = parseFloat(document.getElementById('stl-relief').value);
+            const baseH = parseFloat(document.getElementById('stl-base').value);
+            const widthMM = parseFloat(document.getElementById('stl-width').value);
+            const angRad = branchAngle * Math.PI / 180;
+            const st = document.getElementById('stl-status');
+            st.textContent = 'Trazando secuencias...';
+
+            setTimeout(() => {
+                // Compute all tree-mode paths
+                let minX=0,maxX=0,minY=0,maxY=0;
+                const paths = [];
+                for (let n=2; n<=range; n++) {
+                    const seq = collatzSequence(n).sequence;
+                    let x=0, y=0, angle=-Math.PI/2;
+                    const path = [{x,y}];
+                    for (let i=0; i<seq.length-1; i++) {
+                        if (seq[i]%2===0) angle-=angRad; else angle+=angRad;
+                        x+=Math.cos(angle)*branchLength;
+                        y+=Math.sin(angle)*branchLength;
+                        path.push({x,y});
+                        minX=Math.min(minX,x);maxX=Math.max(maxX,x);
+                        minY=Math.min(minY,y);maxY=Math.max(maxY,y);
+                    }
+                    paths.push(path);
+                }
+
+                // Rasterize paths to density grid
+                const spanX=maxX-minX||1, spanY=maxY-minY||1;
+                const aspect = spanY/spanX;
+                const gW=res, gH=Math.max(1,Math.round(res*aspect));
+                const grid=[];
+                for(let iy=0;iy<=gH;iy++) grid[iy]=new Float64Array(gW+1);
+
+                for (const path of paths) {
+                    for (let i=1;i<path.length;i++) {
+                        const gx0=Math.round(((path[i-1].x-minX)/spanX)*gW);
+                        const gy0=Math.round(((path[i-1].y-minY)/spanY)*gH);
+                        const gx1=Math.round(((path[i].x-minX)/spanX)*gW);
+                        const gy1=Math.round(((path[i].y-minY)/spanY)*gH);
+                        const steps=Math.max(Math.abs(gx1-gx0),Math.abs(gy1-gy0),1);
+                        for(let s=0;s<=steps;s++){
+                            const t=s/steps;
+                            const gx=Math.round(gx0+(gx1-gx0)*t), gy=Math.round(gy0+(gy1-gy0)*t);
+                            for(let dy=-1;dy<=1;dy++) for(let dx=-1;dx<=1;dx++){
+                                const px=gx+dx,py=gy+dy;
+                                if(px>=0&&px<=gW&&py>=0&&py<=gH) grid[py][px]++;
+                            }
+                        }
+                    }
+                }
+
+                // Log-scale normalization
+                let maxVal=0;
+                for(let iy=0;iy<=gH;iy++) for(let ix=0;ix<=gW;ix++) maxVal=Math.max(maxVal,grid[iy][ix]);
+                const logMax=Math.log(1+maxVal);
+                for(let iy=0;iy<=gH;iy++) for(let ix=0;ix<=gW;ix++)
+                    grid[iy][ix] = logMax>0 ? Math.log(1+grid[iy][ix])/logMax*reliefH : 0;
+
+                st.textContent = 'Generando malla...';
+                setTimeout(() => {
+                    const cellW=widthMM/gW, cellH=widthMM*aspect/gH;
+                    const tris=[];
+                    const h=(ix,iy)=>baseH+grid[iy][ix];
+                    const Wt=gW*cellW, Ht=gH*cellH;
+                    for(let iy=0;iy<gH;iy++) for(let ix=0;ix<gW;ix++){
+                        const x0=ix*cellW,x1=(ix+1)*cellW,y0=iy*cellH,y1=(iy+1)*cellH;
+                        tris.push([[x0,y0,h(ix,iy)],[x1,y0,h(ix+1,iy)],[x1,y1,h(ix+1,iy+1)]]);
+                        tris.push([[x0,y0,h(ix,iy)],[x1,y1,h(ix+1,iy+1)],[x0,y1,h(ix,iy+1)]]);
+                    }
+                    tris.push([[0,0,0],[Wt,0,0],[Wt,Ht,0]],[[0,0,0],[Wt,Ht,0],[0,Ht,0]]);
+                    for(let ix=0;ix<gW;ix++){const x0=ix*cellW,x1=(ix+1)*cellW;
+                        tris.push([[x0,0,0],[x1,0,0],[x1,0,h(ix+1,0)]],[[x0,0,0],[x1,0,h(ix+1,0)],[x0,0,h(ix,0)]]);
+                        tris.push([[x1,Ht,0],[x0,Ht,0],[x0,Ht,h(ix,gH)]],[[x1,Ht,0],[x0,Ht,h(ix,gH)],[x1,Ht,h(ix+1,gH)]]);
+                    }
+                    for(let iy=0;iy<gH;iy++){const y0=iy*cellH,y1=(iy+1)*cellH;
+                        tris.push([[0,y1,0],[0,y0,0],[0,y0,h(0,iy)]],[[0,y1,0],[0,y0,h(0,iy)],[0,y1,h(0,iy+1)]]);
+                        tris.push([[Wt,y0,0],[Wt,y1,0],[Wt,y1,h(gW,iy+1)]],[[Wt,y0,0],[Wt,y1,h(gW,iy+1)],[Wt,y0,h(gW,iy)]]);
+                    }
+                    const blob=buildSTL(tris);
+                    const name=`collatz-tree-n${range}-${gW}x${gH}.stl`;
+                    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+                    st.textContent=`${name} (${(blob.size/1024).toFixed(0)} KB, ${tris.length} tri)`;
+                },10);
+            },10);
+        }
+
+        document.getElementById('stl-toggle').addEventListener('click',()=>document.getElementById('stl-panel').classList.toggle('hidden'));
+        document.getElementById('stl-res').addEventListener('input',e=>document.getElementById('res-val').textContent=e.target.value);
+        document.getElementById('stl-relief').addEventListener('input',e=>document.getElementById('relief-val').textContent=e.target.value);
+        document.getElementById('stl-base').addEventListener('input',e=>document.getElementById('base-val').textContent=e.target.value);
+        document.getElementById('stl-width').addEventListener('input',e=>document.getElementById('width-val').textContent=e.target.value);
+        document.getElementById('stl-export').addEventListener('click',exportCollatzSTL);
 
         window.addEventListener('resize', initCanvas);
 

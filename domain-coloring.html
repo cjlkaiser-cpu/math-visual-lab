@@ -185,6 +185,38 @@
                 </div>
             </div>
 
+            <!-- STL Export -->
+            <div class="mt-6">
+                <button id="stl-toggle" class="w-full py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Exportar STL
+                </button>
+                <div id="stl-panel" class="hidden mt-3 space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Resolución: <span id="res-val" class="text-emerald-400 mono">200</span></label>
+                        <input type="range" id="stl-res" min="50" max="400" step="50" value="200" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Altura max: <span id="height-val" class="text-emerald-400 mono">15</span> mm</label>
+                        <input type="range" id="stl-height" min="5" max="30" step="1" value="15" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Tamaño: <span id="size-val" class="text-emerald-400 mono">100</span> mm</label>
+                        <input type="range" id="stl-size" min="60" max="150" step="10" value="100" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Base: <span id="base-val" class="text-emerald-400 mono">2</span> mm</label>
+                        <input type="range" id="stl-base" min="1" max="5" step="0.5" value="2" class="w-full">
+                    </div>
+                    <button id="stl-export" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition">
+                        Descargar STL
+                    </button>
+                    <div id="stl-status" class="text-xs text-gray-500 mono text-center"></div>
+                </div>
+            </div>
+
             <a href="guides/domain-coloring.html" class="guide-link">
                 <span class="guide-icon">?</span>
                 Guía completa: funciones complejas, polos y ceros, transformaciones conformes
@@ -471,6 +503,129 @@
             enhancedPhase = e.target.checked;
             render();
         });
+
+        // === STL Export ===
+        function buildSTL(tris) {
+            const buf = new ArrayBuffer(84 + tris.length * 50);
+            const v = new DataView(buf);
+            const hdr = 'Binary STL - EigenLab';
+            for (let i = 0; i < hdr.length; i++) v.setUint8(i, hdr.charCodeAt(i));
+            v.setUint32(80, tris.length, true);
+            let o = 84;
+            for (const [a, b, c] of tris) {
+                const u0=b[0]-a[0],u1=b[1]-a[1],u2=b[2]-a[2];
+                const w0=c[0]-a[0],w1=c[1]-a[1],w2=c[2]-a[2];
+                let nx=u1*w2-u2*w1,ny=u2*w0-u0*w2,nz=u0*w1-u1*w0;
+                const l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                if(l>0){nx/=l;ny/=l;nz/=l;}
+                v.setFloat32(o,nx,true);o+=4;v.setFloat32(o,ny,true);o+=4;v.setFloat32(o,nz,true);o+=4;
+                for(const p of[a,b,c]){v.setFloat32(o,p[0],true);o+=4;v.setFloat32(o,p[1],true);o+=4;v.setFloat32(o,p[2],true);o+=4;}
+                v.setUint16(o,0,true);o+=2;
+            }
+            return new Blob([buf],{type:'application/octet-stream'});
+        }
+
+        function exportDomainSTL() {
+            const res = parseInt(document.getElementById('stl-res').value);
+            const maxH = parseFloat(document.getElementById('stl-height').value);
+            const totalSize = parseFloat(document.getElementById('stl-size').value);
+            const baseH = parseFloat(document.getElementById('stl-base').value);
+            const stEl = document.getElementById('stl-status');
+            stEl.textContent = 'Calculando heightmap...';
+
+            setTimeout(() => {
+                // Evaluate |f(z)| on a grid
+                const hmap = [];
+                let hMin = Infinity, hMax = -Infinity;
+                for (let iy = 0; iy <= res; iy++) {
+                    hmap[iy] = [];
+                    for (let ix = 0; ix <= res; ix++) {
+                        const x = (ix / res - 0.5) * 2 * range;
+                        const y = (0.5 - iy / res) * 2 * range;
+                        const fz = evaluate({ re: x, im: y });
+                        let h = cAbs(fz);
+                        if (!isFinite(h)) h = 0;
+                        // Use log scale to tame poles
+                        h = Math.log(1 + h);
+                        hmap[iy][ix] = h;
+                        if (h < hMin) hMin = h;
+                        if (h > hMax) hMax = h;
+                    }
+                }
+
+                const hRange = hMax - hMin || 1;
+                const cellW = totalSize / res;
+                const tris = [];
+
+                stEl.textContent = `Generando mesh (${res}x${res})...`;
+                setTimeout(() => {
+                    // Top surface
+                    for (let iy = 0; iy < res; iy++) {
+                        for (let ix = 0; ix < res; ix++) {
+                            const x0=ix*cellW, x1=(ix+1)*cellW, y0=iy*cellW, y1=(iy+1)*cellW;
+                            const z00=baseH+((hmap[iy][ix]-hMin)/hRange)*maxH;
+                            const z10=baseH+((hmap[iy][ix+1]-hMin)/hRange)*maxH;
+                            const z01=baseH+((hmap[iy+1][ix]-hMin)/hRange)*maxH;
+                            const z11=baseH+((hmap[iy+1][ix+1]-hMin)/hRange)*maxH;
+                            tris.push([[x0,y0,z00],[x1,y0,z10],[x1,y1,z11]]);
+                            tris.push([[x0,y0,z00],[x1,y1,z11],[x0,y1,z01]]);
+                        }
+                    }
+                    // Bottom face
+                    tris.push([[0,0,0],[totalSize,0,0],[totalSize,totalSize,0]]);
+                    tris.push([[0,0,0],[totalSize,totalSize,0],[0,totalSize,0]]);
+                    // 4 side walls
+                    for (let i = 0; i < res; i++) {
+                        const a=i*cellW, b=(i+1)*cellW;
+                        // Front (iy=0)
+                        const zf0=baseH+((hmap[0][i]-hMin)/hRange)*maxH;
+                        const zf1=baseH+((hmap[0][i+1]-hMin)/hRange)*maxH;
+                        tris.push([[a,0,0],[b,0,0],[b,0,zf1]]);
+                        tris.push([[a,0,0],[b,0,zf1],[a,0,zf0]]);
+                        // Back (iy=res)
+                        const zb0=baseH+((hmap[res][i]-hMin)/hRange)*maxH;
+                        const zb1=baseH+((hmap[res][i+1]-hMin)/hRange)*maxH;
+                        tris.push([[b,totalSize,0],[a,totalSize,0],[a,totalSize,zb0]]);
+                        tris.push([[b,totalSize,0],[a,totalSize,zb0],[b,totalSize,zb1]]);
+                        // Left (ix=0)
+                        const zl0=baseH+((hmap[i][0]-hMin)/hRange)*maxH;
+                        const zl1=baseH+((hmap[i+1][0]-hMin)/hRange)*maxH;
+                        tris.push([[0,b,0],[0,a,0],[0,a,zl0]]);
+                        tris.push([[0,b,0],[0,a,zl0],[0,b,zl1]]);
+                        // Right (ix=res)
+                        const zr0=baseH+((hmap[i][res]-hMin)/hRange)*maxH;
+                        const zr1=baseH+((hmap[i+1][res]-hMin)/hRange)*maxH;
+                        tris.push([[totalSize,a,0],[totalSize,b,0],[totalSize,b,zr1]]);
+                        tris.push([[totalSize,a,0],[totalSize,b,zr1],[totalSize,a,zr0]]);
+                    }
+
+                    const blob = buildSTL(tris);
+                    const name = `domain-${currentFunction}-r${range}.stl`;
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = name;
+                    a.click();
+                    stEl.textContent = `${name} (${(blob.size/1024).toFixed(0)} KB, ${tris.length} tri)`;
+                }, 10);
+            }, 10);
+        }
+
+        document.getElementById('stl-toggle').addEventListener('click',()=>{
+            document.getElementById('stl-panel').classList.toggle('hidden');
+        });
+        document.getElementById('stl-res').addEventListener('input',e=>{
+            document.getElementById('res-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-height').addEventListener('input',e=>{
+            document.getElementById('height-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-size').addEventListener('input',e=>{
+            document.getElementById('size-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-base').addEventListener('input',e=>{
+            document.getElementById('base-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-export').addEventListener('click',exportDomainSTL);
 
         // Initial render
         render();

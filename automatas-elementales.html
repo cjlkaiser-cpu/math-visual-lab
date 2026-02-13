@@ -187,6 +187,42 @@
                 </ul>
             </div>
 
+            <!-- STL Export -->
+            <div class="mb-6">
+                <button id="stl-toggle" class="w-full py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Exportar STL
+                </button>
+                <div id="stl-panel" class="hidden mt-3 space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Columnas: <span id="stl-cols-val" class="text-emerald-400 mono">200</span></label>
+                        <input type="range" id="stl-cols" min="50" max="400" step="50" value="200" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Generaciones: <span id="stl-rows-val" class="text-emerald-400 mono">200</span></label>
+                        <input type="range" id="stl-rows" min="50" max="400" step="50" value="200" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Relieve: <span id="relief-val" class="text-emerald-400 mono">3</span> mm</label>
+                        <input type="range" id="stl-relief" min="1" max="10" step="0.5" value="3" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Tamaño: <span id="size-val" class="text-emerald-400 mono">100</span> mm</label>
+                        <input type="range" id="stl-size" min="60" max="150" step="10" value="100" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Base: <span id="base-val" class="text-emerald-400 mono">2</span> mm</label>
+                        <input type="range" id="stl-base" min="1" max="5" step="0.5" value="2" class="w-full">
+                    </div>
+                    <button id="stl-export" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition">
+                        Descargar STL
+                    </button>
+                    <div id="stl-status" class="text-xs text-gray-500 mono text-center"></div>
+                </div>
+            </div>
+
             <div class="math-box rounded-xl p-4">
                 <h3 class="text-sm font-medium text-violet-400 mb-3">La Matemática</h3>
                 <div class="mono text-xs text-center mb-3 text-cyan-400">
@@ -395,6 +431,142 @@
             colorScheme = e.target.value;
             draw();
         });
+
+        // === STL Export ===
+        function buildSTL(tris) {
+            const buf = new ArrayBuffer(84 + tris.length * 50);
+            const v = new DataView(buf);
+            const hdr = 'Binary STL - EigenLab';
+            for (let i = 0; i < hdr.length; i++) v.setUint8(i, hdr.charCodeAt(i));
+            v.setUint32(80, tris.length, true);
+            let o = 84;
+            for (const [a, b, c] of tris) {
+                const u0=b[0]-a[0],u1=b[1]-a[1],u2=b[2]-a[2];
+                const w0=c[0]-a[0],w1=c[1]-a[1],w2=c[2]-a[2];
+                let nx=u1*w2-u2*w1,ny=u2*w0-u0*w2,nz=u0*w1-u1*w0;
+                const l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                if(l>0){nx/=l;ny/=l;nz/=l;}
+                v.setFloat32(o,nx,true);o+=4;v.setFloat32(o,ny,true);o+=4;v.setFloat32(o,nz,true);o+=4;
+                for(const p of[a,b,c]){v.setFloat32(o,p[0],true);o+=4;v.setFloat32(o,p[1],true);o+=4;v.setFloat32(o,p[2],true);o+=4;}
+                v.setUint16(o,0,true);o+=2;
+            }
+            return new Blob([buf],{type:'application/octet-stream'});
+        }
+
+        function exportAutomataSTL() {
+            const nCols = parseInt(document.getElementById('stl-cols').value);
+            const nRows = parseInt(document.getElementById('stl-rows').value);
+            const reliefH = parseFloat(document.getElementById('stl-relief').value);
+            const totalSize = parseFloat(document.getElementById('stl-size').value);
+            const baseH = parseFloat(document.getElementById('stl-base').value);
+            const stEl = document.getElementById('stl-status');
+            stEl.textContent = 'Generando autómata...';
+
+            setTimeout(() => {
+                // Generate full automaton history
+                const history = [];
+                let state = generateInitialState(nCols);
+                history.push(state);
+                for (let y = 1; y < nRows; y++) {
+                    state = nextGeneration(state);
+                    history.push(state);
+                }
+
+                // Count active cells
+                let active = 0;
+                for (let y = 0; y < nRows; y++)
+                    for (let x = 0; x < nCols; x++)
+                        active += history[y][x];
+
+                if (active === 0) { stEl.textContent = 'Sin celdas activas'; return; }
+
+                stEl.textContent = `Generando heightmap (${nCols}x${nRows}, ${active} celdas)...`;
+                setTimeout(() => {
+                    const cellW = totalSize / nCols;
+                    const cellH = (totalSize * nRows) / nCols; // Keep aspect ratio
+                    const totalW = nCols * cellW;
+                    const totalH = nRows * cellW;
+                    const tris = [];
+
+                    // Build heightmap: top surface from automaton grid
+                    // hmap[iy][ix] = baseH + (active ? reliefH : 0)
+                    // Use smooth heightmap approach for better mesh
+                    const hmap = [];
+                    for (let iy = 0; iy <= nRows; iy++) {
+                        hmap[iy] = [];
+                        for (let ix = 0; ix <= nCols; ix++) {
+                            // Sample cell value (clamp to grid)
+                            const cy = Math.min(iy, nRows - 1);
+                            const cx = Math.min(ix, nCols - 1);
+                            hmap[iy][ix] = history[cy][cx] ? reliefH : 0;
+                        }
+                    }
+
+                    // Top surface
+                    for (let iy = 0; iy < nRows; iy++) {
+                        for (let ix = 0; ix < nCols; ix++) {
+                            const x0=ix*cellW, x1=(ix+1)*cellW, y0=iy*cellW, y1=(iy+1)*cellW;
+                            const z00=baseH+hmap[iy][ix];
+                            const z10=baseH+hmap[iy][ix+1];
+                            const z01=baseH+hmap[iy+1][ix];
+                            const z11=baseH+hmap[iy+1][ix+1];
+                            tris.push([[x0,y0,z00],[x1,y0,z10],[x1,y1,z11]]);
+                            tris.push([[x0,y0,z00],[x1,y1,z11],[x0,y1,z01]]);
+                        }
+                    }
+                    // Bottom
+                    tris.push([[0,0,0],[totalW,0,0],[totalW,totalH,0]]);
+                    tris.push([[0,0,0],[totalW,totalH,0],[0,totalH,0]]);
+                    // 4 side walls
+                    for (let i = 0; i < nCols; i++) {
+                        const a=i*cellW, b=(i+1)*cellW;
+                        const zf0=baseH+hmap[0][i], zf1=baseH+hmap[0][i+1];
+                        tris.push([[a,0,0],[b,0,0],[b,0,zf1]]);
+                        tris.push([[a,0,0],[b,0,zf1],[a,0,zf0]]);
+                        const zb0=baseH+hmap[nRows][i], zb1=baseH+hmap[nRows][i+1];
+                        tris.push([[b,totalH,0],[a,totalH,0],[a,totalH,zb0]]);
+                        tris.push([[b,totalH,0],[a,totalH,zb0],[b,totalH,zb1]]);
+                    }
+                    for (let i = 0; i < nRows; i++) {
+                        const a=i*cellW, b=(i+1)*cellW;
+                        const zl0=baseH+hmap[i][0], zl1=baseH+hmap[i+1][0];
+                        tris.push([[0,b,0],[0,a,0],[0,a,zl0]]);
+                        tris.push([[0,b,0],[0,a,zl0],[0,b,zl1]]);
+                        const zr0=baseH+hmap[i][nCols], zr1=baseH+hmap[i+1][nCols];
+                        tris.push([[totalW,a,0],[totalW,b,0],[totalW,b,zr1]]);
+                        tris.push([[totalW,a,0],[totalW,b,zr1],[totalW,a,zr0]]);
+                    }
+
+                    const blob = buildSTL(tris);
+                    const name = `automata-rule${rule}-${nCols}x${nRows}.stl`;
+                    const a = document.createElement('a');
+                    a.href = URL.createObjectURL(blob);
+                    a.download = name;
+                    a.click();
+                    stEl.textContent = `${name} (${(blob.size/1024).toFixed(0)} KB, ${tris.length} tri)`;
+                }, 10);
+            }, 10);
+        }
+
+        document.getElementById('stl-toggle').addEventListener('click',()=>{
+            document.getElementById('stl-panel').classList.toggle('hidden');
+        });
+        document.getElementById('stl-cols').addEventListener('input',e=>{
+            document.getElementById('stl-cols-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-rows').addEventListener('input',e=>{
+            document.getElementById('stl-rows-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-relief').addEventListener('input',e=>{
+            document.getElementById('relief-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-size').addEventListener('input',e=>{
+            document.getElementById('size-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-base').addEventListener('input',e=>{
+            document.getElementById('base-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-export').addEventListener('click',exportAutomataSTL);
 
         window.addEventListener('resize', draw);
 

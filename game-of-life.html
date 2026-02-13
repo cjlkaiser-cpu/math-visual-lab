@@ -197,6 +197,34 @@
                 </button>
             </div>
 
+            <!-- STL Export -->
+            <div class="mb-6">
+                <button id="stl-toggle" class="w-full py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Exportar STL
+                </button>
+                <div id="stl-panel" class="hidden mt-3 space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Relieve: <span id="relief-val" class="text-emerald-400 mono">3</span> mm</label>
+                        <input type="range" id="stl-relief" min="1" max="10" step="0.5" value="3" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Base: <span id="base-val" class="text-emerald-400 mono">2</span> mm</label>
+                        <input type="range" id="stl-base" min="1" max="5" step="0.5" value="2" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-500 mb-1">Tamaño: <span id="size-val" class="text-emerald-400 mono">100</span> mm</label>
+                        <input type="range" id="stl-size" min="60" max="150" step="10" value="100" class="w-full">
+                    </div>
+                    <button id="stl-export" class="w-full py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg text-sm font-medium transition">
+                        Descargar STL
+                    </button>
+                    <div id="stl-status" class="text-xs text-gray-500 mono text-center"></div>
+                </div>
+            </div>
+
             <!-- Math Section -->
             <div class="math-box rounded-xl p-4">
                 <h3 class="text-sm font-medium text-lime-400 mb-3">Las Reglas</h3>
@@ -686,6 +714,85 @@
             initGrid();
             render();
         });
+
+        // === STL Export ===
+        function buildSTL(tris) {
+            const buf = new ArrayBuffer(84 + tris.length * 50);
+            const v = new DataView(buf);
+            const hdr = 'Binary STL - EigenLab';
+            for (let i = 0; i < hdr.length; i++) v.setUint8(i, hdr.charCodeAt(i));
+            v.setUint32(80, tris.length, true);
+            let o = 84;
+            for (const [a, b, c] of tris) {
+                const u0=b[0]-a[0],u1=b[1]-a[1],u2=b[2]-a[2];
+                const w0=c[0]-a[0],w1=c[1]-a[1],w2=c[2]-a[2];
+                let nx=u1*w2-u2*w1,ny=u2*w0-u0*w2,nz=u0*w1-u1*w0;
+                const l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                if(l>0){nx/=l;ny/=l;nz/=l;}
+                v.setFloat32(o,nx,true);o+=4;v.setFloat32(o,ny,true);o+=4;v.setFloat32(o,nz,true);o+=4;
+                for(const p of[a,b,c]){v.setFloat32(o,p[0],true);o+=4;v.setFloat32(o,p[1],true);o+=4;v.setFloat32(o,p[2],true);o+=4;}
+                v.setUint16(o,0,true);o+=2;
+            }
+            return new Blob([buf],{type:'application/octet-stream'});
+        }
+
+        function addSTLBox(tris, x,y,z, w,d,h) {
+            const c=[[x,y,z],[x+w,y,z],[x+w,y+d,z],[x,y+d,z],[x,y,z+h],[x+w,y,z+h],[x+w,y+d,z+h],[x,y+d,z+h]];
+            const F=[[0,3,2,1],[4,5,6,7],[0,1,5,4],[2,3,7,6],[1,2,6,5],[0,4,7,3]];
+            for(const f of F){tris.push([c[f[0]],c[f[1]],c[f[2]]]);tris.push([c[f[0]],c[f[2]],c[f[3]]]);}
+        }
+
+        function exportLifeSTL() {
+            const reliefH = parseFloat(document.getElementById('stl-relief').value);
+            const baseH = parseFloat(document.getElementById('stl-base').value);
+            const totalSize = parseFloat(document.getElementById('stl-size').value);
+            const stEl = document.getElementById('stl-status');
+
+            let alive = 0;
+            for (let i = 0; i < rows; i++) for (let j = 0; j < cols; j++) alive += grid[i][j];
+            if (alive === 0) { stEl.textContent = 'No hay celdas vivas'; return; }
+
+            stEl.textContent = `Generando ${alive} celdas...`;
+            setTimeout(() => {
+                const cellSz = totalSize / Math.max(rows, cols);
+                const totalW = cols * cellSz, totalH = rows * cellSz;
+                const tris = [];
+
+                // Base plate
+                addSTLBox(tris, 0, 0, 0, totalW, totalH, baseH);
+
+                // Alive cell columns
+                for (let i = 0; i < rows; i++) {
+                    for (let j = 0; j < cols; j++) {
+                        if (grid[i][j] === 1) {
+                            addSTLBox(tris, j*cellSz, i*cellSz, baseH, cellSz, cellSz, reliefH);
+                        }
+                    }
+                }
+
+                const blob = buildSTL(tris);
+                const name = `life-gen${generation}-${alive}cells.stl`;
+                const a = document.createElement('a');
+                a.href = URL.createObjectURL(blob);
+                a.download = name;
+                a.click();
+                stEl.textContent = `${name} (${(blob.size/1024).toFixed(0)} KB, ${tris.length} tri)`;
+            }, 10);
+        }
+
+        document.getElementById('stl-toggle').addEventListener('click',()=>{
+            document.getElementById('stl-panel').classList.toggle('hidden');
+        });
+        document.getElementById('stl-relief').addEventListener('input',e=>{
+            document.getElementById('relief-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-base').addEventListener('input',e=>{
+            document.getElementById('base-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-size').addEventListener('input',e=>{
+            document.getElementById('size-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-export').addEventListener('click',exportLifeSTL);
 
         window.addEventListener('resize', () => {
             const wasRunning = isRunning;

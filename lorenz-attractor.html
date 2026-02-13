@@ -203,6 +203,28 @@
                 </button>
             </div>
 
+            <!-- STL Export -->
+            <div class="mb-6">
+                <button id="stl-toggle" class="w-full py-2 px-4 bg-emerald-500/20 hover:bg-emerald-500/30 text-emerald-400 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Exportar STL
+                </button>
+                <div id="stl-panel" class="hidden mt-3 p-3 bg-gray-900 rounded-lg space-y-3">
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Tubo ⌀: <span id="tube-val" class="text-emerald-400 mono">1.6</span> mm</label>
+                        <input type="range" id="tube-diam" min="1.0" max="3.0" step="0.2" value="1.6" class="w-full">
+                    </div>
+                    <div>
+                        <label class="block text-xs text-gray-400 mb-1">Tamaño: <span id="size-val" class="text-emerald-400 mono">100</span> mm</label>
+                        <input type="range" id="stl-size" min="60" max="150" step="10" value="100" class="w-full">
+                    </div>
+                    <button id="stl-export" class="w-full py-2 bg-emerald-500/30 hover:bg-emerald-500/40 text-emerald-400 rounded-lg text-xs transition">Generar y descargar</button>
+                    <p id="stl-status" class="text-xs text-gray-600 text-center"></p>
+                </div>
+            </div>
+
             <!-- Math Section -->
             <div class="math-box rounded-xl p-4">
                 <h3 class="text-sm font-medium text-violet-400 mb-3">Las Ecuaciones</h3>
@@ -647,6 +669,120 @@
             isPaused = !isPaused;
             document.getElementById('pause-text').textContent = isPaused ? 'Reanudar' : 'Pausar';
         });
+
+        // === STL Export ===
+        function buildSTL(tris) {
+            const buf = new ArrayBuffer(84 + tris.length * 50);
+            const v = new DataView(buf);
+            const hdr = 'Binary STL - EigenLab';
+            for (let i = 0; i < hdr.length; i++) v.setUint8(i, hdr.charCodeAt(i));
+            v.setUint32(80, tris.length, true);
+            let o = 84;
+            for (const [a, b, c] of tris) {
+                const u0=b[0]-a[0],u1=b[1]-a[1],u2=b[2]-a[2];
+                const w0=c[0]-a[0],w1=c[1]-a[1],w2=c[2]-a[2];
+                let nx=u1*w2-u2*w1, ny=u2*w0-u0*w2, nz=u0*w1-u1*w0;
+                const l=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                if(l>0){nx/=l;ny/=l;nz/=l;}
+                v.setFloat32(o,nx,true);o+=4; v.setFloat32(o,ny,true);o+=4; v.setFloat32(o,nz,true);o+=4;
+                for(const p of[a,b,c]){v.setFloat32(o,p[0],true);o+=4;v.setFloat32(o,p[1],true);o+=4;v.setFloat32(o,p[2],true);o+=4;}
+                v.setUint16(o,0,true);o+=2;
+            }
+            return new Blob([buf],{type:'application/octet-stream'});
+        }
+
+        function exportLorenzSTL() {
+            const TR = parseFloat(document.getElementById('tube-diam').value)/2;
+            const totalSize = parseFloat(document.getElementById('stl-size').value);
+            const st = document.getElementById('stl-status');
+            st.textContent = 'Calculando trayectoria...';
+
+            setTimeout(() => {
+                const vsub=(a,b)=>[a[0]-b[0],a[1]-b[1],a[2]-b[2]];
+                const vscl=(v,s)=>[v[0]*s,v[1]*s,v[2]*s];
+                const vdot=(a,b)=>a[0]*b[0]+a[1]*b[1]+a[2]*b[2];
+                const vcross=(a,b)=>[a[1]*b[2]-a[2]*b[1],a[2]*b[0]-a[0]*b[2],a[0]*b[1]-a[1]*b[0]];
+                const vlen=v=>Math.sqrt(vdot(v,v));
+                const vnorm=v=>{const l=vlen(v);return l>1e-12?vscl(v,1/l):[1,0,0];};
+
+                // RK4 with current σ,ρ,β
+                const dt=0.004;
+                const f=(x,y,z)=>[sigma*(y-x),x*(rho-z)-y,x*y-beta*z];
+                function rk4s(x,y,z){
+                    const k1=f(x,y,z),k2=f(x+k1[0]*dt/2,y+k1[1]*dt/2,z+k1[2]*dt/2);
+                    const k3=f(x+k2[0]*dt/2,y+k2[1]*dt/2,z+k2[2]*dt/2),k4=f(x+k3[0]*dt,y+k3[1]*dt,z+k3[2]*dt);
+                    return[x+(k1[0]+2*k2[0]+2*k3[0]+k4[0])*dt/6,y+(k1[1]+2*k2[1]+2*k3[1]+k4[1])*dt/6,z+(k1[2]+2*k2[2]+2*k3[2]+k4[2])*dt/6];
+                }
+
+                let x=0.1,y=0,z=0;
+                for(let i=0;i<5000;i++)[x,y,z]=rk4s(x,y,z);
+                const raw=[];
+                for(let i=0;i<40000;i++){[x,y,z]=rk4s(x,y,z);raw.push([x,y,z]);}
+
+                // Decimate to uniform spacing
+                const pts=[raw[0]];
+                for(let i=1;i<raw.length;i++){
+                    if(vlen(vsub(raw[i],pts[pts.length-1]))>=0.2)pts.push(raw[i]);
+                }
+
+                // Scale & center
+                let bMin=[Infinity,Infinity,Infinity],bMax=[-Infinity,-Infinity,-Infinity];
+                for(const p of pts)for(let k=0;k<3;k++){bMin[k]=Math.min(bMin[k],p[k]);bMax[k]=Math.max(bMax[k],p[k]);}
+                const span=Math.max(bMax[0]-bMin[0],bMax[1]-bMin[1],bMax[2]-bMin[2]);
+                const sc=totalSize/span,cx2=(bMin[0]+bMax[0])/2,cy2=(bMin[1]+bMax[1])/2;
+                for(const p of pts){p[0]=(p[0]-cx2)*sc;p[1]=(p[1]-cy2)*sc;p[2]=(p[2]-bMin[2])*sc;}
+
+                st.textContent=`Generando tubo (${pts.length} pts)...`;
+                setTimeout(()=>{
+                    // Parallel transport frame
+                    const TSEGS=10,T=[],Ns=[];
+                    for(let i=0;i<pts.length;i++){
+                        if(i===0)T.push(vnorm(vsub(pts[1],pts[0])));
+                        else if(i===pts.length-1)T.push(vnorm(vsub(pts[i],pts[i-1])));
+                        else T.push(vnorm(vsub(pts[i+1],pts[i-1])));
+                    }
+                    let N0=vnorm(vcross(T[0],[0,0,1]));
+                    if(vlen(vcross(T[0],[0,0,1]))<0.01)N0=vnorm(vcross(T[0],[1,0,0]));
+                    Ns.push(N0);
+                    for(let i=1;i<pts.length;i++){
+                        let Np=vsub(Ns[i-1],vscl(T[i],vdot(Ns[i-1],T[i])));
+                        const l=vlen(Np);Np=l>1e-6?vscl(Np,1/l):Ns[i-1];Ns.push(Np);
+                    }
+
+                    const tris=[];
+                    function ringAt(i){
+                        const n=Ns[i],b=vcross(T[i],n),ring=[];
+                        for(let j=0;j<TSEGS;j++){
+                            const a=(j/TSEGS)*2*Math.PI,co=Math.cos(a),si=Math.sin(a);
+                            ring.push([pts[i][0]+TR*(co*n[0]+si*b[0]),pts[i][1]+TR*(co*n[1]+si*b[1]),pts[i][2]+TR*(co*n[2]+si*b[2])]);
+                        }
+                        return ring;
+                    }
+                    for(let i=0;i<pts.length-1;i++){
+                        const r1=ringAt(i),r2=ringAt(i+1);
+                        for(let j=0;j<TSEGS;j++){const jn=(j+1)%TSEGS;tris.push([r1[j],r2[j],r2[jn]],[r1[j],r2[jn],r1[jn]]);}
+                    }
+                    const r0=ringAt(0),rE=ringAt(pts.length-1);
+                    for(let j=0;j<TSEGS;j++){const jn=(j+1)%TSEGS;tris.push([pts[0],r0[jn],r0[j]],[pts[pts.length-1],rE[j],rE[jn]]);}
+
+                    const blob=buildSTL(tris);
+                    const name=`lorenz-s${sigma.toFixed(1)}-r${rho.toFixed(1)}-b${beta.toFixed(2)}.stl`;
+                    const a=document.createElement('a');a.href=URL.createObjectURL(blob);a.download=name;a.click();
+                    st.textContent=`${name} (${(blob.size/1024).toFixed(0)} KB, ${tris.length} tri)`;
+                },10);
+            },10);
+        }
+
+        document.getElementById('stl-toggle').addEventListener('click',()=>{
+            document.getElementById('stl-panel').classList.toggle('hidden');
+        });
+        document.getElementById('tube-diam').addEventListener('input',e=>{
+            document.getElementById('tube-val').textContent=parseFloat(e.target.value).toFixed(1);
+        });
+        document.getElementById('stl-size').addEventListener('input',e=>{
+            document.getElementById('size-val').textContent=e.target.value;
+        });
+        document.getElementById('stl-export').addEventListener('click',exportLorenzSTL);
 
         window.addEventListener('resize', initCanvas);
 

@@ -1,0 +1,1997 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Puzzle Lab - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        #canvas-container {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 100%);
+            cursor: grab;
+        }
+        #canvas-container:active { cursor: grabbing; }
+        .tab-btn {
+            padding: 8px 14px;
+            font-size: 0.78rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: rgba(168, 85, 247, 0.15);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .tab-btn:hover:not(.active) { background: rgba(55, 65, 81, 0.5); }
+        .surface-btn {
+            padding: 6px 10px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .surface-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .surface-btn:hover:not(.active) { background: #374151; }
+        .print-panel {
+            background: linear-gradient(180deg, rgba(168, 85, 247, 0.05), rgba(15, 15, 26, 0.9));
+            border-top: 1px solid rgba(168, 85, 247, 0.2);
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 h-screen flex flex-col overflow-hidden">
+
+    <!-- HEADER -->
+    <header class="flex items-center justify-between px-6 py-3 border-b border-gray-800/50">
+        <div class="flex items-center gap-3">
+            <div class="w-8 h-8 rounded-lg bg-purple-500/20 flex items-center justify-center">
+                <span class="text-purple-400 text-sm">&#9881;</span>
+            </div>
+            <div>
+                <h1 class="text-lg font-semibold text-white glow-text">Puzzle Lab</h1>
+                <p class="text-xs text-gray-500">Juegos y puzzles matematicos interactivos</p>
+            </div>
+        </div>
+        <button onclick="exportSTL()" class="px-3 py-1.5 bg-purple-500/20 text-purple-300 rounded-lg text-xs border border-purple-500/30 hover:bg-purple-500/30 transition-colors">
+            Exportar STL
+        </button>
+    </header>
+
+    <!-- MAIN -->
+    <main class="flex-1 flex overflow-hidden">
+
+        <!-- Sidebar -->
+        <aside class="w-80 border-r border-gray-800/50 flex flex-col overflow-y-auto">
+
+            <!-- Tabs -->
+            <div class="p-3 border-b border-gray-800/50 flex flex-wrap gap-1">
+                <button class="tab-btn active" data-tab="gears">Engranajes</button>
+                <button class="tab-btn" data-tab="soma">Soma</button>
+                <button class="tab-btn" data-tab="maze">Laberinto</button>
+                <button class="tab-btn" data-tab="reuleaux">Reuleaux</button>
+                <button class="tab-btn" data-tab="penrose">Penrose</button>
+                <button class="tab-btn" data-tab="tangram">Tangram</button>
+                <button class="tab-btn" data-tab="penrosetri">Penrose&#9651;</button>
+                <button class="tab-btn" data-tab="kaleido">Kaleidociclo</button>
+                <button class="tab-btn" data-tab="orrery">Orrery</button>
+            </div>
+
+            <!-- GEARS panel -->
+            <div id="panel-gears" class="p-4 space-y-4">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">d = m &middot; z</p>
+                    <p class="text-xs text-gray-500 mt-1">d = diametro primitivo, m = modulo, z = dientes</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Tipo</label>
+                    <div class="grid grid-cols-2 gap-2 mt-1">
+                        <button class="surface-btn active" data-gear-type="spur">Recto</button>
+                        <button class="surface-btn" data-gear-type="elliptical">Eliptico</button>
+                        <button class="surface-btn" data-gear-type="rack">Cremallera</button>
+                        <button class="surface-btn" data-gear-type="planetary">Planetario</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Dientes 1: <span id="val-teeth1" class="text-purple-300 mono">16</span></label>
+                    <input type="range" id="teeth1" min="8" max="36" value="16" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Dientes 2: <span id="val-teeth2" class="text-purple-300 mono">24</span></label>
+                    <input type="range" id="teeth2" min="8" max="36" value="24" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Modulo: <span id="val-module" class="text-purple-300 mono">2.0</span> mm</label>
+                    <input type="range" id="gearModule" min="10" max="40" value="20" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Velocidad: <span id="val-speed" class="text-purple-300 mono">1.0</span>x</label>
+                    <input type="range" id="gearSpeed" min="0" max="30" value="10" class="w-full mt-1">
+                </div>
+                <div id="gear-info" class="text-xs text-gray-500 space-y-1 mono"></div>
+            </div>
+
+            <!-- SOMA panel -->
+            <div id="panel-soma" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">7 piezas &rarr; cubo 3&times;3&times;3</p>
+                    <p class="text-xs text-gray-500 mt-1">240 soluciones distintas (Piet Hein, 1933)</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Pieza: <span id="val-soma-piece" class="text-purple-300 mono">Todas</span></label>
+                    <div class="grid grid-cols-4 gap-1 mt-1">
+                        <button class="surface-btn active" data-soma-piece="all">Todas</button>
+                        <button class="surface-btn" data-soma-piece="0">1-V</button>
+                        <button class="surface-btn" data-soma-piece="1">2-L</button>
+                        <button class="surface-btn" data-soma-piece="2">3-T</button>
+                        <button class="surface-btn" data-soma-piece="3">4-S</button>
+                        <button class="surface-btn" data-soma-piece="4">5-A</button>
+                        <button class="surface-btn" data-soma-piece="5">6-B</button>
+                        <button class="surface-btn" data-soma-piece="6">7-P</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Separacion: <span id="val-soma-gap" class="text-purple-300 mono">2.0</span></label>
+                    <input type="range" id="somaGap" min="0" max="50" value="20" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="soma-rotate" class="accent-purple-500" checked> Auto-rotar
+                    </label>
+                </div>
+            </div>
+
+            <!-- MAZE panel -->
+            <div id="panel-maze" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">Recursive Backtracker + BFS</p>
+                    <p class="text-xs text-gray-500 mt-1">Camino unico, todas las celdas alcanzables</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Tamano: <span id="val-maze-size" class="text-purple-300 mono">10</span>&times;<span id="val-maze-size2" class="text-purple-300 mono">10</span></label>
+                    <input type="range" id="mazeSize" min="5" max="25" value="10" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Seed: <span id="val-maze-seed" class="text-purple-300 mono">42</span></label>
+                    <input type="range" id="mazeSeed" min="1" max="999" value="42" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Altura paredes: <span id="val-maze-wall" class="text-purple-300 mono">4.0</span> mm</label>
+                    <input type="range" id="mazeWall" min="10" max="80" value="40" class="w-full mt-1">
+                </div>
+                <div class="flex gap-2">
+                    <button id="btn-maze-solve" class="surface-btn flex-1">Resolver (BFS)</button>
+                    <button id="btn-maze-new" class="surface-btn flex-1">Nuevo</button>
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="maze-show-solution" class="accent-purple-500"> Mostrar solucion
+                    </label>
+                </div>
+            </div>
+
+            <!-- REULEAUX panel -->
+            <div id="panel-reuleaux" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">Ancho constante = d</p>
+                    <p class="text-xs text-gray-500 mt-1">Curva de ancho constante con arcos circulares</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Lados (N, impar)</label>
+                    <div class="flex gap-2 mt-1">
+                        <button class="surface-btn active" data-reuleaux-n="3">3</button>
+                        <button class="surface-btn" data-reuleaux-n="5">5</button>
+                        <button class="surface-btn" data-reuleaux-n="7">7</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Ancho: <span id="val-reuleaux-width" class="text-purple-300 mono">40</span> mm</label>
+                    <input type="range" id="reuleauxWidth" min="20" max="80" value="40" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Grosor: <span id="val-reuleaux-thick" class="text-purple-300 mono">5.0</span> mm</label>
+                    <input type="range" id="reuleauxThick" min="20" max="100" value="50" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="reuleaux-animate" class="accent-purple-500" checked> Animar rotacion
+                    </label>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Vel: <span id="val-reuleaux-speed" class="text-purple-300 mono">1.0</span>x</label>
+                    <input type="range" id="reuleauxSpeed" min="1" max="30" value="10" class="w-full mt-1">
+                </div>
+            </div>
+
+            <!-- PENROSE panel -->
+            <div id="panel-penrose" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">&phi; = (1+&radic;5)/2 &approx; 1.618</p>
+                    <p class="text-xs text-gray-500 mt-1">Teselacion aperiodica P3 con proporcion aurea</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Subdivisiones: <span id="val-penrose-level" class="text-purple-300 mono">4</span></label>
+                    <input type="range" id="penroseLevel" min="1" max="7" value="4" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Escala: <span id="val-penrose-scale" class="text-purple-300 mono">60</span> mm</label>
+                    <input type="range" id="penroseScale" min="20" max="120" value="60" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Grosor: <span id="val-penrose-thick" class="text-purple-300 mono">3.0</span> mm</label>
+                    <input type="range" id="penroseThick" min="10" max="60" value="30" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Color</label>
+                    <div class="flex gap-2 mt-1">
+                        <button class="surface-btn active" data-penrose-color="type">Tipo</button>
+                        <button class="surface-btn" data-penrose-color="angle">Angulo</button>
+                    </div>
+                </div>
+                <div id="penrose-info" class="text-xs text-gray-500 space-y-1 mono"></div>
+            </div>
+
+            <!-- TANGRAM panel -->
+            <div id="panel-tangram" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">7 piezas &rarr; cuadrado 4U&times;4U</p>
+                    <p class="text-xs text-gray-500 mt-1">Puzzle chino clasico, U = 5mm</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Pieza</label>
+                    <div class="grid grid-cols-4 gap-1 mt-1">
+                        <button class="surface-btn active" data-tangram-piece="all">Todas</button>
+                        <button class="surface-btn" data-tangram-piece="0">Tri-G1</button>
+                        <button class="surface-btn" data-tangram-piece="1">Tri-G2</button>
+                        <button class="surface-btn" data-tangram-piece="2">Tri-M</button>
+                        <button class="surface-btn" data-tangram-piece="3">Tri-P1</button>
+                        <button class="surface-btn" data-tangram-piece="4">Tri-P2</button>
+                        <button class="surface-btn" data-tangram-piece="5">Cuadrado</button>
+                        <button class="surface-btn" data-tangram-piece="6">Romboide</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Separacion: <span id="val-tangram-gap" class="text-purple-300 mono">2.0</span></label>
+                    <input type="range" id="tangramGap" min="0" max="50" value="20" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Grosor: <span id="val-tangram-thick" class="text-purple-300 mono">3.0</span> mm</label>
+                    <input type="range" id="tangramThick" min="10" max="60" value="30" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="tangram-rotate" class="accent-purple-500" checked> Auto-rotar
+                    </label>
+                </div>
+            </div>
+
+            <!-- PENROSE TRIANGLE panel -->
+            <div id="panel-penrosetri" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">Triangulo imposible</p>
+                    <p class="text-xs text-gray-500 mt-1">Objeto imposible de Penrose (1958)</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Tamano: <span id="val-ptri-size" class="text-purple-300 mono">30</span> mm</label>
+                    <input type="range" id="ptriSize" min="15" max="60" value="30" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Grosor barra: <span id="val-ptri-bar" class="text-purple-300 mono">5.0</span> mm</label>
+                    <input type="range" id="ptriBar" min="20" max="80" value="50" class="w-full mt-1">
+                </div>
+                <div>
+                    <button id="btn-ptri-illusion" class="surface-btn w-full">Ver ilusion</button>
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="ptri-rotate" class="accent-purple-500" checked> Auto-rotar
+                    </label>
+                </div>
+            </div>
+
+            <!-- KALEIDOCICLO panel -->
+            <div id="panel-kaleido" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">N tetraedros en anillo</p>
+                    <p class="text-xs text-gray-500 mt-1">Anillo articulado de tetraedros</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">N (tetraedros)</label>
+                    <div class="flex gap-2 mt-1">
+                        <button class="surface-btn active" data-kaleido-n="6">6</button>
+                        <button class="surface-btn" data-kaleido-n="8">8</button>
+                        <button class="surface-btn" data-kaleido-n="10">10</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Radio: <span id="val-kaleido-r" class="text-purple-300 mono">15</span> mm</label>
+                    <input type="range" id="kaleidoR" min="8" max="30" value="15" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Arista: <span id="val-kaleido-edge" class="text-purple-300 mono">10</span> mm</label>
+                    <input type="range" id="kaleidoEdge" min="5" max="20" value="10" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="kaleido-rotate" class="accent-purple-500" checked> Auto-rotar
+                    </label>
+                </div>
+            </div>
+
+            <!-- ORRERY panel -->
+            <div id="panel-orrery" class="p-4 space-y-4 hidden">
+                <div class="math-box rounded-lg p-3">
+                    <p class="text-xs text-purple-300 mono">ratio = z<sub>driver</sub> / z<sub>driven</sub></p>
+                    <p class="text-xs text-gray-500 mt-1">Tren de engranajes para planetario mecanico</p>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Planetas</label>
+                    <div class="grid grid-cols-3 gap-1 mt-1">
+                        <button class="surface-btn active" data-orrery-set="inner">Internos</button>
+                        <button class="surface-btn" data-orrery-set="full">Todos</button>
+                        <button class="surface-btn" data-orrery-set="earth">Solo Tierra</button>
+                    </div>
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Modulo: <span id="val-orrery-module" class="text-purple-300 mono">2.0</span> mm</label>
+                    <input type="range" id="orreryModule" min="10" max="40" value="20" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Velocidad: <span id="val-orrery-speed" class="text-purple-300 mono">1.0</span>x</label>
+                    <input type="range" id="orrerySpeed" min="1" max="50" value="10" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="orrery-wireframe" class="accent-purple-500"> Wireframe
+                    </label>
+                </div>
+                <div id="orrery-info" class="text-xs text-gray-500 space-y-1 mono"></div>
+            </div>
+
+            <!-- PRINT PANEL (always visible) -->
+            <div class="mt-auto print-panel p-4 space-y-3">
+                <p class="text-xs text-purple-400 font-semibold uppercase tracking-wider">Impresion 3D</p>
+                <div>
+                    <label class="text-xs text-gray-400">Escala: <span id="val-print-scale" class="text-purple-300 mono">1.0</span>x</label>
+                    <input type="range" id="printScale" min="5" max="30" value="10" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="text-xs text-gray-400">Tolerancia: <span id="val-print-tol" class="text-purple-300 mono">0.20</span> mm</label>
+                    <input type="range" id="printTol" min="0" max="50" value="20" class="w-full mt-1">
+                </div>
+                <div>
+                    <label class="flex items-center gap-2 text-xs text-gray-400 cursor-pointer">
+                        <input type="checkbox" id="print-base" class="accent-purple-500"> Base plana
+                    </label>
+                </div>
+                <div id="print-base-thick-wrap" class="hidden">
+                    <label class="text-xs text-gray-400">Grosor base: <span id="val-print-base" class="text-purple-300 mono">2.0</span> mm</label>
+                    <input type="range" id="printBaseThick" min="10" max="50" value="20" class="w-full mt-1">
+                </div>
+                <div id="print-info" class="text-xs text-gray-500 space-y-1 mono">
+                    <p>BBox: — &times; — &times; — mm</p>
+                    <p>Triangulos: —</p>
+                    <p>Volumen: — cm&sup3;</p>
+                </div>
+            </div>
+
+        </aside>
+
+        <!-- Canvas -->
+        <div id="canvas-container" class="flex-1 relative"></div>
+    </main>
+
+    <script>
+    /* =============================================================
+       THREE.JS SETUP
+       ============================================================= */
+    const container = document.getElementById('canvas-container');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(window.devicePixelRatio);
+    renderer.setSize(container.clientWidth, container.clientHeight);
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(45, container.clientWidth / container.clientHeight, 0.1, 1000);
+    camera.position.set(0, 40, 80);
+    camera.lookAt(0, 0, 0);
+
+    scene.add(new THREE.HemisphereLight(0x8888bb, 0x221133, 0.6));
+    const dir1 = new THREE.DirectionalLight(0xeeeeff, 0.6);
+    dir1.position.set(5, 5, 5); scene.add(dir1);
+    const dir2 = new THREE.DirectionalLight(0x9944cc, 0.35);
+    dir2.position.set(-4, -2, 3); scene.add(dir2);
+    const dir3 = new THREE.DirectionalLight(0x6633aa, 0.2);
+    dir3.position.set(0, -5, -3); scene.add(dir3);
+
+    const groups = {
+        gears: new THREE.Group(),
+        soma: new THREE.Group(),
+        maze: new THREE.Group(),
+        reuleaux: new THREE.Group(),
+        penrose: new THREE.Group(),
+        tangram: new THREE.Group(),
+        penrosetri: new THREE.Group(),
+        kaleido: new THREE.Group(),
+        orrery: new THREE.Group()
+    };
+    Object.values(groups).forEach(g => scene.add(g));
+
+    /* =============================================================
+       ORBIT CONTROLS (manual)
+       ============================================================= */
+    let isDragging = false, prevMouse = { x: 0, y: 0 };
+    let rotY = 0.3, rotX = 0.5, camDist = 80;
+
+    container.addEventListener('mousedown', e => { isDragging = true; prevMouse = { x: e.clientX, y: e.clientY }; });
+    window.addEventListener('mouseup', () => isDragging = false);
+    container.addEventListener('mousemove', e => {
+        if (!isDragging) return;
+        rotY += (e.clientX - prevMouse.x) * 0.01;
+        rotX += (e.clientY - prevMouse.y) * 0.01;
+        rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotX));
+        prevMouse = { x: e.clientX, y: e.clientY };
+    });
+    container.addEventListener('wheel', e => {
+        camDist *= e.deltaY > 0 ? 1.08 : 0.92;
+        camDist = Math.max(10, Math.min(300, camDist));
+        e.preventDefault();
+    }, { passive: false });
+
+    let touchDist = 0;
+    container.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) { isDragging = true; prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY }; }
+        else if (e.touches.length === 2) { touchDist = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY); }
+    });
+    container.addEventListener('touchmove', e => {
+        e.preventDefault();
+        if (e.touches.length === 1 && isDragging) {
+            rotY += (e.touches[0].clientX - prevMouse.x) * 0.01;
+            rotX += (e.touches[0].clientY - prevMouse.y) * 0.01;
+            rotX = Math.max(-Math.PI / 2, Math.min(Math.PI / 2, rotX));
+            prevMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+        } else if (e.touches.length === 2) {
+            const d = Math.hypot(e.touches[0].clientX - e.touches[1].clientX, e.touches[0].clientY - e.touches[1].clientY);
+            camDist *= touchDist / d; camDist = Math.max(10, Math.min(300, camDist)); touchDist = d;
+        }
+    }, { passive: false });
+    container.addEventListener('touchend', () => isDragging = false);
+
+    window.addEventListener('resize', () => {
+        camera.aspect = container.clientWidth / container.clientHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize(container.clientWidth, container.clientHeight);
+    });
+
+    /* =============================================================
+       STATE
+       ============================================================= */
+    let activeTab = 'gears';
+    let gearAngle = 0;
+    let reuleauxAngle = 0;
+    let somaAutoAngle = 0;
+    let tangramAutoAngle = 0;
+    let ptriAutoAngle = 0;
+    let kaleidoAutoAngle = 0;
+    let rackOffset = 0;
+    let planetaryAngle = 0;
+    let orreryAngle = 0;
+
+    const SOMA_NAMES = ['1-V','2-L','3-T','4-S','5-A','6-B','7-P'];
+    const SOMA_COLORS = [0xe74c3c, 0xf39c12, 0x2ecc71, 0x3498db, 0x9b59b6, 0xe91e63, 0x00bcd4];
+    const SOMA_PIECES = [
+        [[0,0,0],[1,0,0],[1,1,0]],
+        [[0,0,0],[1,0,0],[2,0,0],[2,1,0]],
+        [[0,0,0],[1,0,0],[2,0,0],[1,1,0]],
+        [[0,0,0],[1,0,0],[1,1,0],[2,1,0]],
+        [[0,0,0],[1,0,0],[1,1,0],[1,1,1]],
+        [[1,0,0],[0,0,0],[0,1,0],[0,1,1]],
+        [[0,0,0],[1,0,0],[0,1,0],[0,0,1]]
+    ];
+
+    /* =============================================================
+       MATERIALS
+       ============================================================= */
+    function makeMat(color, opts) {
+        return new THREE.MeshPhongMaterial(Object.assign({
+            color, specular: 0x442277, shininess: 40, side: THREE.DoubleSide
+        }, opts || {}));
+    }
+
+    function clearGroup(g) { while (g.children.length) { g.children[0].geometry?.dispose(); g.remove(g.children[0]); } }
+
+    /* =============================================================
+       TAB SWITCHING
+       ============================================================= */
+    const camDefaults = {
+        gears:      { dist: 80,  rx: 0.6,  ry: 0.2 },
+        soma:       { dist: 55,  rx: 0.5,  ry: 0.4 },
+        maze:       { dist: 80,  rx: 1.0,  ry: 0.1 },
+        reuleaux:   { dist: 70,  rx: 0.5,  ry: 0.2 },
+        penrose:    { dist: 100, rx: 1.3,  ry: 0.0 },
+        tangram:    { dist: 70,  rx: 0.6,  ry: 0.3 },
+        penrosetri: { dist: 80,  rx: 0.5,  ry: 0.3 },
+        kaleido:    { dist: 60,  rx: 0.4,  ry: 0.3 },
+        orrery:     { dist: 150, rx: 0.4,  ry: 0.8 }
+    };
+
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            activeTab = btn.dataset.tab;
+            document.querySelectorAll('[id^="panel-"]').forEach(p => p.classList.add('hidden'));
+            document.getElementById('panel-' + activeTab).classList.remove('hidden');
+            Object.entries(groups).forEach(([k, g]) => g.visible = (k === activeTab));
+            const cd = camDefaults[activeTab];
+            camDist = cd.dist; rotX = cd.rx; rotY = cd.ry;
+            regenerate();
+        });
+    });
+
+    /* =============================================================
+       MODULE 1: GEARS
+       ============================================================= */
+    let gearType = 'spur';
+
+    function gearProfile(teeth, mod, isElliptical) {
+        const shape = new THREE.Shape();
+        const pitchR = (mod * teeth) / 2;
+        const addendum = mod;
+        const dedendum = mod * 1.25;
+        const toothArc = (2 * Math.PI) / teeth;
+        const steps = teeth * 20;
+        const pts = [];
+        for (let i = 0; i <= steps; i++) {
+            const angle = (i / steps) * Math.PI * 2;
+            let r = pitchR;
+            if (isElliptical) {
+                const a = 1.0, b = 0.65;
+                r = pitchR * (a * b) / Math.sqrt(b * b * Math.cos(angle) ** 2 + a * a * Math.sin(angle) ** 2);
+            }
+            const phase = (angle % toothArc) / toothArc;
+            if (phase < 0.15) r -= dedendum;
+            else if (phase < 0.25) { const t = (phase - 0.15) / 0.1; r += addendum * t - dedendum * (1 - t); }
+            else if (phase < 0.5) r += addendum;
+            else if (phase < 0.6) { const t = (phase - 0.5) / 0.1; r += addendum * (1 - t) - dedendum * t; }
+            else r -= dedendum;
+            pts.push(new THREE.Vector2(Math.cos(angle) * r, Math.sin(angle) * r));
+        }
+        shape.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) shape.lineTo(pts[i].x, pts[i].y);
+        shape.closePath();
+        const hole = new THREE.Path();
+        const hr = mod * 1.8;
+        for (let i = 0; i <= 32; i++) {
+            const a = (i / 32) * Math.PI * 2;
+            i === 0 ? hole.moveTo(Math.cos(a) * hr, Math.sin(a) * hr) : hole.lineTo(Math.cos(a) * hr, Math.sin(a) * hr);
+        }
+        shape.holes.push(hole);
+        return shape;
+    }
+
+    function rackProfile(teeth, mod) {
+        const shape = new THREE.Shape();
+        const pitch = Math.PI * mod;
+        const addendum = mod;
+        const dedendum = mod * 1.25;
+        const totalLen = teeth * pitch;
+        const baseH = mod * 3;
+        const pts = [];
+        pts.push(new THREE.Vector2(0, -baseH));
+        pts.push(new THREE.Vector2(totalLen, -baseH));
+        pts.push(new THREE.Vector2(totalLen, -dedendum));
+        for (let i = teeth - 1; i >= 0; i--) {
+            const x0 = i * pitch;
+            pts.push(new THREE.Vector2(x0 + pitch * 0.85, -dedendum));
+            pts.push(new THREE.Vector2(x0 + pitch * 0.75, addendum));
+            pts.push(new THREE.Vector2(x0 + pitch * 0.50, addendum));
+            pts.push(new THREE.Vector2(x0 + pitch * 0.40, -dedendum));
+        }
+        pts.push(new THREE.Vector2(0, -dedendum));
+        shape.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) shape.lineTo(pts[i].x, pts[i].y);
+        shape.closePath();
+        return { shape, totalLen };
+    }
+
+    function ringGearProfile(teeth, mod) {
+        const shape = new THREE.Shape();
+        const pitchR = (mod * teeth) / 2;
+        const addendum = mod;
+        const dedendum = mod * 1.25;
+        const outerR = pitchR + dedendum + mod * 2;
+        // outer circle
+        for (let i = 0; i <= 64; i++) {
+            const a = (i / 64) * Math.PI * 2;
+            i === 0 ? shape.moveTo(Math.cos(a) * outerR, Math.sin(a) * outerR) : shape.lineTo(Math.cos(a) * outerR, Math.sin(a) * outerR);
+        }
+        shape.closePath();
+        // inner tooth profile as hole (teeth face inward)
+        const hole = new THREE.Path();
+        const toothArc = (2 * Math.PI) / teeth;
+        const steps = teeth * 20;
+        const pts = [];
+        for (let i = 0; i <= steps; i++) {
+            const angle = (i / steps) * Math.PI * 2;
+            const phase = (angle % toothArc) / toothArc;
+            let r = pitchR;
+            // inverted: addendum goes inward, dedendum goes outward
+            if (phase < 0.15) r += dedendum;
+            else if (phase < 0.25) { const t = (phase - 0.15) / 0.1; r -= addendum * t - dedendum * (1 - t); }
+            else if (phase < 0.5) r -= addendum;
+            else if (phase < 0.6) { const t = (phase - 0.5) / 0.1; r -= addendum * (1 - t) - dedendum * t; }
+            else r += dedendum;
+            pts.push(new THREE.Vector2(Math.cos(angle) * r, Math.sin(angle) * r));
+        }
+        hole.moveTo(pts[0].x, pts[0].y);
+        for (let i = 1; i < pts.length; i++) hole.lineTo(pts[i].x, pts[i].y);
+        shape.holes.push(hole);
+        return shape;
+    }
+
+    function buildGears() {
+        const g = groups.gears;
+        clearGroup(g);
+        const t1 = parseInt(document.getElementById('teeth1').value);
+        const t2 = parseInt(document.getElementById('teeth2').value);
+        const mod = parseInt(document.getElementById('gearModule').value) / 10;
+        const depth = mod * 3;
+        const ext = { depth, bevelEnabled: false };
+
+        switch (gearType) {
+        case 'spur':
+        case 'elliptical': {
+            const isE = gearType === 'elliptical';
+            const shape1 = gearProfile(t1, mod, isE);
+            const shape2 = gearProfile(t2, mod, isE);
+            const geom1 = new THREE.ExtrudeGeometry(shape1, ext); geom1.center();
+            const geom2 = new THREE.ExtrudeGeometry(shape2, ext); geom2.center();
+            const mesh1 = new THREE.Mesh(geom1, makeMat(0xa855f7));
+            const mesh2 = new THREE.Mesh(geom2, makeMat(0x6366f1));
+            const r1 = (mod * t1) / 2, r2 = (mod * t2) / 2;
+            mesh2.position.x = r1 + r2;
+            mesh1.userData = { teeth: t1, role: 'gear1' };
+            mesh2.userData = { teeth: t2, role: 'gear2' };
+            g.add(mesh1); g.add(mesh2);
+            const edgeMat1 = new THREE.LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: 0.3 });
+            const edgeMat2 = new THREE.LineBasicMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.3 });
+            const e1 = new THREE.LineSegments(new THREE.EdgesGeometry(geom1), edgeMat1);
+            e1.userData = { role: 'edge1' };
+            g.add(e1);
+            const e2 = new THREE.LineSegments(new THREE.EdgesGeometry(geom2), edgeMat2);
+            e2.position.x = r1 + r2; e2.userData = { role: 'edge2' };
+            g.add(e2);
+            g.position.set(-(r1 + r2) / 2, 0, 0);
+            document.getElementById('gear-info').innerHTML =
+                `<p>d1 = ${(r1*2).toFixed(1)}mm (${t1}T)</p>` +
+                `<p>d2 = ${(r2*2).toFixed(1)}mm (${t2}T)</p>` +
+                `<p>ratio = ${t1}:${t2} = ${(t1/t2).toFixed(3)}</p>` +
+                `<p>dist = ${(r1+r2).toFixed(1)}mm</p>`;
+            break;
+        }
+        case 'rack': {
+            // pinion gear + linear rack
+            const pinionShape = gearProfile(t1, mod, false);
+            const geomP = new THREE.ExtrudeGeometry(pinionShape, ext); geomP.center();
+            const meshP = new THREE.Mesh(geomP, makeMat(0xa855f7));
+            const r1 = (mod * t1) / 2;
+            meshP.position.y = r1 + mod * 1.25;
+            meshP.userData = { teeth: t1, role: 'pinion' };
+            g.add(meshP);
+            const edgeP = new THREE.LineSegments(new THREE.EdgesGeometry(geomP), new THREE.LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: 0.3 }));
+            edgeP.position.copy(meshP.position);
+            edgeP.userData = { role: 'pinion-edge' };
+            g.add(edgeP);
+            // rack
+            const rackTeeth = Math.max(t2, 12);
+            const { shape: rackShape, totalLen } = rackProfile(rackTeeth, mod);
+            const geomR = new THREE.ExtrudeGeometry(rackShape, ext); geomR.center();
+            const meshR = new THREE.Mesh(geomR, makeMat(0x6366f1));
+            meshR.rotation.z = Math.PI / 2;
+            meshR.userData = { role: 'rack', totalLen };
+            g.add(meshR);
+            const edgeR = new THREE.LineSegments(new THREE.EdgesGeometry(geomR), new THREE.LineBasicMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.3 }));
+            edgeR.rotation.z = Math.PI / 2;
+            edgeR.userData = { role: 'rack-edge' };
+            g.add(edgeR);
+            g.position.set(0, 0, 0);
+            rackOffset = 0;
+            document.getElementById('gear-info').innerHTML =
+                `<p>Pinon: ${t1}T, d=${(r1*2).toFixed(1)}mm</p>` +
+                `<p>Cremallera: ${rackTeeth}T</p>` +
+                `<p>Paso = ${(Math.PI * mod).toFixed(2)}mm</p>`;
+            break;
+        }
+        case 'planetary': {
+            // sun + 3 planets + ring
+            const sunTeeth = t1;
+            const planetTeeth = t2;
+            const ringTeeth = sunTeeth + 2 * planetTeeth;
+            const rSun = (mod * sunTeeth) / 2;
+            const rPlanet = (mod * planetTeeth) / 2;
+            const rRing = (mod * ringTeeth) / 2;
+            const carrierR = rSun + rPlanet;
+            // sun
+            const sunShape = gearProfile(sunTeeth, mod, false);
+            const sunGeom = new THREE.ExtrudeGeometry(sunShape, ext); sunGeom.center();
+            const sunMesh = new THREE.Mesh(sunGeom, makeMat(0xfbbf24));
+            sunMesh.userData = { teeth: sunTeeth, role: 'sun' };
+            g.add(sunMesh);
+            // 3 planets
+            const planetShape = gearProfile(planetTeeth, mod, false);
+            const planetGeom = new THREE.ExtrudeGeometry(planetShape, ext); planetGeom.center();
+            for (let i = 0; i < 3; i++) {
+                const angle = (2 * Math.PI * i) / 3;
+                const pm = new THREE.Mesh(planetGeom, makeMat(0xa855f7));
+                pm.position.x = carrierR * Math.cos(angle);
+                pm.position.y = carrierR * Math.sin(angle);
+                pm.userData = { teeth: planetTeeth, role: 'planet', idx: i, baseAngle: angle };
+                g.add(pm);
+            }
+            // ring
+            const ringShape = ringGearProfile(ringTeeth, mod);
+            const ringGeom = new THREE.ExtrudeGeometry(ringShape, ext); ringGeom.center();
+            const ringMesh = new THREE.Mesh(ringGeom, makeMat(0x374151, { transparent: true, opacity: 0.5 }));
+            ringMesh.userData = { teeth: ringTeeth, role: 'ring' };
+            g.add(ringMesh);
+            // ring edge
+            g.add(new THREE.LineSegments(new THREE.EdgesGeometry(ringGeom), new THREE.LineBasicMaterial({ color: 0x4f46e5, transparent: true, opacity: 0.2 })));
+            g.position.set(0, 0, 0);
+            planetaryAngle = 0;
+            document.getElementById('gear-info').innerHTML =
+                `<p>Sol: ${sunTeeth}T (d=${(rSun*2).toFixed(1)}mm)</p>` +
+                `<p>Planeta: ${planetTeeth}T &times;3</p>` +
+                `<p>Anillo: ${ringTeeth}T (d=${(rRing*2).toFixed(1)}mm)</p>` +
+                `<p>Ratio: ${(1 + ringTeeth/sunTeeth).toFixed(2)}:1</p>`;
+            break;
+        }
+        }
+    }
+
+    /* =============================================================
+       MODULE 2: SOMA CUBE
+       ============================================================= */
+    function buildSoma() {
+        const g = groups.soma;
+        clearGroup(g);
+        const sel = document.querySelector('[data-soma-piece].active')?.dataset.somaPiece || 'all';
+        const gap = parseInt(document.getElementById('somaGap').value) / 10;
+        const unit = 5;
+        const boxGeo = new THREE.BoxGeometry(unit * 0.92, unit * 0.92, unit * 0.92);
+        const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.25 });
+        const layout = [
+            [-3, 0, 2], [-1, 0, 2], [1, 0, 2], [3, 0, 2],
+            [-2, 0, -2], [0, 0, -2], [2, 0, -2]
+        ];
+        for (let p = 0; p < 7; p++) {
+            if (sel !== 'all' && p !== parseInt(sel)) continue;
+            const mat = makeMat(SOMA_COLORS[p]);
+            const cells = SOMA_PIECES[p];
+            let cx = 0, cy = 0, cz = 0;
+            cells.forEach(([x,y,z]) => { cx += x; cy += y; cz += z; });
+            cx /= cells.length; cy /= cells.length; cz /= cells.length;
+            const [lx, ly, lz] = layout[p];
+            for (const [x, y, z] of cells) {
+                const mesh = new THREE.Mesh(boxGeo, mat);
+                mesh.position.set(
+                    (x - cx) * unit + lx * unit * gap,
+                    (z - cz) * unit,
+                    (y - cy) * unit + lz * unit * gap
+                );
+                g.add(mesh);
+                const edges = new THREE.LineSegments(new THREE.EdgesGeometry(boxGeo), edgeMat);
+                edges.position.copy(mesh.position);
+                g.add(edges);
+            }
+        }
+    }
+
+    /* =============================================================
+       MODULE 3: MAZE
+       ============================================================= */
+    function seededRand(seed) {
+        let s = seed;
+        return () => { s = (s * 1103515245 + 12345) & 0x7fffffff; return s / 0x7fffffff; };
+    }
+
+    function generateMaze(cols, rows, seed) {
+        const rand = seededRand(seed);
+        const grid = Array.from({ length: rows }, () => Array.from({ length: cols }, () => ({ n:1,s:1,e:1,w:1, visited:false })));
+        const stack = [];
+        let cx = 0, cy = 0;
+        grid[cy][cx].visited = true;
+        stack.push([cx, cy]);
+        while (stack.length > 0) {
+            const nb = [];
+            if (cy > 0 && !grid[cy-1][cx].visited) nb.push([cx, cy-1, 'n', 's']);
+            if (cy < rows-1 && !grid[cy+1][cx].visited) nb.push([cx, cy+1, 's', 'n']);
+            if (cx > 0 && !grid[cy][cx-1].visited) nb.push([cx-1, cy, 'w', 'e']);
+            if (cx < cols-1 && !grid[cy][cx+1].visited) nb.push([cx+1, cy, 'e', 'w']);
+            if (nb.length > 0) {
+                const [nx, ny, dir, opp] = nb[Math.floor(rand() * nb.length)];
+                grid[cy][cx][dir] = 0;
+                grid[ny][nx][opp] = 0;
+                grid[ny][nx].visited = true;
+                stack.push([cx, cy]);
+                cx = nx; cy = ny;
+            } else {
+                [cx, cy] = stack.pop();
+            }
+        }
+        return grid;
+    }
+
+    function solveMaze(grid, cols, rows) {
+        const visited = Array.from({ length: rows }, () => Array(cols).fill(false));
+        const parent = Array.from({ length: rows }, () => Array(cols).fill(null));
+        const queue = [[0, 0]];
+        visited[0][0] = true;
+        while (queue.length > 0) {
+            const [cx, cy] = queue.shift();
+            if (cx === cols - 1 && cy === rows - 1) {
+                const path = [];
+                let px = cx, py = cy;
+                while (px !== null) {
+                    path.push([px, py]);
+                    const pp = parent[py][px];
+                    if (pp) { px = pp[0]; py = pp[1]; } else break;
+                }
+                return path.reverse();
+            }
+            for (const [dx, dy, dir] of [[0,-1,'n'],[0,1,'s'],[1,0,'e'],[-1,0,'w']]) {
+                const nx = cx + dx, ny = cy + dy;
+                if (nx >= 0 && nx < cols && ny >= 0 && ny < rows && !visited[ny][nx] && !grid[cy][cx][dir]) {
+                    visited[ny][nx] = true;
+                    parent[ny][nx] = [cx, cy];
+                    queue.push([nx, ny]);
+                }
+            }
+        }
+        return [];
+    }
+
+    function buildMaze() {
+        const g = groups.maze;
+        clearGroup(g);
+        const size = parseInt(document.getElementById('mazeSize').value);
+        const seed = parseInt(document.getElementById('mazeSeed').value);
+        const wallH = parseInt(document.getElementById('mazeWall').value) / 10;
+        const showSol = document.getElementById('maze-show-solution').checked;
+        const cell = 5, wt = 0.4;
+        const total = size * cell;
+        const grid = generateMaze(size, size, seed);
+        const wallMat = makeMat(0x4a5568);
+        const floorMat = makeMat(0x1a1a2e);
+        const pathMat = makeMat(0xa855f7, { transparent: true, opacity: 0.8 });
+        const fGeo = new THREE.BoxGeometry(total, 0.4, total);
+        const floor = new THREE.Mesh(fGeo, floorMat);
+        floor.position.set(total / 2, -0.2, total / 2);
+        g.add(floor);
+        function addWall(x, y, z, sx, sy, sz) {
+            const geo = new THREE.BoxGeometry(sx, sy, sz);
+            const m = new THREE.Mesh(geo, wallMat);
+            m.position.set(x, y, z);
+            g.add(m);
+        }
+        for (let i = 1; i < size; i++) addWall(i * cell + cell / 2, wallH / 2, 0, cell, wallH, wt);
+        addWall(size * cell - cell / 4, wallH / 2, 0, cell / 2, wallH, wt);
+        for (let i = 0; i < size - 1; i++) addWall(i * cell + cell / 2, wallH / 2, total, cell, wallH, wt);
+        addWall(cell / 4, wallH / 2, total, cell / 2, wallH, wt);
+        addWall(0, wallH / 2, total / 2, wt, wallH, total);
+        addWall(total, wallH / 2, total / 2, wt, wallH, total);
+        for (let cy = 0; cy < size; cy++) {
+            for (let cx = 0; cx < size; cx++) {
+                const c = grid[cy][cx];
+                const x0 = cx * cell, z0 = cy * cell;
+                if (c.s && cy < size - 1) addWall(x0 + cell / 2, wallH / 2, z0 + cell, cell + wt, wallH, wt);
+                if (c.e && cx < size - 1) addWall(x0 + cell, wallH / 2, z0 + cell / 2, wt, wallH, cell + wt);
+            }
+        }
+        if (showSol) {
+            const sol = solveMaze(grid, size, size);
+            for (const [px, py] of sol) {
+                const geo = new THREE.BoxGeometry(cell * 0.4, 0.3, cell * 0.4);
+                const m = new THREE.Mesh(geo, pathMat);
+                m.position.set(px * cell + cell / 2, 0.15, py * cell + cell / 2);
+                g.add(m);
+            }
+        }
+        const box = new THREE.Box3().setFromObject(g);
+        const center = box.getCenter(new THREE.Vector3());
+        g.children.forEach(c => c.position.sub(center));
+    }
+
+    /* =============================================================
+       MODULE 4: REULEAUX POLYGON
+       ============================================================= */
+    let reuleauxN = 3;
+
+    function buildReuleaux() {
+        const g = groups.reuleaux;
+        clearGroup(g);
+        const N = reuleauxN;
+        const width = parseInt(document.getElementById('reuleauxWidth').value);
+        const thick = parseInt(document.getElementById('reuleauxThick').value) / 10;
+        const R = width / (2 * Math.sin(((N - 1) * Math.PI) / (2 * N)));
+        const verts = [];
+        for (let i = 0; i < N; i++) {
+            const a = (2 * Math.PI * i) / N - Math.PI / 2;
+            verts.push([R * Math.cos(a), R * Math.sin(a)]);
+        }
+        const arcR = width;
+        const shape = new THREE.Shape();
+        const allPts = [];
+        for (let i = 0; i < N; i++) {
+            const from = verts[i];
+            const to = verts[(i + 1) % N];
+            const ci = (i + Math.ceil(N / 2)) % N;
+            const cen = verts[ci];
+            const sa = Math.atan2(from[1] - cen[1], from[0] - cen[0]);
+            let ea = Math.atan2(to[1] - cen[1], to[0] - cen[0]);
+            let delta = ea - sa;
+            if (delta > Math.PI) delta -= 2 * Math.PI;
+            if (delta < -Math.PI) delta += 2 * Math.PI;
+            for (let s = 0; s <= 40; s++) {
+                const t = s / 40;
+                const a = sa + delta * t;
+                allPts.push([cen[0] + arcR * Math.cos(a), cen[1] + arcR * Math.sin(a)]);
+            }
+        }
+        shape.moveTo(allPts[0][0], allPts[0][1]);
+        for (let i = 1; i < allPts.length; i++) shape.lineTo(allPts[i][0], allPts[i][1]);
+        shape.closePath();
+        const geom = new THREE.ExtrudeGeometry(shape, { depth: thick, bevelEnabled: false });
+        geom.center();
+        g.add(new THREE.Mesh(geom, makeMat(0xc084fc)));
+        g.add(new THREE.LineSegments(new THREE.EdgesGeometry(geom), new THREE.LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: 0.3 })));
+        const sq = new THREE.EdgesGeometry(new THREE.BoxGeometry(width, thick * 0.5, width));
+        g.add(new THREE.LineSegments(sq, new THREE.LineBasicMaterial({ color: 0x374151 })));
+    }
+
+    /* =============================================================
+       MODULE 5: PENROSE TILES (Robinson triangle subdivision)
+       ============================================================= */
+    const PHI = (1 + Math.sqrt(5)) / 2;
+
+    function subdividePenrose(tris) {
+        const out = [];
+        for (const [type, A, B, C] of tris) {
+            if (type === 0) {
+                const P = [A[0] + (B[0] - A[0]) / PHI, A[1] + (B[1] - A[1]) / PHI];
+                out.push([0, C, P, B]);
+                out.push([1, P, C, A]);
+            } else {
+                const Q = [B[0] + (A[0] - B[0]) / PHI, B[1] + (A[1] - B[1]) / PHI];
+                const R = [B[0] + (C[0] - B[0]) / PHI, B[1] + (C[1] - B[1]) / PHI];
+                out.push([1, R, C, A]);
+                out.push([1, Q, R, B]);
+                out.push([0, R, Q, A]);
+            }
+        }
+        return out;
+    }
+
+    function buildPenrose() {
+        const g = groups.penrose;
+        clearGroup(g);
+        const level = parseInt(document.getElementById('penroseLevel').value);
+        const scale = parseInt(document.getElementById('penroseScale').value);
+        const thick = parseInt(document.getElementById('penroseThick').value) / 10;
+        const colorMode = document.querySelector('[data-penrose-color].active')?.dataset.penroseColor || 'type';
+        let tris = [];
+        for (let i = 0; i < 10; i++) {
+            const a1 = (2 * Math.PI * i) / 10;
+            const a2 = (2 * Math.PI * (i + 1)) / 10;
+            const O = [0, 0];
+            const B = [scale * Math.cos(a1), scale * Math.sin(a1)];
+            const C = [scale * Math.cos(a2), scale * Math.sin(a2)];
+            tris.push(i % 2 === 0 ? [0, O, B, C] : [0, O, C, B]);
+        }
+        for (let i = 0; i < level; i++) tris = subdividePenrose(tris);
+        const pos = [], nor = [], col = [];
+        const cThick = new THREE.Color(0xa855f7);
+        const cThin = new THREE.Color(0x6366f1);
+        let nThick = 0, nThin = 0;
+        for (const [type, A, B, C] of tris) {
+            type === 0 ? nThin++ : nThick++;
+            const c = (type === 0 ? cThin : cThick).clone();
+            if (colorMode === 'angle') {
+                const mx = (A[0] + B[0] + C[0]) / 3, my = (A[1] + B[1] + C[1]) / 3;
+                c.setHSL(((Math.atan2(my, mx) / (2 * Math.PI)) + 0.5) % 1, 0.6, type === 0 ? 0.4 : 0.55);
+            }
+            pos.push(A[0], thick/2, A[1], B[0], thick/2, B[1], C[0], thick/2, C[1]);
+            nor.push(0,1,0, 0,1,0, 0,1,0);
+            col.push(c.r,c.g,c.b, c.r,c.g,c.b, c.r,c.g,c.b);
+            pos.push(C[0], -thick/2, C[1], B[0], -thick/2, B[1], A[0], -thick/2, A[1]);
+            nor.push(0,-1,0, 0,-1,0, 0,-1,0);
+            col.push(c.r,c.g,c.b, c.r,c.g,c.b, c.r,c.g,c.b);
+            const sc = c.clone().multiplyScalar(0.7);
+            for (const [p1, p2] of [[A,B],[B,C],[C,A]]) {
+                const dx = p2[0]-p1[0], dy = p2[1]-p1[1], len = Math.sqrt(dx*dx+dy*dy);
+                const nx = -dy/len, nz = dx/len;
+                pos.push(p1[0],-thick/2,p1[1], p2[0],-thick/2,p2[1], p2[0],thick/2,p2[1]);
+                nor.push(nx,0,nz, nx,0,nz, nx,0,nz);
+                col.push(sc.r,sc.g,sc.b, sc.r,sc.g,sc.b, sc.r,sc.g,sc.b);
+                pos.push(p1[0],-thick/2,p1[1], p2[0],thick/2,p2[1], p1[0],thick/2,p1[1]);
+                nor.push(nx,0,nz, nx,0,nz, nx,0,nz);
+                col.push(sc.r,sc.g,sc.b, sc.r,sc.g,sc.b, sc.r,sc.g,sc.b);
+            }
+        }
+        const bufGeo = new THREE.BufferGeometry();
+        bufGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        bufGeo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+        bufGeo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+        g.add(new THREE.Mesh(bufGeo, new THREE.MeshPhongMaterial({ vertexColors: true, specular: 0x442277, shininess: 30, side: THREE.DoubleSide })));
+        document.getElementById('penrose-info').innerHTML =
+            `<p>Triangulos: ${tris.length}</p>` +
+            `<p>Gruesos: ${nThick} | Finos: ${nThin}</p>` +
+            `<p>Ratio: ${(nThick / Math.max(nThin, 1)).toFixed(3)} (phi=1.618)</p>`;
+    }
+
+    /* =============================================================
+       MODULE 6: TANGRAM
+       ============================================================= */
+    const TANGRAM_COLORS = [0xe74c3c, 0xf39c12, 0x2ecc71, 0x3498db, 0x9b59b6, 0xe91e63, 0x00bcd4];
+
+    function buildTangram() {
+        const g = groups.tangram;
+        clearGroup(g);
+        const sel = document.querySelector('[data-tangram-piece].active')?.dataset.tangramPiece || 'all';
+        const gap = parseInt(document.getElementById('tangramGap').value) / 10;
+        const thick = parseInt(document.getElementById('tangramThick').value) / 10;
+        const U = 5;
+
+        // 7 pieces on 4U x 4U square: 2 large tri, 1 medium tri, 2 small tri, 1 square, 1 parallelogram
+        const pieces = [
+            [[0, 0], [4*U, 0], [2*U, 2*U]],                          // large tri 1
+            [[0, 4*U], [4*U, 4*U], [2*U, 2*U]],                      // large tri 2
+            [[0, 4*U], [0, 2*U], [U, 3*U]],                           // medium tri
+            [[2*U, 2*U], [4*U, 2*U], [3*U, U]],                       // small tri 1
+            [[3*U, U], [4*U, 0], [4*U, 2*U]],                         // small tri 2
+            [[0, 2*U], [U, 3*U], [2*U, 2*U], [U, U]],                // square
+            [[U, U], [2*U, 2*U], [3*U, U], [2*U, 0]],                // parallelogram
+        ];
+
+        // layout offsets for exploded view
+        const layout = [
+            [0, -1.5],   // tri grande 1 (abajo)
+            [0, 1.5],    // tri grande 2 (arriba)
+            [-2, 1],     // tri mediano (izq arriba)
+            [2, 0],      // tri peq 1 (derecha)
+            [2.5, -1],   // tri peq 2 (derecha abajo)
+            [-2, -0.5],  // cuadrado (izq)
+            [0, 0],      // romboide (centro)
+        ];
+
+        const edgeMat = new THREE.LineBasicMaterial({ color: 0x000000, transparent: true, opacity: 0.3 });
+
+        for (let p = 0; p < 7; p++) {
+            if (sel !== 'all' && p !== parseInt(sel)) continue;
+            const verts = pieces[p];
+            // compute centroid
+            let cx = 0, cy = 0;
+            verts.forEach(([x,y]) => { cx += x; cy += y; });
+            cx /= verts.length; cy /= verts.length;
+
+            const shape = new THREE.Shape();
+            shape.moveTo(verts[0][0] - cx, verts[0][1] - cy);
+            for (let i = 1; i < verts.length; i++) shape.lineTo(verts[i][0] - cx, verts[i][1] - cy);
+            shape.closePath();
+
+            const geom = new THREE.ExtrudeGeometry(shape, { depth: thick, bevelEnabled: false });
+            geom.center();
+            const mesh = new THREE.Mesh(geom, makeMat(TANGRAM_COLORS[p]));
+            mesh.position.set(
+                layout[p][0] * U * gap,
+                0,
+                layout[p][1] * U * gap
+            );
+            // Lay flat: rotate so extrusion goes up (Y)
+            mesh.rotation.x = -Math.PI / 2;
+            g.add(mesh);
+
+            const edges = new THREE.LineSegments(new THREE.EdgesGeometry(geom), edgeMat);
+            edges.position.copy(mesh.position);
+            edges.rotation.copy(mesh.rotation);
+            g.add(edges);
+        }
+    }
+
+    /* =============================================================
+       MODULE 7: PENROSE TRIANGLE (impossible object)
+       ============================================================= */
+    function buildPenroseTriangle() {
+        const g = groups.penrosetri;
+        clearGroup(g);
+        const size = parseInt(document.getElementById('ptriSize').value);
+        const barW = parseInt(document.getElementById('ptriBar').value) / 10;
+
+        // 3 bars forming an equilateral triangle
+        // Each bar at a different Y height to create the gap illusion
+        const h = barW * 0.6; // height offset between bars
+        const len = size;
+        const colors = [0xa855f7, 0x6366f1, 0xc084fc];
+
+        // Vertices of equilateral triangle centered at origin
+        const triVerts = [];
+        for (let i = 0; i < 3; i++) {
+            const angle = (2 * Math.PI * i) / 3 - Math.PI / 2;
+            triVerts.push(new THREE.Vector3(
+                len * Math.cos(angle),
+                0,
+                len * Math.sin(angle)
+            ));
+        }
+
+        for (let i = 0; i < 3; i++) {
+            const from = triVerts[i];
+            const to = triVerts[(i + 1) % 3];
+            const dx = to.x - from.x;
+            const dz = to.z - from.z;
+            const barLen = Math.sqrt(dx * dx + dz * dz);
+            const midX = (from.x + to.x) / 2;
+            const midZ = (from.z + to.z) / 2;
+            const yOff = (i - 1) * h; // bar 0: -h, bar 1: 0, bar 2: +h
+
+            const geo = new THREE.BoxGeometry(barLen, barW, barW);
+            const mesh = new THREE.Mesh(geo, makeMat(colors[i]));
+            mesh.position.set(midX, yOff, midZ);
+            // rotate to align with edge direction
+            const angle = Math.atan2(dz, dx);
+            mesh.rotation.y = -angle;
+            g.add(mesh);
+
+            const edges = new THREE.LineSegments(
+                new THREE.EdgesGeometry(geo),
+                new THREE.LineBasicMaterial({ color: 0x7c3aed, transparent: true, opacity: 0.3 })
+            );
+            edges.position.copy(mesh.position);
+            edges.rotation.copy(mesh.rotation);
+            g.add(edges);
+        }
+    }
+
+    /* =============================================================
+       MODULE 8: KALEIDOCYCLE
+       ============================================================= */
+    let kaleidoN = 6;
+
+    function buildKaleido() {
+        const g = groups.kaleido;
+        clearGroup(g);
+        const N = kaleidoN;
+        const R = parseInt(document.getElementById('kaleidoR').value);
+        const edgeLen = parseInt(document.getElementById('kaleidoEdge').value);
+
+        const colors = [0xe74c3c, 0xf39c12, 0x2ecc71, 0x3498db, 0x9b59b6, 0xe91e63, 0x00bcd4, 0xfbbf24, 0x10b981, 0x6366f1];
+
+        // Build N tetrahedra arranged in a ring
+        // Each tetrahedron shares an edge with its neighbors
+        const pos = [], nor = [], col = [];
+
+        for (let i = 0; i < N; i++) {
+            const a1 = (2 * Math.PI * i) / N;
+            const a2 = (2 * Math.PI * (i + 1)) / N;
+
+            // Two points on the ring
+            const p1 = new THREE.Vector3(R * Math.cos(a1), 0, R * Math.sin(a1));
+            const p2 = new THREE.Vector3(R * Math.cos(a2), 0, R * Math.sin(a2));
+
+            // Two apex points alternating above/below for torsion
+            const mid = new THREE.Vector3().addVectors(p1, p2).multiplyScalar(0.5);
+            const outDir = mid.clone().normalize();
+            const flip = (i % 2 === 0) ? 1 : -1;
+
+            const apex1 = new THREE.Vector3(
+                mid.x + outDir.x * edgeLen * 0.3,
+                edgeLen * 0.4 * flip,
+                mid.z + outDir.z * edgeLen * 0.3
+            );
+            const apex2 = new THREE.Vector3(
+                mid.x - outDir.x * edgeLen * 0.3,
+                -edgeLen * 0.4 * flip,
+                mid.z - outDir.z * edgeLen * 0.3
+            );
+
+            const verts = [p1, p2, apex1, apex2];
+            // 4 triangular faces of tetrahedron
+            const faces = [
+                [0, 1, 2],
+                [0, 2, 3],
+                [1, 3, 2],
+                [0, 3, 1]
+            ];
+
+            const c = new THREE.Color(colors[i % colors.length]);
+
+            for (const [a, b, cIdx] of faces) {
+                const va = verts[a], vb = verts[b], vc = verts[cIdx];
+                // compute face normal
+                const ab = new THREE.Vector3().subVectors(vb, va);
+                const ac = new THREE.Vector3().subVectors(vc, va);
+                const fn = new THREE.Vector3().crossVectors(ab, ac).normalize();
+
+                pos.push(va.x, va.y, va.z, vb.x, vb.y, vb.z, vc.x, vc.y, vc.z);
+                nor.push(fn.x, fn.y, fn.z, fn.x, fn.y, fn.z, fn.x, fn.y, fn.z);
+                // slight color variation per face
+                const shade = 0.7 + Math.random() * 0.3;
+                const fc = c.clone().multiplyScalar(shade);
+                col.push(fc.r, fc.g, fc.b, fc.r, fc.g, fc.b, fc.r, fc.g, fc.b);
+            }
+        }
+
+        const bufGeo = new THREE.BufferGeometry();
+        bufGeo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+        bufGeo.setAttribute('normal', new THREE.Float32BufferAttribute(nor, 3));
+        bufGeo.setAttribute('color', new THREE.Float32BufferAttribute(col, 3));
+        const mesh = new THREE.Mesh(bufGeo, new THREE.MeshPhongMaterial({
+            vertexColors: true, specular: 0x442277, shininess: 30, side: THREE.DoubleSide
+        }));
+        g.add(mesh);
+    }
+
+    /* =============================================================
+       PRINT INFO
+       ============================================================= */
+    function updatePrintInfo() {
+        const g = groups[activeTab];
+        const scale = parseInt(document.getElementById('printScale').value) / 10;
+
+        // Apply scale to group
+        g.scale.set(scale, scale, scale);
+
+        const box = new THREE.Box3().setFromObject(g);
+        const bsize = box.getSize(new THREE.Vector3());
+
+        // Count triangles
+        let triCount = 0;
+        g.traverse(child => {
+            if (!child.isMesh) return;
+            const geo = child.geometry;
+            if (geo.index) triCount += geo.index.count / 3;
+            else triCount += geo.attributes.position.count / 3;
+        });
+
+        // Estimate volume using signed tetrahedron method
+        let volume = 0;
+        g.traverse(child => {
+            if (!child.isMesh) return;
+            const geo = child.geometry;
+            const p = geo.attributes.position;
+            const idx = geo.index;
+            child.updateMatrixWorld(true);
+            const mat = child.matrixWorld;
+
+            const getVert = (vi) => {
+                const v = new THREE.Vector3(p.getX(vi), p.getY(vi), p.getZ(vi));
+                v.applyMatrix4(mat);
+                return v;
+            };
+
+            const triCount2 = idx ? idx.count / 3 : p.count / 3;
+            for (let t = 0; t < triCount2; t++) {
+                const i0 = idx ? idx.getX(t * 3) : t * 3;
+                const i1 = idx ? idx.getX(t * 3 + 1) : t * 3 + 1;
+                const i2 = idx ? idx.getX(t * 3 + 2) : t * 3 + 2;
+                const v1 = getVert(i0), v2 = getVert(i1), v3 = getVert(i2);
+                // signed volume of tetrahedron with origin
+                volume += v1.dot(new THREE.Vector3().crossVectors(v2, v3)) / 6;
+            }
+        });
+        volume = Math.abs(volume) / 1000; // mm³ → cm³
+
+        const el = document.getElementById('print-info');
+        el.innerHTML =
+            `<p>BBox: ${bsize.x.toFixed(1)} &times; ${bsize.y.toFixed(1)} &times; ${bsize.z.toFixed(1)} mm</p>` +
+            `<p>Triangulos: ${triCount}</p>` +
+            `<p>Volumen: ${volume.toFixed(2)} cm&sup3;</p>`;
+    }
+
+    /* =============================================================
+       MODULE 9: ORRERY — Gear Train
+       ============================================================= */
+    const PLANETS = [
+        { name: 'Mercurio', period: 0.2408, color: 0x9ca3af },
+        { name: 'Venus',    period: 0.6152, color: 0xfbbf24 },
+        { name: 'Tierra',   period: 1.0,    color: 0x3b82f6 },
+        { name: 'Marte',    period: 1.8809, color: 0xef4444 },
+        { name: 'Jupiter',  period: 11.862, color: 0xf97316 },
+        { name: 'Saturno',  period: 29.457, color: 0xeab308 },
+    ];
+    const MIN_TEETH = 8, MAX_TEETH = 60;
+    const COMPOUND_THRESHOLD = 7.0;
+
+    function findGearPair(targetRatio) {
+        let best = null;
+        for (let driver = MIN_TEETH; driver <= MAX_TEETH; driver++) {
+            for (let driven = MIN_TEETH; driven <= MAX_TEETH; driven++) {
+                const ratio = driver / driven;
+                const error = Math.abs(ratio - targetRatio) / targetRatio;
+                if (!best || error < best.error) {
+                    best = { driver, driven, ratio, error };
+                }
+            }
+        }
+        return best;
+    }
+
+    function findCompoundPair(targetRatio) {
+        let best = null;
+        for (let t1 = MIN_TEETH; t1 <= MAX_TEETH; t1++) {
+            for (let t2 = MIN_TEETH; t2 <= MAX_TEETH; t2++) {
+                const r1 = t1 / t2;
+                const residue = targetRatio / r1;
+                if (residue < MIN_TEETH / MAX_TEETH || residue > MAX_TEETH / MIN_TEETH) continue;
+                const pair2 = findGearPair(residue);
+                const totalRatio = r1 * pair2.ratio;
+                const error = Math.abs(totalRatio - targetRatio) / targetRatio;
+                if (!best || error < best.error) {
+                    best = {
+                        stage1: { driver: t1, driven: t2 },
+                        stage2: { driver: pair2.driver, driven: pair2.driven },
+                        ratio: totalRatio, error
+                    };
+                }
+            }
+        }
+        return best;
+    }
+
+    function computeGearRatios() {
+        return PLANETS.map(p => {
+            const targetRatio = 1.0 / p.period;
+            if (targetRatio > COMPOUND_THRESHOLD || targetRatio < 1 / COMPOUND_THRESHOLD) {
+                const compound = findCompoundPair(targetRatio);
+                return { ...p, trainType: 'compound', ...compound };
+            } else {
+                const simple = findGearPair(targetRatio);
+                return { ...p, trainType: 'simple', ...simple };
+            }
+        });
+    }
+
+    function updateOrreryInfo(levelData) {
+        const infoEl = document.getElementById('orrery-info');
+        if (!levelData || !levelData.length) { infoEl.innerHTML = ''; return; }
+        infoEl.innerHTML = levelData.map(d => {
+            if (d.trainType === 'simple') {
+                return `<p>${d.name}: ${d.driver}/${d.driven} = ${d.ratio.toFixed(4)} (err ${(d.error * 100).toFixed(2)}%)</p>`;
+            } else {
+                return `<p>${d.name}: ${d.stage1.driver}/${d.stage1.driven} &times; ${d.stage2.driver}/${d.stage2.driven} = ${d.ratio.toFixed(4)} (err ${(d.error * 100).toFixed(2)}%)</p>`;
+            }
+        }).join('');
+    }
+
+    function makeTextSprite(text, hexColor) {
+        const canvas = document.createElement('canvas');
+        const ctx = canvas.getContext('2d');
+        canvas.width = 256; canvas.height = 64;
+        ctx.font = 'bold 28px Inter, sans-serif';
+        const c = new THREE.Color(hexColor);
+        ctx.fillStyle = `rgb(${c.r*255|0},${c.g*255|0},${c.b*255|0})`;
+        ctx.textAlign = 'center'; ctx.textBaseline = 'middle';
+        ctx.fillText(text, 128, 32);
+        const tex = new THREE.CanvasTexture(canvas);
+        const mat = new THREE.SpriteMaterial({ map: tex, transparent: true, depthTest: false });
+        const sprite = new THREE.Sprite(mat);
+        sprite.scale.set(20, 5, 1);
+        sprite.userData = { role: 'label' };
+        return sprite;
+    }
+
+    function buildOrrery() {
+        const g = groups.orrery;
+        clearGroup(g);
+
+        const mod = parseInt(document.getElementById('orreryModule').value) / 10;
+        const showWire = document.getElementById('orrery-wireframe').checked;
+        const activeSet = document.querySelector('[data-orrery-set].active').dataset.orrerySet;
+        const depth = mod * 3;
+        const ext = { depth, bevelEnabled: false };
+        const levelSpacing = depth * 2.5;
+
+        const allRatios = computeGearRatios();
+        let visibleRatios;
+        if (activeSet === 'inner') visibleRatios = allRatios.filter(p => p.period <= 2);
+        else if (activeSet === 'earth') visibleRatios = allRatios.filter(p => p.name === 'Tierra');
+        else visibleRatios = allRatios;
+
+        const levelData = [];
+        let level = 0;
+
+        visibleRatios.forEach(p => {
+            if (p.trainType === 'simple') {
+                const z = level * levelSpacing;
+                const r1 = (mod * p.driver) / 2, r2 = (mod * p.driven) / 2;
+
+                // Driver gear (on central shaft)
+                const driverShape = gearProfile(p.driver, mod, false);
+                const driverGeom = new THREE.ExtrudeGeometry(driverShape, ext); driverGeom.center();
+                const driverMesh = new THREE.Mesh(driverGeom, makeMat(0x4b5563));
+                driverMesh.position.set(0, 0, z);
+                driverMesh.userData = { role: 'driver', level, teeth: p.driver, planetName: p.name };
+                g.add(driverMesh);
+
+                // Driver edges
+                if (showWire) {
+                    const dEdge = new THREE.LineSegments(new THREE.EdgesGeometry(driverGeom), new THREE.LineBasicMaterial({ color: 0x9ca3af, transparent: true, opacity: 0.3 }));
+                    dEdge.position.copy(driverMesh.position);
+                    dEdge.userData = { role: 'driver-edge', level, teeth: p.driver, planetName: p.name };
+                    g.add(dEdge);
+                }
+
+                // Driven gear (planet output)
+                const drivenShape = gearProfile(p.driven, mod, false);
+                const drivenGeom = new THREE.ExtrudeGeometry(drivenShape, ext); drivenGeom.center();
+                const drivenMesh = new THREE.Mesh(drivenGeom, makeMat(p.color));
+                drivenMesh.position.set(r1 + r2, 0, z);
+                drivenMesh.userData = { role: 'driven', level, teeth: p.driven, driverTeeth: p.driver, planetName: p.name };
+                g.add(drivenMesh);
+
+                // Driven edges
+                if (showWire) {
+                    const dvEdge = new THREE.LineSegments(new THREE.EdgesGeometry(drivenGeom), new THREE.LineBasicMaterial({ color: p.color, transparent: true, opacity: 0.3 }));
+                    dvEdge.position.copy(drivenMesh.position);
+                    dvEdge.userData = { role: 'driven-edge', level, teeth: p.driven, driverTeeth: p.driver, planetName: p.name };
+                    g.add(dvEdge);
+                }
+
+                // Planet label
+                const label = makeTextSprite(p.name, p.color);
+                label.position.set(r1 + r2, r2 + mod * 3, z);
+                g.add(label);
+
+                levelData.push({ name: p.name, trainType: 'simple', driver: p.driver, driven: p.driven, ratio: p.ratio, error: p.error });
+                level++;
+            } else {
+                // Compound train: 2 levels, 4 gears
+                const s1 = p.stage1, s2 = p.stage2;
+                const z1 = level * levelSpacing;
+                const z2 = (level + 1) * levelSpacing;
+                const r1 = (mod * s1.driver) / 2, r2 = (mod * s1.driven) / 2;
+                const r3 = (mod * s2.driver) / 2, r4 = (mod * s2.driven) / 2;
+                const intermX = r1 + r2;
+                const intermRatio = s1.driver / s1.driven;
+
+                // Stage 1: Driver1 on central shaft
+                const d1Shape = gearProfile(s1.driver, mod, false);
+                const d1Geom = new THREE.ExtrudeGeometry(d1Shape, ext); d1Geom.center();
+                const d1Mesh = new THREE.Mesh(d1Geom, makeMat(0x4b5563));
+                d1Mesh.position.set(0, 0, z1);
+                d1Mesh.userData = { role: 'driver', level, teeth: s1.driver, planetName: p.name };
+                g.add(d1Mesh);
+
+                if (showWire) {
+                    const d1Edge = new THREE.LineSegments(new THREE.EdgesGeometry(d1Geom), new THREE.LineBasicMaterial({ color: 0x9ca3af, transparent: true, opacity: 0.3 }));
+                    d1Edge.position.copy(d1Mesh.position);
+                    d1Edge.userData = { role: 'driver-edge', level, teeth: s1.driver, planetName: p.name };
+                    g.add(d1Edge);
+                }
+
+                // Stage 1: Driven1 on intermediate shaft
+                const dv1Shape = gearProfile(s1.driven, mod, false);
+                const dv1Geom = new THREE.ExtrudeGeometry(dv1Shape, ext); dv1Geom.center();
+                const dv1Mesh = new THREE.Mesh(dv1Geom, makeMat(p.color, { transparent: true, opacity: 0.7 }));
+                dv1Mesh.position.set(intermX, 0, z1);
+                dv1Mesh.userData = { role: 'compound-driven1', level, teeth: s1.driven, driverTeeth: s1.driver, planetName: p.name };
+                g.add(dv1Mesh);
+
+                if (showWire) {
+                    const dv1Edge = new THREE.LineSegments(new THREE.EdgesGeometry(dv1Geom), new THREE.LineBasicMaterial({ color: p.color, transparent: true, opacity: 0.3 }));
+                    dv1Edge.position.copy(dv1Mesh.position);
+                    dv1Edge.userData = { role: 'compound-driven1-edge', level, teeth: s1.driven, driverTeeth: s1.driver, planetName: p.name };
+                    g.add(dv1Edge);
+                }
+
+                // Stage 2: Driver2 on intermediate shaft
+                const d2Shape = gearProfile(s2.driver, mod, false);
+                const d2Geom = new THREE.ExtrudeGeometry(d2Shape, ext); d2Geom.center();
+                const d2Mesh = new THREE.Mesh(d2Geom, makeMat(p.color, { transparent: true, opacity: 0.7 }));
+                d2Mesh.position.set(intermX, 0, z2);
+                d2Mesh.userData = { role: 'compound-driver2', level: level + 1, teeth: s2.driver, intermRatio, planetName: p.name };
+                g.add(d2Mesh);
+
+                if (showWire) {
+                    const d2Edge = new THREE.LineSegments(new THREE.EdgesGeometry(d2Geom), new THREE.LineBasicMaterial({ color: p.color, transparent: true, opacity: 0.3 }));
+                    d2Edge.position.copy(d2Mesh.position);
+                    d2Edge.userData = { role: 'compound-driver2-edge', level: level + 1, teeth: s2.driver, intermRatio, planetName: p.name };
+                    g.add(d2Edge);
+                }
+
+                // Stage 2: Driven2 output
+                const outputX = intermX + r3 + r4;
+                const dv2Shape = gearProfile(s2.driven, mod, false);
+                const dv2Geom = new THREE.ExtrudeGeometry(dv2Shape, ext); dv2Geom.center();
+                const dv2Mesh = new THREE.Mesh(dv2Geom, makeMat(p.color));
+                dv2Mesh.position.set(outputX, 0, z2);
+                dv2Mesh.userData = { role: 'compound-driven2', level: level + 1, teeth: s2.driven, driver2Teeth: s2.driver, intermRatio, planetName: p.name };
+                g.add(dv2Mesh);
+
+                if (showWire) {
+                    const dv2Edge = new THREE.LineSegments(new THREE.EdgesGeometry(dv2Geom), new THREE.LineBasicMaterial({ color: p.color, transparent: true, opacity: 0.3 }));
+                    dv2Edge.position.copy(dv2Mesh.position);
+                    dv2Edge.userData = { role: 'compound-driven2-edge', level: level + 1, teeth: s2.driven, driver2Teeth: s2.driver, intermRatio, planetName: p.name };
+                    g.add(dv2Edge);
+                }
+
+                // Planet label (above output gear)
+                const cLabel = makeTextSprite(p.name, p.color);
+                cLabel.position.set(outputX, r4 + mod * 3, z2);
+                g.add(cLabel);
+
+                // Intermediate shaft (cylinder along Z between the two levels)
+                const shaftLen = levelSpacing + depth;
+                const shaftGeo = new THREE.CylinderGeometry(mod * 1.2, mod * 1.2, shaftLen, 16);
+                const shaftMesh = new THREE.Mesh(shaftGeo, makeMat(0x6b7280, { transparent: true, opacity: 0.5 }));
+                shaftMesh.rotation.x = Math.PI / 2;
+                shaftMesh.position.set(intermX, 0, (z1 + z2) / 2);
+                shaftMesh.userData = { role: 'interm-shaft', level, intermRatio };
+                g.add(shaftMesh);
+
+                levelData.push({ name: p.name, trainType: 'compound', stage1: s1, stage2: s2, ratio: p.ratio, error: p.error });
+                level += 2;
+            }
+        });
+
+        // Central shaft along Z
+        if (level > 0) {
+            const totalZ = (level - 1) * levelSpacing + depth;
+            const shaftGeo = new THREE.CylinderGeometry(mod * 1.5, mod * 1.5, totalZ + mod * 2, 16);
+            const shaftMesh = new THREE.Mesh(shaftGeo, makeMat(0x6b7280));
+            shaftMesh.rotation.x = Math.PI / 2;
+            shaftMesh.position.set(0, 0, totalZ / 2 - mod);
+            shaftMesh.userData = { role: 'shaft' };
+            g.add(shaftMesh);
+
+            // Base plate
+            const baseGeo = new THREE.CylinderGeometry(
+                (level > 1 ? 40 : 25) * mod / 2, (level > 1 ? 40 : 25) * mod / 2, mod, 32
+            );
+            const baseMesh = new THREE.Mesh(baseGeo, makeMat(0x374151, { transparent: true, opacity: 0.4 }));
+            baseMesh.rotation.x = Math.PI / 2;
+            baseMesh.position.set(0, 0, -mod);
+            baseMesh.userData = { role: 'base' };
+            g.add(baseMesh);
+        }
+
+        g.userData.levelData = levelData;
+        updateOrreryInfo(levelData);
+    }
+
+    /* =============================================================
+       REGENERATE + EXPORT
+       ============================================================= */
+    function regenerate() {
+        switch (activeTab) {
+            case 'gears': buildGears(); break;
+            case 'soma': buildSoma(); break;
+            case 'maze': buildMaze(); break;
+            case 'reuleaux': buildReuleaux(); break;
+            case 'penrose': buildPenrose(); break;
+            case 'tangram': buildTangram(); break;
+            case 'penrosetri': buildPenroseTriangle(); break;
+            case 'kaleido': buildKaleido(); break;
+            case 'orrery': buildOrrery(); break;
+        }
+        updatePrintInfo();
+    }
+
+    function exportSTL() {
+        const g = groups[activeTab];
+        const mPos = [], mNor = [];
+        g.traverse(child => {
+            if (!child.isMesh) return;
+            const geo = child.geometry;
+            const p = geo.attributes.position, n = geo.attributes.normal, idx = geo.index;
+            child.updateMatrixWorld(true);
+            const mat = child.matrixWorld;
+            const nm = new THREE.Matrix3().getNormalMatrix(mat);
+            const push3 = (vi) => {
+                const v = new THREE.Vector3(p.getX(vi), p.getY(vi), p.getZ(vi)).applyMatrix4(mat);
+                mPos.push(v.x, v.y, v.z);
+                if (n) {
+                    const nn = new THREE.Vector3(n.getX(vi), n.getY(vi), n.getZ(vi)).applyMatrix3(nm).normalize();
+                    mNor.push(nn.x, nn.y, nn.z);
+                } else mNor.push(0, 1, 0);
+            };
+            if (idx) { for (let i = 0; i < idx.count; i++) push3(idx.getX(i)); }
+            else { for (let i = 0; i < p.count; i++) push3(i); }
+        });
+
+        const numTri = mPos.length / 9;
+        const buf = new ArrayBuffer(84 + numTri * 50);
+        const dv = new DataView(buf);
+        const hdr = 'Puzzle Lab STL - Math Visual Lab';
+        for (let i = 0; i < 80; i++) dv.setUint8(i, i < hdr.length ? hdr.charCodeAt(i) : 0);
+        dv.setUint32(80, numTri, true);
+        let off = 84;
+        for (let t = 0; t < numTri; t++) {
+            const i = t * 9;
+            dv.setFloat32(off, (mNor[i]+mNor[i+3]+mNor[i+6])/3, true); off += 4;
+            dv.setFloat32(off, (mNor[i+1]+mNor[i+4]+mNor[i+7])/3, true); off += 4;
+            dv.setFloat32(off, (mNor[i+2]+mNor[i+5]+mNor[i+8])/3, true); off += 4;
+            for (let v = 0; v < 9; v++) { dv.setFloat32(off, mPos[i+v], true); off += 4; }
+            dv.setUint16(off, 0, true); off += 2;
+        }
+
+        const names = {
+            gears: `gears-${gearType}-${document.getElementById('teeth1').value}t-${document.getElementById('teeth2').value}t`,
+            soma: 'soma-cube',
+            maze: `maze-${document.getElementById('mazeSize').value}x${document.getElementById('mazeSize').value}`,
+            reuleaux: `reuleaux-${reuleauxN}`,
+            penrose: `penrose-p3-lvl${document.getElementById('penroseLevel').value}`,
+            tangram: 'tangram',
+            penrosetri: 'penrose-triangle',
+            kaleido: `kaleidocycle-${kaleidoN}`,
+            orrery: `orrery-geartrain-m${(parseInt(document.getElementById('orreryModule').value)/10).toFixed(1)}`
+        };
+        const blob = new Blob([buf], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url; a.download = `${names[activeTab]}.stl`; a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    /* =============================================================
+       UI BINDINGS
+       ============================================================= */
+    // Gear type
+    document.querySelectorAll('[data-gear-type]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-gear-type]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            gearType = btn.dataset.gearType;
+            regenerate();
+        });
+    });
+    // Gear sliders
+    for (const [id, valId, div] of [['teeth1','val-teeth1',1],['teeth2','val-teeth2',1],['gearModule','val-module',10],['gearSpeed','val-speed',10]]) {
+        document.getElementById(id).addEventListener('input', e => {
+            document.getElementById(valId).textContent = (parseFloat(e.target.value) / div).toFixed(div > 1 ? 1 : 0);
+            if (id !== 'gearSpeed') regenerate();
+        });
+    }
+    // Soma piece
+    document.querySelectorAll('[data-soma-piece]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-soma-piece]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            document.getElementById('val-soma-piece').textContent = btn.dataset.somaPiece === 'all' ? 'Todas' : SOMA_NAMES[parseInt(btn.dataset.somaPiece)];
+            regenerate();
+        });
+    });
+    document.getElementById('somaGap').addEventListener('input', e => {
+        document.getElementById('val-soma-gap').textContent = (e.target.value / 10).toFixed(1);
+        regenerate();
+    });
+    // Maze
+    document.getElementById('mazeSize').addEventListener('input', e => {
+        document.getElementById('val-maze-size').textContent = e.target.value;
+        document.getElementById('val-maze-size2').textContent = e.target.value;
+        regenerate();
+    });
+    document.getElementById('mazeSeed').addEventListener('input', e => {
+        document.getElementById('val-maze-seed').textContent = e.target.value;
+        regenerate();
+    });
+    document.getElementById('mazeWall').addEventListener('input', e => {
+        document.getElementById('val-maze-wall').textContent = (e.target.value / 10).toFixed(1);
+        regenerate();
+    });
+    document.getElementById('btn-maze-new').addEventListener('click', () => {
+        const el = document.getElementById('mazeSeed');
+        el.value = Math.floor(Math.random() * 999) + 1;
+        document.getElementById('val-maze-seed').textContent = el.value;
+        regenerate();
+    });
+    document.getElementById('btn-maze-solve').addEventListener('click', () => {
+        document.getElementById('maze-show-solution').checked = true;
+        regenerate();
+    });
+    document.getElementById('maze-show-solution').addEventListener('change', regenerate);
+    // Reuleaux N
+    document.querySelectorAll('[data-reuleaux-n]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-reuleaux-n]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            reuleauxN = parseInt(btn.dataset.reuleauxN);
+            regenerate();
+        });
+    });
+    for (const [id, valId, div] of [['reuleauxWidth','val-reuleaux-width',1],['reuleauxThick','val-reuleaux-thick',10],['reuleauxSpeed','val-reuleaux-speed',10]]) {
+        document.getElementById(id).addEventListener('input', e => {
+            document.getElementById(valId).textContent = (parseFloat(e.target.value) / div).toFixed(div > 1 ? 1 : 0);
+            if (id !== 'reuleauxSpeed') regenerate();
+        });
+    }
+    // Penrose
+    for (const [id, valId, div] of [['penroseLevel','val-penrose-level',1],['penroseScale','val-penrose-scale',1],['penroseThick','val-penrose-thick',10]]) {
+        document.getElementById(id).addEventListener('input', e => {
+            document.getElementById(valId).textContent = (parseFloat(e.target.value) / div).toFixed(div > 1 ? 1 : 0);
+            regenerate();
+        });
+    }
+    document.querySelectorAll('[data-penrose-color]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-penrose-color]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            regenerate();
+        });
+    });
+    // Tangram
+    document.querySelectorAll('[data-tangram-piece]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-tangram-piece]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            regenerate();
+        });
+    });
+    for (const [id, valId, div] of [['tangramGap','val-tangram-gap',10],['tangramThick','val-tangram-thick',10]]) {
+        document.getElementById(id).addEventListener('input', e => {
+            document.getElementById(valId).textContent = (parseFloat(e.target.value) / div).toFixed(1);
+            regenerate();
+        });
+    }
+    // Penrose Triangle
+    for (const [id, valId, div] of [['ptriSize','val-ptri-size',1],['ptriBar','val-ptri-bar',10]]) {
+        document.getElementById(id).addEventListener('input', e => {
+            document.getElementById(valId).textContent = (parseFloat(e.target.value) / div).toFixed(div > 1 ? 1 : 0);
+            regenerate();
+        });
+    }
+    document.getElementById('btn-ptri-illusion').addEventListener('click', () => {
+        // Snap camera to the magic angle where the gap becomes invisible
+        rotX = 0.6;
+        rotY = -0.52;
+        camDist = 80;
+    });
+    // Kaleidocycle
+    document.querySelectorAll('[data-kaleido-n]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-kaleido-n]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            kaleidoN = parseInt(btn.dataset.kaleidoN);
+            regenerate();
+        });
+    });
+    for (const [id, valId, div] of [['kaleidoR','val-kaleido-r',1],['kaleidoEdge','val-kaleido-edge',1]]) {
+        document.getElementById(id).addEventListener('input', e => {
+            document.getElementById(valId).textContent = e.target.value;
+            regenerate();
+        });
+    }
+    // Orrery
+    document.querySelectorAll('[data-orrery-set]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('[data-orrery-set]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            regenerate();
+        });
+    });
+    document.getElementById('orreryModule').addEventListener('input', e => {
+        document.getElementById('val-orrery-module').textContent = (e.target.value / 10).toFixed(1);
+        regenerate();
+    });
+    document.getElementById('orrerySpeed').addEventListener('input', e => {
+        document.getElementById('val-orrery-speed').textContent = (e.target.value / 10).toFixed(1);
+    });
+    document.getElementById('orrery-wireframe').addEventListener('change', regenerate);
+    // Print panel
+    document.getElementById('printScale').addEventListener('input', e => {
+        document.getElementById('val-print-scale').textContent = (e.target.value / 10).toFixed(1);
+        updatePrintInfo();
+    });
+    document.getElementById('printTol').addEventListener('input', e => {
+        document.getElementById('val-print-tol').textContent = (e.target.value / 100).toFixed(2);
+    });
+    document.getElementById('print-base').addEventListener('change', e => {
+        document.getElementById('print-base-thick-wrap').classList.toggle('hidden', !e.target.checked);
+    });
+    document.getElementById('printBaseThick').addEventListener('input', e => {
+        document.getElementById('val-print-base').textContent = (e.target.value / 10).toFixed(1);
+    });
+
+    /* =============================================================
+       ANIMATION LOOP
+       ============================================================= */
+    let lastTime = 0;
+    function animate(time) {
+        requestAnimationFrame(animate);
+        const dt = Math.min((time - lastTime) / 1000, 0.05);
+        lastTime = time;
+
+        camera.position.x = camDist * Math.sin(rotY) * Math.cos(rotX);
+        camera.position.y = camDist * Math.sin(rotX);
+        camera.position.z = camDist * Math.cos(rotY) * Math.cos(rotX);
+        camera.lookAt(0, 0, 0);
+
+        const speed = parseInt(document.getElementById('gearSpeed').value) / 10;
+
+        // gear animation
+        if (activeTab === 'gears') {
+            gearAngle += dt * speed;
+
+            switch (gearType) {
+            case 'spur':
+            case 'elliptical': {
+                const gg = groups.gears;
+                if (gg.children.length >= 4) {
+                    const t1 = gg.children[0].userData.teeth, t2 = gg.children[1].userData.teeth;
+                    if (t1 && t2) {
+                        gg.children[0].rotation.z = gearAngle;
+                        gg.children[2].rotation.z = gearAngle;
+                        const r = -gearAngle * (t1 / t2) + Math.PI / t2;
+                        gg.children[1].rotation.z = r;
+                        gg.children[3].rotation.z = r;
+                    }
+                }
+                break;
+            }
+            case 'rack': {
+                const gg = groups.gears;
+                if (gg.children.length >= 4) {
+                    const mod = parseInt(document.getElementById('gearModule').value) / 10;
+                    const t1 = gg.children[0].userData.teeth;
+                    const r1 = (mod * t1) / 2;
+                    // pinion rotates
+                    gg.children[0].rotation.z = gearAngle;
+                    gg.children[1].rotation.z = gearAngle;
+                    // rack translates: linear displacement = angle * pitch_radius
+                    const disp = gearAngle * r1;
+                    const maxDisp = 30;
+                    const oscillate = Math.sin(gearAngle * 0.5) * maxDisp;
+                    gg.children[2].position.x = oscillate;
+                    gg.children[3].position.x = oscillate;
+                    // sync pinion rotation to rack displacement
+                    const pinionAngle = oscillate / r1;
+                    gg.children[0].rotation.z = -pinionAngle;
+                    gg.children[1].rotation.z = -pinionAngle;
+                }
+                break;
+            }
+            case 'planetary': {
+                const gg = groups.gears;
+                planetaryAngle += dt * speed;
+                // sun, 3 planets, ring, ring-edge
+                if (gg.children.length >= 5) {
+                    const sunMesh = gg.children[0];
+                    const sunT = sunMesh.userData.teeth;
+                    const mod = parseInt(document.getElementById('gearModule').value) / 10;
+                    // sun rotates
+                    sunMesh.rotation.z = planetaryAngle;
+                    // carrier angular velocity
+                    const ringT = sunT + 2 * gg.children[1].userData.teeth;
+                    const wCarrier = planetaryAngle * sunT / (sunT + ringT);
+                    const planetT = gg.children[1].userData.teeth;
+                    const carrierR = (mod * sunT) / 2 + (mod * planetT) / 2;
+                    // planets orbit and spin
+                    for (let i = 0; i < 3; i++) {
+                        const pm = gg.children[1 + i];
+                        const baseA = pm.userData.baseAngle;
+                        const orbitAngle = baseA + wCarrier;
+                        pm.position.x = carrierR * Math.cos(orbitAngle);
+                        pm.position.y = carrierR * Math.sin(orbitAngle);
+                        // planet self-rotation: w_planet = -w_sun * sunT / planetT (relative to carrier)
+                        pm.rotation.z = -planetaryAngle * sunT / planetT + wCarrier;
+                    }
+                    // ring is stationary
+                }
+                break;
+            }
+            }
+        }
+
+        // reuleaux spin
+        if (activeTab === 'reuleaux' && document.getElementById('reuleaux-animate').checked && groups.reuleaux.children.length >= 2) {
+            const rSpeed = parseInt(document.getElementById('reuleauxSpeed').value) / 10;
+            reuleauxAngle += dt * rSpeed * 0.5;
+            groups.reuleaux.children[0].rotation.z = reuleauxAngle;
+            groups.reuleaux.children[1].rotation.z = reuleauxAngle;
+        }
+
+        // soma auto-rotate
+        if (activeTab === 'soma' && document.getElementById('soma-rotate').checked) {
+            somaAutoAngle += dt * 0.3;
+            groups.soma.rotation.y = somaAutoAngle;
+        }
+
+        // tangram auto-rotate
+        if (activeTab === 'tangram' && document.getElementById('tangram-rotate').checked) {
+            tangramAutoAngle += dt * 0.3;
+            groups.tangram.rotation.y = tangramAutoAngle;
+        }
+
+        // penrose triangle auto-rotate
+        if (activeTab === 'penrosetri' && document.getElementById('ptri-rotate').checked) {
+            ptriAutoAngle += dt * 0.3;
+            groups.penrosetri.rotation.y = ptriAutoAngle;
+        }
+
+        // kaleidocycle auto-rotate
+        if (activeTab === 'kaleido' && document.getElementById('kaleido-rotate').checked) {
+            kaleidoAutoAngle += dt * 0.3;
+            groups.kaleido.rotation.y = kaleidoAutoAngle;
+        }
+
+        // orrery gear train animation
+        if (activeTab === 'orrery') {
+            const oSpeed = parseInt(document.getElementById('orrerySpeed').value) / 10;
+            orreryAngle += dt * oSpeed;
+            const og = groups.orrery;
+            og.traverse(child => {
+                const ud = child.userData;
+                if (!ud.role) return;
+                switch (ud.role) {
+                    case 'driver':
+                    case 'driver-edge':
+                        child.rotation.z = orreryAngle;
+                        break;
+                    case 'driven':
+                    case 'driven-edge':
+                        child.rotation.z = -orreryAngle * (ud.driverTeeth / ud.teeth) + Math.PI / ud.teeth;
+                        break;
+                    case 'compound-driven1':
+                    case 'compound-driven1-edge':
+                        child.rotation.z = -orreryAngle * (ud.driverTeeth / ud.teeth) + Math.PI / ud.teeth;
+                        break;
+                    case 'compound-driver2':
+                    case 'compound-driver2-edge':
+                        child.rotation.z = -orreryAngle * ud.intermRatio;
+                        break;
+                    case 'compound-driven2':
+                    case 'compound-driven2-edge':
+                        child.rotation.z = orreryAngle * ud.intermRatio * (ud.driver2Teeth / ud.teeth) + Math.PI / ud.teeth;
+                        break;
+                    // shaft, interm-shaft, base: no rotation (cylinders with rotation.x=PI/2 would wobble)
+                }
+            });
+        }
+
+        renderer.render(scene, camera);
+    }
+
+    /* =============================================================
+       INIT
+       ============================================================= */
+    Object.entries(groups).forEach(([k, g]) => g.visible = (k === 'gears'));
+    regenerate();
+    requestAnimationFrame(animate);
+
+    </script>
+</body>
+</html>

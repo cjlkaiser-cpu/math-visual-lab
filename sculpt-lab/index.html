@@ -1,0 +1,1613 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sculpt Lab - Math Visual Lab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        input[type="range"] {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px;
+            height: 16px;
+            background: #a855f7;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .math-box {
+            background: linear-gradient(135deg, rgba(168, 85, 247, 0.1), rgba(34, 211, 238, 0.05));
+            border: 1px solid rgba(168, 85, 247, 0.3);
+        }
+        #canvas-container {
+            background: radial-gradient(ellipse at center, #1a1a2e 0%, #0f0f1a 100%);
+            cursor: grab;
+        }
+        #canvas-container:active { cursor: grabbing; }
+        .tab-btn {
+            padding: 8px 16px;
+            font-size: 0.8rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 6px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .tab-btn.active {
+            background: rgba(168, 85, 247, 0.15);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .tab-btn:hover:not(.active) { background: rgba(55, 65, 81, 0.5); }
+        .surface-btn {
+            padding: 6px 10px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #9ca3af;
+            font-size: 0.75rem;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .surface-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .surface-btn:hover:not(.active) { background: #374151; }
+        .render-btn {
+            flex: 1;
+            padding: 6px;
+            font-size: 0.7rem;
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: #9ca3af;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .render-btn.active {
+            background: #a855f7;
+            color: white;
+            border-color: #a855f7;
+        }
+        .preset-btn {
+            padding: 5px 8px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #9ca3af;
+            font-size: 0.7rem;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .preset-btn:hover { background: #374151; border-color: #6b7280; }
+        .preset-btn.active {
+            background: rgba(168, 85, 247, 0.2);
+            border-color: #a855f7;
+            color: #c4b5fd;
+        }
+        .prop-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 0;
+            border-bottom: 1px solid #1e293b;
+            font-size: 0.75rem;
+        }
+        .prop-row:last-child { border-bottom: none; }
+        .status-bar {
+            position: absolute;
+            bottom: 16px;
+            left: 16px;
+            background: rgba(0,0,0,0.7);
+            backdrop-filter: blur(8px);
+            border: 1px solid #374151;
+            border-radius: 8px;
+            padding: 8px 14px;
+            font-size: 0.7rem;
+            color: #9ca3af;
+            display: flex;
+            gap: 16px;
+        }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-full mx-auto px-4 py-3">
+            <div class="flex justify-between items-center">
+                <div class="flex items-center gap-4">
+                    <a href="../index.html" class="text-gray-500 hover:text-violet-400 transition flex items-center gap-2">
+                        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7"/>
+                        </svg>
+                        Volver
+                    </a>
+                    <div class="h-4 w-px bg-gray-800"></div>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium">Sculpt</span> Lab
+                    </h1>
+                </div>
+                <div class="flex items-center gap-1.5 flex-wrap">
+                    <button class="tab-btn active" data-tab="tpms">TPMS</button>
+                    <button class="tab-btn" data-tab="lissajous">Lissajous</button>
+                    <button class="tab-btn" data-tab="minimal">M&iacute;nimas</button>
+                    <button class="tab-btn" data-tab="stellated">Estrellados</button>
+                    <button class="tab-btn" data-tab="algebraic">Algebraicas</button>
+                </div>
+                <div class="flex items-center gap-4 text-sm mono">
+                    <span class="text-gray-500">
+                        <span id="tri-count" class="text-violet-400">0</span> tri
+                    </span>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <main class="flex h-[calc(100vh-57px)]">
+        <!-- Canvas Area -->
+        <div id="canvas-container" class="flex-1 relative"></div>
+
+        <!-- Control Panel -->
+        <aside class="w-80 border-l border-gray-900 bg-gray-950 overflow-y-auto">
+            <!-- TPMS Panel -->
+            <div id="panel-tpms" class="p-5 space-y-5">
+                <h2 class="text-base font-medium text-violet-400 glow-text">Superficies TPMS</h2>
+                <p class="text-xs text-gray-500 -mt-3">Superficies mínimas triplemente periódicas</p>
+
+                <!-- Surface selector -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Superficie</label>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button class="surface-btn active" data-surface="gyroid">Gyroid</button>
+                        <button class="surface-btn" data-surface="schwarzP">Schwarz P</button>
+                        <button class="surface-btn" data-surface="diamond">Diamond</button>
+                        <button class="surface-btn" data-surface="neovius">Neovius</button>
+                        <button class="surface-btn" data-surface="iwp">IWP</button>
+                        <button class="surface-btn" data-surface="lidinoid">Lidinoid</button>
+                    </div>
+                </div>
+
+                <!-- Equation display -->
+                <div id="tpms-equation" class="math-box rounded-lg px-3 py-2">
+                    <p class="text-xs text-gray-400 mb-1">Ecuaci&oacute;n impl&iacute;cita</p>
+                    <p class="mono text-xs text-violet-300" id="eq-text">sin(x)cos(y) + sin(y)cos(z) + sin(z)cos(x) = t</p>
+                </div>
+
+                <!-- Period -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Per&iacute;odo</label>
+                        <span class="text-xs mono text-violet-400" id="period-val">8.0</span>
+                    </div>
+                    <input type="range" id="period-slider" min="4" max="20" step="0.5" value="8" class="w-full">
+                </div>
+
+                <!-- Repetitions -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Repeticiones</label>
+                        <span class="text-xs mono text-violet-400" id="reps-val">2</span>
+                    </div>
+                    <input type="range" id="reps-slider" min="1" max="4" step="1" value="2" class="w-full">
+                </div>
+
+                <!-- Level -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Nivel (isosuperficie)</label>
+                        <span class="text-xs mono text-violet-400" id="level-val">0.00</span>
+                    </div>
+                    <input type="range" id="level-slider" min="-1.5" max="1.5" step="0.05" value="0" class="w-full">
+                </div>
+
+                <!-- Resolution -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Resoluci&oacute;n</label>
+                        <span class="text-xs mono text-violet-400" id="res-val">40</span>
+                    </div>
+                    <input type="range" id="res-slider" min="20" max="70" step="2" value="40" class="w-full">
+                    <p class="text-xs text-gray-600 mt-1">Mayor = m&aacute;s detalle, m&aacute;s lento</p>
+                </div>
+
+                <!-- Clip shape -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Recorte</label>
+                    <div class="flex gap-1.5">
+                        <button class="surface-btn active flex-1" data-clip="cube">Cubo</button>
+                        <button class="surface-btn flex-1" data-clip="sphere">Esfera</button>
+                    </div>
+                </div>
+
+                <!-- Render mode -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Visualizaci&oacute;n</label>
+                    <div class="flex gap-1">
+                        <button class="render-btn" data-render="solid">S&oacute;lido</button>
+                        <button class="render-btn active" data-render="translucent">Transl&uacute;cido</button>
+                        <button class="render-btn" data-render="wireframe">Wire</button>
+                    </div>
+                </div>
+
+                <!-- Generate button -->
+                <button id="btn-generate-tpms" class="w-full py-2.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition-colors">
+                    Generar Superficie
+                </button>
+            </div>
+
+            <!-- Lissajous Panel -->
+            <div id="panel-lissajous" class="p-5 space-y-5 hidden">
+                <h2 class="text-base font-medium text-violet-400 glow-text">Lissajous 3D</h2>
+                <p class="text-xs text-gray-500 -mt-3">Curvas param&eacute;tricas como esculturas de tubo</p>
+
+                <!-- Presets -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Presets</label>
+                    <div class="flex flex-wrap gap-1.5">
+                        <button class="preset-btn active" data-preset="trefoil">Tr&eacute;bol</button>
+                        <button class="preset-btn" data-preset="figure8">Figura 8</button>
+                        <button class="preset-btn" data-preset="star">Estrella</button>
+                        <button class="preset-btn" data-preset="orbit">Orbital</button>
+                        <button class="preset-btn" data-preset="helix">&Eacute;lice</button>
+                        <button class="preset-btn" data-preset="celtic">Celtic</button>
+                    </div>
+                </div>
+
+                <!-- Frequencies -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Frecuencias</label>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-4">X</span>
+                            <input type="range" id="freq-x" min="1" max="9" step="1" value="2" class="flex-1">
+                            <span class="text-xs mono text-violet-400 w-4" id="fx-val">2</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-4">Y</span>
+                            <input type="range" id="freq-y" min="1" max="9" step="1" value="3" class="flex-1">
+                            <span class="text-xs mono text-violet-400 w-4" id="fy-val">3</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-4">Z</span>
+                            <input type="range" id="freq-z" min="1" max="9" step="1" value="5" class="flex-1">
+                            <span class="text-xs mono text-violet-400 w-4" id="fz-val">5</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Phases -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Fases</label>
+                    <div class="space-y-2">
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-6">&phi;X</span>
+                            <input type="range" id="phase-x" min="0" max="6.28" step="0.05" value="1.57" class="flex-1">
+                            <span class="text-xs mono text-violet-400 w-8" id="px-val">1.57</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-6">&phi;Y</span>
+                            <input type="range" id="phase-y" min="0" max="6.28" step="0.05" value="0.00" class="flex-1">
+                            <span class="text-xs mono text-violet-400 w-8" id="py-val">0.00</span>
+                        </div>
+                        <div class="flex items-center gap-2">
+                            <span class="text-xs text-gray-500 w-6">&phi;Z</span>
+                            <input type="range" id="phase-z" min="0" max="6.28" step="0.05" value="0.00" class="flex-1">
+                            <span class="text-xs mono text-violet-400 w-8" id="pz-val">0.00</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Tube radius -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Radio del tubo</label>
+                        <span class="text-xs mono text-violet-400" id="tube-val">0.12</span>
+                    </div>
+                    <input type="range" id="tube-slider" min="0.03" max="0.35" step="0.01" value="0.12" class="w-full">
+                </div>
+
+                <!-- Curve resolution -->
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Resoluci&oacute;n curva</label>
+                        <span class="text-xs mono text-violet-400" id="lres-val">300</span>
+                    </div>
+                    <input type="range" id="lres-slider" min="100" max="600" step="20" value="300" class="w-full">
+                </div>
+
+                <!-- Render mode (Lissajous) -->
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Visualizaci&oacute;n</label>
+                    <div class="flex gap-1">
+                        <button class="render-btn" data-render-l="solid">S&oacute;lido</button>
+                        <button class="render-btn active" data-render-l="translucent">Transl&uacute;cido</button>
+                        <button class="render-btn" data-render-l="wireframe">Wire</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Minimal Surfaces Panel -->
+            <div id="panel-minimal" class="p-5 space-y-5 hidden">
+                <h2 class="text-base font-medium text-violet-400 glow-text">Superficies M&iacute;nimas</h2>
+                <p class="text-xs text-gray-500 -mt-3">Catenoide &harr; Helicoide y m&aacute;s</p>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Superficie</label>
+                    <div class="grid grid-cols-3 gap-1.5">
+                        <button class="surface-btn active" data-min="morph">Morph</button>
+                        <button class="surface-btn" data-min="catenoid">Catenoide</button>
+                        <button class="surface-btn" data-min="helicoid">Helicoide</button>
+                        <button class="surface-btn" data-min="enneper">Enneper</button>
+                        <button class="surface-btn" data-min="scherk">Scherk</button>
+                    </div>
+                </div>
+                <div id="morph-control">
+                    <div class="math-box rounded-lg px-3 py-2 mb-3">
+                        <p class="text-xs text-gray-400 mb-1">Catenoide &harr; Helicoide</p>
+                        <p class="mono text-xs text-violet-300">x = cos(t)cosh(v)cos(u) + sin(t)sinh(v)sin(u)</p>
+                    </div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Morph (t)</label>
+                        <span class="text-xs mono text-violet-400" id="morph-val">0.00</span>
+                    </div>
+                    <input type="range" id="morph-slider" min="0" max="1.5708" step="0.02" value="0" class="w-full">
+                    <p class="text-xs text-gray-600 mt-1">0 = catenoide, &pi;/2 = helicoide</p>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Resoluci&oacute;n U</label>
+                        <span class="text-xs mono text-violet-400" id="mres-u-val">60</span>
+                    </div>
+                    <input type="range" id="mres-u" min="20" max="120" step="4" value="60" class="w-full">
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Resoluci&oacute;n V</label>
+                        <span class="text-xs mono text-violet-400" id="mres-v-val">30</span>
+                    </div>
+                    <input type="range" id="mres-v" min="10" max="60" step="2" value="30" class="w-full">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Visualizaci&oacute;n</label>
+                    <div class="flex gap-1">
+                        <button class="render-btn" data-render-m="solid">S&oacute;lido</button>
+                        <button class="render-btn active" data-render-m="translucent">Transl&uacute;cido</button>
+                        <button class="render-btn" data-render-m="wireframe">Wire</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Stellated Polyhedra Panel -->
+            <div id="panel-stellated" class="p-5 space-y-5 hidden">
+                <h2 class="text-base font-medium text-violet-400 glow-text">Poliedros Estrellados</h2>
+                <p class="text-xs text-gray-500 -mt-3">Stellations y compuestos</p>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Base</label>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <button class="surface-btn active" data-stel="icosahedron">Icosaedro</button>
+                        <button class="surface-btn" data-stel="dodecahedron">Dodecaedro</button>
+                        <button class="surface-btn" data-stel="octahedron">Octaedro</button>
+                        <button class="surface-btn" data-stel="cube">Cubo</button>
+                        <button class="surface-btn" data-stel="stella">Stella Octangula</button>
+                        <button class="surface-btn" data-stel="compound5">5 Tetraedros</button>
+                    </div>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Altura de punta</label>
+                        <span class="text-xs mono text-violet-400" id="spike-val">0.80</span>
+                    </div>
+                    <input type="range" id="spike-slider" min="0" max="2.5" step="0.05" value="0.8" class="w-full">
+                    <p class="text-xs text-gray-600 mt-1">0 = plano, m&aacute;s = m&aacute;s puntiagudo</p>
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Visualizaci&oacute;n</label>
+                    <div class="flex gap-1">
+                        <button class="render-btn active" data-render-s="solid">S&oacute;lido</button>
+                        <button class="render-btn" data-render-s="translucent">Transl&uacute;cido</button>
+                        <button class="render-btn" data-render-s="wireframe">Wire</button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Algebraic Surfaces Panel -->
+            <div id="panel-algebraic" class="p-5 space-y-5 hidden">
+                <h2 class="text-base font-medium text-violet-400 glow-text">Superficies Algebraicas</h2>
+                <p class="text-xs text-gray-500 -mt-3">Ecuaciones impl&iacute;citas &rarr; formas</p>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Superficie</label>
+                    <div class="grid grid-cols-2 gap-1.5">
+                        <button class="surface-btn active" data-alg="heart">Coraz&oacute;n</button>
+                        <button class="surface-btn" data-alg="barth">Barth Sextic</button>
+                        <button class="surface-btn" data-alg="tanglecube">Tanglecube</button>
+                        <button class="surface-btn" data-alg="goursat">Goursat</button>
+                    </div>
+                </div>
+                <div id="alg-equation" class="math-box rounded-lg px-3 py-2">
+                    <p class="text-xs text-gray-400 mb-1">Ecuaci&oacute;n</p>
+                    <p class="mono text-xs text-violet-300" id="alg-eq-text">(x&sup2;+9y&sup2;/4+z&sup2;-1)&sup3; - x&sup2;z&sup3; - 9y&sup2;z&sup3;/80 = 0</p>
+                </div>
+                <div>
+                    <div class="flex justify-between mb-1">
+                        <label class="text-xs text-gray-400">Resoluci&oacute;n</label>
+                        <span class="text-xs mono text-violet-400" id="alg-res-val">50</span>
+                    </div>
+                    <input type="range" id="alg-res" min="30" max="80" step="2" value="50" class="w-full">
+                </div>
+                <div>
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Visualizaci&oacute;n</label>
+                    <div class="flex gap-1">
+                        <button class="render-btn" data-render-a="solid">S&oacute;lido</button>
+                        <button class="render-btn active" data-render-a="translucent">Transl&uacute;cido</button>
+                        <button class="render-btn" data-render-a="wireframe">Wire</button>
+                    </div>
+                </div>
+                <button id="btn-generate-alg" class="w-full py-2.5 bg-violet-600 hover:bg-violet-500 text-white text-sm font-medium rounded-lg transition-colors">
+                    Generar Superficie
+                </button>
+            </div>
+
+            <!-- Export section (shared) -->
+            <div class="p-5 pt-0 space-y-3 border-t border-gray-900 mt-2">
+                <div class="pt-4">
+                    <label class="block text-xs text-gray-400 mb-2 uppercase tracking-wider">Exportar</label>
+                    <div>
+                        <div class="flex justify-between mb-1">
+                            <label class="text-xs text-gray-400">Escala (mm/unidad)</label>
+                            <span class="text-xs mono text-violet-400" id="scale-val">30</span>
+                        </div>
+                        <input type="range" id="scale-slider" min="10" max="80" step="5" value="30" class="w-full">
+                    </div>
+                </div>
+                <!-- Properties -->
+                <div class="bg-gray-900/50 rounded-lg border border-gray-800 p-3">
+                    <div class="prop-row">
+                        <span class="text-gray-500">Tri&aacute;ngulos</span>
+                        <span class="mono text-violet-400" id="info-tris">—</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="text-gray-500">Dimensiones</span>
+                        <span class="mono text-violet-400" id="info-dims">—</span>
+                    </div>
+                    <div class="prop-row">
+                        <span class="text-gray-500">Archivo</span>
+                        <span class="mono text-violet-400" id="info-size">—</span>
+                    </div>
+                </div>
+                <button id="btn-export-stl" class="w-full py-2.5 bg-gray-800 hover:bg-gray-700 text-violet-400 text-sm font-medium rounded-lg border border-violet-500/30 transition-colors flex items-center justify-center gap-2">
+                    <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 10v6m0 0l-3-3m3 3l3-3m2 8H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"/>
+                    </svg>
+                    Exportar STL
+                </button>
+            </div>
+        </aside>
+    </main>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════
+    // STATE
+    // ═══════════════════════════════════════════════════════════════
+    const state = {
+        tab: 'tpms',
+        // TPMS
+        tpms: {
+            surface: 'gyroid',
+            period: 8,
+            reps: 2,
+            level: 0,
+            resolution: 40,
+            clip: 'cube',
+            render: 'translucent',
+        },
+        // Lissajous
+        liss: {
+            fx: 2, fy: 3, fz: 5,
+            px: Math.PI / 2, py: 0, pz: 0,
+            tubeRadius: 0.12,
+            resolution: 300,
+            render: 'translucent',
+            preset: 'trefoil',
+        },
+        // Minimal surfaces
+        minimal: {
+            surface: 'morph',
+            morphT: 0,
+            uRes: 60, vRes: 30,
+            render: 'translucent',
+        },
+        // Stellated
+        stellated: {
+            shape: 'icosahedron',
+            spikeHeight: 0.8,
+            render: 'solid',
+        },
+        // Algebraic
+        algebraic: {
+            surface: 'heart',
+            resolution: 50,
+            render: 'translucent',
+        },
+        // View
+        rotation: { x: 0.4, y: 0.6 },
+        autoRotate: true,
+        isDragging: false,
+        lastMouse: { x: 0, y: 0 },
+        scaleMM: 30,
+    };
+
+    // ═══════════════════════════════════════════════════════════════
+    // TPMS IMPLICIT FUNCTIONS
+    // ═══════════════════════════════════════════════════════════════
+    const TPMS = {
+        gyroid: {
+            fn: (x, y, z) => Math.sin(x)*Math.cos(y) + Math.sin(y)*Math.cos(z) + Math.sin(z)*Math.cos(x),
+            eq: 'sin(x)cos(y) + sin(y)cos(z) + sin(z)cos(x) = t',
+        },
+        schwarzP: {
+            fn: (x, y, z) => Math.cos(x) + Math.cos(y) + Math.cos(z),
+            eq: 'cos(x) + cos(y) + cos(z) = t',
+        },
+        diamond: {
+            fn: (x, y, z) => {
+                const sx = Math.sin(x), sy = Math.sin(y), sz = Math.sin(z);
+                const cx = Math.cos(x), cy = Math.cos(y), cz = Math.cos(z);
+                return sx*sy*sz + sx*cy*cz + cx*sy*cz + cx*cy*sz;
+            },
+            eq: 'sin·sin·sin + sin·cos·cos + cos·sin·cos + cos·cos·sin = t',
+        },
+        neovius: {
+            fn: (x, y, z) => 3*(Math.cos(x)+Math.cos(y)+Math.cos(z)) + 4*Math.cos(x)*Math.cos(y)*Math.cos(z),
+            eq: '3(cos x + cos y + cos z) + 4·cos x·cos y·cos z = t',
+        },
+        iwp: {
+            fn: (x, y, z) => 2*(Math.cos(x)*Math.cos(y) + Math.cos(y)*Math.cos(z) + Math.cos(z)*Math.cos(x)) - (Math.cos(2*x) + Math.cos(2*y) + Math.cos(2*z)),
+            eq: '2(cos x·cos y + cos y·cos z + cos z·cos x) - (cos 2x + cos 2y + cos 2z) = t',
+        },
+        lidinoid: {
+            fn: (x, y, z) => {
+                const s2x = Math.sin(2*x), s2y = Math.sin(2*y), s2z = Math.sin(2*z);
+                const cx = Math.cos(x), cy = Math.cos(y), cz = Math.cos(z);
+                const sx = Math.sin(x), sy = Math.sin(y), sz = Math.sin(z);
+                return 0.5*(s2x*cy*sz + s2y*cz*sx + s2z*cx*sy) - 0.5*(Math.cos(2*x)*Math.cos(2*y) + Math.cos(2*y)*Math.cos(2*z) + Math.cos(2*z)*Math.cos(2*x)) + 0.15;
+            },
+            eq: '0.5[sin2x·cos y·sin z + ...] - 0.5[cos2x·cos2y + ...] = t',
+        },
+    };
+
+    // Lissajous presets
+    const PRESETS = {
+        trefoil:  { fx:2, fy:3, fz:5, px:Math.PI/2, py:0, pz:0 },
+        figure8:  { fx:2, fy:3, fz:4, px:0, py:Math.PI/3, pz:Math.PI/2 },
+        star:     { fx:5, fy:4, fz:3, px:0, py:Math.PI/4, pz:0 },
+        orbit:    { fx:3, fy:4, fz:7, px:Math.PI/4, py:0, pz:Math.PI/3 },
+        helix:    { fx:1, fy:1, fz:8, px:0, py:Math.PI/2, pz:0 },
+        celtic:   { fx:2, fy:3, fz:7, px:0, py:Math.PI/2, pz:Math.PI/4 },
+    };
+
+    // ═══════════════════════════════════════════════════════════════
+    // SURFACE NETS (Isosurface extraction)
+    // ═══════════════════════════════════════════════════════════════
+    function surfaceNets(field, nx, ny, nz, bounds) {
+        const positions = [];
+        const indices = [];
+        const cx = nx - 1, cy = ny - 1, cz = nz - 1;
+        const vertMap = new Int32Array(cx * cy * cz).fill(-1);
+
+        function fIdx(x, y, z) { return x + y * nx + z * nx * ny; }
+        function cIdx(x, y, z) { return x + y * cx + z * cx * cy; }
+
+        const step = [
+            (bounds[1][0] - bounds[0][0]) / (nx - 1),
+            (bounds[1][1] - bounds[0][1]) / (ny - 1),
+            (bounds[1][2] - bounds[0][2]) / (nz - 1),
+        ];
+
+        // Corner offsets in the cell
+        const CO = [
+            [0,0,0],[1,0,0],[0,1,0],[1,1,0],
+            [0,0,1],[1,0,1],[0,1,1],[1,1,1]
+        ];
+        // 12 edges as pairs of corner indices
+        const EDGES = [
+            [0,1],[2,3],[4,5],[6,7],
+            [0,2],[1,3],[4,6],[5,7],
+            [0,4],[1,5],[2,6],[3,7]
+        ];
+
+        // Phase 1: Place vertices
+        for (let z = 0; z < cz; z++)
+        for (let y = 0; y < cy; y++)
+        for (let x = 0; x < cx; x++) {
+            const vals = [];
+            for (let i = 0; i < 8; i++)
+                vals.push(field[fIdx(x + CO[i][0], y + CO[i][1], z + CO[i][2])]);
+
+            let mask = 0;
+            for (let i = 0; i < 8; i++) if (vals[i] > 0) mask |= (1 << i);
+            if (mask === 0 || mask === 255) continue;
+
+            let sx = 0, sy = 0, sz = 0, cnt = 0;
+            for (const [a, b] of EDGES) {
+                if ((vals[a] > 0) !== (vals[b] > 0)) {
+                    const t = vals[a] / (vals[a] - vals[b]);
+                    sx += CO[a][0] + t * (CO[b][0] - CO[a][0]);
+                    sy += CO[a][1] + t * (CO[b][1] - CO[a][1]);
+                    sz += CO[a][2] + t * (CO[b][2] - CO[a][2]);
+                    cnt++;
+                }
+            }
+            if (cnt === 0) continue;
+
+            vertMap[cIdx(x, y, z)] = positions.length / 3;
+            positions.push(
+                bounds[0][0] + (x + sx / cnt) * step[0],
+                bounds[0][1] + (y + sy / cnt) * step[1],
+                bounds[0][2] + (z + sz / cnt) * step[2]
+            );
+        }
+
+        // Phase 2: Generate faces
+        for (let z = 0; z < nz; z++)
+        for (let y = 0; y < ny; y++)
+        for (let x = 0; x < nx; x++) {
+            const v0 = field[fIdx(x, y, z)];
+
+            // X-edge: (x,y,z)-(x+1,y,z)
+            if (x < nx - 1 && y > 0 && z > 0 && y < ny && z < nz) {
+                const v1 = field[fIdx(x + 1, y, z)];
+                if ((v0 > 0) !== (v1 > 0) && x < cx) {
+                    const a = y < cy && z < cz ? vertMap[cIdx(x, y, z)] : -1;
+                    const b = (y-1) < cy && z < cz ? vertMap[cIdx(x, y - 1, z)] : -1;
+                    const c = (y-1) < cy && (z-1) < cz ? vertMap[cIdx(x, y - 1, z - 1)] : -1;
+                    const d = y < cy && (z-1) < cz ? vertMap[cIdx(x, y, z - 1)] : -1;
+                    if (a >= 0 && b >= 0 && c >= 0 && d >= 0) {
+                        if (v0 > 0) { indices.push(a, d, c, a, c, b); }
+                        else { indices.push(a, b, c, a, c, d); }
+                    }
+                }
+            }
+            // Y-edge: (x,y,z)-(x,y+1,z)
+            if (y < ny - 1 && x > 0 && z > 0 && x < nx && z < nz) {
+                const v1 = field[fIdx(x, y + 1, z)];
+                if ((v0 > 0) !== (v1 > 0) && y < cy) {
+                    const a = x < cx && z < cz ? vertMap[cIdx(x, y, z)] : -1;
+                    const b = (x-1) < cx && z < cz ? vertMap[cIdx(x - 1, y, z)] : -1;
+                    const c = (x-1) < cx && (z-1) < cz ? vertMap[cIdx(x - 1, y, z - 1)] : -1;
+                    const d = x < cx && (z-1) < cz ? vertMap[cIdx(x, y, z - 1)] : -1;
+                    if (a >= 0 && b >= 0 && c >= 0 && d >= 0) {
+                        if (v0 > 0) { indices.push(a, b, c, a, c, d); }
+                        else { indices.push(a, d, c, a, c, b); }
+                    }
+                }
+            }
+            // Z-edge: (x,y,z)-(x,y,z+1)
+            if (z < nz - 1 && x > 0 && y > 0 && x < nx && y < ny) {
+                const v1 = field[fIdx(x, y, z + 1)];
+                if ((v0 > 0) !== (v1 > 0) && z < cz) {
+                    const a = x < cx && y < cy ? vertMap[cIdx(x, y, z)] : -1;
+                    const b = x < cx && (y-1) < cy ? vertMap[cIdx(x, y - 1, z)] : -1;
+                    const c = (x-1) < cx && (y-1) < cy ? vertMap[cIdx(x - 1, y - 1, z)] : -1;
+                    const d = (x-1) < cx && y < cy ? vertMap[cIdx(x - 1, y, z)] : -1;
+                    if (a >= 0 && b >= 0 && c >= 0 && d >= 0) {
+                        if (v0 > 0) { indices.push(a, b, c, a, c, d); }
+                        else { indices.push(a, d, c, a, c, b); }
+                    }
+                }
+            }
+        }
+
+        return {
+            positions: new Float32Array(positions),
+            indices: new Uint32Array(indices)
+        };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // TPMS MESH GENERATION
+    // ═══════════════════════════════════════════════════════════════
+    function generateTPMS() {
+        const s = state.tpms;
+        const tpmsDef = TPMS[s.surface];
+        const fn = tpmsDef.fn;
+        const freq = (2 * Math.PI) / s.period;
+        const halfSize = s.period * s.reps / 2;
+        const n = s.resolution;
+        const bounds = [[-halfSize, -halfSize, -halfSize], [halfSize, halfSize, halfSize]];
+        const step = (2 * halfSize) / (n - 1);
+        const clipR2 = halfSize * halfSize;
+
+        // Sample scalar field
+        const field = new Float32Array(n * n * n);
+        for (let z = 0; z < n; z++)
+        for (let y = 0; y < n; y++)
+        for (let x = 0; x < n; x++) {
+            const px = bounds[0][0] + x * step;
+            const py = bounds[0][1] + y * step;
+            const pz = bounds[0][2] + z * step;
+            let val = fn(px * freq, py * freq, pz * freq) - s.level;
+
+            // Sphere clip: push field values outside sphere to positive
+            if (s.clip === 'sphere') {
+                const r2 = px*px + py*py + pz*pz;
+                if (r2 > clipR2) val = Math.abs(val) + 10;
+            }
+            field[x + y * n + z * n * n] = val;
+        }
+
+        // Extract surface
+        const result = surfaceNets(field, n, n, n, bounds);
+
+        // Normalize to unit cube for display
+        const scale = 2.0 / (2 * halfSize);
+        for (let i = 0; i < result.positions.length; i++) {
+            result.positions[i] *= scale;
+        }
+
+        return result;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // LISSAJOUS TUBE GENERATION
+    // ═══════════════════════════════════════════════════════════════
+    function cross(a, b) {
+        return [a[1]*b[2]-a[2]*b[1], a[2]*b[0]-a[0]*b[2], a[0]*b[1]-a[1]*b[0]];
+    }
+    function normalize(v) {
+        const l = Math.sqrt(v[0]*v[0]+v[1]*v[1]+v[2]*v[2]);
+        return l > 1e-10 ? [v[0]/l, v[1]/l, v[2]/l] : [0, 0, 1];
+    }
+
+    function lissajousPoint(t) {
+        const s = state.liss;
+        return [
+            Math.sin(s.fx * t + s.px),
+            Math.sin(s.fy * t + s.py),
+            Math.sin(s.fz * t + s.pz)
+        ];
+    }
+
+    function computeFrame(t) {
+        const eps = 1e-5;
+        const p0 = lissajousPoint(t - eps);
+        const p1 = lissajousPoint(t);
+        const p2 = lissajousPoint(t + eps);
+
+        const T = normalize([p2[0]-p0[0], p2[1]-p0[1], p2[2]-p0[2]]);
+        const d2 = [p2[0]-2*p1[0]+p0[0], p2[1]-2*p1[1]+p0[1], p2[2]-2*p1[2]+p0[2]];
+
+        let N = normalize(cross(T, cross(d2, T)));
+        if (Math.sqrt(N[0]*N[0]+N[1]*N[1]+N[2]*N[2]) < 0.5) {
+            N = normalize(cross(T, [0, 1, 0]));
+        }
+        if (Math.sqrt(N[0]*N[0]+N[1]*N[1]+N[2]*N[2]) < 0.5) {
+            N = normalize(cross(T, [1, 0, 0]));
+        }
+        const B = normalize(cross(T, N));
+        return { T, N, B, pos: p1 };
+    }
+
+    function generateLissajous() {
+        const s = state.liss;
+        const ringSteps = s.resolution;
+        const tubeSeg = 20;
+        const r = s.tubeRadius;
+
+        // Generate tube mesh
+        const grid = [];
+        for (let i = 0; i < ringSteps; i++) {
+            const t = (i / ringSteps) * Math.PI * 2;
+            const frame = computeFrame(t);
+            const ring = [];
+            for (let j = 0; j < tubeSeg; j++) {
+                const theta = (j / tubeSeg) * Math.PI * 2;
+                const ct = Math.cos(theta), st = Math.sin(theta);
+                ring.push([
+                    frame.pos[0] + r * (ct * frame.N[0] + st * frame.B[0]),
+                    frame.pos[1] + r * (ct * frame.N[1] + st * frame.B[1]),
+                    frame.pos[2] + r * (ct * frame.N[2] + st * frame.B[2])
+                ]);
+            }
+            grid.push(ring);
+        }
+
+        // Build indexed mesh
+        const positions = [];
+        const indices = [];
+        for (let i = 0; i < ringSteps; i++)
+            for (let j = 0; j < tubeSeg; j++)
+                positions.push(grid[i][j][0], grid[i][j][1], grid[i][j][2]);
+
+        for (let i = 0; i < ringSteps; i++) {
+            const i2 = (i + 1) % ringSteps;
+            for (let j = 0; j < tubeSeg; j++) {
+                const j2 = (j + 1) % tubeSeg;
+                const a = i * tubeSeg + j;
+                const b = i2 * tubeSeg + j;
+                const c = i2 * tubeSeg + j2;
+                const d = i * tubeSeg + j2;
+                indices.push(a, b, c, a, c, d);
+            }
+        }
+
+        return {
+            positions: new Float32Array(positions),
+            indices: new Uint32Array(indices)
+        };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // MINIMAL SURFACE GENERATION (parametric UV mesh)
+    // ═══════════════════════════════════════════════════════════════
+    function minimalSurfacePoint(u, v, type, morphT) {
+        const ch = Math.cosh(v), sh = Math.sinh(v);
+        const cu = Math.cos(u), su = Math.sin(u);
+        switch (type) {
+            case 'catenoid': return [ch * cu, ch * su, v];
+            case 'helicoid': return [sh * cu, sh * su, u];
+            case 'morph': {
+                const ct = Math.cos(morphT), st = Math.sin(morphT);
+                return [
+                    ct * ch * cu + st * sh * su,
+                    ct * ch * su - st * sh * cu,
+                    ct * v + st * u
+                ];
+            }
+            case 'enneper': return [u - u*u*u/3 + u*v*v, v - v*v*v/3 + v*u*u, u*u - v*v];
+            case 'scherk': {
+                const eps = 0.01;
+                const cx = Math.cos(u), cy = Math.cos(v);
+                if (Math.abs(cx) < eps || Math.abs(cy) < eps) return [u, v, 0];
+                return [u, v, Math.log(Math.abs(cy / cx))];
+            }
+            default: return [0, 0, 0];
+        }
+    }
+
+    function generateMinimal() {
+        const s = state.minimal;
+        const uRes = s.uRes, vRes = s.vRes;
+        const isEnneper = s.surface === 'enneper';
+        const isScherk = s.surface === 'scherk';
+        const uMin = isScherk ? -1.4 : (isEnneper ? -2 : 0);
+        const uMax = isScherk ? 1.4 : (isEnneper ? 2 : Math.PI * 2);
+        const vMin = isScherk ? -1.4 : (isEnneper ? -2 : -1.8);
+        const vMax = isScherk ? 1.4 : (isEnneper ? 2 : 1.8);
+
+        const positions = [];
+        const indices = [];
+
+        for (let j = 0; j <= vRes; j++)
+        for (let i = 0; i <= uRes; i++) {
+            const u = uMin + (i / uRes) * (uMax - uMin);
+            const v = vMin + (j / vRes) * (vMax - vMin);
+            const p = minimalSurfacePoint(u, v, s.surface, s.morphT);
+            positions.push(p[0], p[1], p[2]);
+        }
+
+        for (let j = 0; j < vRes; j++)
+        for (let i = 0; i < uRes; i++) {
+            const a = j * (uRes + 1) + i;
+            const b = a + 1;
+            const c = a + uRes + 1;
+            const d = c + 1;
+            indices.push(a, c, d, a, d, b);
+        }
+
+        // Normalize to fit in [-1, 1] box
+        let maxCoord = 0;
+        for (let i = 0; i < positions.length; i++) maxCoord = Math.max(maxCoord, Math.abs(positions[i]));
+        const scale = maxCoord > 0 ? 1.0 / maxCoord : 1;
+        const posArr = new Float32Array(positions.length);
+        for (let i = 0; i < positions.length; i++) posArr[i] = positions[i] * scale;
+
+        return { positions: posArr, indices: new Uint32Array(indices) };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // STELLATED POLYHEDRA GENERATION
+    // ═══════════════════════════════════════════════════════════════
+    const PHI = (1 + Math.sqrt(5)) / 2;
+
+    const POLYHEDRA = {
+        icosahedron: {
+            verts: [[0,1,PHI],[0,-1,PHI],[0,1,-PHI],[0,-1,-PHI],[1,PHI,0],[-1,PHI,0],[1,-PHI,0],[-1,-PHI,0],[PHI,0,1],[-PHI,0,1],[PHI,0,-1],[-PHI,0,-1]],
+            faces: [[0,1,8],[0,8,4],[0,4,5],[0,5,9],[0,9,1],[1,6,8],[8,6,10],[8,10,4],[4,10,2],[4,2,5],[5,2,11],[5,11,9],[9,11,7],[9,7,1],[1,7,6],[3,6,7],[3,7,11],[3,11,2],[3,2,10],[3,10,6]]
+        },
+        octahedron: {
+            verts: [[1,0,0],[-1,0,0],[0,1,0],[0,-1,0],[0,0,1],[0,0,-1]],
+            faces: [[0,2,4],[0,4,3],[0,3,5],[0,5,2],[1,4,2],[1,3,4],[1,5,3],[1,2,5]]
+        },
+        cube: {
+            verts: [[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1]],
+            faces: [[0,2,3,1],[4,5,7,6],[0,1,5,4],[2,6,7,3],[0,4,6,2],[1,3,7,5]]
+        },
+        dodecahedron: {
+            verts: [[1,1,1],[1,1,-1],[1,-1,1],[1,-1,-1],[-1,1,1],[-1,1,-1],[-1,-1,1],[-1,-1,-1],
+                    [0,1/PHI,PHI],[0,-1/PHI,PHI],[0,1/PHI,-PHI],[0,-1/PHI,-PHI],
+                    [1/PHI,PHI,0],[-1/PHI,PHI,0],[1/PHI,-PHI,0],[-1/PHI,-PHI,0],
+                    [PHI,0,1/PHI],[PHI,0,-1/PHI],[-PHI,0,1/PHI],[-PHI,0,-1/PHI]],
+            faces: [[0,8,4,13,12],[0,12,1,17,16],[0,16,2,9,8],[8,9,6,18,4],[4,18,19,5,13],
+                    [12,13,5,10,1],[1,10,11,3,17],[16,17,3,14,2],[2,14,15,6,9],[6,15,7,19,18],
+                    [5,19,7,11,10],[3,11,7,15,14]]
+        },
+    };
+
+    function rotateAroundAxis(p, axis, angle) {
+        const c = Math.cos(angle), s = Math.sin(angle);
+        const [x,y,z] = p;
+        const [nx,ny,nz] = axis;
+        const dot = nx*x + ny*y + nz*z;
+        return [
+            x*c + (ny*z - nz*y)*s + nx*dot*(1-c),
+            y*c + (nz*x - nx*z)*s + ny*dot*(1-c),
+            z*c + (nx*y - ny*x)*s + nz*dot*(1-c)
+        ];
+    }
+
+    function generateStellated() {
+        const s = state.stellated;
+        const h = s.spikeHeight;
+        const positions = [];
+        const indices = [];
+
+        if (s.shape === 'stella') {
+            // Stella Octangula: 2 interpenetrating tetrahedra
+            const t1 = [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+            const t2 = [[-1,-1,-1],[-1,1,1],[1,-1,1],[1,1,-1]];
+            const sc = 0.8 + h * 0.3;
+            for (const tet of [t1, t2]) {
+                const base = positions.length / 3;
+                for (const v of tet) positions.push(v[0]*sc, v[1]*sc, v[2]*sc);
+                indices.push(base,base+1,base+2, base,base+2,base+3, base,base+3,base+1, base+1,base+3,base+2);
+            }
+        } else if (s.shape === 'compound5') {
+            // Compound of 5 tetrahedra via icosahedral rotation
+            const baseT = [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+            const axis = normalize([0, 1, PHI]);
+            for (let k = 0; k < 5; k++) {
+                const angle = k * 2 * Math.PI / 5;
+                const base = positions.length / 3;
+                for (const v of baseT) {
+                    const r = rotateAroundAxis(v, axis, angle);
+                    positions.push(r[0], r[1], r[2]);
+                }
+                indices.push(base,base+1,base+2, base,base+2,base+3, base,base+3,base+1, base+1,base+3,base+2);
+            }
+        } else {
+            // Spiked polyhedron
+            const poly = POLYHEDRA[s.shape];
+            if (!poly) return { positions: new Float32Array(0), indices: new Uint32Array(0) };
+
+            for (const face of poly.faces) {
+                // Compute centroid and normal
+                const verts = face.map(i => poly.verts[i]);
+                const cx = verts.reduce((s,v) => s+v[0], 0) / verts.length;
+                const cy = verts.reduce((s,v) => s+v[1], 0) / verts.length;
+                const cz = verts.reduce((s,v) => s+v[2], 0) / verts.length;
+                // Normal from first 3 vertices
+                const u = [verts[1][0]-verts[0][0], verts[1][1]-verts[0][1], verts[1][2]-verts[0][2]];
+                const v = [verts[2][0]-verts[0][0], verts[2][1]-verts[0][1], verts[2][2]-verts[0][2]];
+                const n = normalize(cross(u, v));
+                // Ensure outward
+                const dot = n[0]*cx + n[1]*cy + n[2]*cz;
+                if (dot < 0) { n[0]=-n[0]; n[1]=-n[1]; n[2]=-n[2]; }
+
+                const apex = [cx + n[0]*h, cy + n[1]*h, cz + n[2]*h];
+                const base = positions.length / 3;
+
+                // Add face vertices
+                for (const vt of verts) positions.push(vt[0], vt[1], vt[2]);
+                positions.push(apex[0], apex[1], apex[2]);
+                const apexIdx = base + verts.length;
+
+                // Triangulate: connect each edge to apex
+                for (let i = 0; i < verts.length; i++) {
+                    const j = (i + 1) % verts.length;
+                    indices.push(base + i, base + j, apexIdx);
+                }
+                // Bottom face (for solid mesh when h=0)
+                if (h < 0.01) {
+                    for (let i = 1; i < verts.length - 1; i++) {
+                        indices.push(base, base + i + 1, base + i);
+                    }
+                }
+            }
+        }
+
+        // Normalize
+        let maxC = 0;
+        for (let i = 0; i < positions.length; i++) maxC = Math.max(maxC, Math.abs(positions[i]));
+        const sc = maxC > 0 ? 1.2 / maxC : 1;
+        const posArr = new Float32Array(positions.length);
+        for (let i = 0; i < positions.length; i++) posArr[i] = positions[i] * sc;
+
+        return { positions: posArr, indices: new Uint32Array(indices) };
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ALGEBRAIC SURFACE GENERATION (implicit → surface nets)
+    // ═══════════════════════════════════════════════════════════════
+    const ALGEBRAIC = {
+        heart: {
+            fn: (x,y,z) => {
+                const a = x*x + 9*y*y/4 + z*z - 1;
+                return -(a*a*a - x*x*z*z*z - 9*y*y*z*z*z/80);
+            },
+            bounds: 1.5,
+            eq: '(x\u00b2+9y\u00b2/4+z\u00b2-1)\u00b3 - x\u00b2z\u00b3 - 9y\u00b2z\u00b3/80 = 0'
+        },
+        barth: {
+            fn: (x,y,z) => {
+                const p2 = PHI*PHI;
+                const r2 = x*x+y*y+z*z;
+                return -(4*(p2*x*x-y*y)*(p2*y*y-z*z)*(p2*z*z-x*x) - (1+2*PHI)*(r2-1)*(r2-1));
+            },
+            bounds: 2.0,
+            eq: '4(\u03c6\u00b2x\u00b2-y\u00b2)(\u03c6\u00b2y\u00b2-z\u00b2)(\u03c6\u00b2z\u00b2-x\u00b2) - (1+2\u03c6)(r\u00b2-1)\u00b2 = 0'
+        },
+        tanglecube: {
+            fn: (x,y,z) => -(x*x*x*x - 5*x*x + y*y*y*y - 5*y*y + z*z*z*z - 5*z*z + 11.8),
+            bounds: 3.0,
+            eq: 'x\u2074 - 5x\u00b2 + y\u2074 - 5y\u00b2 + z\u2074 - 5z\u00b2 + 11.8 = 0'
+        },
+        goursat: {
+            fn: (x,y,z) => -(x*x*x*x + y*y*y*y + z*z*z*z - 1.5*(x*x + y*y + z*z)),
+            bounds: 2.0,
+            eq: 'x\u2074 + y\u2074 + z\u2074 - 1.5(x\u00b2 + y\u00b2 + z\u00b2) = 0'
+        },
+    };
+
+    function generateAlgebraic() {
+        const s = state.algebraic;
+        const def = ALGEBRAIC[s.surface];
+        const n = s.resolution;
+        const b = def.bounds;
+        const bounds = [[-b,-b,-b],[b,b,b]];
+        const step = (2*b) / (n-1);
+
+        const field = new Float32Array(n*n*n);
+        for (let z = 0; z < n; z++)
+        for (let y = 0; y < n; y++)
+        for (let x = 0; x < n; x++) {
+            const px = -b + x*step, py = -b + y*step, pz = -b + z*step;
+            field[x + y*n + z*n*n] = def.fn(px, py, pz);
+        }
+
+        const result = surfaceNets(field, n, n, n, bounds);
+        const scale = 1.0 / b;
+        for (let i = 0; i < result.positions.length; i++) result.positions[i] *= scale;
+        return result;
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // THREE.JS SCENE
+    // ═══════════════════════════════════════════════════════════════
+    const container = document.getElementById('canvas-container');
+    const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
+    renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+    renderer.setClearColor(0x000000, 0);
+    container.appendChild(renderer.domElement);
+
+    const scene = new THREE.Scene();
+    const camera = new THREE.PerspectiveCamera(50, 1, 0.01, 100);
+    camera.position.set(0, 0, 4);
+
+    // Lighting
+    scene.add(new THREE.HemisphereLight(0x8888bb, 0x221133, 0.6));
+    const dir1 = new THREE.DirectionalLight(0xeeeeff, 0.6);
+    dir1.position.set(5, 5, 5);
+    scene.add(dir1);
+    const dir2 = new THREE.DirectionalLight(0x9944cc, 0.35);
+    dir2.position.set(-4, -2, 3);
+    scene.add(dir2);
+    const dir3 = new THREE.DirectionalLight(0x6633aa, 0.2);
+    dir3.position.set(0, -5, -3);
+    scene.add(dir3);
+
+    const mainGroup = new THREE.Group();
+    scene.add(mainGroup);
+
+    let currentMeshes = [];
+    let currentGeometry = null;
+
+    function clearMesh() {
+        for (const obj of currentMeshes) {
+            mainGroup.remove(obj);
+            obj.geometry.dispose();
+            if (Array.isArray(obj.material)) obj.material.forEach(m => m.dispose());
+            else obj.material.dispose();
+        }
+        currentMeshes = [];
+        currentGeometry = null;
+    }
+
+    function buildThreeMesh(meshData, renderMode) {
+        clearMesh();
+
+        const geo = new THREE.BufferGeometry();
+        geo.setAttribute('position', new THREE.BufferAttribute(meshData.positions, 3));
+        geo.setIndex(new THREE.BufferAttribute(meshData.indices, 1));
+        geo.computeVertexNormals();
+        currentGeometry = geo;
+
+        const color = 0xa855f7;
+        const specular = 0x442277;
+
+        if (renderMode === 'solid') {
+            const mat = new THREE.MeshPhongMaterial({ color, specular, shininess: 40, side: THREE.DoubleSide });
+            const mesh = new THREE.Mesh(geo, mat);
+            mainGroup.add(mesh);
+            currentMeshes.push(mesh);
+            // Subtle edges
+            const edgeGeo = new THREE.EdgesGeometry(geo, 25);
+            const edgeMat = new THREE.LineBasicMaterial({ color: 0xc4b5fd, transparent: true, opacity: 0.15 });
+            const edges = new THREE.LineSegments(edgeGeo, edgeMat);
+            mainGroup.add(edges);
+            currentMeshes.push(edges);
+        } else if (renderMode === 'translucent') {
+            // Two-pass translucency: backfaces first, then frontfaces
+            const matBack = new THREE.MeshPhongMaterial({
+                color, specular: 0x331155, shininess: 15,
+                side: THREE.BackSide, transparent: true, opacity: 0.25,
+            });
+            const meshBack = new THREE.Mesh(geo, matBack);
+            mainGroup.add(meshBack);
+            currentMeshes.push(meshBack);
+
+            const matFront = new THREE.MeshPhongMaterial({
+                color, specular, shininess: 25,
+                side: THREE.FrontSide, transparent: true, opacity: 0.55,
+            });
+            const meshFront = new THREE.Mesh(geo, matFront);
+            meshFront.renderOrder = 1;
+            mainGroup.add(meshFront);
+            currentMeshes.push(meshFront);
+
+            // Edge glow
+            const edgeGeo = new THREE.EdgesGeometry(geo, 25);
+            const edgeMat = new THREE.LineBasicMaterial({ color: 0xc4b5fd, transparent: true, opacity: 0.12 });
+            const edges = new THREE.LineSegments(edgeGeo, edgeMat);
+            edges.renderOrder = 2;
+            mainGroup.add(edges);
+            currentMeshes.push(edges);
+        } else {
+            const mat = new THREE.MeshBasicMaterial({ color, wireframe: true, transparent: true, opacity: 0.4 });
+            const mesh = new THREE.Mesh(geo, mat);
+            mainGroup.add(mesh);
+            currentMeshes.push(mesh);
+        }
+
+        // Update info
+        const triCount = meshData.indices.length / 3;
+        document.getElementById('tri-count').textContent = triCount.toLocaleString();
+        document.getElementById('info-tris').textContent = triCount.toLocaleString();
+
+        // Bounding box in mm
+        geo.computeBoundingBox();
+        const bb = geo.boundingBox;
+        const s = state.scaleMM;
+        const size = bb.getSize(new THREE.Vector3());
+        const w = (size.x * s).toFixed(0), d = (size.y * s).toFixed(0), h = (size.z * s).toFixed(0);
+        document.getElementById('info-dims').textContent = `${w} x ${d} x ${h} mm`;
+        const fileSize = (84 + triCount * 50);
+        document.getElementById('info-size').textContent = fileSize > 1024*1024
+            ? (fileSize/1024/1024).toFixed(1) + ' MB'
+            : (fileSize/1024).toFixed(0) + ' KB';
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // STL EXPORTER
+    // ═══════════════════════════════════════════════════════════════
+    function exportSTL() {
+        if (!currentGeometry) { alert('No hay geometr\u00eda para exportar'); return; }
+
+        const geo = currentGeometry;
+        const pos = geo.getAttribute('position');
+        const idx = geo.getIndex();
+        const scale = state.scaleMM;
+        const triCount = idx.count / 3;
+
+        const buf = new ArrayBuffer(84 + triCount * 50);
+        const view = new DataView(buf);
+        const header = 'Binary STL - Sculpt Lab';
+        for (let i = 0; i < header.length && i < 80; i++) view.setUint8(i, header.charCodeAt(i));
+        view.setUint32(80, triCount, true);
+
+        let off = 84;
+        for (let t = 0; t < triCount; t++) {
+            const i0 = idx.getX(t * 3), i1 = idx.getX(t * 3 + 1), i2 = idx.getX(t * 3 + 2);
+            const ax = pos.getX(i0)*scale, ay = pos.getY(i0)*scale, az = pos.getZ(i0)*scale;
+            const bx = pos.getX(i1)*scale, by = pos.getY(i1)*scale, bz = pos.getZ(i1)*scale;
+            const cx2 = pos.getX(i2)*scale, cy2 = pos.getY(i2)*scale, cz2 = pos.getZ(i2)*scale;
+
+            const ux = bx-ax, uy = by-ay, uz = bz-az;
+            const vx = cx2-ax, vy = cy2-ay, vz = cz2-az;
+            let nx = uy*vz-uz*vy, ny = uz*vx-ux*vz, nz = ux*vy-uy*vx;
+            const nl = Math.sqrt(nx*nx+ny*ny+nz*nz);
+            if (nl > 0) { nx/=nl; ny/=nl; nz/=nl; }
+
+            view.setFloat32(off, nx, true); off += 4;
+            view.setFloat32(off, ny, true); off += 4;
+            view.setFloat32(off, nz, true); off += 4;
+            view.setFloat32(off, ax, true); off += 4;
+            view.setFloat32(off, ay, true); off += 4;
+            view.setFloat32(off, az, true); off += 4;
+            view.setFloat32(off, bx, true); off += 4;
+            view.setFloat32(off, by, true); off += 4;
+            view.setFloat32(off, bz, true); off += 4;
+            view.setFloat32(off, cx2, true); off += 4;
+            view.setFloat32(off, cy2, true); off += 4;
+            view.setFloat32(off, cz2, true); off += 4;
+            view.setUint16(off, 0, true); off += 2;
+        }
+
+        const blob = new Blob([buf], { type: 'application/octet-stream' });
+        const url = URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        let name;
+        switch (state.tab) {
+            case 'tpms': name = `${state.tpms.surface}-p${state.tpms.period}-r${state.tpms.reps}`; break;
+            case 'lissajous': name = `lissajous-${state.liss.fx}${state.liss.fy}${state.liss.fz}`; break;
+            case 'minimal': name = `minimal-${state.minimal.surface}`; break;
+            case 'stellated': name = `stellated-${state.stellated.shape}`; break;
+            case 'algebraic': name = `algebraic-${state.algebraic.surface}`; break;
+            default: name = 'sculpt-lab';
+        }
+        a.href = url;
+        a.download = name + '.stl';
+        a.click();
+        URL.revokeObjectURL(url);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // RESIZE
+    // ═══════════════════════════════════════════════════════════════
+    function onResize() {
+        const w = container.clientWidth;
+        const h = container.clientHeight;
+        camera.aspect = w / h;
+        camera.updateProjectionMatrix();
+        renderer.setSize(w, h);
+    }
+    window.addEventListener('resize', onResize);
+
+    // ═══════════════════════════════════════════════════════════════
+    // MOUSE / TOUCH INTERACTION
+    // ═══════════════════════════════════════════════════════════════
+    container.addEventListener('mousedown', e => {
+        state.isDragging = true;
+        state.lastMouse = { x: e.clientX, y: e.clientY };
+        state.autoRotate = false;
+    });
+    window.addEventListener('mousemove', e => {
+        if (!state.isDragging) return;
+        state.rotation.y += (e.clientX - state.lastMouse.x) * 0.005;
+        state.rotation.x += (e.clientY - state.lastMouse.y) * 0.005;
+        state.lastMouse = { x: e.clientX, y: e.clientY };
+    });
+    window.addEventListener('mouseup', () => { state.isDragging = false; });
+    container.addEventListener('wheel', e => {
+        e.preventDefault();
+        camera.position.z = Math.max(1.5, Math.min(12, camera.position.z + e.deltaY * 0.005));
+    }, { passive: false });
+
+    // Touch
+    container.addEventListener('touchstart', e => {
+        if (e.touches.length === 1) {
+            state.isDragging = true;
+            state.lastMouse = { x: e.touches[0].clientX, y: e.touches[0].clientY };
+            state.autoRotate = false;
+        }
+    });
+    container.addEventListener('touchmove', e => {
+        if (!state.isDragging || e.touches.length !== 1) return;
+        e.preventDefault();
+        const t = e.touches[0];
+        state.rotation.y += (t.clientX - state.lastMouse.x) * 0.005;
+        state.rotation.x += (t.clientY - state.lastMouse.y) * 0.005;
+        state.lastMouse = { x: t.clientX, y: t.clientY };
+    }, { passive: false });
+    container.addEventListener('touchend', () => { state.isDragging = false; });
+
+    // Double-click to reset rotation
+    container.addEventListener('dblclick', () => {
+        state.rotation = { x: 0.4, y: 0.6 };
+        state.autoRotate = true;
+        camera.position.z = 4;
+    });
+
+    // ═══════════════════════════════════════════════════════════════
+    // UI BINDINGS
+    // ═══════════════════════════════════════════════════════════════
+
+    // Tab switching
+    document.querySelectorAll('.tab-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.tab = btn.dataset.tab;
+            ['tpms','lissajous','minimal','stellated','algebraic'].forEach(t => {
+                document.getElementById('panel-' + t).classList.toggle('hidden', state.tab !== t);
+            });
+            regenerate();
+        });
+    });
+
+    // TPMS surface selector
+    document.querySelectorAll('.surface-btn[data-surface]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.surface-btn[data-surface]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.tpms.surface = btn.dataset.surface;
+            document.getElementById('eq-text').textContent = TPMS[state.tpms.surface].eq;
+            regenerate();
+        });
+    });
+
+    // Clip selector
+    document.querySelectorAll('.surface-btn[data-clip]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.surface-btn[data-clip]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.tpms.clip = btn.dataset.clip;
+            regenerate();
+        });
+    });
+
+    // Render mode buttons (TPMS)
+    document.querySelectorAll('.render-btn[data-render]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.render-btn[data-render]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.tpms.render = btn.dataset.render;
+            regenerate();
+        });
+    });
+
+    // Render mode buttons (Lissajous)
+    document.querySelectorAll('.render-btn[data-render-l]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.render-btn[data-render-l]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.liss.render = btn.dataset['renderL'];
+            regenerate();
+        });
+    });
+
+    // TPMS sliders
+    function bindSlider(id, stateObj, key, displayId, transform) {
+        const slider = document.getElementById(id);
+        const display = document.getElementById(displayId);
+        slider.addEventListener('input', () => {
+            const val = parseFloat(slider.value);
+            stateObj[key] = transform ? transform(val) : val;
+            display.textContent = typeof stateObj[key] === 'number'
+                ? (Number.isInteger(stateObj[key]) ? stateObj[key] : stateObj[key].toFixed(2))
+                : stateObj[key];
+        });
+    }
+
+    bindSlider('period-slider', state.tpms, 'period', 'period-val');
+    bindSlider('reps-slider', state.tpms, 'reps', 'reps-val', v => Math.round(v));
+    bindSlider('level-slider', state.tpms, 'level', 'level-val');
+    bindSlider('res-slider', state.tpms, 'resolution', 'res-val', v => Math.round(v));
+    bindSlider('scale-slider', state, 'scaleMM', 'scale-val', v => Math.round(v));
+
+    // Generate button
+    document.getElementById('btn-generate-tpms').addEventListener('click', regenerate);
+
+    // Lissajous sliders
+    function bindLissSlider(id, key, displayId) {
+        const slider = document.getElementById(id);
+        const display = document.getElementById(displayId);
+        slider.addEventListener('input', () => {
+            state.liss[key] = parseFloat(slider.value);
+            display.textContent = Number.isInteger(state.liss[key])
+                ? state.liss[key]
+                : state.liss[key].toFixed(2);
+            regenerate();
+        });
+    }
+
+    bindLissSlider('freq-x', 'fx', 'fx-val');
+    bindLissSlider('freq-y', 'fy', 'fy-val');
+    bindLissSlider('freq-z', 'fz', 'fz-val');
+    bindLissSlider('phase-x', 'px', 'px-val');
+    bindLissSlider('phase-y', 'py', 'py-val');
+    bindLissSlider('phase-z', 'pz', 'pz-val');
+    bindLissSlider('tube-slider', 'tubeRadius', 'tube-val');
+    bindLissSlider('lres-slider', 'resolution', 'lres-val');
+
+    // Lissajous presets
+    document.querySelectorAll('.preset-btn').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.preset-btn').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            const p = PRESETS[btn.dataset.preset];
+            if (!p) return;
+            state.liss.preset = btn.dataset.preset;
+            Object.assign(state.liss, p);
+            // Update sliders
+            document.getElementById('freq-x').value = p.fx;
+            document.getElementById('freq-y').value = p.fy;
+            document.getElementById('freq-z').value = p.fz;
+            document.getElementById('phase-x').value = p.px;
+            document.getElementById('phase-y').value = p.py;
+            document.getElementById('phase-z').value = p.pz;
+            document.getElementById('fx-val').textContent = p.fx;
+            document.getElementById('fy-val').textContent = p.fy;
+            document.getElementById('fz-val').textContent = p.fz;
+            document.getElementById('px-val').textContent = p.px.toFixed(2);
+            document.getElementById('py-val').textContent = p.py.toFixed(2);
+            document.getElementById('pz-val').textContent = p.pz.toFixed(2);
+            regenerate();
+        });
+    });
+
+    // ── Minimal surface selector ──
+    document.querySelectorAll('.surface-btn[data-min]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.surface-btn[data-min]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.minimal.surface = btn.dataset.min;
+            document.getElementById('morph-control').style.display = state.minimal.surface === 'morph' ? '' : 'none';
+            regenerate();
+        });
+    });
+    bindSlider('morph-slider', state.minimal, 'morphT', 'morph-val');
+    bindSlider('mres-u', state.minimal, 'uRes', 'mres-u-val', v => Math.round(v));
+    bindSlider('mres-v', state.minimal, 'vRes', 'mres-v-val', v => Math.round(v));
+    ['morph-slider', 'mres-u', 'mres-v'].forEach(id => {
+        document.getElementById(id).addEventListener('change', regenerate);
+    });
+    document.querySelectorAll('.render-btn[data-render-m]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.render-btn[data-render-m]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.minimal.render = btn.dataset['renderM'];
+            regenerate();
+        });
+    });
+
+    // ── Stellated shape selector ──
+    document.querySelectorAll('.surface-btn[data-stel]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.surface-btn[data-stel]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.stellated.shape = btn.dataset.stel;
+            regenerate();
+        });
+    });
+    bindSlider('spike-slider', state.stellated, 'spikeHeight', 'spike-val');
+    document.getElementById('spike-slider').addEventListener('change', regenerate);
+    document.querySelectorAll('.render-btn[data-render-s]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.render-btn[data-render-s]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.stellated.render = btn.dataset['renderS'];
+            regenerate();
+        });
+    });
+
+    // ── Algebraic surface selector ──
+    const ALG_EQ_TEXT = {
+        heart: '(x\u00b2+9y\u00b2/4+z\u00b2-1)\u00b3 - x\u00b2z\u00b3 - 9y\u00b2z\u00b3/80 = 0',
+        barth: '4(\u03c6\u00b2x\u00b2-y\u00b2)(\u03c6\u00b2y\u00b2-z\u00b2)(\u03c6\u00b2z\u00b2-x\u00b2) - (1+2\u03c6)(r\u00b2-1)\u00b2 = 0',
+        tanglecube: 'x\u2074 - 5x\u00b2 + y\u2074 - 5y\u00b2 + z\u2074 - 5z\u00b2 + 11.8 = 0',
+        goursat: 'x\u2074 + y\u2074 + z\u2074 - 1.5(x\u00b2 + y\u00b2 + z\u00b2) = 0',
+    };
+    document.querySelectorAll('.surface-btn[data-alg]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.surface-btn[data-alg]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.algebraic.surface = btn.dataset.alg;
+            document.getElementById('alg-eq-text').textContent = ALG_EQ_TEXT[state.algebraic.surface] || '';
+        });
+    });
+    bindSlider('alg-res', state.algebraic, 'resolution', 'alg-res-val', v => Math.round(v));
+    document.querySelectorAll('.render-btn[data-render-a]').forEach(btn => {
+        btn.addEventListener('click', () => {
+            document.querySelectorAll('.render-btn[data-render-a]').forEach(b => b.classList.remove('active'));
+            btn.classList.add('active');
+            state.algebraic.render = btn.dataset['renderA'];
+            regenerate();
+        });
+    });
+    document.getElementById('btn-generate-alg').addEventListener('click', regenerate);
+
+    // Export
+    document.getElementById('btn-export-stl').addEventListener('click', exportSTL);
+
+    // Scale slider updates info
+    document.getElementById('scale-slider').addEventListener('input', () => {
+        if (currentGeometry) {
+            currentGeometry.computeBoundingBox();
+            const bb = currentGeometry.boundingBox;
+            const s = state.scaleMM;
+            const size = bb.getSize(new THREE.Vector3());
+            const w = (size.x * s).toFixed(0), d = (size.y * s).toFixed(0), h = (size.z * s).toFixed(0);
+            document.getElementById('info-dims').textContent = `${w} x ${d} x ${h} mm`;
+            const triCount = currentGeometry.getIndex().count / 3;
+            const fileSize = (84 + triCount * 50);
+            document.getElementById('info-size').textContent = fileSize > 1024*1024
+                ? (fileSize/1024/1024).toFixed(1) + ' MB'
+                : (fileSize/1024).toFixed(0) + ' KB';
+        }
+    });
+
+    // ═══════════════════════════════════════════════════════════════
+    // REGENERATE
+    // ═══════════════════════════════════════════════════════════════
+    function regenerate() {
+        let meshData, renderMode;
+        switch (state.tab) {
+            case 'tpms':
+                meshData = generateTPMS();
+                renderMode = state.tpms.render;
+                break;
+            case 'lissajous':
+                meshData = generateLissajous();
+                renderMode = state.liss.render;
+                break;
+            case 'minimal':
+                meshData = generateMinimal();
+                renderMode = state.minimal.render;
+                break;
+            case 'stellated':
+                meshData = generateStellated();
+                renderMode = state.stellated.render;
+                break;
+            case 'algebraic':
+                meshData = generateAlgebraic();
+                renderMode = state.algebraic.render;
+                break;
+            default:
+                return;
+        }
+
+        if (meshData.positions.length === 0 || meshData.indices.length === 0) {
+            clearMesh();
+            document.getElementById('tri-count').textContent = '0';
+            document.getElementById('info-tris').textContent = '0';
+            document.getElementById('info-dims').textContent = '\u2014';
+            document.getElementById('info-size').textContent = '\u2014';
+            return;
+        }
+
+        buildThreeMesh(meshData, renderMode);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // ANIMATION LOOP
+    // ═══════════════════════════════════════════════════════════════
+    function animate() {
+        requestAnimationFrame(animate);
+        if (state.autoRotate && !state.isDragging) {
+            state.rotation.y += 0.003;
+        }
+        mainGroup.rotation.x = state.rotation.x;
+        mainGroup.rotation.y = state.rotation.y;
+        renderer.render(scene, camera);
+    }
+
+    // ═══════════════════════════════════════════════════════════════
+    // INIT
+    // ═══════════════════════════════════════════════════════════════
+    onResize();
+    regenerate();
+    animate();
+    </script>
+</body>
+</html>

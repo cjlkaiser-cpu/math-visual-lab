@@ -59,6 +59,21 @@
             font-family: 'Times New Roman', serif;
             font-size: 1.5rem;
         }
+        .stl-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 3px;
+            font-size: 0.6rem;
+            padding: 2px 7px;
+            border-radius: 9999px;
+            background: rgba(16, 185, 129, 0.15);
+            color: #34d399;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-family: 'JetBrains Mono', monospace;
+            vertical-align: middle;
+            margin-left: 6px;
+        }
     </style>
 </head>
 <body class="bg-black text-gray-100 min-h-screen">
@@ -194,7 +209,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-mandelbrot" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-violet-500/20 text-violet-400">Fractales</span>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Fractales</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Conjunto de Mandelbrot</h3>
                         <p class="text-gray-500 text-sm mb-3">Explora el fractal más famoso con zoom infinito. Renderizado pixel por pixel con mapa de colores HSV basado en velocidad de escape.</p>
                         <div class="equation text-violet-400/70 text-sm mb-4">z_{n+1} = z_n² + c</div>
@@ -228,7 +243,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-fourier" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-pink-500/20 text-pink-400">Cálculo</span>
+                        <span class="category-tag bg-pink-500/20 text-pink-400">Cálculo</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Dibujo con Fourier</h3>
                         <p class="text-gray-500 text-sm mb-3">Dibuja cualquier forma y observa cómo los epiciclos giratorios la recrean. La magia de la Transformada Discreta de Fourier.</p>
                         <div class="equation text-pink-400/70 text-sm mb-4">X_k = Σ x_n · e^{-2πikn/N}</div>
@@ -313,7 +328,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-ulam" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-cyan-500/20 text-cyan-400">Números</span>
+                        <span class="category-tag bg-cyan-500/20 text-cyan-400">Números</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Espiral de Ulam</h3>
                         <p class="text-gray-500 text-sm mb-3">Los números primos organizados en espiral revelan patrones diagonales misteriosos. Orden en el aparente caos.</p>
                         <div class="equation text-cyan-400/70 text-sm mb-4">n ∈ P → pixel iluminado</div>
@@ -330,7 +345,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-collatz" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-cyan-500/20 text-cyan-400">Números</span>
+                        <span class="category-tag bg-cyan-500/20 text-cyan-400">Números</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Árbol de Collatz</h3>
                         <p class="text-gray-500 text-sm mb-3">La conjetura 3n+1 visualizada como un árbol orgánico. ¿Todas las ramas llegan al 1? Nadie lo ha probado.</p>
                         <div class="equation text-cyan-400/70 text-sm mb-4">n → n/2 ó 3n+1</div>
@@ -347,7 +362,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-voronoi" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-yellow-500/20 text-yellow-400">Geometría</span>
+                        <span class="category-tag bg-yellow-500/20 text-yellow-400">Geometría</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Diagrama de Voronoi</h3>
                         <p class="text-gray-500 text-sm mb-3">Regiones de proximidad que se ajustan en tiempo real. Mueve los puntos y observa cómo el espacio se particiona.</p>
                         <div class="equation text-yellow-400/70 text-sm mb-4">V(p) = {x : d(x,p) ≤ d(x,q)}</div>
@@ -381,7 +396,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-life" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-lime-500/20 text-lime-400">Autómatas</span>
+                        <span class="category-tag bg-lime-500/20 text-lime-400">Autómatas</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Game of Life</h3>
                         <p class="text-gray-500 text-sm mb-3">El autómata celular de Conway. Reglas simples generan comportamiento complejo: gliders, osciladores, naves espaciales.</p>
                         <div class="equation text-lime-400/70 text-sm mb-4">B3/S23: nace con 3, sobrevive con 2-3</div>
@@ -415,7 +430,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-lorenz" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Atractor de Lorenz</h3>
                         <p class="text-gray-500 text-sm mb-3">El efecto mariposa en 3D. Un sistema determinista con comportamiento impredecible. Caos matemático puro.</p>
                         <div class="equation text-violet-400/70 text-sm mb-4">dx/dt = σ(y-x), dy/dt = x(ρ-z)-y</div>
@@ -432,7 +447,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-pendulum" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Péndulo Doble</h3>
                         <p class="text-gray-500 text-sm mb-3">Sensibilidad extrema a condiciones iniciales. Dos péndulos idénticos divergen exponencialmente. El caos es inevitable.</p>
                         <div class="equation text-violet-400/70 text-sm mb-4">L = T - V, θ₁'' = f(θ₁, θ₂, ...)</div>
@@ -466,7 +481,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-domain" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-pink-500/20 text-pink-400">Análisis Complejo</span>
+                        <span class="category-tag bg-pink-500/20 text-pink-400">Análisis Complejo</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Domain Coloring</h3>
                         <p class="text-gray-500 text-sm mb-3">Visualiza funciones complejas con colores. Ceros, polos y estructuras de z², sin(z), Γ(z) y más.</p>
                         <div class="equation text-pink-400/70 text-sm mb-4">f(z) = u(x,y) + iv(x,y)</div>
@@ -483,7 +498,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-automata" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-lime-500/20 text-lime-400">Autómatas</span>
+                        <span class="category-tag bg-lime-500/20 text-lime-400">Autómatas</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Autómatas Elementales</h3>
                         <p class="text-gray-500 text-sm mb-3">Las 256 reglas de Wolfram. La Regla 110 es Turing-completa. Caos, periodicidad y complejidad emergente.</p>
                         <div class="equation text-lime-400/70 text-sm mb-4">a[i]' = f(a[i-1], a[i], a[i+1])</div>
@@ -500,7 +515,7 @@
                     <div class="card-border"></div>
                     <div class="p-4">
                         <canvas id="preview-threebody" class="preview-canvas w-full h-40 bg-black mb-4"></canvas>
-                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span>
+                        <span class="category-tag bg-violet-500/20 text-violet-400">Caos</span><span class="stl-badge">3D Print</span>
                         <h3 class="text-lg font-medium mb-1 mt-2">Problema de 3 Cuerpos</h3>
                         <p class="text-gray-500 text-sm mb-3">Gravitación newtoniana sin solución analítica. Órbitas periódicas: Figura 8, Lagrange, Mariposa y más.</p>
                         <div class="equation text-violet-400/70 text-sm mb-4">F = Gm₁m₂/r², sistema caótico</div>

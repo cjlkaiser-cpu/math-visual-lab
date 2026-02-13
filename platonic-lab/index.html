@@ -39,8 +39,304 @@
     <!-- GSAP -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/gsap/3.12.2/gsap.min.js"></script>
 
-    <!-- Custom CSS -->
-    <link rel="stylesheet" href="css/styles.css">
+    <style>
+        /* ===== RANGE SLIDERS ===== */
+        input[type="range"], .custom-range {
+            -webkit-appearance: none;
+            background: #1f2937;
+            border-radius: 4px;
+            height: 6px;
+        }
+        input[type="range"]::-webkit-slider-thumb, .custom-range::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            width: 16px; height: 16px;
+            background: #8b5cf6;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+        .custom-range-cyan::-webkit-slider-thumb {
+            background: #06b6d4;
+        }
+
+        /* ===== MODE TABS (header) ===== */
+        .mode-btn {
+            padding: 4px 12px;
+            font-size: 0.75rem;
+            background: transparent;
+            border: 1px solid transparent;
+            border-radius: 5px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .mode-btn.active {
+            background: rgba(139, 92, 246, 0.15);
+            border-color: #8b5cf6;
+            color: #c4b5fd;
+        }
+        .mode-btn:hover:not(.active) { background: rgba(55, 65, 81, 0.5); }
+
+        /* ===== PANEL TABS ===== */
+        .panel-tab {
+            flex: 1;
+            padding: 10px 12px;
+            font-size: 0.8rem;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        .panel-tab.active {
+            color: #c4b5fd;
+            border-bottom-color: #8b5cf6;
+        }
+        .panel-tab:hover:not(.active) { color: #9ca3af; }
+
+        /* ===== SHAPE BUTTONS ===== */
+        .shape-btn {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 2px;
+            padding: 8px 4px;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 8px;
+            color: #9ca3af;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .shape-btn.active {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #8b5cf6;
+            color: #c4b5fd;
+        }
+        .shape-btn:hover:not(.active) { background: #374151; }
+        .shape-icon { font-size: 1.1rem; line-height: 1; }
+        .shape-label { font-size: 0.6rem; text-transform: uppercase; letter-spacing: 0.5px; }
+
+        /* ===== RENDER BUTTONS ===== */
+        .render-btn {
+            flex: 1;
+            padding: 6px;
+            font-size: 0.7rem;
+            background: #1f2937;
+            border: 1px solid #374151;
+            color: #9ca3af;
+            border-radius: 4px;
+            cursor: pointer;
+            transition: all 0.15s;
+        }
+        .render-btn.active {
+            background: #8b5cf6;
+            color: white;
+            border-color: #8b5cf6;
+        }
+
+        /* ===== OPTION ROWS (checkboxes) ===== */
+        .option-row {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 0.8rem;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: background 0.15s;
+        }
+        .option-row:hover { background: rgba(55, 65, 81, 0.4); }
+        .option-row input[type="checkbox"] {
+            accent-color: #8b5cf6;
+            width: 14px; height: 14px;
+            cursor: pointer;
+        }
+
+        /* ===== PROPERTY ROWS ===== */
+        .prop-row {
+            display: flex;
+            justify-content: space-between;
+            padding: 6px 12px;
+            border-bottom: 1px solid #1e293b;
+            font-size: 0.75rem;
+        }
+        .prop-row:last-child { border-bottom: none; }
+        .prop-label { color: #6b7280; }
+        .prop-value { color: #c4b5fd; font-variant-numeric: tabular-nums; }
+
+        /* ===== MATH BOX ===== */
+        .math-box {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.1), rgba(6, 182, 212, 0.05));
+            border: 1px solid rgba(139, 92, 246, 0.3);
+            border-radius: 8px;
+            padding: 12px;
+        }
+
+        /* ===== SUB-TABS (math, history) ===== */
+        .math-subtab, .history-subtab {
+            padding: 8px 10px;
+            font-size: 0.7rem;
+            background: transparent;
+            border: none;
+            border-bottom: 2px solid transparent;
+            color: #6b7280;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .math-subtab.active, .history-subtab.active {
+            color: #c4b5fd;
+            border-bottom-color: #8b5cf6;
+        }
+        .math-subtab:hover:not(.active), .history-subtab:hover:not(.active) { color: #9ca3af; }
+
+        /* ===== CONWAY OPERATION BUTTONS ===== */
+        .conway-op-btn {
+            width: 36px; height: 36px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background: #1f2937;
+            border: 1px solid #374151;
+            border-radius: 6px;
+            color: #9ca3af;
+            font-size: 0.85rem;
+            font-weight: 600;
+            font-family: 'JetBrains Mono', monospace;
+            cursor: pointer;
+            transition: all 0.2s;
+        }
+        .conway-op-btn:hover { background: #374151; border-color: #6b7280; }
+        .conway-op-btn.active {
+            background: rgba(139, 92, 246, 0.2);
+            border-color: #8b5cf6;
+            color: #c4b5fd;
+        }
+
+        /* ===== GLOW TEXT ===== */
+        .glow-text { text-shadow: 0 0 20px rgba(139, 92, 246, 0.5); }
+
+        /* ===== CONTENT TYPOGRAPHY ===== */
+        .section-header {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: #c4b5fd;
+            margin-bottom: 12px;
+        }
+        .section-subheader {
+            font-size: 0.75rem;
+            font-weight: 500;
+            color: #8b5cf6;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-top: 16px;
+            margin-bottom: 8px;
+        }
+
+        /* ===== ELEMENT CARDS (History > Elements) ===== */
+        .element-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 10px;
+            padding: 14px;
+            border-left: 3px solid #6b7280;
+        }
+        .element-fire   { border-left-color: #ef4444; }
+        .element-earth  { border-left-color: #22c55e; }
+        .element-air    { border-left-color: #facc15; }
+        .element-water  { border-left-color: #3b82f6; }
+        .element-ether  { border-left-color: #a855f7; }
+        .element-symbol { font-size: 1.3rem; margin-bottom: 4px; }
+        .element-name   { font-size: 0.85rem; font-weight: 600; color: #e5e7eb; }
+        .element-solid  { font-size: 0.7rem; color: #8b5cf6; font-family: 'JetBrains Mono', monospace; margin-bottom: 8px; }
+        .element-reason { font-size: 0.75rem; color: #9ca3af; line-height: 1.5; margin-bottom: 8px; }
+        .element-quote  {
+            font-size: 0.7rem;
+            color: #6b7280;
+            font-style: italic;
+            border-left: 2px solid #374151;
+            padding-left: 10px;
+            line-height: 1.5;
+        }
+        .element-quote-source { font-style: normal; color: #8b5cf6; margin-top: 4px; font-size: 0.65rem; }
+
+        /* ===== TIMELINE (History > Cronología) ===== */
+        .timeline-item {
+            position: relative;
+            padding: 10px 0 10px 20px;
+            border-left: 2px solid #1e293b;
+        }
+        .timeline-item::before {
+            content: '';
+            position: absolute;
+            left: -5px; top: 14px;
+            width: 8px; height: 8px;
+            background: #8b5cf6;
+            border-radius: 50%;
+        }
+        .timeline-date  { font-size: 0.65rem; color: #8b5cf6; font-family: 'JetBrains Mono', monospace; font-weight: 500; }
+        .timeline-title { font-size: 0.8rem; font-weight: 600; color: #e5e7eb; margin: 2px 0; }
+        .timeline-desc  { font-size: 0.72rem; color: #9ca3af; line-height: 1.5; }
+
+        /* ===== TIMAEUS (History > Timeo) ===== */
+        .timaeus-passage {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 10px;
+        }
+        .timaeus-topic { font-size: 0.8rem; font-weight: 600; color: #c4b5fd; margin-bottom: 6px; }
+        .timaeus-text  { font-size: 0.72rem; color: #9ca3af; line-height: 1.6; font-style: italic; }
+        .timaeus-ref   { font-size: 0.65rem; color: #8b5cf6; margin-top: 6px; font-family: 'JetBrains Mono', monospace; }
+
+        /* ===== MODERN (History > Aplicaciones) ===== */
+        .modern-card {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 12px;
+        }
+        .modern-card-title { font-size: 0.8rem; font-weight: 600; color: #e5e7eb; }
+        .modern-card-solid { font-size: 0.65rem; color: #8b5cf6; font-family: 'JetBrains Mono', monospace; margin-bottom: 6px; }
+        .modern-card-desc  { font-size: 0.72rem; color: #9ca3af; line-height: 1.5; }
+
+        /* ===== MATH TABLES ===== */
+        .symmetry-table, .euler-table {
+            width: 100%;
+            font-size: 0.72rem;
+            border-collapse: collapse;
+        }
+        .symmetry-table th, .euler-table th {
+            padding: 6px 8px;
+            text-align: left;
+            color: #8b5cf6;
+            font-weight: 500;
+            font-size: 0.65rem;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            border-bottom: 1px solid #374151;
+        }
+        .symmetry-table td, .euler-table td {
+            padding: 5px 8px;
+            color: #d1d5db;
+            border-bottom: 1px solid #1e293b;
+        }
+        .euler-result { color: #22c55e; font-weight: 600; }
+
+        /* ===== DERIVATION STEPS ===== */
+        .derivation-step {
+            background: #0f172a;
+            border: 1px solid #1e293b;
+            border-radius: 8px;
+            padding: 10px 12px;
+            margin-bottom: 8px;
+        }
+        .derivation-step-title { font-size: 0.7rem; font-weight: 600; color: #8b5cf6; margin-bottom: 4px; }
+        .derivation-step-explanation { font-size: 0.7rem; color: #9ca3af; margin-top: 6px; line-height: 1.4; }
+    </style>
 </head>
 <body class="bg-gray-950 text-gray-200 font-sans overflow-hidden h-screen flex flex-col">
 
@@ -413,6 +709,14 @@
 
                 <!-- Export STL -->
                 <div>
+                    <div class="mb-2">
+                        <label class="text-xs text-gray-500 uppercase tracking-wider mb-1 block">Corte para impresion</label>
+                        <select id="stl-cut-mode" class="w-full bg-gray-900 text-xs text-gray-200 rounded-lg px-3 py-1.5 border border-gray-700">
+                            <option value="closed" selected>Cerrado (completo)</option>
+                            <option value="top-open">Tapa abierta (cara superior)</option>
+                            <option value="half">Corte medio (mitad superior)</option>
+                        </select>
+                    </div>
                     <button id="export-stl-btn"
                             class="w-full px-3 py-2 text-xs bg-accent/10 hover:bg-accent/20 text-accent rounded-lg border border-accent/30 transition-colors font-medium flex items-center justify-center gap-2">
                         <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">

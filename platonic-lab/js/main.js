@@ -1132,6 +1132,146 @@
         renderer.render(scene, camera);
     }
 
+    // ==================== STL CROSS-SECTION CLIPPING ====================
+
+    /**
+     * Clip an array of raw triangles against a THREE.Plane.
+     * Keeps the side with negative signed distance (below the plane).
+     * Returns { triangles, capEdges } where capEdges are [p1,p2] arrays on the plane.
+     */
+    function clipTrianglesAgainstPlane(triangles, plane) {
+        const nx = plane.normal.x, ny = plane.normal.y, nz = plane.normal.z;
+        const pc = plane.constant;
+        const EPS = 1e-6;
+
+        function dist(v) { return nx * v[0] + ny * v[1] + nz * v[2] + pc; }
+
+        function lerpV(a, b, da, db) {
+            const t = da / (da - db);
+            return [a[0] + t * (b[0] - a[0]), a[1] + t * (b[1] - a[1]), a[2] + t * (b[2] - a[2])];
+        }
+
+        // Push clipped triangle preserving original normal + fixing winding to match
+        function pushTri(out, normal, v0, v1, v2) {
+            const e1 = [v1[0] - v0[0], v1[1] - v0[1], v1[2] - v0[2]];
+            const e2 = [v2[0] - v0[0], v2[1] - v0[1], v2[2] - v0[2]];
+            const cx = e1[1] * e2[2] - e1[2] * e2[1];
+            const cy = e1[2] * e2[0] - e1[0] * e2[2];
+            const cz = e1[0] * e2[1] - e1[1] * e2[0];
+            const dot = cx * normal[0] + cy * normal[1] + cz * normal[2];
+            if (dot < 0) {
+                out.push({ normal, vertices: [v0, v2, v1] }); // flip winding
+            } else {
+                out.push({ normal, vertices: [v0, v1, v2] });
+            }
+        }
+
+        const result = [];
+        const capEdges = [];
+
+        for (const tri of triangles) {
+            const verts = tri.vertices;
+            const d = [dist(verts[0]), dist(verts[1]), dist(verts[2])];
+            const below = [d[0] <= EPS, d[1] <= EPS, d[2] <= EPS];
+            const countBelow = below.filter(Boolean).length;
+
+            if (countBelow === 3) {
+                result.push(tri);
+            } else if (countBelow === 0) {
+                continue;
+            } else if (countBelow === 1) {
+                // 1 vertex below → 1 clipped triangle
+                let ib; for (let i = 0; i < 3; i++) if (below[i]) { ib = i; break; }
+                const i1 = (ib + 1) % 3, i2 = (ib + 2) % 3;
+                const p1 = lerpV(verts[ib], verts[i1], d[ib], d[i1]);
+                const p2 = lerpV(verts[ib], verts[i2], d[ib], d[i2]);
+                pushTri(result, tri.normal, verts[ib], p1, p2);
+                capEdges.push([p1, p2]);
+            } else {
+                // 2 vertices below → 2 clipped triangles (quad)
+                let ia; for (let i = 0; i < 3; i++) if (!below[i]) { ia = i; break; }
+                const i1 = (ia + 1) % 3, i2 = (ia + 2) % 3;
+                const p1 = lerpV(verts[i1], verts[ia], d[i1], d[ia]);
+                const p2 = lerpV(verts[i2], verts[ia], d[i2], d[ia]);
+                pushTri(result, tri.normal, verts[i1], p1, verts[i2]);
+                pushTri(result, tri.normal, verts[i2], p1, p2);
+                capEdges.push([p1, p2]);
+            }
+        }
+
+        return { triangles: result, capEdges };
+    }
+
+    /**
+     * Build cap face(s) from unordered edges on the cutting plane.
+     * Orders edges into closed polygons, then fan-triangulates each from its centroid.
+     */
+    function generateCapTriangles(capEdges, plane) {
+        if (capEdges.length === 0) return [];
+        const EPS = 1e-4;
+
+        function d3(a, b) {
+            return Math.sqrt((a[0] - b[0]) ** 2 + (a[1] - b[1]) ** 2 + (a[2] - b[2]) ** 2);
+        }
+
+        // Build closed polygons from unordered edge segments
+        const used = new Set();
+        const polygons = [];
+
+        while (used.size < capEdges.length) {
+            let si = -1;
+            for (let i = 0; i < capEdges.length; i++) { if (!used.has(i)) { si = i; break; } }
+            if (si < 0) break;
+
+            const chain = [capEdges[si][0], capEdges[si][1]];
+            used.add(si);
+
+            let safety = capEdges.length + 2;
+            while (safety-- > 0) {
+                const last = chain[chain.length - 1];
+                let found = false;
+                for (let i = 0; i < capEdges.length; i++) {
+                    if (used.has(i)) continue;
+                    if (d3(last, capEdges[i][0]) < EPS) {
+                        chain.push(capEdges[i][1]); used.add(i); found = true; break;
+                    }
+                    if (d3(last, capEdges[i][1]) < EPS) {
+                        chain.push(capEdges[i][0]); used.add(i); found = true; break;
+                    }
+                }
+                if (!found) break;
+            }
+
+            if (chain.length > 2 && d3(chain[0], chain[chain.length - 1]) < EPS) chain.pop();
+            if (chain.length >= 3) polygons.push(chain);
+        }
+
+        // Fan-triangulate each polygon with correct winding for cap normal
+        const capN = [plane.normal.x, plane.normal.y, plane.normal.z];
+        const tris = [];
+
+        for (const poly of polygons) {
+            const c = [0, 0, 0];
+            for (const p of poly) { c[0] += p[0]; c[1] += p[1]; c[2] += p[2]; }
+            c[0] /= poly.length; c[1] /= poly.length; c[2] /= poly.length;
+
+            // Check first triangle's winding vs cap normal, reverse polygon if needed
+            const e1 = [poly[0][0] - c[0], poly[0][1] - c[1], poly[0][2] - c[2]];
+            const e2 = [poly[1][0] - c[0], poly[1][1] - c[1], poly[1][2] - c[2]];
+            const wx = e1[1] * e2[2] - e1[2] * e2[1];
+            const wy = e1[2] * e2[0] - e1[0] * e2[2];
+            const wz = e1[0] * e2[1] - e1[1] * e2[0];
+            if (wx * capN[0] + wy * capN[1] + wz * capN[2] < 0) poly.reverse();
+
+            for (let i = 0; i < poly.length; i++) {
+                const next = (i + 1) % poly.length;
+                tris.push({ normal: capN, vertices: [c, poly[i], poly[next]] });
+            }
+        }
+
+        return tris;
+    }
+
     // ==================== EVENT BINDINGS ====================
 
     function bindEvents() {
@@ -1474,25 +1614,60 @@
                 const STL = window.STLExporter;
                 if (!STL) return;
 
-                let geometry = null;
+                const scaleMM = state.edgeLength * 50; // 50mm per unit edge
+                let allTriangles = [];
                 let name = '';
 
                 if (state.mode === 'conway' && conwayMesh) {
-                    geometry = conwayMesh.geometry;
+                    allTriangles.push(...STL.extractTriangles(conwayMesh.geometry));
                     const op = state.conwayOp || 'seed';
                     name = `${state.conwaySeed}-${op}`;
                 } else if (primaryMesh) {
-                    geometry = primaryMesh.geometry;
+                    allTriangles.push(...STL.extractTriangles(primaryMesh.geometry));
                     name = state.currentSolid;
+
+                    // Include dual if visible
+                    if (state.showDual && dualMesh && dualMesh.geometry) {
+                        allTriangles.push(...STL.extractTriangles(dualMesh.geometry));
+                        name += '-dual';
+                    }
                 }
 
-                if (!geometry) {
+                // Apply cross-section clipping if active
+                if (state.showCrossSection && csLocalPlane && allTriangles.length > 0) {
+                    const clipped = clipTrianglesAgainstPlane(allTriangles, csLocalPlane);
+                    allTriangles = clipped.triangles;
+                    // Generate cap face to close the cut
+                    const capTris = generateCapTriangles(clipped.capEdges, csLocalPlane);
+                    allTriangles.push(...capTris);
+                    name += '-section';
+                }
+
+                // Apply cut mode
+                const cutMode = document.getElementById('stl-cut-mode')?.value || 'closed';
+                if (cutMode === 'top-open' && allTriangles.length > 0) {
+                    // Remove face(s) with highest Y normal
+                    let maxNy = -Infinity;
+                    for (const t of allTriangles) maxNy = Math.max(maxNy, t.normal[1]);
+                    allTriangles = allTriangles.filter(t => t.normal[1] < maxNy - 0.1);
+                    name += '-open';
+                } else if (cutMode === 'half' && allTriangles.length > 0) {
+                    // Keep only triangles with centroid Y <= 0
+                    allTriangles = allTriangles.filter(t => {
+                        const cy = (t.vertices[0][1] + t.vertices[1][1] + t.vertices[2][1]) / 3;
+                        return cy <= 0.01;
+                    });
+                    name += '-half';
+                }
+
+                if (allTriangles.length === 0) {
                     alert('No hay geometría para exportar');
                     return;
                 }
 
-                const scaleMM = state.edgeLength * 50; // 50mm per unit edge
-                STL.exportSTL(geometry, `${name}.stl`, scaleMM);
+                allTriangles = STL.scaleTriangles(allTriangles, scaleMM);
+                const buffer = STL.toBinarySTL(allTriangles);
+                STL.download(buffer, `${name}.stl`);
             });
         }
     }

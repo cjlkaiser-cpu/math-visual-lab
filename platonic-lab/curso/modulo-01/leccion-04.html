@@ -5,149 +5,234 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lección 4: Euclides y los Elementos | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .lab-container { border: 2px solid #a855f7; border-radius: 12px; overflow: hidden; }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Módulo 01</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Lección 4</span> — Euclides y los Elementos
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-03.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-05.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-03.html" class="px-3 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-05.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
-                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
-                    
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Módulo 01</h3>
+                    <p class="text-sm text-gray-500 mb-4">Los Guardianes de la Geometría</p>
+
+                    <!-- Progress -->
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>4/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 66.6%"></div>
                         </div>
                     </div>
 
+                    <!-- Navigation -->
                     <nav class="space-y-2">
-                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
-                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
-                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">3. Platón y el Timeo</a>
-                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">4. Euclides y los Elementos</a>
-                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">5. Exploración Visual Completa</a>
-                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">6. Notación de Schläfli</a>
                     </nav>
                 </div>
             </aside>
 
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 4</span>
-                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
+                            <span class="text-cyan-400 text-sm font-medium">Lección 4</span>
+                            <span class="text-gray-400 text-sm">~30 min</span>
                         </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Euclides y los Elementos</h1>
+                        <h1 class="text-3xl font-bold mb-4 text-violet-400 glow-text">Euclides y los Elementos</h1>
                         <p class="text-gray-400 text-lg">La sistematización matemática que culmina con la prueba de que solo existen cinco sólidos platónicos.</p>
                     </div>
 
+                    <!-- Content -->
                     <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">El Padre de la Geometría</h2>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">El Padre de la Geometría</h2>
                         <p class="text-gray-300 mb-4">
                             Euclides (c. 300 a.C.) compuso <em>Los Elementos</em>, la obra matemática más influyente de la historia. En 13 libros, estableció el método axiomático-deductivo que domina las matemáticas hasta hoy.
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 border-l-4 border-platonic-purple">
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-violet-400">
                             <p class="text-lg italic text-gray-300">
                                 "No hay camino real hacia la geometría."
                             </p>
                             <p class="text-sm text-gray-500 mt-2">— Euclides, según Proclo</p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Libro XIII: Los Sólidos Platónicos</h3>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">El Libro XIII: Los Sólidos Platónicos</h3>
                         <p class="text-gray-300 mb-4">
                             El último libro de los Elementos está dedicado enteramente a los sólidos platónicos. Euclides demostró rigurosamente:
                         </p>
 
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-3">Proposición XVIII del Libro XIII:</h4>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Proposición XVIII del Libro XIII:</h4>
                             <p class="text-gray-300 italic">
                                 "Se pueden construir cinco figuras sólidas, y no más, que están contenidas por polígonos equiláteros y equiángulos iguales."
                             </p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Demostración de Euclides</h3>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">La Demostración de Euclides</h3>
                         <p class="text-gray-300 mb-4">
                             Euclides utilizó un argumento basado en la <strong>convexidad</strong> y la suma de ángulos en un vértice:
                         </p>
 
                         <div class="space-y-4 mb-6">
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-cyan mb-2">Paso 1: Ángulo interior de un polígono</h4>
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
+                                <h4 class="font-semibold text-cyan-400 mb-2">Paso 1: Ángulo interior de un polígono</h4>
                                 <p class="text-gray-300 text-sm">Para un polígono regular de <strong>p</strong> lados:</p>
-                                <p class="text-center text-lg text-platonic-purple my-2">α<sub>p</sub> = (p-2) × 180° / p</p>
+                                <p class="text-center text-violet-400 my-2">$$\alpha_p = \frac{(p-2) \cdot 180^\circ}{p}$$</p>
                             </div>
 
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-cyan mb-2">Paso 2: Condición de convexidad</h4>
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
+                                <h4 class="font-semibold text-cyan-400 mb-2">Paso 2: Condición de convexidad</h4>
                                 <p class="text-gray-300 text-sm">En cada vértice concurren <strong>q</strong> caras. Para que el poliedro sea convexo:</p>
-                                <p class="text-center text-lg text-platonic-purple my-2">q × α<sub>p</sub> < 360°</p>
+                                <p class="text-center text-violet-400 my-2">$$q \cdot \alpha_p < 360^\circ$$</p>
                             </div>
 
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-cyan mb-2">Paso 3: Las únicas soluciones</h4>
-                                <p class="text-gray-300 text-sm">Sustituyendo y simplificando:</p>
-                                <p class="text-center text-lg text-platonic-purple my-2">(p-2)(q-2) < 4</p>
-                                <p class="text-gray-300 text-sm mt-2">Las únicas soluciones enteras son las 5 combinaciones de los sólidos platónicos.</p>
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800">
+                                <h4 class="font-semibold text-cyan-400 mb-2">Paso 3: La Derivación Completa</h4>
+                                <p class="text-gray-300 text-sm mb-3">Partimos de: <span class="text-violet-400">\(q \cdot \alpha_p < 360^\circ\)</span> donde <span class="text-violet-400">\(\alpha_p = \frac{(p-2) \cdot 180^\circ}{p}\)</span></p>
+
+                                <div class="space-y-2 text-sm">
+                                    <p class="text-gray-300">Sustituyendo \(\alpha_p\):</p>
+                                    <p class="text-center text-violet-400">$$q \cdot \frac{(p-2) \cdot 180^\circ}{p} < 360^\circ$$</p>
+
+                                    <p class="text-gray-300">Dividimos ambos lados entre \(180^\circ\):</p>
+                                    <p class="text-center text-violet-400">$$\frac{q(p-2)}{p} < 2$$</p>
+
+                                    <p class="text-gray-300">Multiplicamos ambos lados por \(p\):</p>
+                                    <p class="text-center text-violet-400">$$q(p-2) < 2p$$</p>
+
+                                    <p class="text-gray-300">Expandimos el lado izquierdo:</p>
+                                    <p class="text-center text-violet-400">$$qp - 2q < 2p$$</p>
+
+                                    <p class="text-gray-300">Restamos \(2p\) de ambos lados:</p>
+                                    <p class="text-center text-violet-400">$$qp - 2q - 2p < 0$$</p>
+
+                                    <p class="text-gray-300">Sumamos 4 a ambos lados:</p>
+                                    <p class="text-center text-violet-400">$$qp - 2q - 2p + 4 < 4$$</p>
+
+                                    <p class="text-gray-300">Factorizamos el lado izquierdo:</p>
+                                    <p class="text-center text-lg text-violet-400">$$(p-2)(q-2) < 4$$</p>
+                                </div>
+
+                                <div class="mt-4 bg-violet-500/10 border border-violet-500/30 rounded-lg p-3">
+                                    <p class="text-gray-300 text-sm"><strong class="text-violet-400">El truco algebraico:</strong> sumar 4 a ambos lados permite factorizar la expresión como un producto de dos factores. Esta es la clave de toda la clasificación.</p>
+                                </div>
                             </div>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Tabla de Soluciones Válidas</h3>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Enumeración Sistemática</h3>
+                        <p class="text-gray-300 mb-4">
+                            Con \(p \geq 3\) y \(q \geq 3\) (mínimo triángulos, mínimo 3 caras por vértice), el producto \((p-2)(q-2)\) puede valer <strong>1, 2 o 3</strong> (enteros positivos menores que 4):
+                        </p>
+
                         <div class="overflow-x-auto mb-6">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
+                                <thead class="bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-2 text-center">(p-2)(q-2)</th>
+                                        <th class="px-4 py-2 text-center">Factorizaciones</th>
+                                        <th class="px-4 py-2 text-center">(p, q)</th>
+                                        <th class="px-4 py-2 text-left">Sólido</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">1</td>
+                                        <td class="px-4 py-2 text-center">1 × 1</td>
+                                        <td class="px-4 py-2 text-center">(3, 3)</td>
+                                        <td class="px-4 py-2 text-violet-400">Tetraedro</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">2</td>
+                                        <td class="px-4 py-2 text-center">1 × 2</td>
+                                        <td class="px-4 py-2 text-center">(3, 4)</td>
+                                        <td class="px-4 py-2 text-violet-400">Octaedro</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">2</td>
+                                        <td class="px-4 py-2 text-center">2 × 1</td>
+                                        <td class="px-4 py-2 text-center">(4, 3)</td>
+                                        <td class="px-4 py-2 text-violet-400">Cubo</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-center">1 × 3</td>
+                                        <td class="px-4 py-2 text-center">(3, 5)</td>
+                                        <td class="px-4 py-2 text-violet-400">Icosaedro</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center">3</td>
+                                        <td class="px-4 py-2 text-center">3 × 1</td>
+                                        <td class="px-4 py-2 text-center">(5, 3)</td>
+                                        <td class="px-4 py-2 text-violet-400">Dodecaedro</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-gray-400 text-sm mb-6">
+                            No hay más: \(2 \times 2 = 4\) (no vale, necesitamos estrictamente menor que 4), \(1 \times 4\) daría \(q = 6\) con \(p = 3\) (tampoco vale), y cualquier producto mayor queda excluido.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Verificación Angular</h3>
+                        <p class="text-gray-300 mb-4">
+                            Comprobamos que la suma de ángulos en cada vértice es efectivamente menor que \(360^\circ\):
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-900">
                                     <tr>
                                         <th class="px-4 py-2 text-center">p (lados)</th>
                                         <th class="px-4 py-2 text-center">q (caras/vértice)</th>
@@ -155,51 +240,161 @@
                                         <th class="px-4 py-2 text-center">Suma de ángulos</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
+                                <tbody class="divide-y divide-gray-800">
                                     <tr>
                                         <td class="px-4 py-2 text-center">3</td>
                                         <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
-                                        <td class="px-4 py-2 text-center">3 × 60° = 180°</td>
+                                        <td class="px-4 py-2 text-violet-400">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center">\(3 \times 60^\circ = 180^\circ\)</td>
                                     </tr>
                                     <tr>
                                         <td class="px-4 py-2 text-center">3</td>
                                         <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
-                                        <td class="px-4 py-2 text-center">4 × 60° = 240°</td>
+                                        <td class="px-4 py-2 text-violet-400">Octaedro</td>
+                                        <td class="px-4 py-2 text-center">\(4 \times 60^\circ = 240^\circ\)</td>
                                     </tr>
                                     <tr>
                                         <td class="px-4 py-2 text-center">3</td>
                                         <td class="px-4 py-2 text-center">5</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
-                                        <td class="px-4 py-2 text-center">5 × 60° = 300°</td>
+                                        <td class="px-4 py-2 text-violet-400">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center">\(5 \times 60^\circ = 300^\circ\)</td>
                                     </tr>
                                     <tr>
                                         <td class="px-4 py-2 text-center">4</td>
                                         <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
-                                        <td class="px-4 py-2 text-center">3 × 90° = 270°</td>
+                                        <td class="px-4 py-2 text-violet-400">Cubo</td>
+                                        <td class="px-4 py-2 text-center">\(3 \times 90^\circ = 270^\circ\)</td>
                                     </tr>
                                     <tr>
                                         <td class="px-4 py-2 text-center">5</td>
                                         <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
-                                        <td class="px-4 py-2 text-center">3 × 108° = 324°</td>
+                                        <td class="px-4 py-2 text-violet-400">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center">\(3 \times 108^\circ = 324^\circ\)</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <div class="bg-red-900/20 border border-red-500/30 rounded-lg p-4 mb-6">
-                            <h4 class="font-semibold text-red-400 mb-2">¿Por qué no hay más?</h4>
+                        <!-- Diagrama: abanicos angulares — poliedro vs teselación -->
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-6">
+                            <!-- 3 triángulos: tetraedro (180° de hueco) -->
+                            <div class="text-center">
+                                <svg viewBox="0 0 250 230" xmlns="http://www.w3.org/2000/svg" style="max-width: 230px; width: 100%; margin: 0 auto;">
+                                    <!-- Caras (relleno sutil) -->
+                                    <polygon points="125,145 220,145 173,63" fill="#a78bfa" fill-opacity="0.07"/>
+                                    <polygon points="125,145 173,63 78,63" fill="#a78bfa" fill-opacity="0.07"/>
+                                    <polygon points="125,145 78,63 30,145" fill="#a78bfa" fill-opacity="0.07"/>
+
+                                    <!-- Aristas de las caras -->
+                                    <line x1="125" y1="145" x2="220" y2="145" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="145" x2="173" y2="63" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="145" x2="78" y2="63" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="145" x2="30" y2="145" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="220" y1="145" x2="173" y2="63" stroke="#a78bfa" stroke-width="1"/>
+                                    <line x1="173" y1="63" x2="78" y2="63" stroke="#a78bfa" stroke-width="1"/>
+                                    <line x1="78" y1="63" x2="30" y2="145" stroke="#a78bfa" stroke-width="1"/>
+
+                                    <!-- Arco del hueco (punteado) -->
+                                    <path d="M 30 145 A 95 95 0 0 1 220 145" fill="none" stroke="#22d3ee" stroke-width="1.2" stroke-dasharray="5 3"/>
+
+                                    <!-- Arco de ángulo 60° (indicador) -->
+                                    <path d="M 145 145 A 20 20 0 0 0 135 128" fill="none" stroke="#9ca3af" stroke-width="1"/>
+
+                                    <!-- Punto central -->
+                                    <circle cx="125" cy="145" r="3" fill="#a78bfa"/>
+
+                                    <!-- Etiquetas -->
+                                    <text x="140" y="133" fill="#9ca3af" font-size="11" font-family="Inter, sans-serif">60°</text>
+                                    <text x="125" y="195" text-anchor="middle" fill="#22d3ee" font-size="13" font-family="Inter, sans-serif">180° de hueco</text>
+                                </svg>
+                                <p class="text-sm text-gray-500 mt-1">Tetraedro: 3 × 60° = 180° &lt; 360°</p>
+                                <p class="text-xs text-gray-600">El hueco permite cerrar en 3D</p>
+                            </div>
+
+                            <!-- 6 triángulos: teselación (sin hueco) -->
+                            <div class="text-center">
+                                <svg viewBox="0 0 250 230" xmlns="http://www.w3.org/2000/svg" style="max-width: 230px; width: 100%; margin: 0 auto;">
+                                    <!-- Caras (relleno sutil) -->
+                                    <polygon points="125,120 215,120 170,42" fill="#a78bfa" fill-opacity="0.05"/>
+                                    <polygon points="125,120 170,42 80,42" fill="#a78bfa" fill-opacity="0.05"/>
+                                    <polygon points="125,120 80,42 35,120" fill="#a78bfa" fill-opacity="0.05"/>
+                                    <polygon points="125,120 35,120 80,198" fill="#a78bfa" fill-opacity="0.05"/>
+                                    <polygon points="125,120 80,198 170,198" fill="#a78bfa" fill-opacity="0.05"/>
+                                    <polygon points="125,120 170,198 215,120" fill="#a78bfa" fill-opacity="0.05"/>
+
+                                    <!-- Aristas -->
+                                    <line x1="125" y1="120" x2="215" y2="120" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="120" x2="170" y2="42" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="120" x2="80" y2="42" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="120" x2="35" y2="120" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="120" x2="80" y2="198" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="125" y1="120" x2="170" y2="198" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <!-- Aristas exteriores -->
+                                    <line x1="215" y1="120" x2="170" y2="42" stroke="#a78bfa" stroke-width="1"/>
+                                    <line x1="170" y1="42" x2="80" y2="42" stroke="#a78bfa" stroke-width="1"/>
+                                    <line x1="80" y1="42" x2="35" y2="120" stroke="#a78bfa" stroke-width="1"/>
+                                    <line x1="35" y1="120" x2="80" y2="198" stroke="#a78bfa" stroke-width="1"/>
+                                    <line x1="80" y1="198" x2="170" y2="198" stroke="#a78bfa" stroke-width="1"/>
+                                    <line x1="170" y1="198" x2="215" y2="120" stroke="#a78bfa" stroke-width="1"/>
+
+                                    <!-- Punto central -->
+                                    <circle cx="125" cy="120" r="3" fill="#a78bfa"/>
+
+                                    <!-- Etiqueta = -->
+                                    <text x="125" y="225" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter, sans-serif">sin hueco</text>
+                                </svg>
+                                <p class="text-sm text-gray-500 mt-1">Teselación {3,6}: 6 × 60° = 360°</p>
+                                <p class="text-xs text-gray-600">Plano, no cierra en 3D</p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Los Casos Frontera: Teselaciones del Plano</h3>
+                        <p class="text-gray-300 mb-4">
+                            Cuando \((p-2)(q-2) = 4\), los ángulos suman exactamente \(360^\circ\) y obtenemos <strong>teselaciones planas</strong> en vez de poliedros:
+                        </p>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6">
+                            <ul class="space-y-3 text-gray-300">
+                                <li>
+                                    <span class="text-violet-400">\(\{3, 6\}\)</span> — triángulos, 6 por vértice: <strong>teselación triangular</strong>
+                                </li>
+                                <li>
+                                    <span class="text-violet-400">\(\{4, 4\}\)</span> — cuadrados, 4 por vértice: <strong>teselación cuadrada</strong>
+                                </li>
+                                <li>
+                                    <span class="text-violet-400">\(\{6, 3\}\)</span> — hexágonos, 3 por vértice: <strong>teselación hexagonal</strong> (panal de abejas)
+                                </li>
+                            </ul>
+                            <div class="mt-4 pt-4 border-t border-gray-800">
+                                <p class="text-gray-400 text-sm">
+                                    Estas son las únicas 3 teselaciones regulares del plano. La misma ecuación \((p-2)(q-2) = 4\) las clasifica.
+                                </p>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">El Defecto Angular de Descartes</h3>
+                        <p class="text-gray-300 mb-4">
+                            En cada vértice de un poliedro convexo, la suma de los ángulos de las caras es menor que \(360^\circ\). La diferencia se llama <strong>defecto angular</strong>:
+                        </p>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4">
+                            <p class="text-center text-violet-400 mb-4">$$\delta = 360^\circ - q \cdot \alpha_p$$</p>
+                            <p class="text-gray-300 mb-4">
+                                Para un poliedro regular con <strong>V</strong> vértices, Descartes demostró:
+                            </p>
+                            <p class="text-center text-violet-400 mb-4">$$\sum \delta = V \cdot \delta = 720^\circ$$</p>
                             <p class="text-gray-300 text-sm">
-                                Si intentamos p=3, q=6: 6 × 60° = 360° (aplanado, no forma sólido)<br>
-                                Si intentamos p=6, q=3: 3 × 120° = 360° (aplanado, teselación plana)<br>
-                                Para p>5 o q>5, la suma excede 360°, imposibilitando la convexidad.
+                                Esto es equivalente a \(V - E + F = 2\) (fórmula de Euler). La curvatura total de cualquier poliedro convexo es siempre \(720^\circ = 4\pi\).
                             </p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Legado de los Elementos</h3>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-4 mb-6">
+                            <p class="text-gray-300 text-sm">
+                                <strong class="text-violet-400">Ejemplo:</strong> Tetraedro — \(\delta = 360^\circ - 3 \times 60^\circ = 180^\circ\), y \(V \cdot \delta = 4 \times 180^\circ = 720^\circ\) ✓
+                            </p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">El Legado de los Elementos</h3>
                         <p class="text-gray-300 mb-4">
                             Los Elementos de Euclides establecieron el estándar de rigor matemático por más de 2000 años. La demostración de que solo existen cinco sólidos platónicos es un ejemplo perfecto de:
                         </p>
@@ -211,34 +406,170 @@
                             <li>Economía de argumentos (sin casos superfluos)</li>
                         </ul>
 
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-cyan mb-3">Ejercicio: Verificación Numérica</h4>
-                            <p class="text-gray-300 mb-2">Verifica que para cada sólido: (p-2)(q-2) < 4</p>
-                            <ul class="text-sm text-gray-400 space-y-1">
-                                <li>Tetraedro {3,3}: (3-2)(3-2) = 1 < 4 ✓</li>
-                                <li>Cubo {4,3}: (4-2)(3-2) = 2 < 4 ✓</li>
-                                <li>Octaedro {3,4}: (3-2)(4-2) = 2 < 4 ✓</li>
-                                <li>Dodecaedro {5,3}: (5-2)(3-2) = 3 < 4 ✓</li>
-                                <li>Icosaedro {3,5}: (3-2)(5-2) = 3 < 4 ✓</li>
-                            </ul>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Ejercicios</h4>
+                            <ol class="list-decimal list-inside space-y-3 text-gray-300 text-sm">
+                                <li>Deriva \((p-2)(q-2) < 4\) partiendo de \(q \cdot \alpha_p < 360^\circ\). Muestra cada paso.</li>
+                                <li>Enumera todas las soluciones enteras con \(p \geq 3\), \(q \geq 3\).</li>
+                                <li>¿Qué pasa cuando \((p-2)(q-2) = 4\)? Encuentra las tres soluciones.</li>
+                                <li>Calcula el defecto angular \(\delta\) para cada uno de los cinco sólidos. Verifica que \(V \cdot \delta = 720^\circ\) en cada caso.</li>
+                                <li>¿Por qué no puede existir un poliedro regular con caras hexagonales?</li>
+                            </ol>
                         </div>
                     </div>
 
+                    <!-- LAB Section: Verificación {p,q} y defecto angular -->
                     <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
-                            <span class="mr-2">🔬</span> LAB: Verificación Interactiva
-                        </h2>
-                        <p class="text-gray-400 mb-4">Verifica la construcción de cada sólido en PlatonicLab. Observa el número de caras que concurren en cada vértice.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-4">LAB: Verificación Interactiva</h2>
+                        <p class="text-gray-400 mb-4">Arrastra para rotar. Observa cómo la suma angular en cada vértice siempre queda por debajo de 360° y el defecto total siempre es 720°.</p>
+
+                        <div class="relative rounded-xl border border-gray-800 overflow-hidden" style="background:#030712;">
+                            <canvas id="mini-lab" style="width:100%; height:420px; display:block; cursor:grab;"></canvas>
+                            <div class="absolute top-4 right-4 text-right mono">
+                                <div class="text-base font-medium text-gray-300 mb-1" id="solid-name">Tetraedro</div>
+                                <div class="text-sm mb-2" id="schlafli" style="color:#a78bfa">{3, 3}</div>
+                                <div class="text-xs text-gray-500" id="angle-face"></div>
+                                <div class="text-xs text-gray-500 mt-1" id="angle-sum"></div>
+                                <div class="text-xs mt-1" id="defect-val" style="color:#22d3ee"></div>
+                                <div class="text-xs text-gray-600 mt-2 pt-2" id="defect-total" style="border-top:1px solid #1f2937"></div>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 flex flex-wrap gap-2">
+                            <button data-solid="0" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Tetraedro</button>
+                            <button data-solid="1" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Cubo</button>
+                            <button data-solid="2" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Octaedro</button>
+                            <button data-solid="3" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Dodecaedro</button>
+                            <button data-solid="4" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Icosaedro</button>
                         </div>
                     </div>
 
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-03.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                    <script>
+                    (function(){
+                        var canvas = document.getElementById('mini-lab');
+                        var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+                        renderer.setClearColor(0x030712);
+
+                        var scene = new THREE.Scene();
+                        var camera = new THREE.PerspectiveCamera(35,2,0.1,100);
+                        camera.position.z = 4.5;
+
+                        var solids = [
+                            {name:'Tetraedro', pq:'{3, 3}', p:3, q:3, alpha:60, V:4,
+                             geo:new THREE.TetrahedronGeometry(1.3)},
+                            {name:'Cubo', pq:'{4, 3}', p:4, q:3, alpha:90, V:8,
+                             geo:new THREE.BoxGeometry(1.7,1.7,1.7)},
+                            {name:'Octaedro', pq:'{3, 4}', p:3, q:4, alpha:60, V:6,
+                             geo:new THREE.OctahedronGeometry(1.4)},
+                            {name:'Dodecaedro', pq:'{5, 3}', p:5, q:3, alpha:108, V:20,
+                             geo:new THREE.DodecahedronGeometry(1.3)},
+                            {name:'Icosaedro', pq:'{3, 5}', p:3, q:5, alpha:60, V:12,
+                             geo:new THREE.IcosahedronGeometry(1.3)}
+                        ];
+
+                        var group, rotX=0.4, rotY=0.6, dragging=false, px,py, autoRot=true, autoTimer;
+
+                        function show(i){
+                            if(group) scene.remove(group);
+                            group = new THREE.Group();
+                            var s = solids[i];
+                            var sum = s.q * s.alpha;
+                            var defect = 360 - sum;
+
+                            // Caras
+                            group.add(new THREE.Mesh(s.geo, new THREE.MeshBasicMaterial({
+                                color:0xa78bfa, transparent:true, opacity:0.06, side:THREE.DoubleSide
+                            })));
+
+                            // Aristas
+                            group.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(s.geo),
+                                new THREE.LineBasicMaterial({color:0xa78bfa, transparent:true, opacity:0.7})
+                            ));
+
+                            // Vértices
+                            var pos=s.geo.getAttribute('position'), seen={}, uv=[];
+                            for(var j=0;j<pos.count;j++){
+                                var k=pos.getX(j).toFixed(3)+','+pos.getY(j).toFixed(3)+','+pos.getZ(j).toFixed(3);
+                                if(!seen[k]){seen[k]=1;uv.push(pos.getX(j),pos.getY(j),pos.getZ(j));}
+                            }
+                            var pg=new THREE.BufferGeometry();
+                            pg.setAttribute('position',new THREE.Float32BufferAttribute(uv,3));
+                            group.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x22d3ee,size:5,sizeAttenuation:false})));
+
+                            scene.add(group);
+
+                            // UI
+                            document.getElementById('solid-name').textContent=s.name;
+                            document.getElementById('schlafli').textContent=s.pq;
+                            document.getElementById('angle-face').innerHTML='\u03B1<sub>'+s.p+'</sub> = '+s.alpha+'\u00B0';
+                            document.getElementById('angle-sum').innerHTML=s.q+' \u00D7 '+s.alpha+'\u00B0 = <span style="color:#e5e7eb">'+sum+'\u00B0</span> < 360\u00B0';
+                            document.getElementById('defect-val').innerHTML='\u03B4 = 360\u00B0 \u2212 '+sum+'\u00B0 = <span style="color:#22d3ee">'+defect+'\u00B0</span>';
+                            document.getElementById('defect-total').innerHTML='V \u00B7 \u03B4 = '+s.V+' \u00D7 '+defect+'\u00B0 = <span style="color:#22d3ee">720\u00B0</span>';
+
+                            var btns=document.querySelectorAll('.solid-btn');
+                            for(var b=0;b<btns.length;b++){
+                                if(b===i){
+                                    btns[b].style.background='rgba(167,139,250,0.15)';
+                                    btns[b].style.borderColor='#a78bfa';
+                                    btns[b].style.color='#a78bfa';
+                                } else {
+                                    btns[b].style.background='#111827';
+                                    btns[b].style.borderColor='#1f2937';
+                                    btns[b].style.color='#9ca3af';
+                                }
+                            }
+                        }
+
+                        // Drag
+                        canvas.addEventListener('pointerdown',function(e){
+                            dragging=true;px=e.clientX;py=e.clientY;autoRot=false;
+                            clearTimeout(autoTimer);canvas.style.cursor='grabbing';
+                        });
+                        window.addEventListener('pointerup',function(){
+                            dragging=false;canvas.style.cursor='grab';
+                            autoTimer=setTimeout(function(){autoRot=true;},3000);
+                        });
+                        window.addEventListener('pointermove',function(e){
+                            if(!dragging)return;
+                            rotY+=(e.clientX-px)*0.008;rotX+=(e.clientY-py)*0.008;
+                            px=e.clientX;py=e.clientY;
+                        });
+
+                        // Resize
+                        function resize(){
+                            var w=canvas.clientWidth,h=canvas.clientHeight;
+                            renderer.setSize(w,h,false);
+                            camera.aspect=w/h;camera.updateProjectionMatrix();
+                        }
+                        window.addEventListener('resize',resize);
+                        resize();
+
+                        // Botones
+                        var btns=document.querySelectorAll('.solid-btn');
+                        for(var b=0;b<btns.length;b++){
+                            btns[b].addEventListener('click',function(){show(+this.dataset.solid);});
+                        }
+
+                        // Loop
+                        show(0);
+                        (function loop(){
+                            requestAnimationFrame(loop);
+                            if(autoRot) rotY+=0.004;
+                            if(group) group.rotation.set(rotX,rotY,0);
+                            renderer.render(scene,camera);
+                        })();
+                    })();
+                    </script>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-03.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-400 rounded-lg font-semibold transition">
                             ← Anterior: Platón
                         </a>
-                        <a href="./leccion-05.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                        <a href="./leccion-05.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg font-semibold transition">
                             Siguiente: Exploración Visual →
                         </a>
                     </div>
@@ -247,11 +578,21 @@
         </div>
     </div>
 
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">
-                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
-            </p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <nav class="text-xs text-gray-600 mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Módulo 01</span>
+            </nav>
+            <p class="text-gray-700 text-sm mono">Módulo 01 · Los Guardianes de la Geometría</p>
         </div>
     </footer>
 </body>

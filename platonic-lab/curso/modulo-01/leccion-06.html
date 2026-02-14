@@ -5,75 +5,73 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lección 6: Notación de Schläfli | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .lab-container { border: 2px solid #a855f7; border-radius: 12px; overflow: hidden; }
         .schlafli-symbol {
-            font-family: 'Courier New', monospace;
+            font-family: 'JetBrains Mono', monospace;
             font-size: 1.2em;
-            background: rgba(139, 92, 246, 0.2);
+            background: rgba(167, 139, 250, 0.2);
             padding: 2px 8px;
             border-radius: 4px;
         }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Módulo 01</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Lección 6</span> — Notación de Schläfli
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-05.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="../modulo-02/leccion-07.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente Módulo →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-05.html" class="px-3 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-gray-400 transition">← Anterior</a>
+                    <a href="../modulo-02/leccion-07.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente Módulo →</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
-                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
-                    
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Módulo 01</h3>
+                    <p class="text-sm text-gray-500 mb-4">Los Guardianes de la Geometría</p>
+
+                    <!-- Progress -->
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>6/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
                         </div>
                     </div>
@@ -82,155 +80,161 @@
                         <p class="text-green-400 text-sm font-semibold text-center">✓ Módulo completado</p>
                     </div>
 
+                    <!-- Navigation -->
                     <nav class="space-y-2">
-                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
-                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
-                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">3. Platón y el Timeo</a>
-                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">4. Euclides y los Elementos</a>
-                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">5. Exploración Visual Completa</a>
-                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">6. Notación de Schläfli</a>
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">6. Notación de Schläfli</a>
                     </nav>
                 </div>
             </aside>
 
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 6</span>
-                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
+                            <span class="text-cyan-400 text-sm font-medium">Lección 6</span>
+                            <span class="text-gray-400 text-sm">~25 min</span>
                         </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Notación de Schläfli</h1>
+                        <h1 class="text-3xl font-bold mb-4 text-violet-400 glow-text">Notación de Schläfli</h1>
                         <p class="text-gray-400 text-lg">El lenguaje matemático elegante que describe todos los poliedros regulares.</p>
                     </div>
 
+                    <!-- Content -->
                     <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Ludwig Schläfli (1814-1895)</h2>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Ludwig Schläfli (1814-1895)</h2>
                         <p class="text-gray-300 mb-4">
                             El matemático suizo Ludwig Schläfli desarrolló una notación revolucionaria usando pares ordenados <span class="schlafli-symbol">{p, q}</span>. Esta notación permite describir cualquier poliedro regular de manera compacta y elegante.
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 border-l-4 border-platonic-purple">
-                            <h3 class="text-lg font-semibold text-platonic-cyan mb-2">La Notación {p, q}</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-violet-400">
+                            <h3 class="text-lg font-semibold text-cyan-400 mb-2">La Notación {p, q}</h3>
                             <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
                                 <li><strong>p</strong> = número de lados de cada cara (polígono regular)</li>
                                 <li><strong>q</strong> = número de caras que concurren en cada vértice</li>
                             </ul>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-4">Los Cinco Sólidos en Notación Schläfli</h3>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Los Cinco Sólidos en Notación Schläfli</h3>
 
                         <div class="grid grid-cols-1 gap-4 mb-8">
-                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 flex items-center justify-between">
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800 flex items-center justify-between">
                                 <div>
-                                    <h4 class="font-semibold text-platonic-purple">Tetraedro</h4>
+                                    <h4 class="font-semibold text-violet-400">Tetraedro</h4>
                                     <p class="text-sm text-gray-400">4 caras triangulares, 3 en cada vértice</p>
                                 </div>
                                 <span class="schlafli-symbol">{3, 3}</span>
                             </div>
-                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 flex items-center justify-between">
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800 flex items-center justify-between">
                                 <div>
-                                    <h4 class="font-semibold text-platonic-purple">Cubo</h4>
+                                    <h4 class="font-semibold text-violet-400">Cubo</h4>
                                     <p class="text-sm text-gray-400">6 caras cuadradas, 3 en cada vértice</p>
                                 </div>
                                 <span class="schlafli-symbol">{4, 3}</span>
                             </div>
-                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 flex items-center justify-between">
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800 flex items-center justify-between">
                                 <div>
-                                    <h4 class="font-semibold text-platonic-purple">Octaedro</h4>
+                                    <h4 class="font-semibold text-violet-400">Octaedro</h4>
                                     <p class="text-sm text-gray-400">8 caras triangulares, 4 en cada vértice</p>
                                 </div>
                                 <span class="schlafli-symbol">{3, 4}</span>
                             </div>
-                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 flex items-center justify-between">
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800 flex items-center justify-between">
                                 <div>
-                                    <h4 class="font-semibold text-platonic-purple">Dodecaedro</h4>
+                                    <h4 class="font-semibold text-violet-400">Dodecaedro</h4>
                                     <p class="text-sm text-gray-400">12 caras pentagonales, 3 en cada vértice</p>
                                 </div>
                                 <span class="schlafli-symbol">{5, 3}</span>
                             </div>
-                            <div class="bg-gray-800/50 p-4 rounded-lg border border-gray-700 flex items-center justify-between">
+                            <div class="bg-gray-900/50 p-4 rounded-lg border border-gray-800 flex items-center justify-between">
                                 <div>
-                                    <h4 class="font-semibold text-platonic-purple">Icosaedro</h4>
+                                    <h4 class="font-semibold text-violet-400">Icosaedro</h4>
                                     <p class="text-sm text-gray-400">20 caras triangulares, 5 en cada vértice</p>
                                 </div>
                                 <span class="schlafli-symbol">{3, 5}</span>
                             </div>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Tabla Completa</h3>
-                        <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Sólido</th>
-                                        <th class="px-4 py-2 text-center">Schläfli</th>
-                                        <th class="px-4 py-2 text-center">Caras</th>
-                                        <th class="px-4 py-2 text-center">Vértices</th>
-                                        <th class="px-4 py-2 text-center">Aristas</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
-                                        <td class="px-4 py-2 text-center schlafli-symbol">{3,3}</td>
-                                        <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-center">6</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
-                                        <td class="px-4 py-2 text-center schlafli-symbol">{4,3}</td>
-                                        <td class="px-4 py-2 text-center">6</td>
-                                        <td class="px-4 py-2 text-center">8</td>
-                                        <td class="px-4 py-2 text-center">12</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
-                                        <td class="px-4 py-2 text-center schlafli-symbol">{3,4}</td>
-                                        <td class="px-4 py-2 text-center">8</td>
-                                        <td class="px-4 py-2 text-center">6</td>
-                                        <td class="px-4 py-2 text-center">12</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
-                                        <td class="px-4 py-2 text-center schlafli-symbol">{5,3}</td>
-                                        <td class="px-4 py-2 text-center">12</td>
-                                        <td class="px-4 py-2 text-center">20</td>
-                                        <td class="px-4 py-2 text-center">30</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
-                                        <td class="px-4 py-2 text-center schlafli-symbol">{3,5}</td>
-                                        <td class="px-4 py-2 text-center">20</td>
-                                        <td class="px-4 py-2 text-center">12</td>
-                                        <td class="px-4 py-2 text-center">30</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Condición de Schläfli</h3>
-                        <p class="text-gray-300 mb-4">
-                            La condición para que exista un poliedro regular {p, q} es:
+                        <p class="text-gray-400 text-sm mb-8 italic">
+                            Para los valores de V, E y F de cada sólido, consulta la tabla en la <a href="./leccion-01.html" class="text-violet-400 hover:text-violet-300 underline">Lección 1</a>.
                         </p>
 
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6 text-center">
-                            <p class="text-2xl font-mono text-platonic-purple mb-2">(p-2)(q-2) < 4</p>
-                            <p class="text-sm text-gray-400">Condición necesaria y suficiente</p>
-                        </div>
-
-                        <p class="text-gray-300 mb-4">
-                            Esta condición deriva directamente de la convexidad: la suma de los ángulos en cada vértice debe ser menor que 360°.
+                        <p class="text-gray-400 text-sm mb-8 italic">
+                            La condición de existencia \((p-2)(q-2) \lt 4\) la derivamos en la <a href="./leccion-04.html" class="text-violet-400 hover:text-violet-300 underline">Lección 4</a>.
                         </p>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Dualidad y Schläfli</h3>
+                        <!-- Fórmulas Combinatorias desde {p, q} -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Fórmulas Combinatorias desde {p, q}</h3>
+                        <p class="text-gray-300 mb-4">
+                            La notación de Schläfli permite calcular V, E, F usando solo <strong>p</strong>, <strong>q</strong> y la fórmula de Euler. Veamos la derivación paso a paso.
+                        </p>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4 border border-gray-800">
+                            <h4 class="font-semibold text-violet-400 mb-3">Paso 1: Relaciones de incidencia</h4>
+                            <ul class="space-y-3 text-gray-300">
+                                <li>Cada cara tiene <strong>p</strong> aristas, y cada arista pertenece a 2 caras:</li>
+                            </ul>
+                            <p class="text-violet-400 text-lg text-center my-3">$$pF = 2E$$</p>
+                            <ul class="space-y-3 text-gray-300">
+                                <li>Cada vértice tiene <strong>q</strong> aristas, y cada arista conecta 2 vértices:</li>
+                            </ul>
+                            <p class="text-violet-400 text-lg text-center my-3">$$qV = 2E$$</p>
+                        </div>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4 border border-gray-800">
+                            <h4 class="font-semibold text-violet-400 mb-3">Paso 2: Sustituir en la fórmula de Euler</h4>
+                            <p class="text-gray-300 mb-2">De las relaciones anteriores: <span class="text-violet-300">\(V = 2E/q\)</span> y <span class="text-violet-300">\(F = 2E/p\)</span>.</p>
+                            <p class="text-gray-300 mb-2">Sustituyendo en <span class="text-violet-300">\(V - E + F = 2\)</span>:</p>
+                            <div class="bg-black/40 rounded p-4 my-3">
+                                <p class="text-violet-400 text-center mb-1">$$\frac{2E}{q} - E + \frac{2E}{p} = 2$$</p>
+                                <p class="text-violet-400 text-center mb-1">$$E\left(\frac{2}{q} - 1 + \frac{2}{p}\right) = 2$$</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-4 text-center">
+                            <h4 class="font-semibold text-violet-400 mb-3">Resultado: Fórmulas cerradas</h4>
+                            <div class="space-y-2">
+                                <p class="text-xl text-violet-400">$$E = \frac{2pq}{2p + 2q - pq}$$</p>
+                                <p class="text-lg text-cyan-400 mt-3">$$V = \frac{4p}{2p + 2q - pq}$$</p>
+                                <p class="text-lg text-cyan-400">$$F = \frac{4q}{2p + 2q - pq}$$</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4 border border-gray-800">
+                            <h4 class="font-semibold text-violet-400 mb-3">Condición de existencia</h4>
+                            <p class="text-gray-300 mb-2">El denominador <span class="text-violet-300">\(2p + 2q - pq\)</span> debe ser positivo para obtener valores finitos y positivos.</p>
+                            <p class="text-gray-300 mb-2">Reescribiendo:</p>
+                            <div class="bg-black/40 rounded p-4 my-3">
+                                <p class="text-violet-400 text-center mb-1">$$2p + 2q - pq \gt 0$$</p>
+                                <p class="text-violet-400 text-center mb-1">$$4 - (p-2)(q-2) \gt 0$$</p>
+                                <p class="text-violet-400 text-center">$$(p-2)(q-2) \lt 4$$</p>
+                            </div>
+                            <p class="text-gray-400 text-sm text-center mt-2">La misma condición que derivamos geométricamente en la Lección 4.</p>
+                        </div>
+
+                        <div class="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-6 mb-8">
+                            <h4 class="font-semibold text-cyan-400 mb-3">Ejemplo: {3, 5} (icosaedro)</h4>
+                            <div class="space-y-1">
+                                <p class="text-gray-300">Denominador: \(2(3) + 2(5) - 3(5) = 6 + 10 - 15 =\) <span class="text-cyan-400">1</span></p>
+                                <p class="text-gray-300">\(E = 2 \cdot 3 \cdot 5 / 1 =\) <span class="text-cyan-400">30</span></p>
+                                <p class="text-gray-300">\(V = 4 \cdot 3 / 1 =\) <span class="text-cyan-400">12</span></p>
+                                <p class="text-gray-300">\(F = 4 \cdot 5 / 1 =\) <span class="text-cyan-400">20</span></p>
+                            </div>
+                        </div>
+
+                        <!-- Dualidad y Schläfli -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Dualidad y Schläfli</h3>
                         <p class="text-gray-300 mb-4">
                             Una propiedad elegante de la notación de Schläfli: <strong>el dual de {p, q} es {q, p}</strong>.
                         </p>
 
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-cyan mb-3">Ejemplos de Dualidad:</h4>
+                        <div class="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-cyan-400 mb-3">Ejemplos de Dualidad:</h4>
                             <ul class="list-disc list-inside space-y-2 text-gray-300">
                                 <li>Tetraedro {3,3} es <strong>autodual</strong> (intercambiar p y q da el mismo)</li>
                                 <li>Cubo {4,3} ↔ Octaedro {3,4}</li>
@@ -238,60 +242,371 @@
                             </ul>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Extensión a Dimensiones Superiores</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4 border-l-4 border-cyan-400">
+                            <h4 class="font-semibold text-cyan-400 mb-3">Dualidad: La Construcción Geométrica</h4>
+                            <p class="text-gray-300 mb-3">
+                                El dual de <span class="schlafli-symbol">{p, q}</span> es <span class="schlafli-symbol">{q, p}</span>, pero ¿qué significa esto geométricamente?
+                            </p>
+                            <p class="text-gray-300 mb-3">
+                                <strong>Construcción:</strong> dado un poliedro, coloca un punto en el centro de cada cara. Conecta dos puntos si las caras correspondientes comparten una arista. El resultado es el poliedro dual.
+                            </p>
+
+                            <!-- Diagrama: construcción dual cubo → octaedro -->
+                            <div class="flex justify-center my-5">
+                                <svg viewBox="0 0 380 250" xmlns="http://www.w3.org/2000/svg" style="max-width: 370px; width: 100%;">
+                                    <!-- Cubo: aristas visibles -->
+                                    <line x1="130" y1="75" x2="290" y2="75" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="290" y1="75" x2="290" y2="195" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="290" y1="195" x2="130" y2="195" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="130" y1="195" x2="130" y2="75" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="130" y1="75" x2="85" y2="38" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="290" y1="75" x2="245" y2="38" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="85" y1="38" x2="245" y2="38" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="85" y1="38" x2="85" y2="158" stroke="#4b5563" stroke-width="1"/>
+                                    <line x1="130" y1="195" x2="85" y2="158" stroke="#4b5563" stroke-width="1"/>
+                                    <!-- Cubo: aristas ocultas -->
+                                    <line x1="245" y1="38" x2="245" y2="158" stroke="#4b5563" stroke-width="1" stroke-dasharray="4 3" opacity="0.4"/>
+                                    <line x1="290" y1="195" x2="245" y2="158" stroke="#4b5563" stroke-width="1" stroke-dasharray="4 3" opacity="0.4"/>
+                                    <line x1="85" y1="158" x2="245" y2="158" stroke="#4b5563" stroke-width="1" stroke-dasharray="4 3" opacity="0.4"/>
+
+                                    <!-- Octaedro: aristas visibles -->
+                                    <line x1="210" y1="135" x2="188" y2="57" stroke="#a78bfa" stroke-width="1.8"/>
+                                    <line x1="210" y1="135" x2="268" y2="117" stroke="#a78bfa" stroke-width="1.8"/>
+                                    <line x1="210" y1="135" x2="188" y2="177" stroke="#a78bfa" stroke-width="1.8"/>
+                                    <line x1="210" y1="135" x2="108" y2="117" stroke="#a78bfa" stroke-width="1.8"/>
+                                    <line x1="188" y1="57" x2="268" y2="117" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="188" y1="57" x2="108" y2="117" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="188" y1="177" x2="268" y2="117" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <line x1="188" y1="177" x2="108" y2="117" stroke="#a78bfa" stroke-width="1.5"/>
+                                    <!-- Octaedro: aristas traseras (al centro de la cara posterior) -->
+                                    <line x1="165" y1="98" x2="188" y2="57" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+                                    <line x1="165" y1="98" x2="268" y2="117" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+                                    <line x1="165" y1="98" x2="188" y2="177" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+                                    <line x1="165" y1="98" x2="108" y2="117" stroke="#a78bfa" stroke-width="1.2" stroke-dasharray="4 3" opacity="0.5"/>
+
+                                    <!-- Centros de caras del cubo (vértices del octaedro) -->
+                                    <circle cx="210" cy="135" r="4" fill="#22d3ee"/>
+                                    <circle cx="165" cy="98" r="4" fill="#22d3ee" opacity="0.5"/>
+                                    <circle cx="188" cy="57" r="4" fill="#22d3ee"/>
+                                    <circle cx="188" cy="177" r="4" fill="#22d3ee"/>
+                                    <circle cx="108" cy="117" r="4" fill="#22d3ee"/>
+                                    <circle cx="268" cy="117" r="4" fill="#22d3ee"/>
+
+                                    <!-- Pie de figura -->
+                                    <text x="190" y="240" text-anchor="middle" fill="#6b7280" font-size="11" font-style="italic" font-family="Inter, sans-serif">Cubo (gris) → centros de caras → octaedro (violeta)</text>
+                                </svg>
+                            </div>
+
+                            <p class="text-gray-300 mb-2">Esto intercambia:</p>
+                            <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4 mb-3">
+                                <li><strong>Caras ↔ Vértices</strong> — \(F\) del original = \(V\) del dual</li>
+                                <li><strong>Aristas ↔ Aristas</strong> — \(E\) se conserva</li>
+                                <li><strong>p (lados/cara) ↔ q (caras/vértice)</strong></li>
+                            </ul>
+                        </div>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-8 border border-gray-800">
+                            <h4 class="font-semibold text-violet-400 mb-3">Pares duales</h4>
+                            <ul class="space-y-2 text-gray-300">
+                                <li>El <strong>tetraedro</strong> es autodual: su dual es otro tetraedro (más pequeño, rotado).</li>
+                                <li>El <strong>cubo</strong> <span class="schlafli-symbol">{4,3}</span> y el <strong>octaedro</strong> <span class="schlafli-symbol">{3,4}</span> son duales mutuos.</li>
+                                <li>El <strong>dodecaedro</strong> <span class="schlafli-symbol">{5,3}</span> y el <strong>icosaedro</strong> <span class="schlafli-symbol">{3,5}</span> son duales mutuos.</li>
+                            </ul>
+                            <p class="text-gray-400 text-sm mt-3 italic">
+                                En PlatonicLab puedes verificar: activa la visualización dual y observa cómo el octaedro "nace" dentro del cubo.
+                            </p>
+                        </div>
+
+                        <!-- Extensión a Dimensiones Superiores -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Extensión a Dimensiones Superiores</h3>
                         <p class="text-gray-300 mb-4">
-                            La notación de Schläfli se extiende a poliedros de 4 dimensiones (politopos) usando más parámetros:
+                            En 4 dimensiones, los politopos regulares se describen con <span class="schlafli-symbol">{p, q, r}</span>:
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-purple mb-2">Teseracto (4D)</h4>
-                                <p class="text-sm text-gray-400 mb-1">Hipercubo de 4 dimensiones</p>
-                                <span class="schlafli-symbol">{4, 3, 3}</span>
-                            </div>
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-purple mb-2">5-celda (4D)</h4>
-                                <p class="text-sm text-gray-400 mb-1">Simplex tetradimensional</p>
-                                <span class="schlafli-symbol">{3, 3, 3}</span>
-                            </div>
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4 border border-gray-800">
+                            <ul class="space-y-2 text-gray-300">
+                                <li><strong>p</strong> = lados por cara (2D)</li>
+                                <li><strong>q</strong> = caras por arista, formando la celda <span class="schlafli-symbol">{p, q}</span> (3D)</li>
+                                <li><strong>r</strong> = celdas <span class="schlafli-symbol">{p, q}</span> que rodean cada arista del politopo (4D)</li>
+                            </ul>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicios</h3>
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-3">Practica la notación:</h4>
-                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
-                                <li>¿Cuál es el símbolo de Schläfli de un sólido con caras hexagonales y 3 caras por vértice? (Pista: ¿existe?)</li>
-                                <li>Verifica que para {3,6}: (3-2)(6-2) = 4 (no válido, resultaría plano)</li>
-                                <li>El dual de {6,3} sería {3,6}. ¿Qué problema tiene esto?</li>
-                                <li>Encuentra todos los pares (p,q) enteros que satisfacen (p-2)(q-2) < 4</li>
+                        <h4 class="font-semibold text-violet-400 mb-3">Los 6 politopos regulares de 4D</h4>
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-2 text-left">Símbolo</th>
+                                        <th class="px-4 py-2 text-left">Nombre</th>
+                                        <th class="px-4 py-2 text-left">Celdas</th>
+                                        <th class="px-4 py-2 text-left">Análogo 3D</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr>
+                                        <td class="px-4 py-2"><span class="schlafli-symbol">{3,3,3}</span></td>
+                                        <td class="px-4 py-2 text-violet-400">5-celda</td>
+                                        <td class="px-4 py-2">5 tetraedros</td>
+                                        <td class="px-4 py-2 text-gray-400">Tetraedro</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2"><span class="schlafli-symbol">{4,3,3}</span></td>
+                                        <td class="px-4 py-2 text-violet-400">Teseracto</td>
+                                        <td class="px-4 py-2">8 cubos</td>
+                                        <td class="px-4 py-2 text-gray-400">Cubo</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2"><span class="schlafli-symbol">{3,3,4}</span></td>
+                                        <td class="px-4 py-2 text-violet-400">16-celda</td>
+                                        <td class="px-4 py-2">16 tetraedros</td>
+                                        <td class="px-4 py-2 text-gray-400">Octaedro</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2"><span class="schlafli-symbol">{3,4,3}</span></td>
+                                        <td class="px-4 py-2 text-violet-400">24-celda</td>
+                                        <td class="px-4 py-2">24 octaedros</td>
+                                        <td class="px-4 py-2 text-gray-400">(sin análogo)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2"><span class="schlafli-symbol">{5,3,3}</span></td>
+                                        <td class="px-4 py-2 text-violet-400">120-celda</td>
+                                        <td class="px-4 py-2">120 dodecaedros</td>
+                                        <td class="px-4 py-2 text-gray-400">Dodecaedro</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2"><span class="schlafli-symbol">{3,3,5}</span></td>
+                                        <td class="px-4 py-2 text-violet-400">600-celda</td>
+                                        <td class="px-4 py-2">600 tetraedros</td>
+                                        <td class="px-4 py-2 text-gray-400">Icosaedro</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-8">
+                            <p class="text-gray-300 mb-2">
+                                En 4D hay <strong class="text-violet-400">6 politopos regulares</strong>. El <strong>24-celda</strong> <span class="schlafli-symbol">{3,4,3}</span> no tiene análogo en 3D: es una estructura exclusiva de la cuarta dimensión.
+                            </p>
+                            <p class="text-gray-300">
+                                En 5D y dimensiones superiores solo existen <strong class="text-violet-400">3</strong> politopos regulares: los análogos del tetraedro, el cubo y el octaedro.
+                            </p>
+                        </div>
+
+                        <!-- Ejercicios -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Ejercicios</h3>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Practica con las fórmulas y la notación:</h4>
+                            <ol class="list-decimal list-inside space-y-3 text-gray-300">
+                                <li>Usando las fórmulas <span class="text-violet-300">\(E = \frac{2pq}{2p+2q-pq}\)</span>, calcula V, E, F para <span class="schlafli-symbol">{4, 3}</span> (cubo).</li>
+                                <li>Demuestra que si <span class="schlafli-symbol">{p, q}</span> existe, entonces <span class="schlafli-symbol">{q, p}</span> también existe. <span class="text-gray-500">(Pista: ¿qué pasa con el denominador al intercambiar p y q?)</span></li>
+                                <li>Verifica que el dual del icosaedro <span class="schlafli-symbol">{3, 5}</span> tiene las mismas aristas: \(E = 30\).</li>
+                                <li>¿Por qué no existe <span class="schlafli-symbol">{3, 3, 6}</span> en 4D? <span class="text-gray-500">(Aplica la condición de existencia.)</span></li>
+                                <li>En la tabla 4D, identifica los pares duales. ¿Cuál es autodual?</li>
                             </ol>
                         </div>
-
-                        <div class="bg-green-900/20 border border-green-500/30 rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-green-400 mb-2">Respuesta al ejercicio 4:</h4>
-                            <p class="text-gray-300 text-sm">Las únicas soluciones enteras positivas son:</p>
-                            <p class="text-gray-300 text-sm mt-2 font-mono">
-                                (3,3), (3,4), (3,5), (4,3), (5,3)
-                            </p>
-                            <p class="text-gray-400 text-xs mt-2">¡Exactamente los cinco sólidos platónicos!</p>
-                        </div>
                     </div>
 
+                    <!-- LAB Section: Schläfli, fórmulas y dualidad -->
                     <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
-                            <span class="mr-2">🔬</span> LAB: Verifica los Símbolos
-                        </h2>
-                        <p class="text-gray-400 mb-4">En PlatonicLab, selecciona cada sólido y verifica que el número de caras por vértice coincide con la notación Schläfli.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-4">LAB: Verifica los Símbolos</h2>
+                        <p class="text-gray-400 mb-4">Arrastra para rotar. Activa el dual para ver cómo \(\{p,q\} \leftrightarrow \{q,p\}\) intercambia vértices y caras.</p>
+
+                        <div class="relative rounded-xl border border-gray-800 overflow-hidden" style="background:#030712;">
+                            <canvas id="mini-lab" style="width:100%; height:420px; display:block; cursor:grab;"></canvas>
+                            <div class="absolute top-4 right-4 text-right mono">
+                                <div class="text-base font-medium text-gray-300 mb-1" id="solid-name">Tetraedro</div>
+                                <div class="text-sm mb-2" id="schlafli" style="color:#a78bfa">{3, 3}</div>
+                                <div id="formula-detail" class="space-y-0.5 text-xs"></div>
+                            </div>
+                            <div class="absolute bottom-4 left-4 mono text-xs" id="dual-label" style="display:none;color:#22d3ee;"></div>
+                        </div>
+
+                        <div class="mt-3 flex flex-wrap gap-2 items-center">
+                            <button data-solid="0" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Tetraedro</button>
+                            <button data-solid="1" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Cubo</button>
+                            <button data-solid="2" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Octaedro</button>
+                            <button data-solid="3" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Dodecaedro</button>
+                            <button data-solid="4" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Icosaedro</button>
+                            <span class="mx-1 text-gray-800">|</span>
+                            <label class="flex items-center gap-2 text-sm text-gray-500 cursor-pointer select-none hover:text-gray-400 transition">
+                                <input type="checkbox" id="dual-toggle" style="accent-color:#22d3ee;" class="cursor-pointer">
+                                Mostrar dual
+                            </label>
                         </div>
                     </div>
 
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-05.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                    <script>
+                    (function(){
+                        var canvas = document.getElementById('mini-lab');
+                        var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+                        renderer.setClearColor(0x030712);
+
+                        var scene = new THREE.Scene();
+                        var camera = new THREE.PerspectiveCamera(35,2,0.1,100);
+                        camera.position.z = 4.8;
+
+                        // Dual geometries sized to inscribed radius of the original
+                        var solids = [
+                            {name:'Tetraedro', p:3, q:3, geo:new THREE.TetrahedronGeometry(1.3),
+                             dualName:'Tetraedro', dualPQ:'{3, 3}',
+                             dualGeo:new THREE.TetrahedronGeometry(1.3/3), dualFlip:true},
+                            {name:'Cubo', p:4, q:3, geo:new THREE.BoxGeometry(1.5,1.5,1.5),
+                             dualName:'Octaedro', dualPQ:'{3, 4}',
+                             dualGeo:new THREE.OctahedronGeometry(0.75), dualFlip:false},
+                            {name:'Octaedro', p:3, q:4, geo:new THREE.OctahedronGeometry(1.4),
+                             dualName:'Cubo', dualPQ:'{4, 3}',
+                             dualGeo:new THREE.BoxGeometry(0.933,0.933,0.933), dualFlip:false},
+                            {name:'Dodecaedro', p:5, q:3, geo:new THREE.DodecahedronGeometry(1.3),
+                             dualName:'Icosaedro', dualPQ:'{3, 5}',
+                             dualGeo:new THREE.IcosahedronGeometry(1.3/1.258), dualFlip:false},
+                            {name:'Icosaedro', p:3, q:5, geo:new THREE.IcosahedronGeometry(1.3),
+                             dualName:'Dodecaedro', dualPQ:'{5, 3}',
+                             dualGeo:new THREE.DodecahedronGeometry(1.3/1.258), dualFlip:false}
+                        ];
+
+                        var group, dualGroup, showDual=false;
+                        var rotX=0.4, rotY=0.6, dragging=false, px,py, autoRot=true, autoTimer;
+                        var currentIdx=0;
+
+                        function show(i){
+                            if(group) scene.remove(group);
+                            if(dualGroup) scene.remove(dualGroup);
+                            group = new THREE.Group();
+                            dualGroup = null;
+                            currentIdx=i;
+                            var s=solids[i];
+
+                            // Compute V, E, F from {p,q} formulas
+                            var D=2*s.p+2*s.q-s.p*s.q;
+                            var E=2*s.p*s.q/D, V=4*s.p/D, F=4*s.q/D;
+
+                            // Solid: faces + edges + vertices
+                            group.add(new THREE.Mesh(s.geo, new THREE.MeshBasicMaterial({
+                                color:0xa78bfa, transparent:true, opacity:0.06, side:THREE.DoubleSide
+                            })));
+                            group.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(s.geo),
+                                new THREE.LineBasicMaterial({color:0xa78bfa, transparent:true, opacity:0.7})
+                            ));
+                            var pos=s.geo.getAttribute('position'),seen={},uv=[];
+                            for(var j=0;j<pos.count;j++){
+                                var k=pos.getX(j).toFixed(3)+','+pos.getY(j).toFixed(3)+','+pos.getZ(j).toFixed(3);
+                                if(!seen[k]){seen[k]=1;uv.push(pos.getX(j),pos.getY(j),pos.getZ(j));}
+                            }
+                            var pg=new THREE.BufferGeometry();
+                            pg.setAttribute('position',new THREE.Float32BufferAttribute(uv,3));
+                            group.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0xa78bfa,size:5,sizeAttenuation:false})));
+
+                            scene.add(group);
+                            if(showDual) addDual(s);
+
+                            // UI
+                            document.getElementById('solid-name').textContent=s.name;
+                            document.getElementById('schlafli').textContent='{'+s.p+', '+s.q+'}';
+                            var h='';
+                            h+='<div style="color:#6b7280">D = 2\u00B7'+s.p+' + 2\u00B7'+s.q+' \u2212 '+s.p+'\u00B7'+s.q+' = <span style="color:#e5e7eb">'+D+'</span></div>';
+                            h+='<div style="color:#9ca3af;margin-top:3px">V = 4\u00B7'+s.p+'/'+D+' = <span style="color:#a78bfa">'+V+'</span></div>';
+                            h+='<div style="color:#9ca3af">E = 2\u00B7'+s.p+'\u00B7'+s.q+'/'+D+' = <span style="color:#a78bfa">'+E+'</span></div>';
+                            h+='<div style="color:#9ca3af">F = 4\u00B7'+s.q+'/'+D+' = <span style="color:#a78bfa">'+F+'</span></div>';
+                            if(showDual){
+                                h+='<div style="color:#22d3ee;margin-top:6px;padding-top:4px;border-top:1px solid #1f2937">dual {'+s.q+', '+s.p+'}: V\u2019='+F+' E\u2019='+E+' F\u2019='+V+'</div>';
+                            }
+                            document.getElementById('formula-detail').innerHTML=h;
+
+                            var dl=document.getElementById('dual-label');
+                            dl.style.display=showDual?'block':'none';
+                            dl.textContent=showDual?(s.dualName+' '+s.dualPQ+' (cyan)'):'';
+
+                            var btns=document.querySelectorAll('.solid-btn');
+                            for(var b=0;b<btns.length;b++){
+                                if(b===i){
+                                    btns[b].style.background='rgba(167,139,250,0.15)';
+                                    btns[b].style.borderColor='#a78bfa';
+                                    btns[b].style.color='#a78bfa';
+                                } else {
+                                    btns[b].style.background='#111827';
+                                    btns[b].style.borderColor='#1f2937';
+                                    btns[b].style.color='#9ca3af';
+                                }
+                            }
+                        }
+
+                        function addDual(s){
+                            if(dualGroup) scene.remove(dualGroup);
+                            dualGroup = new THREE.Group();
+
+                            dualGroup.add(new THREE.Mesh(s.dualGeo, new THREE.MeshBasicMaterial({
+                                color:0x22d3ee, transparent:true, opacity:0.06, side:THREE.DoubleSide
+                            })));
+                            dualGroup.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(s.dualGeo),
+                                new THREE.LineBasicMaterial({color:0x22d3ee, transparent:true, opacity:0.6})
+                            ));
+                            var pos=s.dualGeo.getAttribute('position'),seen={},uv=[];
+                            for(var j=0;j<pos.count;j++){
+                                var k=pos.getX(j).toFixed(3)+','+pos.getY(j).toFixed(3)+','+pos.getZ(j).toFixed(3);
+                                if(!seen[k]){seen[k]=1;uv.push(pos.getX(j),pos.getY(j),pos.getZ(j));}
+                            }
+                            var pg=new THREE.BufferGeometry();
+                            pg.setAttribute('position',new THREE.Float32BufferAttribute(uv,3));
+                            dualGroup.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x22d3ee,size:4,sizeAttenuation:false})));
+
+                            if(s.dualFlip) dualGroup.scale.set(-1,-1,-1);
+                            scene.add(dualGroup);
+                        }
+
+                        document.getElementById('dual-toggle').addEventListener('change',function(){
+                            showDual=this.checked;
+                            show(currentIdx);
+                        });
+
+                        // Drag
+                        canvas.addEventListener('pointerdown',function(e){
+                            dragging=true;px=e.clientX;py=e.clientY;autoRot=false;
+                            clearTimeout(autoTimer);canvas.style.cursor='grabbing';
+                        });
+                        window.addEventListener('pointerup',function(){
+                            dragging=false;canvas.style.cursor='grab';
+                            autoTimer=setTimeout(function(){autoRot=true;},3000);
+                        });
+                        window.addEventListener('pointermove',function(e){
+                            if(!dragging)return;
+                            rotY+=(e.clientX-px)*0.008;rotX+=(e.clientY-py)*0.008;
+                            px=e.clientX;py=e.clientY;
+                        });
+
+                        function resize(){
+                            var w=canvas.clientWidth,h=canvas.clientHeight;
+                            renderer.setSize(w,h,false);
+                            camera.aspect=w/h;camera.updateProjectionMatrix();
+                        }
+                        window.addEventListener('resize',resize);
+                        resize();
+
+                        var btns=document.querySelectorAll('.solid-btn');
+                        for(var b=0;b<btns.length;b++){
+                            btns[b].addEventListener('click',function(){show(+this.dataset.solid);});
+                        }
+
+                        show(0);
+                        (function loop(){
+                            requestAnimationFrame(loop);
+                            if(autoRot) rotY+=0.004;
+                            if(group) group.rotation.set(rotX,rotY,0);
+                            if(dualGroup) dualGroup.rotation.set(rotX,rotY,0);
+                            renderer.render(scene,camera);
+                        })();
+                    })();
+                    </script>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-05.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-400 rounded-lg font-semibold transition">
                             ← Anterior: Exploración
                         </a>
-                        <a href="../modulo-02/leccion-07.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                        <a href="../modulo-02/leccion-07.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg font-semibold transition">
                             Módulo 2: Fórmula de Euler →
                         </a>
                     </div>
@@ -300,11 +615,21 @@
         </div>
     </div>
 
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">
-                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
-            </p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <nav class="text-xs text-gray-600 mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Módulo 01</span>
+            </nav>
+            <p class="text-gray-700 text-sm mono">Módulo 01 · Los Guardianes de la Geometría</p>
         </div>
     </footer>
 </body>

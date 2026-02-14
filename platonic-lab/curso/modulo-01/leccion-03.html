@@ -5,160 +5,153 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lección 3: Platón y el Timeo — Los Elementos del Cosmos | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
-        .element-card {
-            transition: transform 0.3s;
-        }
-        .element-card:hover {
-            transform: translateY(-4px);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .katex { color: inherit; font-size: 1.1em; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .lab-container { border: 2px solid #a855f7; border-radius: 12px; overflow: hidden; }
+        .element-card { transition: transform 0.3s; }
+        .element-card:hover { transform: translateY(-4px); }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Módulo 01</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Lección 3</span> — Platón y el Timeo
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-02.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-04.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-02.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">&larr; Anterior</a>
+                    <a href="./leccion-04.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente &rarr;</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
-                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
-                    
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Módulo 01</h3>
+                    <p class="text-sm text-gray-500 mb-4">Los Guardianes de la Geometría</p>
+
+                    <!-- Progress -->
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>3/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 50%"></div>
                         </div>
                     </div>
 
+                    <!-- Navigation -->
                     <nav class="space-y-2">
-                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
-                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
-                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">3. Platón y el Timeo</a>
-                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">4. Euclides y los Elementos</a>
-                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">5. Exploración Visual Completa</a>
-                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">6. Notación de Schläfli</a>
                     </nav>
                 </div>
             </aside>
 
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 3</span>
-                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
+                            <span class="text-cyan-400 text-sm font-medium">Lección 3</span>
+                            <span class="text-gray-400 text-sm">~25 min</span>
                         </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Platón y el Timeo — Los Elementos del Cosmos</h1>
+                        <h1 class="text-3xl font-bold mb-4 text-violet-400 glow-text">Platón y el Timeo — Los Elementos del Cosmos</h1>
                         <p class="text-gray-400 text-lg">Descubre cómo Platón asoció cada sólido platónico con un elemento fundamental de la naturaleza.</p>
                     </div>
 
+                    <!-- Content -->
                     <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">El Timeo de Platón</h2>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">El Timeo de Platón</h2>
                         <p class="text-gray-300 mb-4">
                             En su diálogo <em>Timeo</em> (c. 360 a.C.), Platón presentó una de las cosmologías más influyentes de la historia. Propuso que los cuatro elementos clásicos —tierra, agua, aire y fuego— estaban compuestos por partículas con formas geométricas perfectas.
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 border-l-4 border-platonic-purple">
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-violet-400">
                             <p class="text-lg italic text-gray-300">
                                 "La geometría es el archetipo de la belleza del mundo."
                             </p>
                             <p class="text-sm text-gray-500 mt-2">— Platón (427-347 a.C.)</p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-4">Los Cinco Elementos y sus Sólidos</h3>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Los Cinco Elementos y sus Sólidos</h3>
 
                         <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8">
                             <div class="element-card bg-red-900/20 p-6 rounded-lg border border-red-500/30">
-                                <div class="text-4xl mb-2">🔥</div>
                                 <h4 class="font-bold text-red-400 mb-2">FUEGO — Tetraedro</h4>
                                 <p class="text-sm text-gray-300 mb-2">El tetraedro, con sus puntas afiladas, representa el calor y la penetración del fuego.</p>
-                                <p class="text-xs text-gray-500">4 caras triangulares · Angulo diedro: 70.5°</p>
+                                <p class="text-xs text-gray-500">4 caras triangulares · Ángulo diedro: \(70.5^\circ\)</p>
                             </div>
 
                             <div class="element-card bg-yellow-900/20 p-6 rounded-lg border border-yellow-500/30">
-                                <div class="text-4xl mb-2">🌍</div>
                                 <h4 class="font-bold text-yellow-400 mb-2">TIERRA — Cubo</h4>
                                 <p class="text-sm text-gray-300 mb-2">El cubo es el más estable. Representa la solidez y permanencia de la tierra.</p>
-                                <p class="text-xs text-gray-500">6 caras cuadradas · Angulo diedro: 90°</p>
+                                <p class="text-xs text-gray-500">6 caras cuadradas · Ángulo diedro: \(90^\circ\)</p>
                             </div>
 
                             <div class="element-card bg-blue-900/20 p-6 rounded-lg border border-blue-500/30">
-                                <div class="text-4xl mb-2">💨</div>
                                 <h4 class="font-bold text-blue-400 mb-2">AIRE — Octaedro</h4>
                                 <p class="text-sm text-gray-300 mb-2">El octaedro, ligero y aerodinámico, representa la movilidad del aire.</p>
-                                <p class="text-xs text-gray-500">8 caras triangulares · Angulo diedro: 109.5°</p>
+                                <p class="text-xs text-gray-500">8 caras triangulares · Ángulo diedro: \(109.5^\circ\)</p>
                             </div>
 
                             <div class="element-card bg-cyan-900/20 p-6 rounded-lg border border-cyan-500/30">
-                                <div class="text-4xl mb-2">💧</div>
                                 <h4 class="font-bold text-cyan-400 mb-2">AGUA — Icosaedro</h4>
                                 <p class="text-sm text-gray-300 mb-2">El icosaedro, con sus muchas caras, es la forma más esférica. Representa la fluidez del agua.</p>
-                                <p class="text-xs text-gray-500">20 caras triangulares · Angulo diedro: 138.2°</p>
+                                <p class="text-xs text-gray-500">20 caras triangulares · Ángulo diedro: \(138.2^\circ\)</p>
                             </div>
                         </div>
 
-                        <div class="bg-purple-900/20 p-6 rounded-lg border border-purple-500/30 mb-8">
-                            <div class="text-4xl mb-2">✨</div>
+                        <div class="element-card bg-purple-900/20 p-6 rounded-lg border border-purple-500/30 mb-8">
                             <h4 class="font-bold text-purple-400 mb-2">ÉTER — Dodecaedro</h4>
                             <p class="text-gray-300 mb-2">Platón reservó el dodecaedro para representar el <strong>quinta essentia</strong> o quinta esencia — el éter que llena el cosmos.</p>
                             <p class="text-xs text-gray-500">12 caras pentagonales · La forma "más perfecta"</p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Cosmología Platónica</h3>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">La Cosmología Platónica</h3>
                         <p class="text-gray-300 mb-4">
                             Para Platón, el universo entero estaba construido según principios matemáticos. Los sólidos platónicos no eran meras abstracciones, sino las <strong>formas fundamentales</strong> de la realidad material.
                         </p>
 
                         <div class="overflow-x-auto mb-6">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
+                                <thead class="bg-gray-900">
                                     <tr>
                                         <th class="px-4 py-2 text-left">Elemento</th>
                                         <th class="px-4 py-2 text-center">Sólido</th>
@@ -166,7 +159,7 @@
                                         <th class="px-4 py-2 text-center">Propiedad</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
+                                <tbody class="divide-y divide-gray-800">
                                     <tr>
                                         <td class="px-4 py-2 text-red-400">Fuego</td>
                                         <td class="px-4 py-2 text-center">Tetraedro</td>
@@ -201,56 +194,272 @@
                             </table>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Teeteto y las Construcciones</h3>
+                        <!-- NEW SECTION: El Ángulo Diedro -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">El Ángulo Diedro</h3>
                         <p class="text-gray-300 mb-4">
-                            <strong>Teeteto</strong> (417-369 a.C.), matemático ateniense contemporáneo de Platón, estableció las construcciones geométricas completas de los cinco poliedros. Fue quien demostró rigurosamente que solo existen estos cinco.
+                            El ángulo diedro es el ángulo entre dos caras adyacentes, medido a lo largo de la arista compartida. Determina cuán "cerrado" o "abierto" es un poliedro.
                         </p>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio de Reflexión</h3>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-3">Conecta forma con función:</h4>
-                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
-                                <li>¿Por qué el cubo representa la tierra (estabilidad)?</li>
-                                <li>¿Por qué el icosaedro, siendo el más esférico, representa el agua?</li>
-                                <li>¿Qué hace al dodecaedro "divino" o cósmico?</li>
-                                <li>Busca ejemplos modernos donde estas formas aparezcan en la naturaleza</li>
+                        <p class="text-gray-300 font-semibold mb-3">Derivación para el tetraedro:</p>
+                        <p class="text-gray-300 mb-4">
+                            Dos caras triangulares comparten una arista AB de longitud \(a\). Sea M el punto medio de AB. Los vértices opuestos C y D están a distancia \(h = a\sqrt{3}/2\) de M (altura del triángulo equilátero). El ángulo diedro \(\theta\) es el ángulo \(\angle CMD\).
+                        </p>
+
+                        <!-- Diagrama: ángulo diedro del tetraedro -->
+                        <div class="flex justify-center my-6">
+                            <svg viewBox="0 0 440 300" xmlns="http://www.w3.org/2000/svg" style="max-width: 400px; width: 100%;">
+                                <!-- Caras del tetraedro (relleno sutil) -->
+                                <polygon points="130,255 310,255 108,82" fill="#a78bfa" fill-opacity="0.05"/>
+                                <polygon points="130,255 310,255 332,88" fill="#a78bfa" fill-opacity="0.05"/>
+
+                                <!-- Aristas del tetraedro (estructura) -->
+                                <line x1="130" y1="255" x2="108" y2="82" stroke="#4b5563" stroke-width="1"/>
+                                <line x1="310" y1="255" x2="108" y2="82" stroke="#4b5563" stroke-width="1"/>
+                                <line x1="130" y1="255" x2="332" y2="88" stroke="#4b5563" stroke-width="1" opacity="0.5"/>
+                                <line x1="310" y1="255" x2="332" y2="88" stroke="#4b5563" stroke-width="1" opacity="0.5"/>
+                                <line x1="108" y1="82" x2="332" y2="88" stroke="#4b5563" stroke-width="1" stroke-dasharray="5 3"/>
+
+                                <!-- Arista compartida AB -->
+                                <line x1="130" y1="255" x2="310" y2="255" stroke="#a78bfa" stroke-width="2"/>
+
+                                <!-- Alturas MC y MD -->
+                                <line x1="220" y1="255" x2="108" y2="82" stroke="#a78bfa" stroke-width="1.8"/>
+                                <line x1="220" y1="255" x2="332" y2="88" stroke="#a78bfa" stroke-width="1.8"/>
+
+                                <!-- Ángulo diedro θ -->
+                                <path d="M 220 255 L 201 226 A 35 35 0 0 1 240 226 Z" fill="#22d3ee" fill-opacity="0.06"/>
+                                <path d="M 201 226 A 35 35 0 0 1 240 226" fill="none" stroke="#22d3ee" stroke-width="1.5"/>
+
+                                <!-- Puntos -->
+                                <circle cx="130" cy="255" r="2.5" fill="#6b7280"/>
+                                <circle cx="310" cy="255" r="2.5" fill="#6b7280"/>
+                                <circle cx="220" cy="255" r="3" fill="#a78bfa"/>
+                                <circle cx="108" cy="82" r="3" fill="#a78bfa"/>
+                                <circle cx="332" cy="88" r="3" fill="#a78bfa"/>
+
+                                <!-- Etiquetas de vértices -->
+                                <text x="122" y="273" text-anchor="middle" fill="#6b7280" font-size="12" font-family="Inter, sans-serif">A</text>
+                                <text x="318" y="273" text-anchor="middle" fill="#6b7280" font-size="12" font-family="Inter, sans-serif">B</text>
+                                <text x="220" y="275" text-anchor="middle" fill="#d1d5db" font-size="14" font-family="Inter, sans-serif" font-weight="500">M</text>
+                                <text x="90" y="78" text-anchor="middle" fill="#d1d5db" font-size="14" font-family="Inter, sans-serif" font-weight="500">C</text>
+                                <text x="350" y="84" text-anchor="middle" fill="#d1d5db" font-size="14" font-family="Inter, sans-serif" font-weight="500">D</text>
+
+                                <!-- Etiqueta del ángulo -->
+                                <text x="220" y="212" text-anchor="middle" fill="#22d3ee" font-size="15" font-style="italic" font-family="Inter, sans-serif">θ</text>
+
+                                <!-- Medidas -->
+                                <text x="150" y="177" text-anchor="middle" fill="#9ca3af" font-size="12" font-style="italic" font-family="Inter, sans-serif">h</text>
+                                <text x="290" y="178" text-anchor="middle" fill="#9ca3af" font-size="12" font-style="italic" font-family="Inter, sans-serif">h</text>
+                                <text x="220" y="73" text-anchor="middle" fill="#9ca3af" font-size="12" font-style="italic" font-family="Inter, sans-serif">a</text>
+
+                                <!-- Pie de figura -->
+                                <text x="220" y="296" text-anchor="middle" fill="#6b7280" font-size="11" font-style="italic" font-family="Inter, sans-serif">Ángulo diedro del tetraedro a lo largo de la arista AB</text>
+                            </svg>
+                        </div>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border border-gray-700">
+                            <p class="text-sm text-gray-400 mb-3">Aplicamos la <strong class="text-gray-300">ley de los cosenos</strong> al triángulo CMD — generalización del teorema de Pitágoras para ángulos no rectos — con la distancia CD = \(a\) (arista del tetraedro):</p>
+                            <div class="space-y-2">
+                                $$CD^2 = MC^2 + MD^2 - 2 \cdot MC \cdot MD \cdot \cos(\theta)$$
+                                $$a^2 = \left(\frac{a\sqrt{3}}{2}\right)^2 + \left(\frac{a\sqrt{3}}{2}\right)^2 - 2 \cdot \left(\frac{a\sqrt{3}}{2}\right)^2 \cdot \cos(\theta)$$
+                                $$a^2 = \frac{3a^2}{2} - \frac{3a^2}{2} \cdot \cos(\theta)$$
+                                $$\cos(\theta) = \frac{3a^2/2 - a^2}{3a^2/2} = \frac{1}{3}$$
+                                $$\theta = \arccos\!\left(\frac{1}{3}\right) \approx 70.53^\circ$$
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                            <div class="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+                                <p class="text-gray-300"><strong class="text-yellow-400">Cubo:</strong> caras perpendiculares &rarr; \(\theta = 90^\circ\) (trivial).</p>
+                            </div>
+                            <div class="bg-gray-900/50 rounded-lg p-4 border border-gray-700">
+                                <p class="text-gray-300"><strong class="text-blue-400">Octaedro:</strong> mismo cálculo con triángulos opuestos &rarr; \(\cos(\theta) = -1/3\) &rarr; \(\theta \approx 109.47^\circ\).</p>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-300 mb-6">
+                            Observa: a medida que \(q\) (caras por vértice) crece, el ángulo diedro también crece, acercándose a \(180^\circ\) (plano). Esto conecta con la condición de existencia.
+                        </p>
+
+                        <!-- EXPANDED: Teeteto section -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Teeteto: El Matemático Detrás del Mito</h3>
+                        <p class="text-gray-300 mb-4">
+                            <strong>Teeteto de Atenas</strong> (c. 417-369 a.C.) fue el verdadero artífice matemático. Mientras Platón filosofaba sobre los elementos, Teeteto:
+                        </p>
+
+                        <ol class="list-decimal list-inside space-y-3 text-gray-300 mb-4">
+                            <li><strong class="text-violet-400">Construyó</strong> el octaedro y el icosaedro geométricamente (el tetraedro, cubo y dodecaedro ya eran conocidos por los pitagóricos)</li>
+                            <li><strong class="text-violet-400">Clasificó</strong> los cinco sólidos como una familia completa</li>
+                            <li><strong class="text-violet-400">Demostró</strong> que el proceso de construcción se agota: no hay un sexto sólido</li>
+                        </ol>
+
+                        <p class="text-gray-300 mb-6">
+                            Su método: partiendo de la desigualdad angular en cada vértice, mostró que las únicas combinaciones posibles de polígonos regulares que "cierran" en 3D son exactamente cinco. Euclides formalizó esta demostración un siglo después en el Libro XIII de los <em>Elementos</em>.
+                        </p>
+
+                        <!-- REPLACED: Exercises -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Ejercicios</h3>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Ángulos diedros y geometría:</h4>
+                            <ol class="list-decimal list-inside space-y-3 text-gray-300">
+                                <li>El ángulo diedro del tetraedro es \(\arccos(1/3) \approx 70.53^\circ\). En cada arista del tetraedro concurren 2 caras. ¿Cuánto "falta" para llegar a \(360^\circ\)? (Esto se llama el <em>defecto angular</em>.)</li>
+                                <li>Calcula el ángulo diedro del cubo (trivial). ¿Cuántas caras concurren en cada arista de un cubo?</li>
+                                <li>¿Por qué la asociación fuego-tetraedro tiene sentido geométrico? (Piensa en el ángulo diedro más pequeño = forma más "puntiaguda".)</li>
+                                <li>El icosaedro tiene ángulo diedro \(\approx 138.2^\circ\). Si fuera \(180^\circ\), ¿qué pasaría geométricamente?</li>
                             </ol>
                         </div>
                     </div>
 
+                    <!-- LAB Section: Elementos en 3D -->
                     <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
-                            <span class="mr-2">🔬</span> LAB: Los Elementos en 3D
-                        </h2>
-                        <p class="text-gray-400 mb-4">Visualiza cada sólido asociado a su elemento. Observa sus propiedades geométricas.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-4">LAB: Los Elementos en 3D</h2>
+                        <p class="text-gray-400 mb-4">Arrastra para rotar. Cada sólido lleva el color de su elemento. Observa cómo el ángulo diedro crece con la "redondez".</p>
+
+                        <div class="relative rounded-xl border border-gray-800 overflow-hidden" style="background:#030712;">
+                            <canvas id="mini-lab" style="width:100%; height:420px; display:block; cursor:grab;"></canvas>
+                            <div class="absolute top-4 right-4 text-right mono">
+                                <div class="text-base font-medium mb-1" id="solid-name" style="color:#ef4444">Tetraedro</div>
+                                <div class="text-sm text-gray-400" id="element-name">Fuego</div>
+                                <div class="text-xs text-gray-500 mt-2" id="dihedral-label">\u03B8 diedro</div>
+                                <div class="text-lg font-medium mt-0.5" id="dihedral-val" style="color:#22d3ee">70.53\u00B0</div>
+                                <div class="text-xs mt-2" id="dihedral-note" style="color:#6b7280">cos \u03B8 = 1/3</div>
+                            </div>
                         </div>
-                        <div class="mt-4 grid grid-cols-5 gap-2">
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'tetrahedron'}, '*')" class="px-3 py-2 bg-red-900/40 border border-red-500/30 hover:bg-red-900/60 rounded text-sm text-center">
-                                <div class="text-lg">🔥</div>Fuego
-                            </button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'cube'}, '*')" class="px-3 py-2 bg-yellow-900/40 border border-yellow-500/30 hover:bg-yellow-900/60 rounded text-sm text-center">
-                                <div class="text-lg">🌍</div>Tierra
-                            </button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'octahedron'}, '*')" class="px-3 py-2 bg-blue-900/40 border border-blue-500/30 hover:bg-blue-900/60 rounded text-sm text-center">
-                                <div class="text-lg">💨</div>Aire
-                            </button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'icosahedron'}, '*')" class="px-3 py-2 bg-cyan-900/40 border border-cyan-500/30 hover:bg-cyan-900/60 rounded text-sm text-center">
-                                <div class="text-lg">💧</div>Agua
-                            </button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'dodecahedron'}, '*')" class="px-3 py-2 bg-purple-900/40 border border-purple-500/30 hover:bg-purple-900/60 rounded text-sm text-center">
-                                <div class="text-lg">✨</div>Éter
-                            </button>
+
+                        <div class="mt-3 grid grid-cols-5 gap-2">
+                            <button data-solid="0" class="elem-btn px-3 py-2 rounded-lg text-sm text-center transition border" style="background:rgba(239,68,68,0.15);border-color:rgba(239,68,68,0.4);color:#ef4444;">Fuego</button>
+                            <button data-solid="1" class="elem-btn px-3 py-2 rounded-lg text-sm text-center transition border" style="background:#111827;border-color:#1f2937;color:#9ca3af;">Tierra</button>
+                            <button data-solid="2" class="elem-btn px-3 py-2 rounded-lg text-sm text-center transition border" style="background:#111827;border-color:#1f2937;color:#9ca3af;">Aire</button>
+                            <button data-solid="3" class="elem-btn px-3 py-2 rounded-lg text-sm text-center transition border" style="background:#111827;border-color:#1f2937;color:#9ca3af;">Agua</button>
+                            <button data-solid="4" class="elem-btn px-3 py-2 rounded-lg text-sm text-center transition border" style="background:#111827;border-color:#1f2937;color:#9ca3af;">\u00C9ter</button>
                         </div>
                     </div>
 
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-02.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
-                            ← Anterior: Pitágoras
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                    <script>
+                    (function(){
+                        var canvas = document.getElementById('mini-lab');
+                        var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+                        renderer.setClearColor(0x030712);
+
+                        var scene = new THREE.Scene();
+                        var camera = new THREE.PerspectiveCamera(35,2,0.1,100);
+                        camera.position.z = 4.5;
+
+                        var solids = [
+                            {name:'Tetraedro', elem:'Fuego', color:0xef4444, hex:'#ef4444', bg:'rgba(239,68,68,0.15)', border:'rgba(239,68,68,0.4)',
+                             geo:new THREE.TetrahedronGeometry(1.3), angle:'70.53\u00B0', note:'cos \u03B8 = 1/3'},
+                            {name:'Cubo', elem:'Tierra', color:0xeab308, hex:'#eab308', bg:'rgba(234,179,8,0.15)', border:'rgba(234,179,8,0.4)',
+                             geo:new THREE.BoxGeometry(1.7,1.7,1.7), angle:'90.00\u00B0', note:'caras perpendiculares'},
+                            {name:'Octaedro', elem:'Aire', color:0x3b82f6, hex:'#3b82f6', bg:'rgba(59,130,246,0.15)', border:'rgba(59,130,246,0.4)',
+                             geo:new THREE.OctahedronGeometry(1.4), angle:'109.47\u00B0', note:'cos \u03B8 = \u22121/3'},
+                            {name:'Icosaedro', elem:'Agua', color:0x06b6d4, hex:'#06b6d4', bg:'rgba(6,182,212,0.15)', border:'rgba(6,182,212,0.4)',
+                             geo:new THREE.IcosahedronGeometry(1.3), angle:'138.19\u00B0', note:'el m\u00E1s "redondo"'},
+                            {name:'Dodecaedro', elem:'\u00C9ter', color:0xa855f7, hex:'#a855f7', bg:'rgba(168,85,247,0.15)', border:'rgba(168,85,247,0.4)',
+                             geo:new THREE.DodecahedronGeometry(1.3), angle:'116.57\u00B0', note:'cos \u03B8 = \u22121/\u221A5'}
+                        ];
+
+                        var group, rotX=0.4, rotY=0.6, dragging=false, px,py, autoRot=true, autoTimer;
+
+                        function show(i){
+                            if(group) scene.remove(group);
+                            group = new THREE.Group();
+                            var s = solids[i];
+
+                            // Caras con color del elemento
+                            group.add(new THREE.Mesh(s.geo, new THREE.MeshBasicMaterial({
+                                color:s.color, transparent:true, opacity:0.07, side:THREE.DoubleSide
+                            })));
+
+                            // Aristas con color del elemento
+                            group.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(s.geo),
+                                new THREE.LineBasicMaterial({color:s.color, transparent:true, opacity:0.7})
+                            ));
+
+                            // Vértices
+                            var pos=s.geo.getAttribute('position'), seen={}, uv=[];
+                            for(var j=0;j<pos.count;j++){
+                                var k=pos.getX(j).toFixed(3)+','+pos.getY(j).toFixed(3)+','+pos.getZ(j).toFixed(3);
+                                if(!seen[k]){seen[k]=1;uv.push(pos.getX(j),pos.getY(j),pos.getZ(j));}
+                            }
+                            var pg=new THREE.BufferGeometry();
+                            pg.setAttribute('position',new THREE.Float32BufferAttribute(uv,3));
+                            group.add(new THREE.Points(pg,new THREE.PointsMaterial({color:s.color,size:5,sizeAttenuation:false})));
+
+                            scene.add(group);
+
+                            // UI
+                            document.getElementById('solid-name').textContent=s.name;
+                            document.getElementById('solid-name').style.color=s.hex;
+                            document.getElementById('element-name').textContent=s.elem;
+                            document.getElementById('dihedral-val').textContent=s.angle;
+                            document.getElementById('dihedral-note').textContent=s.note;
+
+                            var btns=document.querySelectorAll('.elem-btn');
+                            for(var b=0;b<btns.length;b++){
+                                var sb=solids[b];
+                                if(b===i){
+                                    btns[b].style.background=sb.bg;
+                                    btns[b].style.borderColor=sb.border;
+                                    btns[b].style.color=sb.hex;
+                                } else {
+                                    btns[b].style.background='#111827';
+                                    btns[b].style.borderColor='#1f2937';
+                                    btns[b].style.color='#9ca3af';
+                                }
+                            }
+                        }
+
+                        // Drag
+                        canvas.addEventListener('pointerdown',function(e){
+                            dragging=true;px=e.clientX;py=e.clientY;autoRot=false;
+                            clearTimeout(autoTimer);canvas.style.cursor='grabbing';
+                        });
+                        window.addEventListener('pointerup',function(){
+                            dragging=false;canvas.style.cursor='grab';
+                            autoTimer=setTimeout(function(){autoRot=true;},3000);
+                        });
+                        window.addEventListener('pointermove',function(e){
+                            if(!dragging)return;
+                            rotY+=(e.clientX-px)*0.008;rotX+=(e.clientY-py)*0.008;
+                            px=e.clientX;py=e.clientY;
+                        });
+
+                        // Resize
+                        function resize(){
+                            var w=canvas.clientWidth,h=canvas.clientHeight;
+                            renderer.setSize(w,h,false);
+                            camera.aspect=w/h;camera.updateProjectionMatrix();
+                        }
+                        window.addEventListener('resize',resize);
+                        resize();
+
+                        // Botones
+                        var btns=document.querySelectorAll('.elem-btn');
+                        for(var b=0;b<btns.length;b++){
+                            btns[b].addEventListener('click',function(){show(+this.dataset.solid);});
+                        }
+
+                        // Loop
+                        show(0);
+                        (function loop(){
+                            requestAnimationFrame(loop);
+                            if(autoRot) rotY+=0.004;
+                            if(group) group.rotation.set(rotX,rotY,0);
+                            renderer.render(scene,camera);
+                        })();
+                    })();
+                    </script>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-02.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-400 rounded-lg font-semibold transition">
+                            &larr; Anterior: Pitágoras
                         </a>
-                        <a href="./leccion-04.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
-                            Siguiente: Euclides →
+                        <a href="./leccion-04.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg font-semibold transition">
+                            Siguiente: Euclides &rarr;
                         </a>
                     </div>
                 </article>
@@ -258,11 +467,21 @@
         </div>
     </div>
 
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">
-                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
-            </p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <nav class="text-xs text-gray-600 mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Módulo 01</span>
+            </nav>
+            <p class="text-gray-700 text-sm mono">Módulo 01 · Los Guardianes de la Geometría</p>
         </div>
     </footer>
 </body>

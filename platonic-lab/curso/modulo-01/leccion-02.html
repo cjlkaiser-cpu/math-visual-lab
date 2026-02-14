@@ -5,194 +5,461 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lección 2: Pitágoras y el Misterio de los Números | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .lab-container { border: 2px solid #a855f7; border-radius: 12px; overflow: hidden; }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
+<body class="bg-black text-gray-100 min-h-screen">
     <!-- Header -->
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Módulo 01</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Lección 2</span> — Pitágoras y el Misterio de los Números
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-01.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-03.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-01.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-03.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
 
     <!-- Main Layout -->
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
             <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
-                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
-                    
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Módulo 01</h3>
+                    <p class="text-sm text-gray-500 mb-4">Los Guardianes de la Geometría</p>
+
+                    <!-- Progress -->
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>2/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 33.3%"></div>
                         </div>
                     </div>
 
+                    <!-- Navigation -->
                     <nav class="space-y-2">
-                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
-                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">2. Pitágoras y el Misterio de los Números</a>
-                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">3. Platón y el Timeo</a>
-                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">4. Euclides y los Elementos</a>
-                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">5. Exploración Visual Completa</a>
-                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">6. Notación de Schläfli</a>
                     </nav>
                 </div>
             </aside>
 
             <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 2</span>
-                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
+                            <span class="text-cyan-400 text-sm font-medium">Lección 2</span>
+                            <span class="text-gray-400 text-sm">~25 min</span>
                         </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Pitágoras y el Misterio de los Números</h1>
+                        <h1 class="text-3xl font-bold mb-4 text-violet-400 glow-text">Pitágoras y el Misterio de los Números</h1>
                         <p class="text-gray-400 text-lg">Explora la conexión entre geometría y números que los pitagóricos descubrieron hace más de 2500 años.</p>
                     </div>
 
+                    <!-- Content -->
                     <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">La Escuela Pitagórica</h2>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">La Escuela Pitagórica</h2>
                         <p class="text-gray-300 mb-4">
-                            La historia de los sólidos platónicos comienza con los pitagóricos, quienes creían que "<em class="text-platonic-cyan">todo es número</em>". Para ellos, la matemática era una forma de comprender la armonía del universo.
+                            La historia de los sólidos platónicos comienza con los pitagóricos, quienes creían que "<em class="text-cyan-400">todo es número</em>". Para ellos, la matemática era una forma de comprender la armonía del universo.
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 border-l-4 border-platonic-cyan">
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-cyan-400">
                             <p class="text-lg italic text-gray-300">
                                 "Los números gobiernan el universo."
                             </p>
                             <p class="text-sm text-gray-500 mt-2">— Pitágoras (c. 570-495 a.C.)</p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Los Números Perfectos de los Sólidos</h3>
+                        <!-- Geometría Pitagórica en los Sólidos -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Geometría Pitagórica en los Sólidos</h2>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">El Teorema de Pitágoras en 3D</h3>
                         <p class="text-gray-300 mb-4">
-                            Los pitagóricos descubrieron que los sólidos platónicos tenían propiedades numéricas extraordinarias. Cada sólido está relacionado con números especiales:
+                            Los pitagóricos desarrollaron el famoso teorema \(a^2 + b^2 = c^2\). En tres dimensiones, esta relación se extiende a los sólidos:
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
-                                <h4 class="font-semibold text-platonic-purple mb-2">Número 4 — Tetraedro</h4>
-                                <p class="text-sm text-gray-400">El número de la manifestación. 4 elementos, 4 direcciones, 4 vértices.</p>
-                            </div>
-                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
-                                <h4 class="font-semibold text-platonic-purple mb-2">Número 6 — Cubo</h4>
-                                <p class="text-sm text-gray-400">Número perfecto. 1+2+3 = 6. 6 caras perfectas.</p>
-                            </div>
-                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
-                                <h4 class="font-semibold text-platonic-purple mb-2">Número 8 — Octaedro</h4>
-                                <p class="text-sm text-gray-400">El primer número cúbico después de 1 (2³ = 8).</p>
-                            </div>
-                            <div class="bg-gray-800/30 p-4 rounded-lg border border-gray-700">
-                                <h4 class="font-semibold text-platonic-purple mb-2">Número 12 — Dodecaedro</h4>
-                                <p class="text-sm text-gray-400">12 meses, 12 signos zodiacales. El más misterioso.</p>
-                            </div>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Teorema de Pitágoras en 3D</h3>
-                        <p class="text-gray-300 mb-4">
-                            Los pitagóricos desarrollaron el famoso teorema a² + b² = c². En tres dimensiones, esta relación se extiende a los sólidos:
-                        </p>
-
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-3">Relación Pitagórica en el Cubo:</h4>
-                            <p class="text-gray-300 mb-2">Para un cubo con arista <strong>a</strong>:</p>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Relación Pitagórica en el Cubo:</h4>
+                            <p class="text-gray-300 mb-2">Para un cubo con arista \(a\):</p>
                             <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
-                                <li>Diagonal de cara: d² = a² + a² = 2a² → d = a√2</li>
-                                <li>Diagonal espacial: D² = d² + a² = 3a² → D = a√3</li>
+                                <li>Diagonal de cara: \(d^2 = a^2 + a^2 = 2a^2\) &rarr; \(d = a\sqrt{2}\)</li>
+                                <li>Diagonal espacial: \(D^2 = d^2 + a^2 = 3a^2\) &rarr; \(D = a\sqrt{3}\)</li>
                             </ul>
-                            <p class="text-gray-400 mt-3 text-sm">Esta es la base del radio circunscrito del cubo: R = a√3/2</p>
+                            <p class="text-gray-400 mt-3 text-sm">Esta es la base del radio circunscrito del cubo: \(R = \frac{a\sqrt{3}}{2}\)</p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Proporción Áurea</h3>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Altura del Tetraedro Regular</h3>
                         <p class="text-gray-300 mb-4">
-                            Un descubrimiento crucial fue la <strong class="text-platonic-cyan">Proporción Áurea (φ)</strong>, que aparece en el dodecaedro e icosaedro:
+                            Consideremos un tetraedro regular con arista \(a\). Su base es un triángulo equilátero. Para calcular la altura del tetraedro, aplicamos el teorema de Pitágoras en el triángulo formado por la altura, la arista y la distancia del centro de la base a un vértice.
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-4 mb-6 text-center">
-                            <p class="text-2xl font-mono text-platonic-purple mb-2">φ = (1 + √5) / 2 ≈ 1.618</p>
-                            <p class="text-sm text-gray-400">Propiedad especial: φ = 1 + 1/φ</p>
+                        <!-- Diagrama: sección vertical del tetraedro -->
+                        <div class="flex justify-center my-6">
+                            <svg viewBox="0 0 360 270" xmlns="http://www.w3.org/2000/svg" style="max-width: 340px; width: 100%;">
+                                <!-- Contorno sutil del tetraedro -->
+                                <line x1="40" y1="228" x2="262" y2="228" stroke="#4b5563" stroke-width="1"/>
+                                <line x1="40" y1="228" x2="130" y2="46" stroke="#4b5563" stroke-width="1"/>
+                                <line x1="262" y1="228" x2="130" y2="46" stroke="#4b5563" stroke-width="1" opacity="0.4"/>
+                                <!-- Marca de arista perpendicular al plano en el extremo de la base -->
+                                <line x1="34" y1="222" x2="46" y2="234" stroke="#4b5563" stroke-width="1" opacity="0.5"/>
+                                <line x1="46" y1="222" x2="34" y2="234" stroke="#4b5563" stroke-width="1" opacity="0.5"/>
+
+                                <!-- Triángulo rectángulo (principal) -->
+                                <line x1="130" y1="228" x2="130" y2="46" stroke="#a78bfa" stroke-width="1.8"/>
+                                <line x1="130" y1="228" x2="262" y2="228" stroke="#a78bfa" stroke-width="1.8"/>
+                                <line x1="262" y1="228" x2="130" y2="46" stroke="#a78bfa" stroke-width="1.8"/>
+
+                                <!-- Marca de ángulo recto en G -->
+                                <polyline points="130,214 144,214 144,228" fill="none" stroke="#22d3ee" stroke-width="1.2"/>
+
+                                <!-- Puntos -->
+                                <circle cx="130" cy="228" r="3" fill="#a78bfa"/>
+                                <circle cx="262" cy="228" r="3" fill="#a78bfa"/>
+                                <circle cx="130" cy="46" r="3" fill="#a78bfa"/>
+
+                                <!-- Etiquetas -->
+                                <text x="114" y="142" text-anchor="middle" fill="#d1d5db" font-size="14" font-style="italic" font-family="Inter, sans-serif">h</text>
+                                <text x="196" y="248" text-anchor="middle" fill="#d1d5db" font-size="13" font-family="Inter, sans-serif">a/√3</text>
+                                <text x="210" y="128" text-anchor="middle" fill="#d1d5db" font-size="14" font-style="italic" font-family="Inter, sans-serif">a</text>
+                                <text x="130" y="254" text-anchor="middle" fill="#9ca3af" font-size="12" font-family="Inter, sans-serif" font-weight="500">G</text>
+
+                                <!-- Pie de figura -->
+                                <text x="180" y="268" text-anchor="middle" fill="#6b7280" font-size="11" font-style="italic" font-family="Inter, sans-serif">Sección vertical del tetraedro: altura h, arista a</text>
+                            </svg>
+                        </div>
+
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Derivación paso a paso:</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Paso 1: Mediana del triángulo equilátero base</p>
+                                    <p class="text-gray-300 ml-4">$$m = \frac{a\sqrt{3}}{2}$$</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Paso 2: El centro del triángulo equilátero divide la mediana en razón 2:1 desde el vértice</p>
+                                    <p class="text-gray-300 ml-4">$$\frac{2}{3} \cdot m = \frac{2}{3} \cdot \frac{a\sqrt{3}}{2} = \frac{a\sqrt{3}}{3} = \frac{a}{\sqrt{3}}$$</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Paso 3: Aplicamos Pitágoras en el triángulo vertical (arista, altura, distancia al centro)</p>
+                                    <p class="text-gray-300 ml-4">$$h^2 = a^2 - \left(\frac{a}{\sqrt{3}}\right)^2 = a^2 - \frac{a^2}{3} = a^2\left(1 - \frac{1}{3}\right) = \frac{2a^2}{3}$$</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Resultado:</p>
+                                    <p class="text-violet-400 text-lg ml-4">$$h = a\sqrt{\frac{2}{3}} = \frac{a\sqrt{6}}{3}$$</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Volumen del Tetraedro Regular</h3>
+                        <p class="text-gray-300 mb-4">
+                            Con la altura calculada, podemos derivar el volumen del tetraedro regular usando la fórmula general de pirámides:
+                        </p>
+
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Derivación del volumen:</h4>
+                            <div class="space-y-3">
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Área del triángulo equilátero base:</p>
+                                    <p class="text-gray-300 ml-4">$$A_{\text{base}} = \frac{a^2\sqrt{3}}{4}$$</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Volumen de una pirámide:</p>
+                                    <p class="text-gray-300 ml-4">$$V = \frac{1}{3} \cdot A_{\text{base}} \cdot h$$</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Sustituyendo:</p>
+                                    <p class="text-gray-300 ml-4">$$V = \frac{1}{3} \cdot \frac{a^2\sqrt{3}}{4} \cdot \frac{a\sqrt{6}}{3}$$</p>
+                                    <p class="text-gray-300 ml-4">$$V = \frac{a^3 \cdot \sqrt{3} \cdot \sqrt{6}}{3 \cdot 4 \cdot 3}$$</p>
+                                    <p class="text-gray-300 ml-4">$$V = \frac{a^3 \cdot \sqrt{18}}{36} = \frac{a^3 \cdot 3\sqrt{2}}{36}$$</p>
+                                </div>
+                                <div>
+                                    <p class="text-gray-400 text-sm mb-1">Resultado:</p>
+                                    <p class="text-violet-400 text-lg ml-4">$$V = \frac{a^3\sqrt{2}}{12}$$</p>
+                                </div>
+                                <div class="mt-3 pt-3 border-t border-violet-500/20">
+                                    <p class="text-gray-400 text-sm">Para \(a = 1\): <span class="text-cyan-400">\(V = \frac{\sqrt{2}}{12} \approx 0.1178\)</span></p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Proporción Áurea -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">La Proporción Áurea</h3>
+                        <p class="text-gray-300 mb-4">
+                            Un descubrimiento crucial fue la <strong class="text-cyan-400">Proporción Áurea (\(\varphi\))</strong>, que aparece en el dodecaedro e icosaedro:
+                        </p>
+
+                        <div class="bg-gray-900/50 rounded-lg p-4 mb-6 text-center">
+                            <p class="text-2xl text-violet-400 mb-2">$$\varphi = \frac{1 + \sqrt{5}}{2} \approx 1.618$$</p>
+                            <p class="text-sm text-gray-400">Propiedad especial: \(\varphi = 1 + \frac{1}{\varphi}\)</p>
+                        </div>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">La Proporción Áurea en el Icosaedro</h3>
+                        <p class="text-gray-300 mb-4">
+                            \(\varphi\) no es una curiosidad decorativa. Las coordenadas de los <strong>12 vértices</strong> del icosaedro se expresan directamente en términos de \(\varphi\):
+                        </p>
+
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Coordenadas de los vértices del icosaedro:</h4>
+                            <p class="text-gray-300 mb-3">Los 12 vértices son permutaciones cíclicas de \((0, \pm 1, \pm\varphi)\) con signos independientes:</p>
+                            <div class="space-y-1 ml-4 mb-4">
+                                <p class="text-gray-300">\((0, \pm 1, \pm\varphi)\) &rarr; 4 vértices</p>
+                                <p class="text-gray-300">\((\pm 1, \pm\varphi, 0)\) &rarr; 4 vértices</p>
+                                <p class="text-gray-300">\((\pm\varphi, 0, \pm 1)\) &rarr; 4 vértices</p>
+                            </div>
+                            <p class="text-gray-400 text-sm">Total: 12 vértices, como debe ser para el icosaedro.</p>
+                        </div>
+
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Verificación: todos los vértices adyacentes están a distancia 2</h4>
+                            <p class="text-gray-300 mb-3">Calculemos la distancia entre \((0, 1, \varphi)\) y \((1, \varphi, 0)\):</p>
+                            <div class="space-y-2 ml-4">
+                                <p class="text-gray-300">$$d^2 = (0-1)^2 + (1-\varphi)^2 + (\varphi-0)^2$$</p>
+                                <p class="text-gray-300">$$= 1 + (1-\varphi)^2 + \varphi^2$$</p>
+                                <p class="text-gray-300">$$= 1 + 1 - 2\varphi + \varphi^2 + \varphi^2$$</p>
+                                <p class="text-gray-300">$$= 2 + 2\varphi^2 - 2\varphi$$</p>
+                            </div>
+                            <p class="text-gray-400 text-sm mt-3 mb-2">Usamos la propiedad fundamental: \(\varphi^2 = \varphi + 1\)</p>
+                            <div class="space-y-2 ml-4">
+                                <p class="text-gray-300">$$d^2 = 2 + 2(\varphi+1) - 2\varphi$$</p>
+                                <p class="text-gray-300">$$= 2 + 2\varphi + 2 - 2\varphi$$</p>
+                                <p class="text-violet-400 text-lg">$$= 4 \quad \Rightarrow \quad d = 2$$</p>
+                            </div>
+                            <p class="text-gray-300 mt-4">Todos los pares de vértices adyacentes están a distancia exacta 2. Por tanto, con estas coordenadas, la arista del icosaedro vale exactamente 2.</p>
                         </div>
 
                         <p class="text-gray-300 mb-4">
-                            El dodecaedro contiene pentágonos, y la diagonal de un pentágono se relaciona con φ. Esta proporción "perfecta" aparece en toda la naturaleza.
+                            Esto demuestra que \(\varphi\) no es ornamental: es <strong class="text-cyan-400">constitutivo</strong> del icosaedro. Sin \(\varphi\), el icosaedro simplemente no existe.
+                        </p>
+                        <p class="text-gray-300 mb-6">
+                            De forma análoga, los vértices del dodecaedro involucran las coordenadas \((\pm 1, \pm 1, \pm 1)\), \((0, \pm 1/\varphi, \pm\varphi)\) y sus permutaciones cíclicas, combinando el cubo con la proporción áurea.
                         </p>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio: La Magia de los Números</h3>
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-cyan mb-3">Calcula y verifica:</h4>
-                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
-                                <li>Para un tetraedro con a = 1, el volumen es √2/12 ≈ 0.1179</li>
-                                <li>Verifica que φ² = φ + 1</li>
-                                <li>Comprueba que 1/φ = φ - 1</li>
-                                <li>La suma de vértices de todos los sólidos: 4+8+6+20+12 = 50</li>
+                        <!-- Ejercicios -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Ejercicios</h3>
+                        <div class="bg-cyan-500/10 border border-cyan-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-cyan-400 mb-3">Calcula y verifica:</h4>
+                            <ol class="list-decimal list-inside space-y-3 text-gray-300">
+                                <li>Deriva la diagonal espacial de un cubo con arista \(a\). Verifica que \(D = a\sqrt{3}\).</li>
+                                <li>Calcula el radio circunscrito \(R\) del tetraedro regular con arista \(a\). <span class="text-gray-500">(Pista: \(R\) es la distancia del centro al vértice. El centro divide la altura en razón 3:1 desde la base.)</span></li>
+                                <li>Verifica que \(\varphi^2 = \varphi + 1\) partiendo de la definición \(\varphi = \frac{1+\sqrt{5}}{2}\).</li>
+                                <li>Comprueba que la distancia entre los vértices \((0, 1, \varphi)\) y \((\varphi, 0, 1)\) del icosaedro es 2. <span class="text-gray-500">¿Qué propiedad de \(\varphi\) usas?</span></li>
+                                <li>Si el icosaedro tiene arista \(a = 2\), ¿cuál es su radio circunscrito? <span class="text-gray-500">(Pista: calcula \(|(0, 1, \varphi)|\).)</span></li>
                             </ol>
                         </div>
                     </div>
 
+                    <!-- LAB Section: Mini 3D viewer con medidas -->
                     <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
-                            <span class="mr-2">🔬</span> LAB: Proporciones Geométricas
-                        </h2>
-                        <p class="text-gray-400 mb-4">Explora las relaciones numéricas en PlatonicLab. Observa las medidas calculadas.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-4">LAB: Proporciones Geométricas</h2>
+                        <p class="text-gray-400 mb-4">Arrastra para rotar. Activa la esfera circunscrita para comparar el radio \(R\) entre sólidos.</p>
+
+                        <div class="relative rounded-xl border border-gray-800 overflow-hidden" style="background:#030712;">
+                            <canvas id="mini-lab" style="width:100%; height:420px; display:block; cursor:grab;"></canvas>
+                            <div class="absolute top-4 right-4 text-right mono">
+                                <div class="text-base font-medium text-gray-300 mb-2" id="solid-name">Tetraedro</div>
+                                <div id="measures" class="space-y-0.5 text-xs"></div>
+                            </div>
                         </div>
-                        <div class="mt-4 flex gap-2">
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({tab: 'calc'}, '*')" class="px-4 py-2 bg-platonic-purple hover:bg-purple-600 rounded text-sm">Abrir Calculadora</button>
+
+                        <div class="mt-3 flex flex-wrap gap-2 items-center">
+                            <button data-solid="0" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Tetraedro</button>
+                            <button data-solid="1" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Cubo</button>
+                            <button data-solid="2" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Icosaedro</button>
+                            <span class="mx-1 text-gray-800">|</span>
+                            <label class="flex items-center gap-2 text-sm text-gray-500 cursor-pointer select-none hover:text-gray-400 transition">
+                                <input type="checkbox" id="sphere-toggle" style="accent-color:#a78bfa;" class="cursor-pointer">
+                                Esfera circunscrita
+                            </label>
                         </div>
                     </div>
 
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-01.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                    <script>
+                    (function(){
+                        var canvas = document.getElementById('mini-lab');
+                        var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+                        renderer.setClearColor(0x030712);
+
+                        var scene = new THREE.Scene();
+                        var camera = new THREE.PerspectiveCamera(35,2,0.1,100);
+                        camera.position.z = 4.5;
+
+                        var solids = [
+                            {name:'Tetraedro', geo:new THREE.TetrahedronGeometry(1.3), R:1.3,
+                             html:'<div><span style="color:#6b7280">h</span> = a\u221A6/3 \u2248 <span style="color:#a78bfa">0.816</span>a</div>'+
+                                  '<div><span style="color:#6b7280">R</span> = a\u221A6/4 \u2248 <span style="color:#a78bfa">0.612</span>a</div>'+
+                                  '<div><span style="color:#6b7280">V</span> = a\u00B3\u221A2/12 \u2248 <span style="color:#a78bfa">0.118</span>a\u00B3</div>'},
+                            {name:'Cubo', geo:new THREE.BoxGeometry(1.5,1.5,1.5), R:1.5*Math.sqrt(3)/2,
+                             html:'<div><span style="color:#6b7280">D</span> = a\u221A3 \u2248 <span style="color:#a78bfa">1.732</span>a</div>'+
+                                  '<div><span style="color:#6b7280">R</span> = a\u221A3/2 \u2248 <span style="color:#a78bfa">0.866</span>a</div>'+
+                                  '<div><span style="color:#6b7280">V</span> = <span style="color:#a78bfa">a\u00B3</span></div>'},
+                            {name:'Icosaedro', geo:new THREE.IcosahedronGeometry(1.3), R:1.3,
+                             html:'<div><span style="color:#6b7280">R</span> = a\u221A(2+\u03C6)/2 \u2248 <span style="color:#a78bfa">0.951</span>a</div>'+
+                                  '<div><span style="color:#6b7280">\u03C6</span> = (1+\u221A5)/2 \u2248 <span style="color:#a78bfa">1.618</span></div>'+
+                                  '<div><span style="color:#6b7280">V</span> = 5a\u00B3(3+\u221A5)/12 \u2248 <span style="color:#a78bfa">2.182</span>a\u00B3</div>'}
+                        ];
+
+                        var group, sphere, showSphere=false;
+                        var rotX=0.4, rotY=0.6, dragging=false, px,py, autoRot=true, autoTimer;
+                        var currentIdx = 0;
+
+                        function show(i){
+                            if(group) scene.remove(group);
+                            if(sphere) scene.remove(sphere);
+                            group = new THREE.Group();
+                            currentIdx = i;
+                            var s = solids[i];
+
+                            // Caras
+                            group.add(new THREE.Mesh(s.geo, new THREE.MeshBasicMaterial({
+                                color:0xa78bfa, transparent:true, opacity:0.06, side:THREE.DoubleSide
+                            })));
+
+                            // Aristas
+                            group.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(s.geo),
+                                new THREE.LineBasicMaterial({color:0xa78bfa, transparent:true, opacity:0.7})
+                            ));
+
+                            // Vértices
+                            var pos=s.geo.getAttribute('position'), seen={}, uv=[];
+                            for(var j=0;j<pos.count;j++){
+                                var k=pos.getX(j).toFixed(3)+','+pos.getY(j).toFixed(3)+','+pos.getZ(j).toFixed(3);
+                                if(!seen[k]){seen[k]=1; uv.push(pos.getX(j),pos.getY(j),pos.getZ(j));}
+                            }
+                            var pg=new THREE.BufferGeometry();
+                            pg.setAttribute('position',new THREE.Float32BufferAttribute(uv,3));
+                            group.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x22d3ee,size:5,sizeAttenuation:false})));
+
+                            scene.add(group);
+
+                            // Esfera circunscrita
+                            if(showSphere) addSphere(s.R);
+
+                            // UI
+                            document.getElementById('solid-name').textContent=s.name;
+                            document.getElementById('measures').innerHTML=s.html;
+
+                            var btns=document.querySelectorAll('.solid-btn');
+                            for(var b=0;b<btns.length;b++){
+                                if(b===i){
+                                    btns[b].style.background='rgba(167,139,250,0.15)';
+                                    btns[b].style.borderColor='#a78bfa';
+                                    btns[b].style.color='#a78bfa';
+                                } else {
+                                    btns[b].style.background='#111827';
+                                    btns[b].style.borderColor='#1f2937';
+                                    btns[b].style.color='#9ca3af';
+                                }
+                            }
+                        }
+
+                        function addSphere(R){
+                            if(sphere) scene.remove(sphere);
+                            var sg=new THREE.SphereGeometry(R,32,24);
+                            sphere=new THREE.Mesh(sg,new THREE.MeshBasicMaterial({
+                                color:0x22d3ee, transparent:true, opacity:0.08, side:THREE.DoubleSide
+                            }));
+                            var wireGeo=new THREE.EdgesGeometry(new THREE.SphereGeometry(R,16,12));
+                            var wire=new THREE.LineSegments(wireGeo,new THREE.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.35}));
+                            sphere.add(wire);
+                            scene.add(sphere);
+                        }
+
+                        // Toggle esfera
+                        document.getElementById('sphere-toggle').addEventListener('change',function(){
+                            showSphere=this.checked;
+                            if(showSphere) addSphere(solids[currentIdx].R);
+                            else if(sphere){scene.remove(sphere);sphere=null;}
+                        });
+
+                        // Drag
+                        canvas.addEventListener('pointerdown',function(e){
+                            dragging=true;px=e.clientX;py=e.clientY;autoRot=false;
+                            clearTimeout(autoTimer);canvas.style.cursor='grabbing';
+                        });
+                        window.addEventListener('pointerup',function(){
+                            dragging=false;canvas.style.cursor='grab';
+                            autoTimer=setTimeout(function(){autoRot=true;},3000);
+                        });
+                        window.addEventListener('pointermove',function(e){
+                            if(!dragging)return;
+                            rotY+=(e.clientX-px)*0.008;rotX+=(e.clientY-py)*0.008;
+                            px=e.clientX;py=e.clientY;
+                        });
+
+                        // Resize
+                        function resize(){
+                            var w=canvas.clientWidth,h=canvas.clientHeight;
+                            renderer.setSize(w,h,false);
+                            camera.aspect=w/h;camera.updateProjectionMatrix();
+                        }
+                        window.addEventListener('resize',resize);
+                        resize();
+
+                        // Botones
+                        var btns=document.querySelectorAll('.solid-btn');
+                        for(var b=0;b<btns.length;b++){
+                            btns[b].addEventListener('click',function(){show(+this.dataset.solid);});
+                        }
+
+                        // Loop
+                        show(0);
+                        (function loop(){
+                            requestAnimationFrame(loop);
+                            if(autoRot) rotY+=0.004;
+                            if(group) group.rotation.set(rotX,rotY,0);
+                            if(sphere) sphere.rotation.set(rotX,rotY,0);
+                            renderer.render(scene,camera);
+                        })();
+                    })();
+                    </script>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-01.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-400 rounded-lg font-semibold transition">
                             ← Anterior: Introducción
                         </a>
-                        <a href="./leccion-03.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                        <a href="./leccion-03.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg font-semibold transition">
                             Siguiente: Platón y el Timeo →
                         </a>
                     </div>
@@ -201,11 +468,21 @@
         </div>
     </div>
 
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">
-                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
-            </p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <nav class="text-xs text-gray-600 mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Módulo 01</span>
+            </nav>
+            <p class="text-gray-700 text-sm mono">Módulo 01 · Los Guardianes de la Geometría</p>
         </div>
     </footer>
 </body>

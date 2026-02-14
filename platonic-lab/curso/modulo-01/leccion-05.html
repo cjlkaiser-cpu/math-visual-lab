@@ -5,222 +5,271 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lección 5: Exploración Visual Completa | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .lab-container { border: 2px solid #a855f7; border-radius: 12px; overflow: hidden; }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Módulo 01</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Lección 5</span> — Exploración Visual Completa
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-04.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-06.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-04.html" class="px-3 py-2 rounded-lg bg-gray-900 hover:bg-gray-800 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-06.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 1</h3>
-                    <p class="text-sm text-gray-400 mb-4">Los Guardianes de la Geometría</p>
-                    
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Módulo 01</h3>
+                    <p class="text-sm text-gray-500 mb-4">Los Guardianes de la Geometría</p>
+
+                    <!-- Progress -->
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>5/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 83.3%"></div>
                         </div>
                     </div>
 
+                    <!-- Navigation -->
                     <nav class="space-y-2">
-                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
-                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
-                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">3. Platón y el Timeo</a>
-                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">4. Euclides y los Elementos</a>
-                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">5. Exploración Visual Completa</a>
-                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">6. Notación de Schläfli</a>
+                        <a href="./leccion-01.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">1. Introducción a los Sólidos Platónicos</a>
+                        <a href="./leccion-02.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">2. Pitágoras y el Misterio de los Números</a>
+                        <a href="./leccion-03.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">3. Platón y el Timeo</a>
+                        <a href="./leccion-04.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">4. Euclides y los Elementos</a>
+                        <a href="./leccion-05.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">5. Exploración Visual Completa</a>
+                        <a href="./leccion-06.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">6. Notación de Schläfli</a>
                     </nav>
                 </div>
             </aside>
 
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 5</span>
-                            <span class="text-gray-400 text-sm">⏱️ 30 minutos</span>
+                            <span class="text-cyan-400 text-sm font-medium">Lección 5</span>
+                            <span class="text-gray-400 text-sm">~30 min</span>
                         </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Exploración Visual Completa</h1>
-                        <p class="text-gray-400 text-lg">Un recorrido práctico por todas las herramientas de visualización de PlatonicLab.</p>
+                        <h1 class="text-3xl font-bold mb-4 text-violet-400 glow-text">Exploración Visual Completa</h1>
+                        <p class="text-gray-400 text-lg">Radios, volúmenes y dualidad: las métricas que conectan los cinco sólidos platónicos.</p>
                     </div>
 
+                    <!-- Content -->
                     <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Laboratorio Interactivo</h2>
-                        <p class="text-gray-300 mb-4">
-                            En esta lección pondremos en práctica todo lo aprendido. Usaremos PlatonicLab para explorar visualmente cada sólido y comprender sus propiedades geométricas.
-                        </p>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Controles Básicos</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-purple mb-2">🎮 Selección</h4>
-                                <ul class="text-sm text-gray-300 space-y-1">
-                                    <li>Tecla 1: Tetraedro</li>
-                                    <li>Tecla 2: Cubo</li>
-                                    <li>Tecla 3: Octaedro</li>
-                                    <li>Tecla 4: Dodecaedro</li>
-                                    <li>Tecla 5: Icosaedro</li>
-                                </ul>
+                        <!-- Referencia Rápida de PlatonicLab -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Referencia Rápida de PlatonicLab</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-4 mb-6">
+                            <div class="grid grid-cols-2 gap-x-6 gap-y-1 text-sm text-gray-300">
+                                <div>
+                                    <span class="text-violet-400 font-medium">Selección:</span>
+                                    Teclas <span class="font-mono">1</span>-<span class="font-mono">5</span> (Tetra, Cubo, Octa, Dodeca, Icosa)
+                                </div>
+                                <div>
+                                    <span class="text-violet-400 font-medium">Rotar:</span>
+                                    Clic + arrastrar
+                                </div>
+                                <div>
+                                    <span class="text-violet-400 font-medium">Zoom:</span>
+                                    Scroll
+                                </div>
+                                <div>
+                                    <span class="text-violet-400 font-medium">Play/Pause:</span>
+                                    Espacio
+                                </div>
                             </div>
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-purple mb-2">🔍 Visualización</h4>
-                                <ul class="text-sm text-gray-300 space-y-1">
-                                    <li>Clic + arrastrar: Rotar</li>
-                                    <li>Scroll: Zoom</li>
-                                    <li>Espacio: Play/Pause</li>
-                                    <li>Slider: Tamaño de arista</li>
-                                </ul>
+                            <div class="mt-3 pt-3 border-t border-gray-800 text-sm text-gray-400">
+                                <span class="text-violet-400 font-medium">Capas:</span>
+                                Caras (variable) · Aristas (<span class="text-white">blanco</span>) · Vértices (<span class="text-yellow-400">amarillo</span>) · Esfera circunscrita (<span class="text-blue-400">azul</span>) · Esfera inscrita (<span class="text-red-400">rojo</span>)
                             </div>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Capas de Visualización</h3>
+                        <!-- Radio Circunscrito y Radio Inscrito -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Radio Circunscrito y Radio Inscrito</h2>
                         <p class="text-gray-300 mb-4">
-                            PlatonicLab permite activar/desactivar diferentes capas para analizar la estructura:
+                            Cada sólido platónico de arista \(a\) admite una <strong>esfera circunscrita</strong> (radio \(R\), pasa por todos los vértices) y una <strong>esfera inscrita</strong> (radio \(r\), tangente a cada cara). Derivamos ambas para cada sólido.
                         </p>
 
-                        <div class="overflow-x-auto mb-6">
+                        <!-- Tetraedro -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Tetraedro (arista a)</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-5 mb-6">
+                            <p class="text-gray-300 mb-3">
+                                La <strong>altura</strong> del tetraedro regular fue derivada en la Lección 2:
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$h = \frac{a\sqrt{6}}{3}$$</p>
+                            </div>
+                            <p class="text-gray-300 mb-3">
+                                El centro de la esfera circunscrita (incentro = circuncentro en un sólido platónico) divide la altura en razón <strong>3:1</strong> desde la base. Es decir, el centro está a \(3h/4\) de la base y a \(h/4\) del vértice superior.
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$R = \frac{3h}{4} = \frac{3}{4} \cdot \frac{a\sqrt{6}}{3} = \frac{a\sqrt{6}}{4}$$</p>
+                            </div>
+                            <p class="text-gray-300 mb-3">
+                                El radio inscrito es la distancia del centro a cada cara, que es el cuarto restante de la altura:
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$r = \frac{h}{4} = \frac{a\sqrt{6}}{12}$$</p>
+                            </div>
+                            <p class="text-gray-300">
+                                Cociente: <span class="text-violet-400">\(R/r = 3\)</span> &mdash; el mayor de todos los platónicos. El tetraedro es el más "puntiagudo".
+                            </p>
+                        </div>
+
+                        <!-- Cubo -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Cubo (arista a)</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-5 mb-6">
+                            <p class="text-gray-300 mb-3">
+                                El radio circunscrito es la <strong>semidiagonal espacial</strong> del cubo. La diagonal espacial mide \(a\sqrt{3}\), por lo que:
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$R = \frac{a\sqrt{3}}{2}$$</p>
+                            </div>
+                            <p class="text-gray-300 mb-3">
+                                El radio inscrito es la distancia del centro a cualquier cara, es decir, la mitad de la arista:
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$r = \frac{a}{2}$$</p>
+                            </div>
+                            <p class="text-gray-300">
+                                Cociente: <span class="text-violet-400">\(R/r = \sqrt{3} \approx 1.732\)</span>
+                            </p>
+                        </div>
+
+                        <!-- Octaedro -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Octaedro (arista a)</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-5 mb-6">
+                            <p class="text-gray-300 mb-3">
+                                Colocamos el octaedro con vértices en \((\pm 1, 0, 0)\), \((0, \pm 1, 0)\), \((0, 0, \pm 1)\). En esta configuración la arista mide \(a = \sqrt{2}\), por lo que:
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$R = 1 = \frac{a}{\sqrt{2}} = \frac{a\sqrt{2}}{2}$$</p>
+                            </div>
+                            <p class="text-gray-300 mb-3">
+                                Para el radio inscrito, calculamos la distancia del origen a una cara (por ejemplo, el triángulo con vértices \((1,0,0)\), \((0,1,0)\), \((0,0,1)\), cuyo plano es \(x+y+z=1\)):
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$r = \frac{1}{\sqrt{3}} = \frac{a\sqrt{6}}{6}$$</p>
+                            </div>
+                            <p class="text-gray-300">
+                                Cociente: <span class="text-violet-400">\(R/r = \sqrt{3} \approx 1.732\)</span> &mdash; igual que el cubo. No es coincidencia: cubo y octaedro son <strong>duales</strong>.
+                            </p>
+                        </div>
+
+                        <!-- Dodecaedro e Icosaedro -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Dodecaedro e Icosaedro (arista a)</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-5 mb-6">
+                            <p class="text-gray-300 mb-3">
+                                Estos dos sólidos involucran la razón áurea \(\varphi = (1+\sqrt{5})/2\). Sus radios circunscritos son:
+                            </p>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$R_{\text{dodeca}} = \frac{a\sqrt{3}(1+\sqrt{5})}{4} = a \cdot \varphi \cdot \frac{\sqrt{3}}{2}$$</p>
+                            </div>
+                            <div class="bg-gray-800/60 rounded p-3 mb-3">
+                                <p class="text-center text-gray-200">$$R_{\text{icosa}} = \frac{a\sqrt{10+2\sqrt{5}}}{4} = a \cdot \sin\!\left(\frac{2\pi}{5}\right)$$</p>
+                            </div>
+                            <p class="text-gray-300">
+                                Cociente: <span class="text-violet-400">\(R/r \approx 1.258\)</span> para ambos &mdash; son duales, como cubo y octaedro.
+                            </p>
+                        </div>
+
+                        <!-- Observación clave -->
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-5 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-2">Observación clave: dualidad y R/r</h4>
+                            <p class="text-gray-300">
+                                Los pares duales <strong>{cubo, octaedro}</strong> y <strong>{dodecaedro, icosaedro}</strong> comparten el mismo cociente \(R/r\). El tetraedro, que es <strong>autodual</strong>, tiene un cociente único (\(R/r = 3\)). A menor \(R/r\), más "esférico" es el sólido.
+                            </p>
+                        </div>
+
+                        <!-- Volúmenes -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Volúmenes (arista a)</h2>
+                        <div class="overflow-x-auto mb-4">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
+                                <thead class="bg-gray-900">
                                     <tr>
-                                        <th class="px-4 py-2 text-left">Capa</th>
-                                        <th class="px-4 py-2 text-left">Descripción</th>
-                                        <th class="px-4 py-2 text-center">Color</th>
+                                        <th class="px-4 py-2 text-left">Sólido</th>
+                                        <th class="px-4 py-2 text-center">Volumen</th>
+                                        <th class="px-4 py-2 text-center">Valor (a=1)</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
+                                <tbody class="divide-y divide-gray-800">
                                     <tr>
-                                        <td class="px-4 py-2 font-medium">Caras</td>
-                                        <td class="px-4 py-2">Superficies planas del sólido</td>
-                                        <td class="px-4 py-2 text-center text-green-400">Variable</td>
+                                        <td class="px-4 py-2 text-violet-400">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a^3\sqrt{2}}{12}\)</td>
+                                        <td class="px-4 py-2 text-center">0.1178</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 font-medium">Aristas</td>
-                                        <td class="px-4 py-2">Líneas que conectan vértices</td>
-                                        <td class="px-4 py-2 text-center text-white">Blanco</td>
+                                        <td class="px-4 py-2 text-violet-400">Cubo</td>
+                                        <td class="px-4 py-2 text-center">\(a^3\)</td>
+                                        <td class="px-4 py-2 text-center">1.0000</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 font-medium">Vértices</td>
-                                        <td class="px-4 py-2">Puntos de intersección</td>
-                                        <td class="px-4 py-2 text-center text-yellow-400">Amarillo</td>
+                                        <td class="px-4 py-2 text-violet-400">Octaedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a^3\sqrt{2}}{3}\)</td>
+                                        <td class="px-4 py-2 text-center">0.4714</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 font-medium">Esfera Circ.</td>
-                                        <td class="px-4 py-2">Pasa por todos los vértices</td>
-                                        <td class="px-4 py-2 text-center text-blue-400">Azul</td>
+                                        <td class="px-4 py-2 text-violet-400">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a^3(15+7\sqrt{5})}{4}\)</td>
+                                        <td class="px-4 py-2 text-center">7.6631</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 font-medium">Esfera Ins.</td>
-                                        <td class="px-4 py-2">Tangente a todas las caras</td>
-                                        <td class="px-4 py-2 text-center text-red-400">Rojo</td>
+                                        <td class="px-4 py-2 text-violet-400">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{5a^3(3+\sqrt{5})}{12}\)</td>
+                                        <td class="px-4 py-2 text-center">2.1817</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+                        <p class="text-gray-400 text-sm mb-6">
+                            Nota: el dodecaedro tiene el mayor volumen por arista. El tetraedro es el más compacto.
+                        </p>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio 1: Exploración del Icosaedro</h3>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-3">Instrucciones:</h4>
-                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
-                                <li>Selecciona el icosaedro (tecla 5)</li>
-                                <li>Observa las 20 caras triangulares</li>
-                                <li>Cuenta los 12 vértices</li>
-                                <li>Activa la esfera circunscrita (azul)</li>
-                                <li>Verifica que pasa exactamente por los 12 vértices</li>
-                                <li>Activa la esfera inscrita (roja)</li>
-                                <li>Observa que toca el centro de cada cara</li>
-                                <li>Pausa la rotación y examina un vértice cercano</li>
-                                <li>Cuenta: ¿Cuántas caras concurren en cada vértice? (debería ser 5)</li>
-                            </ol>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio 2: Construcción Progresiva</h3>
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-cyan mb-3">Construcción del Tetraedro:</h4>
-                            <ol class="list-decimal list-inside space-y-2 text-gray-300">
-                                <li>Ve a la pestaña "Construir"</li>
-                                <li>Selecciona Tetraedro</li>
-                                <li><strong>Etapa 0 (Vértices):</strong> Observa los 4 puntos en el espacio</li>
-                                <li><strong>Etapa 1 (Aristas):</strong> Verifica 6 aristas conectando los vértices</li>
-                                <li><strong>Etapa 2 (Caras):</strong> Observa las 4 caras triangulares</li>
-                                <li><strong>Etapa 3 (Completo):</strong> Sólido formado con todas las capas</li>
-                            </ol>
-                            <p class="text-gray-400 mt-3 text-sm italic">
-                                Nota: 4 vértices × 3 conexiones / 2 = 6 aristas
-                            </p>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio 3: Comparación de Esferas</h3>
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-3">Compara R/r para cada sólido:</h4>
-                            <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                <div class="bg-gray-700/50 p-3 rounded">
-                                    <p class="text-sm text-gray-300">Tetraedro: R/r = 3.00</p>
-                                    <p class="text-xs text-gray-500">Muy "picudo"</p>
-                                </div>
-                                <div class="bg-gray-700/50 p-3 rounded">
-                                    <p class="text-sm text-gray-300">Cubo/Octaedro: R/r = 1.73</p>
-                                    <p class="text-xs text-gray-500">Relación media</p>
-                                </div>
-                                <div class="bg-gray-700/50 p-3 rounded">
-                                    <p class="text-sm text-gray-300">Dodecaedro/Icosaedro: R/r = 1.26</p>
-                                    <p class="text-xs text-gray-500">Más "esféricos"</p>
-                                </div>
-                            </div>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Propiedades Geométricas</h3>
+                        <!-- Propiedades Geométricas -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Propiedades Geométricas</h3>
                         <div class="overflow-x-auto mb-6">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
+                                <thead class="bg-gray-900">
                                     <tr>
                                         <th class="px-4 py-2 text-left">Sólido</th>
                                         <th class="px-4 py-2 text-center">Radio R</th>
@@ -228,65 +277,262 @@
                                         <th class="px-4 py-2 text-center">Ángulo Diedro</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
+                                <tbody class="divide-y divide-gray-800">
                                     <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">a√6/4</td>
-                                        <td class="px-4 py-2 text-center font-mono">a√6/12</td>
-                                        <td class="px-4 py-2 text-center">70.5°</td>
+                                        <td class="px-4 py-2 text-violet-400">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{6}}{4}\)</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{6}}{12}\)</td>
+                                        <td class="px-4 py-2 text-center">\(70.5^\circ\)</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
-                                        <td class="px-4 py-2 text-center font-mono">a√3/2</td>
-                                        <td class="px-4 py-2 text-center font-mono">a/2</td>
-                                        <td class="px-4 py-2 text-center">90°</td>
+                                        <td class="px-4 py-2 text-violet-400">Cubo</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{3}}{2}\)</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a}{2}\)</td>
+                                        <td class="px-4 py-2 text-center">\(90^\circ\)</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">a√2/2</td>
-                                        <td class="px-4 py-2 text-center font-mono">a√6/6</td>
-                                        <td class="px-4 py-2 text-center">109.5°</td>
+                                        <td class="px-4 py-2 text-violet-400">Octaedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{2}}{2}\)</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{6}}{6}\)</td>
+                                        <td class="px-4 py-2 text-center">\(109.5^\circ\)</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">a√3(1+√5)/4</td>
-                                        <td class="px-4 py-2 text-center font-mono">...</td>
-                                        <td class="px-4 py-2 text-center">116.6°</td>
+                                        <td class="px-4 py-2 text-violet-400">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{3}(1+\sqrt{5})}{4}\)</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{250+110\sqrt{5}}}{20}\)</td>
+                                        <td class="px-4 py-2 text-center">\(116.6^\circ\)</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">a√(10+2√5)/4</td>
-                                        <td class="px-4 py-2 text-center font-mono">...</td>
-                                        <td class="px-4 py-2 text-center">138.2°</td>
+                                        <td class="px-4 py-2 text-violet-400">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\sqrt{10+2\sqrt{5}}}{4}\)</td>
+                                        <td class="px-4 py-2 text-center">\(\frac{a\varphi^2}{2\sqrt{3}}\)</td>
+                                        <td class="px-4 py-2 text-center">\(138.2^\circ\)</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
+
+                        <!-- Ejercicios -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Ejercicios</h3>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <ol class="list-decimal list-inside space-y-3 text-gray-300">
+                                <li>Deriva \(R\) para el tetraedro. <span class="text-gray-500 text-sm italic">(Pista: el centro divide la altura en razón 3:1.)</span></li>
+                                <li>Verifica que \(R/r = 3\) para el tetraedro y \(R/r = \sqrt{3}\) para el cubo.</li>
+                                <li>Explica geométricamente por qué los duales tienen el mismo cociente \(R/r\).</li>
+                                <li>Ordena los 5 sólidos por volumen (con \(a=1\)). ¿Cuál maximiza \(V/A\) (volumen/área superficial)?</li>
+                                <li>Usando PlatonicLab, activa esferas circunscrita e inscrita simultáneamente para el tetraedro y el icosaedro. ¿Cuál se ve más "esférico"?</li>
+                            </ol>
+                        </div>
                     </div>
 
+                    <!-- LAB Section: Radios, volúmenes y esferas -->
                     <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
-                            <span class="mr-2">🔬</span> LAB: Laboratorio Completo
-                        </h2>
-                        <p class="text-gray-400 mb-4">Realiza todos los ejercicios anteriores usando PlatonicLab. Tómate tu tiempo para explorar cada sólido.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="700" frameborder="0" class="bg-gray-900"></iframe>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-4">LAB: Laboratorio Completo</h2>
+                        <p class="text-gray-400 mb-4">Arrastra para rotar. Activa las esferas para comparar R y r entre sólidos. Los duales comparten el mismo cociente R/r.</p>
+
+                        <div class="relative rounded-xl border border-gray-800 overflow-hidden" style="background:#030712;">
+                            <canvas id="mini-lab" style="width:100%; height:450px; display:block; cursor:grab;"></canvas>
+                            <div class="absolute top-4 right-4 text-right mono">
+                                <div class="text-base font-medium text-gray-300 mb-2" id="solid-name">Tetraedro</div>
+                                <div id="measures" class="space-y-0.5 text-xs"></div>
+                            </div>
                         </div>
-                        <div class="mt-4 flex flex-wrap gap-2">
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'tetrahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">1 - Tetraedro</button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'cube'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">2 - Cubo</button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'octahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">3 - Octaedro</button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'dodecahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">4 - Dodecaedro</button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'icosahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">5 - Icosaedro</button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({tab: 'calc'}, '*')" class="px-4 py-2 bg-platonic-purple hover:bg-purple-600 rounded text-sm">Calculadora</button>
+
+                        <div class="mt-3 flex flex-wrap gap-2 items-center">
+                            <button data-solid="0" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Tetraedro</button>
+                            <button data-solid="1" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Cubo</button>
+                            <button data-solid="2" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Octaedro</button>
+                            <button data-solid="3" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Dodecaedro</button>
+                            <button data-solid="4" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Icosaedro</button>
+                        </div>
+                        <div class="mt-2 flex flex-wrap gap-4 items-center">
+                            <label class="flex items-center gap-2 text-sm text-gray-500 cursor-pointer select-none hover:text-gray-400 transition">
+                                <input type="checkbox" id="circum-toggle" style="accent-color:#a78bfa;" class="cursor-pointer">
+                                Esfera circunscrita <span class="mono text-xs text-violet-400/60">(R)</span>
+                            </label>
+                            <label class="flex items-center gap-2 text-sm text-gray-500 cursor-pointer select-none hover:text-gray-400 transition">
+                                <input type="checkbox" id="inscr-toggle" style="accent-color:#22d3ee;" class="cursor-pointer">
+                                Esfera inscrita <span class="mono text-xs text-cyan-400/60">(r)</span>
+                            </label>
+                            <span class="mx-1 text-gray-800">|</span>
+                            <a href="../../index.html" target="_blank" class="text-sm text-gray-600 hover:text-violet-400 transition">Abrir PlatonicLab completo &rarr;</a>
                         </div>
                     </div>
 
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-04.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                    <script>
+                    (function(){
+                        var canvas = document.getElementById('mini-lab');
+                        var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+                        renderer.setClearColor(0x030712);
+
+                        var scene = new THREE.Scene();
+                        var camera = new THREE.PerspectiveCamera(35,2,0.1,100);
+                        camera.position.z = 5;
+
+                        // R/r ratios: tetra=3, cubo=√3, octa=√3, dodeca≈1.258, icosa≈1.258
+                        var S3=Math.sqrt(3), RR_DI=1.2585;
+                        var solids = [
+                            {name:'Tetraedro', geo:new THREE.TetrahedronGeometry(1.3), Rc:1.3, ri:1.3/3,
+                             R:'0.612', r:'0.204', ratio:'3.000', vol:'0.118', dual:'autodual'},
+                            {name:'Cubo', geo:new THREE.BoxGeometry(1.5,1.5,1.5), Rc:1.5*S3/2, ri:1.5/2,
+                             R:'0.866', r:'0.500', ratio:'1.732', vol:'1.000', dual:'octaedro'},
+                            {name:'Octaedro', geo:new THREE.OctahedronGeometry(1.4), Rc:1.4, ri:1.4/S3,
+                             R:'0.707', r:'0.408', ratio:'1.732', vol:'0.471', dual:'cubo'},
+                            {name:'Dodecaedro', geo:new THREE.DodecahedronGeometry(1.3), Rc:1.3, ri:1.3/RR_DI,
+                             R:'1.401', r:'1.114', ratio:'1.258', vol:'7.663', dual:'icosaedro'},
+                            {name:'Icosaedro', geo:new THREE.IcosahedronGeometry(1.3), Rc:1.3, ri:1.3/RR_DI,
+                             R:'0.951', r:'0.756', ratio:'1.258', vol:'2.182', dual:'dodecaedro'}
+                        ];
+
+                        var group, circumSphere, inscrSphere;
+                        var showCircum=false, showInscr=false;
+                        var rotX=0.4, rotY=0.6, dragging=false, px,py, autoRot=true, autoTimer;
+                        var currentIdx=0;
+
+                        function show(i){
+                            if(group) scene.remove(group);
+                            removeSpheres();
+                            group = new THREE.Group();
+                            currentIdx=i;
+                            var s=solids[i];
+
+                            group.add(new THREE.Mesh(s.geo, new THREE.MeshBasicMaterial({
+                                color:0xa78bfa, transparent:true, opacity:0.06, side:THREE.DoubleSide
+                            })));
+                            group.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(s.geo),
+                                new THREE.LineBasicMaterial({color:0xa78bfa, transparent:true, opacity:0.7})
+                            ));
+
+                            var pos=s.geo.getAttribute('position'),seen={},uv=[];
+                            for(var j=0;j<pos.count;j++){
+                                var k=pos.getX(j).toFixed(3)+','+pos.getY(j).toFixed(3)+','+pos.getZ(j).toFixed(3);
+                                if(!seen[k]){seen[k]=1;uv.push(pos.getX(j),pos.getY(j),pos.getZ(j));}
+                            }
+                            var pg=new THREE.BufferGeometry();
+                            pg.setAttribute('position',new THREE.Float32BufferAttribute(uv,3));
+                            group.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x22d3ee,size:5,sizeAttenuation:false})));
+
+                            scene.add(group);
+                            if(showCircum) addCircum(s.Rc);
+                            if(showInscr) addInscr(s.ri);
+
+                            // UI
+                            document.getElementById('solid-name').textContent=s.name;
+                            var h='';
+                            h+='<div style="color:#9ca3af"><span style="color:#a78bfa">R</span> = '+s.R+'a</div>';
+                            h+='<div style="color:#9ca3af"><span style="color:#22d3ee">r</span> = '+s.r+'a</div>';
+                            h+='<div style="color:#9ca3af">R/r = <span style="color:#e5e7eb">'+s.ratio+'</span></div>';
+                            h+='<div style="color:#9ca3af;margin-top:4px">V = <span style="color:#a78bfa">'+s.vol+'</span>a\u00B3</div>';
+                            h+='<div style="color:#6b7280;margin-top:4px;font-size:0.65rem">dual: '+s.dual+'</div>';
+                            document.getElementById('measures').innerHTML=h;
+
+                            var btns=document.querySelectorAll('.solid-btn');
+                            for(var b=0;b<btns.length;b++){
+                                if(b===i){
+                                    btns[b].style.background='rgba(167,139,250,0.15)';
+                                    btns[b].style.borderColor='#a78bfa';
+                                    btns[b].style.color='#a78bfa';
+                                } else {
+                                    btns[b].style.background='#111827';
+                                    btns[b].style.borderColor='#1f2937';
+                                    btns[b].style.color='#9ca3af';
+                                }
+                            }
+                        }
+
+                        function removeSpheres(){
+                            if(circumSphere){scene.remove(circumSphere);circumSphere=null;}
+                            if(inscrSphere){scene.remove(inscrSphere);inscrSphere=null;}
+                        }
+
+                        function addCircum(R){
+                            if(circumSphere) scene.remove(circumSphere);
+                            circumSphere=new THREE.Group();
+                            circumSphere.add(new THREE.Mesh(
+                                new THREE.SphereGeometry(R,32,24),
+                                new THREE.MeshBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.08,side:THREE.DoubleSide})
+                            ));
+                            circumSphere.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(new THREE.SphereGeometry(R,16,12)),
+                                new THREE.LineBasicMaterial({color:0xa78bfa,transparent:true,opacity:0.35})
+                            ));
+                            scene.add(circumSphere);
+                        }
+
+                        function addInscr(r){
+                            if(inscrSphere) scene.remove(inscrSphere);
+                            inscrSphere=new THREE.Group();
+                            inscrSphere.add(new THREE.Mesh(
+                                new THREE.SphereGeometry(r,32,24),
+                                new THREE.MeshBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.08,side:THREE.DoubleSide})
+                            ));
+                            inscrSphere.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(new THREE.SphereGeometry(r,16,12)),
+                                new THREE.LineBasicMaterial({color:0x22d3ee,transparent:true,opacity:0.35})
+                            ));
+                            scene.add(inscrSphere);
+                        }
+
+                        document.getElementById('circum-toggle').addEventListener('change',function(){
+                            showCircum=this.checked;
+                            if(showCircum) addCircum(solids[currentIdx].Rc);
+                            else if(circumSphere){scene.remove(circumSphere);circumSphere=null;}
+                        });
+                        document.getElementById('inscr-toggle').addEventListener('change',function(){
+                            showInscr=this.checked;
+                            if(showInscr) addInscr(solids[currentIdx].ri);
+                            else if(inscrSphere){scene.remove(inscrSphere);inscrSphere=null;}
+                        });
+
+                        // Drag
+                        canvas.addEventListener('pointerdown',function(e){
+                            dragging=true;px=e.clientX;py=e.clientY;autoRot=false;
+                            clearTimeout(autoTimer);canvas.style.cursor='grabbing';
+                        });
+                        window.addEventListener('pointerup',function(){
+                            dragging=false;canvas.style.cursor='grab';
+                            autoTimer=setTimeout(function(){autoRot=true;},3000);
+                        });
+                        window.addEventListener('pointermove',function(e){
+                            if(!dragging)return;
+                            rotY+=(e.clientX-px)*0.008;rotX+=(e.clientY-py)*0.008;
+                            px=e.clientX;py=e.clientY;
+                        });
+
+                        function resize(){
+                            var w=canvas.clientWidth,h=canvas.clientHeight;
+                            renderer.setSize(w,h,false);
+                            camera.aspect=w/h;camera.updateProjectionMatrix();
+                        }
+                        window.addEventListener('resize',resize);
+                        resize();
+
+                        var btns=document.querySelectorAll('.solid-btn');
+                        for(var b=0;b<btns.length;b++){
+                            btns[b].addEventListener('click',function(){show(+this.dataset.solid);});
+                        }
+
+                        show(0);
+                        (function loop(){
+                            requestAnimationFrame(loop);
+                            if(autoRot) rotY+=0.004;
+                            if(group) group.rotation.set(rotX,rotY,0);
+                            if(circumSphere) circumSphere.rotation.set(rotX,rotY,0);
+                            if(inscrSphere) inscrSphere.rotation.set(rotX,rotY,0);
+                            renderer.render(scene,camera);
+                        })();
+                    })();
+                    </script>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-04.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-400 rounded-lg font-semibold transition">
                             ← Anterior: Euclides
                         </a>
-                        <a href="./leccion-06.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
+                        <a href="./leccion-06.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg font-semibold transition">
                             Siguiente: Notación Schläfli →
                         </a>
                     </div>
@@ -295,11 +541,21 @@
         </div>
     </div>
 
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">
-                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
-            </p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <nav class="text-xs text-gray-600 mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Módulo 01</span>
+            </nav>
+            <p class="text-gray-700 text-sm mono">Módulo 01 · Los Guardianes de la Geometría</p>
         </div>
     </footer>
 </body>

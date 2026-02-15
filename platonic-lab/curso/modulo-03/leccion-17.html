@@ -5,163 +5,802 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lección 17: Grupos de Simetría | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 03</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 17</span> — Grupos de Simetria
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-16.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-18.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-16.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-18.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 3</h3>
-                    <p class="text-sm text-gray-400 mb-4">Dualidad y Simetría</p>
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 03</h3>
+                    <p class="text-sm text-gray-500 mb-4">Dualidad y Simetria</p>
+
                     <div class="mb-6">
-                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                        <div class="flex justify-between text-xs text-gray-500 mb-2">
                             <span>Progreso</span>
                             <span>5/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 83.3%"></div>
+                        <div class="w-full bg-gray-900 rounded-full h-1.5">
+                            <div class="progress-bar h-1.5 rounded-full" style="width: 83.3%"></div>
                         </div>
                     </div>
-                    <nav class="space-y-2">
-                        <a href="./leccion-13.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">13. Concepto de Dualidad</a>
-                        <a href="./leccion-14.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">14. El Tetraedro Autodual</a>
-                        <a href="./leccion-15.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">15. Cubo y Octaedro</a>
-                        <a href="./leccion-16.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">16. Dodecaedro e Icosaedro</a>
-                        <a href="./leccion-17.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">17. Grupos de Simetría</a>
-                        <a href="./leccion-18.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">18. Ejes de Rotación</a>
+
+                    <nav class="space-y-1 text-sm">
+                        <a href="./leccion-13.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-500 transition">13. Concepto de Dualidad</a>
+                        <a href="./leccion-14.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-500 transition">14. El Tetraedro Autodual</a>
+                        <a href="./leccion-15.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-500 transition">15. Cubo y Octaedro</a>
+                        <a href="./leccion-16.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-500 transition">16. Dodecaedro e Icosaedro</a>
+                        <a href="./leccion-17.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 font-medium">17. Grupos de Simetria</a>
+                        <a href="./leccion-18.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-500 transition">18. Ejes y Planos de Simetria</a>
                     </nav>
                 </div>
             </aside>
-            <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+
+            <!-- Main Content -->
+            <main class="lg:col-span-3 space-y-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Title -->
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 17</span>
-                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Grupos de Simetría</h1>
-                        <p class="text-gray-400 text-lg">El álgebra que describe las simetrías de los sólidos platónicos.</p>
+                        <h2 class="text-3xl font-light mt-2 mb-4">
+                            <span class="text-violet-400 glow-text">Grupos de Simetria</span>
+                        </h2>
+                        <p class="text-gray-400 text-lg leading-relaxed">
+                            En las lecciones 14-16 contamos las simetrias de cada par dual. Ahora las reunimos bajo un marco algebraico unificado: la teoria de grupos. Los tres grupos de rotacion — \(T\), \(O\), \(I\) — resultan isomorfos a grupos de permutaciones, revelando una conexion profunda entre geometria y algebra.
+                        </p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">¿Qué es un Grupo de Simetría?</h2>
-                        <p class="text-gray-300 mb-4">Un <strong>grupo de simetría</strong> es el conjunto de todas las transformaciones (rotaciones, reflexiones) que dejan el sólido invariante. Estas transformaciones forman una estructura algebraica llamada <strong>grupo</strong>.</p>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-semibold text-platonic-purple mb-2">Propiedades de un Grupo</h3>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
-                                <li>Cerradura: La composición de dos simetrías es otra simetría</li>
-                                <li>Identidad: Existe una simetría "no hacer nada"</li>
-                                <li>Inverso: Cada simetría tiene una inversa</li>
-                                <li>Asociatividad: (a·b)·c = a·(b·c)</li>
-                            </ul>
+
+                    <!-- Section 1: Que es un grupo -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Que es un Grupo</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            Un <strong class="text-white">grupo</strong> es un par \((G, \cdot)\) donde \(G\) es un conjunto y \(\cdot\) es una operacion binaria que satisface cuatro axiomas:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6">
+                            <div class="space-y-3 text-gray-300">
+                                <p><strong class="text-violet-400">1. Clausura:</strong> Si \(a, b \in G\), entonces \(a \cdot b \in G\).</p>
+                                <p><strong class="text-violet-400">2. Asociatividad:</strong> \((a \cdot b) \cdot c = a \cdot (b \cdot c)\) para todo \(a, b, c \in G\).</p>
+                                <p><strong class="text-violet-400">3. Identidad:</strong> Existe \(e \in G\) tal que \(e \cdot a = a \cdot e = a\) para todo \(a\).</p>
+                                <p><strong class="text-violet-400">4. Inversos:</strong> Para cada \(a \in G\), existe \(a^{-1}\) tal que \(a \cdot a^{-1} = a^{-1} \cdot a = e\).</p>
+                            </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Grupos de Simetría Rotacional</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Ejemplo concreto.</strong> Toma dos rotaciones del tetraedro: \(r\) = rotacion 120° alrededor del eje por el vertice \((1,1,1)\), y \(s\) = rotacion 180° alrededor del eje \((1,0,0)\). La composicion \(r \cdot s\) (primero \(s\), luego \(r\)) es otra rotacion del tetraedro. El inverso \(r^{-1}\) es la rotacion 240° alrededor del mismo eje. Crucialmente, \(r \cdot s \neq s \cdot r\) en general: el grupo no es conmutativo.
+                        </p>
+
+                        <p class="text-gray-300">
+                            El <strong class="text-white">orden</strong> del grupo, \(|G|\), es el numero de elementos. Un grupo es <strong class="text-white">finito</strong> si \(|G| < \infty\). Los grupos de simetria de los solidos platonicos son finitos, y su orden se puede calcular contando rotaciones sistematicamente.
+                        </p>
+                    </section>
+
+                    <!-- Section 2: Counting method -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Conteo Sistematico de Rotaciones</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            Toda rotacion no trivial de un poliedro fija un eje. Clasificamos las rotaciones segun que tipo de elemento geometrico define su eje:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-gray-900 border border-violet-500/20 rounded-xl p-4">
+                                <h4 class="text-violet-400 font-semibold mb-2">Ejes por caras</h4>
+                                <p class="text-sm text-gray-400">Pasan por centros de caras opuestas. Si la cara tiene \(p\) lados, el eje es de orden \(p\) (\(C_p\)). Genera \(p-1\) rotaciones.</p>
+                            </div>
+                            <div class="bg-gray-900 border border-cyan-500/20 rounded-xl p-4">
+                                <h4 class="text-cyan-400 font-semibold mb-2">Ejes por vertices</h4>
+                                <p class="text-sm text-gray-400">Pasan por vertices opuestos. Si \(q\) caras concurren, el eje es de orden \(q\) (\(C_q\)). Genera \(q-1\) rotaciones.</p>
+                            </div>
+                            <div class="bg-gray-900 border border-amber-500/20 rounded-xl p-4">
+                                <h4 class="text-amber-400 font-semibold mb-2">Ejes por aristas</h4>
+                                <p class="text-sm text-gray-400">Pasan por puntos medios de aristas opuestas. Siempre de orden 2 (\(C_2\)). Genera 1 rotacion (180°).</p>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-300">
+                            La formula general para el numero de rotaciones de \(\{p,q\}\) es:
+                        </p>
+                        $$ |G| = 1 + \frac{F}{2}(p-1) + \frac{V}{2}(q-1) + \frac{E}{2} $$
+                        <p class="text-gray-400 text-sm mt-2">
+                            donde el 1 es la identidad, y cada sumando cuenta las rotaciones no triviales de cada tipo de eje. Para el tetraedro, que carece de elementos "opuestos", los ejes por vertices y por caras coinciden.
+                        </p>
+                    </section>
+
+                    <!-- Section 3: Group T -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">El Grupo \(T\): 12 Rotaciones del Tetraedro</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            El tetraedro \(\{3,3\}\) es especial: con \(V = F = 4\), no tiene vertices ni caras "opuestos". Cada eje pasa por un vertice y el centro de la cara opuesta, siendo simultaneamente un eje de vertice y de cara.
+                        </p>
+
                         <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
+                            <table class="w-full text-sm border border-gray-800 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-900">
                                     <tr>
-                                        <th class="px-4 py-2 text-left">Sólido</th>
-                                        <th class="px-4 py-2 text-center">Grupo</th>
-                                        <th class="px-4 py-2 text-center">Orden</th>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Tipo de eje</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Cantidad</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Orden</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Angulos</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Rotaciones</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr><td class="px-4 py-2">Tetraedro</td><td class="px-4 py-2 text-center font-mono">T</td><td class="px-4 py-2 text-center">12</td></tr>
-                                    <tr><td class="px-4 py-2">Cubo/Octaedro</td><td class="px-4 py-2 text-center font-mono">O</td><td class="px-4 py-2 text-center">24</td></tr>
-                                    <tr><td class="px-4 py-2">Dodecaedro/Icosaedro</td><td class="px-4 py-2 text-center font-mono">I</td><td class="px-4 py-2 text-center">60</td></tr>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Identidad</td><td class="px-4 py-2 text-center">—</td><td class="px-4 py-2 text-center">—</td><td class="px-4 py-2 text-center mono">0°</td><td class="px-4 py-2 text-center">1</td></tr>
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Vertice-cara (\(C_3\))</td><td class="px-4 py-2 text-center">4</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center mono">120°, 240°</td><td class="px-4 py-2 text-center">\(4 \times 2 = 8\)</td></tr>
+                                    <tr><td class="px-4 py-2">Arista-arista (\(C_2\))</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">2</td><td class="px-4 py-2 text-center mono">180°</td><td class="px-4 py-2 text-center">\(3 \times 1 = 3\)</td></tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Grupos Completos (con Reflexiones)</h3>
-                        <p class="text-gray-300 mb-4">Si incluimos reflexiones, el orden del grupo se duplica:</p>
+
+                        $$ |T| = 1 + 8 + 3 = 12 $$
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Isomorfismo \(T \cong A_4\).</strong> El tetraedro tiene 4 vertices. Cada rotacion los permuta. Como las rotaciones preservan orientacion, solo producen <strong class="text-white">permutaciones pares</strong>. Esto da un homomorfismo inyectivo \(T \hookrightarrow A_4\). Como \(|T| = 12 = |A_4|\), es un isomorfismo.
+                        </p>
+
+                        <p class="text-gray-300">
+                            Geometricamente: una rotacion \(C_3\) de 120° permuta 3 vertices ciclicamente y fija el cuarto — es un 3-ciclo \((abc)\), que es par. Una rotacion \(C_2\) de 180° intercambia dos pares de vertices — es un doble transposicion \((ab)(cd)\), tambien par. No aparece ninguna transposicion simple (impar).
+                        </p>
+                    </section>
+
+                    <!-- Section 4: Group O -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">El Grupo \(O\): 24 Rotaciones del Cubo</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            El cubo \(\{4,3\}\) tiene tres tipos de ejes bien diferenciados. Contemos cada uno usando las coordenadas \((\pm 1, \pm 1, \pm 1)\):
+                        </p>
+
                         <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
+                            <table class="w-full text-sm border border-gray-800 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-900">
                                     <tr>
-                                        <th class="px-4 py-2 text-left">Sólido</th>
-                                        <th class="px-4 py-2 text-center">Grupo Completo</th>
-                                        <th class="px-4 py-2 text-center">Orden</th>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Tipo de eje</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Cantidad</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Orden</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Angulos</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Rotaciones</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr><td class="px-4 py-2">Tetraedro</td><td class="px-4 py-2 text-center font-mono">Td</td><td class="px-4 py-2 text-center">24</td></tr>
-                                    <tr><td class="px-4 py-2">Cubo/Octaedro</td><td class="px-4 py-2 text-center font-mono">Oh</td><td class="px-4 py-2 text-center">48</td></tr>
-                                    <tr><td class="px-4 py-2">Dodecaedro/Icosaedro</td><td class="px-4 py-2 text-center font-mono">Ih</td><td class="px-4 py-2 text-center">120</td></tr>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Identidad</td><td class="px-4 py-2 text-center">—</td><td class="px-4 py-2 text-center">—</td><td class="px-4 py-2 text-center mono">0°</td><td class="px-4 py-2 text-center">1</td></tr>
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Cara-cara (\(C_4\))</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">4</td><td class="px-4 py-2 text-center mono">90°, 180°, 270°</td><td class="px-4 py-2 text-center">\(3 \times 3 = 9\)</td></tr>
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Vertice-vertice (\(C_3\))</td><td class="px-4 py-2 text-center">4</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center mono">120°, 240°</td><td class="px-4 py-2 text-center">\(4 \times 2 = 8\)</td></tr>
+                                    <tr><td class="px-4 py-2">Arista-arista (\(C_2\))</td><td class="px-4 py-2 text-center">6</td><td class="px-4 py-2 text-center">2</td><td class="px-4 py-2 text-center mono">180°</td><td class="px-4 py-2 text-center">\(6 \times 1 = 6\)</td></tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Grupo del Icosaedro y A5</h3>
-                        <p class="text-gray-300 mb-4">El grupo de rotaciones del icosaedro (orden 60) es isomorfo al <strong>grupo alternante A5</strong>, el grupo de permutaciones pares de 5 elementos.</p>
-                        <div class="bg-gray-800/50 rounded-lg p-4 mb-6">
-                            <p class="text-gray-300 text-center">I ≅ A5</p>
-                            <p class="text-sm text-gray-400 text-center mt-2">Esta conexión tiene profundas implicaciones en teoría de grupos</p>
+
+                        $$ |O| = 1 + 9 + 8 + 6 = 24 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Los ejes del cubo: las 3 direcciones \((1,0,0)\), \((0,1,0)\), \((0,0,1)\) son ejes \(C_4\) (por centros de caras opuestas). Las 4 diagonales principales \((1,1,1)/\sqrt{3}\), \((1,1,-1)/\sqrt{3}\), \((1,-1,1)/\sqrt{3}\), \((-1,1,1)/\sqrt{3}\) son ejes \(C_3\). Las 6 direcciones \((1,1,0)/\sqrt{2}\), \((1,-1,0)/\sqrt{2}\), etc. son ejes \(C_2\) (por puntos medios de aristas opuestas).
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Isomorfismo \(O \cong S_4\).</strong> El cubo tiene 4 diagonales principales. Cada rotacion las permuta. A diferencia del tetraedro, aqui aparecen permutaciones impares: una rotacion de 90° alrededor de un eje \(C_4\) permuta ciclicamente 4 diagonales — es un 4-ciclo, que es <strong class="text-white">impar</strong>. Por tanto el homomorfismo cubre todo \(S_4\), no solo \(A_4\).
+                        </p>
+
+                        <p class="text-gray-300">
+                            <strong class="text-white">Dualidad.</strong> El octaedro \(\{3,4\}\) tiene el mismo grupo de rotaciones: \(O\). Los ejes \(C_4\) del cubo (por caras) se convierten en ejes \(C_4\) del octaedro (por vertices), y viceversa los ejes \(C_3\). Los ejes \(C_2\) permanecen (aristas duales).
+                        </p>
+                    </section>
+
+                    <!-- Section 5: Group I -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">El Grupo \(I\): 60 Rotaciones del Icosaedro</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            El icosaedro \(\{3,5\}\) con 12 vertices, 30 aristas y 20 caras produce el grupo mas grande. Sus ejes viven en las coordenadas \((0, \pm 1, \pm \varphi)\) y permutaciones ciclicas:
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm border border-gray-800 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Tipo de eje</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Cantidad</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Orden</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Angulos</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Rotaciones</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Identidad</td><td class="px-4 py-2 text-center">—</td><td class="px-4 py-2 text-center">—</td><td class="px-4 py-2 text-center mono">0°</td><td class="px-4 py-2 text-center">1</td></tr>
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Vertice-vertice (\(C_5\))</td><td class="px-4 py-2 text-center">6</td><td class="px-4 py-2 text-center">5</td><td class="px-4 py-2 text-center mono">72°, 144°, 216°, 288°</td><td class="px-4 py-2 text-center">\(6 \times 4 = 24\)</td></tr>
+                                    <tr class="border-b border-gray-900"><td class="px-4 py-2">Cara-cara (\(C_3\))</td><td class="px-4 py-2 text-center">10</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center mono">120°, 240°</td><td class="px-4 py-2 text-center">\(10 \times 2 = 20\)</td></tr>
+                                    <tr><td class="px-4 py-2">Arista-arista (\(C_2\))</td><td class="px-4 py-2 text-center">15</td><td class="px-4 py-2 text-center">2</td><td class="px-4 py-2 text-center mono">180°</td><td class="px-4 py-2 text-center">\(15 \times 1 = 15\)</td></tr>
+                                </tbody>
+                            </table>
                         </div>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Explora Simetrías</h2>
-                        <p class="text-gray-400 mb-4">Visualiza los ejes de simetría en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+
+                        $$ |I| = 1 + 24 + 20 + 15 = 60 $$
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Isomorfismo \(I \cong A_5\).</strong> En la Leccion 16 vimos que el dodecaedro (dual del icosaedro) contiene 5 cubos inscritos. Las rotaciones del icosaedro permutan estos 5 cubos. Como toda rotacion es orientable, solo aparecen permutaciones pares. Esto da \(I \hookrightarrow A_5\), y como \(|I| = 60 = |A_5|\), es un isomorfismo.
+                        </p>
+
+                        <div class="bg-violet-500/5 border border-violet-500/20 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300">
+                                <strong class="text-violet-400">Conexion con Galois.</strong> \(A_5\) es el grupo no abeliano <strong class="text-white">simple</strong> mas pequeno: no tiene subgrupos normales no triviales. Esta propiedad es la razon algebraica por la que la ecuacion de quinto grado general no puede resolverse por radicales. La geometria del icosaedro codifica la obstruccion algebraica al quintico.
+                            </p>
                         </div>
-                    </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-16.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-18.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Ejes de Rotación →</a>
-                    </div>
+
+                        <p class="text-gray-300">
+                            <strong class="text-white">Dualidad.</strong> El dodecaedro \(\{5,3\}\) comparte el mismo grupo \(I\). Los ejes \(C_5\) pasan por centros de caras pentagonales (del dodecaedro) o por vertices (del icosaedro); los ejes \(C_3\) hacen lo contrario.
+                        </p>
+                    </section>
+
+                    <!-- Section 6: Unified table -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Tabla Unificada</h3>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm border border-gray-800 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Grupo</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(|G|\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Ejes</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\cong\)</th>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Solido</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 mono text-violet-400">T</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">4 C₃ + 3 C₂</td>
+                                        <td class="px-4 py-2 text-center mono">A₄</td>
+                                        <td class="px-4 py-2">Tetraedro</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 mono text-violet-400">O</td>
+                                        <td class="px-4 py-2 text-center">24</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">3 C₄ + 4 C₃ + 6 C₂</td>
+                                        <td class="px-4 py-2 text-center mono">S₄</td>
+                                        <td class="px-4 py-2">Cubo / Octaedro</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono text-violet-400">I</td>
+                                        <td class="px-4 py-2 text-center">60</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">6 C₅ + 10 C₃ + 15 C₂</td>
+                                        <td class="px-4 py-2 text-center mono">A₅</td>
+                                        <td class="px-4 py-2">Dodecaedro / Icosaedro</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-gray-300">
+                            Un resultado clasico de la teoria de grupos establece que <strong class="text-white">\(T\), \(O\) e \(I\) son los unicos grupos finitos de rotaciones propias de \(\mathbb{R}^3\)</strong> (ademas de los ciclicos \(C_n\) y los diedricos \(D_n\)). Los solidos platonicos agotan las simetrias discretas tridimensionales.
+                        </p>
+                    </section>
+
+                    <!-- Section 7: Full groups -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Los Grupos Completos: Reflexiones</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            Hasta ahora contamos solo <strong class="text-white">rotaciones propias</strong> (determinante \(+1\)). Si incluimos <strong class="text-white">rotaciones impropias</strong> — reflexiones, inversiones y rotorreflexiones (determinante \(-1\)) — el grupo se duplica:
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm border border-gray-800 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Grupo completo</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(|G|\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\cong\)</th>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Estructura</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 mono text-violet-400">\(T_d\)</td>
+                                        <td class="px-4 py-2 text-center">24</td>
+                                        <td class="px-4 py-2 text-center mono">\(S_4\)</td>
+                                        <td class="px-4 py-2 text-gray-400">12 rotaciones + 6 reflexiones + 6 rotorreflexiones \(S_4\)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 mono text-violet-400">\(O_h\)</td>
+                                        <td class="px-4 py-2 text-center">48</td>
+                                        <td class="px-4 py-2 text-center mono">\(S_4 \times \mathbb{Z}_2\)</td>
+                                        <td class="px-4 py-2 text-gray-400">24 rotaciones + inversion \(i\) genera las 24 impropias</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono text-violet-400">\(I_h\)</td>
+                                        <td class="px-4 py-2 text-center">120</td>
+                                        <td class="px-4 py-2 text-center mono">\(A_5 \times \mathbb{Z}_2\)</td>
+                                        <td class="px-4 py-2 text-gray-400">60 rotaciones + inversion genera las 60 impropias</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Observa una coincidencia notable: \(|T_d| = 24 = |O|\). Ambos son isomorfos a \(S_4\), pero como grupos geometricos son distintos. \(T_d\) es el grupo completo del tetraedro (con reflexiones); \(O\) es el grupo de rotaciones del cubo (sin reflexiones). Actuan en objetos diferentes.
+                        </p>
+
+                        <p class="text-gray-300">
+                            El cubo y el icosaedro poseen <strong class="text-white">simetria de inversion</strong>: el punto \(-\mathbf{x}\) pertenece al solido si \(\mathbf{x}\) pertenece. Por eso sus grupos completos factorizan como producto directo \(G \times \mathbb{Z}_2\). El tetraedro carece de esta propiedad — la inversion lo transforma en su dual (otro tetraedro) — y su grupo \(T_d\) no factoriza asi.
+                        </p>
+                    </section>
+
+                    <!-- Section 8: Orbit-stabilizer -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">El Teorema Orbita-Estabilizador</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            Un resultado central para calcular ordenes de grupos sin contar rotaciones una por una. Si un grupo \(G\) actua sobre un conjunto \(X\), para cada \(x \in X\):
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-6 text-center">
+                            $$ |G| = |\text{Orb}(x)| \times |\text{Stab}(x)| $$
+                            <p class="text-gray-400 text-sm mt-3">
+                                \(\text{Orb}(x)\) = elementos alcanzables desde \(x\). <br>
+                                \(\text{Stab}(x)\) = elementos de \(G\) que fijan \(x\).
+                            </p>
+                        </div>
+
+                        <p class="text-gray-300 mb-2"><strong class="text-white">Ejemplo 1:</strong> \(O\) actua sobre las 6 caras del cubo.</p>
+                        <p class="text-gray-400 mb-4 ml-4">Todas las caras son equivalentes: \(|\text{Orb}| = 6\). Las rotaciones que fijan una cara forman \(C_4\): \(|\text{Stab}| = 4\). Luego \(|O| = 6 \times 4 = 24\). &check;</p>
+
+                        <p class="text-gray-300 mb-2"><strong class="text-white">Ejemplo 2:</strong> \(O\) actua sobre los 8 vertices del cubo.</p>
+                        <p class="text-gray-400 mb-4 ml-4">\(|\text{Orb}| = 8\), \(|\text{Stab}| = 3\) (rotaciones \(C_3\) alrededor de la diagonal por ese vertice). \(|O| = 8 \times 3 = 24\). &check;</p>
+
+                        <p class="text-gray-300 mb-2"><strong class="text-white">Ejemplo 3:</strong> \(I\) actua sobre los 12 vertices del icosaedro.</p>
+                        <p class="text-gray-400 mb-4 ml-4">\(|\text{Orb}| = 12\), \(|\text{Stab}| = 5\) (rotaciones \(C_5\) alrededor del eje por ese vertice). \(|I| = 12 \times 5 = 60\). &check;</p>
+
+                        <p class="text-gray-300">
+                            El teorema transforma la pregunta "¿cuantas simetrias tiene este solido?" en "¿cuantos elementos son equivalentes, y cuantas simetrias fijan uno?" — que suele ser mas facil de responder.
+                        </p>
+                    </section>
+
+                    <!-- Exercises -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">1.</strong> Cuenta los 12 elementos del grupo \(T\) listando explicitamente cada eje de rotacion y los angulos que genera. Verifica que la composicion de dos rotaciones \(C_3\) por ejes distintos da una rotacion \(C_2\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">2.</strong> El cubo tiene 4 diagonales principales. Una rotacion de 90° alrededor de \((0,0,1)\) las permuta como un 4-ciclo. Escribe explicitamente que diagonal va a cual. ¿Es esta permutacion par o impar?</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">3.</strong> Usa el teorema orbita-estabilizador para calcular \(|I|\) considerando la accion sobre las 30 aristas del icosaedro. ¿Cual es el estabilizador de una arista?</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">4.</strong> ¿Por que \(T \cong A_4\) y no \(S_4\)? Es decir, ¿por que ninguna rotacion propia del tetraedro induce una transposicion simple de vertices? (Pista: una transposicion fijaria 2 vertices y moveria los otros 2 — ¿que eje tendria?)</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">5.</strong> El grupo de rotaciones de un prisma triangular regular (no un solido platonico) tiene orden 6. Identifica sus ejes y muestra que es isomorfo al grupo diedrico \(D_3 \cong S_3\).</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LAB -->
+                    <section>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">LAB: Ejes de Rotacion</h3>
+                        <p class="text-gray-400 mb-4">
+                            Selecciona un solido para visualizar sus ejes de simetria rotacional. Cada tipo de eje se muestra en un color distinto. Arrastra para rotar.
+                        </p>
+
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button onclick="switchSolid('tetrahedron')" id="btn-tetrahedron" class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 transition">Tetraedro</button>
+                            <button onclick="switchSolid('cube')" id="btn-cube" class="px-4 py-2 rounded-lg text-sm font-medium bg-violet-500/20 text-violet-400 transition">Cubo</button>
+                            <button onclick="switchSolid('icosahedron')" id="btn-icosahedron" class="px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 transition">Icosaedro</button>
+                            <span class="border-l border-gray-800 mx-2"></span>
+                            <button onclick="toggleAxes('high')" id="btn-high" class="px-3 py-2 rounded-lg text-sm font-medium bg-violet-500/20 text-violet-400 transition">C<sub>p</sub> caras</button>
+                            <button onclick="toggleAxes('mid')" id="btn-mid" class="px-3 py-2 rounded-lg text-sm font-medium bg-cyan-500/20 text-cyan-400 transition">C<sub>q</sub> vertices</button>
+                            <button onclick="toggleAxes('low')" id="btn-low" class="px-3 py-2 rounded-lg text-sm font-medium bg-amber-500/20 text-amber-400 transition">C<sub>2</sub> aristas</button>
+                        </div>
+
+                        <div id="lab-info" class="text-sm text-gray-500 mb-3 mono"></div>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden" style="height: 480px;">
+                            <canvas id="labCanvas"></canvas>
+                        </div>
+                    </section>
                 </article>
+
+                <!-- Navigation -->
+                <div class="flex justify-between items-center">
+                    <a href="./leccion-16.html" class="px-6 py-3 bg-gray-900 border border-gray-800 rounded-xl text-gray-400 hover:text-white hover:border-gray-700 transition">← Dodecaedro e Icosaedro</a>
+                    <a href="./leccion-18.html" class="px-6 py-3 bg-violet-500/10 border border-violet-500/20 rounded-xl text-violet-400 hover:bg-violet-500/20 transition">Ejes y Planos de Simetria →</a>
+                </div>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 mt-16">
+        <div class="max-w-6xl mx-auto px-6 py-8">
+            <p class="text-center text-gray-700 text-sm">&copy; 2025 EigenLab — Matematicas Visuales</p>
         </div>
     </footer>
+
+    <!-- Three.js -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script>
+    (function(){
+        const canvas = document.getElementById('labCanvas');
+        const container = canvas.parentElement;
+        const W = container.clientWidth, H = container.clientHeight;
+        canvas.width = W * devicePixelRatio;
+        canvas.height = H * devicePixelRatio;
+        canvas.style.width = W + 'px';
+        canvas.style.height = H + 'px';
+
+        const renderer = new THREE.WebGLRenderer({canvas, antialias: true, alpha: true});
+        renderer.setSize(W, H);
+        renderer.setPixelRatio(devicePixelRatio);
+
+        const scene = new THREE.Scene();
+        const camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
+        camera.position.set(0, 0, 6);
+
+        const group = new THREE.Group();
+        scene.add(group);
+
+        // Materials
+        const meshMat = new THREE.MeshBasicMaterial({color: 0x7c3aed, transparent: true, opacity: 0.06, side: THREE.DoubleSide});
+        const wireMat = new THREE.LineBasicMaterial({color: 0x6d28d9, transparent: true, opacity: 0.5});
+        const pointMat = new THREE.PointsMaterial({color: 0xa78bfa, size: 4, sizeAttenuation: false});
+
+        const axisColors = {
+            high: 0xa78bfa,  // violet — highest order (Cp face)
+            mid: 0x22d3ee,   // cyan — middle order (Cq vertex)
+            low: 0xfbbf24    // amber — C2 edge
+        };
+
+        // Golden ratio
+        const phi = (1 + Math.sqrt(5)) / 2;
+
+        // ======= Solid data =======
+        function dist(a, b) {
+            return Math.sqrt((a[0]-b[0])**2 + (a[1]-b[1])**2 + (a[2]-b[2])**2);
+        }
+
+        function buildEdges(verts, threshold) {
+            const edges = [];
+            for (let i = 0; i < verts.length; i++)
+                for (let j = i+1; j < verts.length; j++)
+                    if (Math.abs(dist(verts[i], verts[j]) - threshold) < 0.01)
+                        edges.push([i, j]);
+            return edges;
+        }
+
+        function antipodePairs(dirs) {
+            const pairs = [];
+            const used = new Set();
+            for (let i = 0; i < dirs.length; i++) {
+                if (used.has(i)) continue;
+                for (let j = i+1; j < dirs.length; j++) {
+                    if (used.has(j)) continue;
+                    if (Math.abs(dirs[i][0]+dirs[j][0]) < 0.05 &&
+                        Math.abs(dirs[i][1]+dirs[j][1]) < 0.05 &&
+                        Math.abs(dirs[i][2]+dirs[j][2]) < 0.05) {
+                        pairs.push(dirs[i]);
+                        used.add(i); used.add(j);
+                        break;
+                    }
+                }
+                if (!used.has(i)) { pairs.push(dirs[i]); used.add(i); }
+            }
+            return pairs;
+        }
+
+        // Tetrahedron
+        const tetraVerts = [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]];
+        const tetraEdgeDist = 2*Math.sqrt(2);
+
+        // Cube
+        const cubeVerts = [];
+        for (let x of [-1,1]) for (let y of [-1,1]) for (let z of [-1,1]) cubeVerts.push([x,y,z]);
+        const cubeEdgeDist = 2;
+
+        // Icosahedron
+        const icoVerts = [
+            [0,1,phi],[0,-1,phi],[0,1,-phi],[0,-1,-phi],
+            [1,phi,0],[-1,phi,0],[1,-phi,0],[-1,-phi,0],
+            [phi,0,1],[-phi,0,1],[phi,0,-1],[-phi,0,-1]
+        ];
+        const icoEdgeDist = 2;
+
+        function computeIcoFaces(verts, edges) {
+            const adj = Array.from({length: verts.length}, () => new Set());
+            for (const [i,j] of edges) { adj[i].add(j); adj[j].add(i); }
+            const faces = [];
+            for (let i = 0; i < verts.length; i++)
+                for (const j of adj[i]) if (j > i)
+                    for (const k of adj[j]) if (k > j && adj[i].has(k))
+                        faces.push([i,j,k]);
+            return faces;
+        }
+
+        function faceCenters(verts, faces) {
+            return faces.map(([a,b,c]) => [
+                (verts[a][0]+verts[b][0]+verts[c][0])/3,
+                (verts[a][1]+verts[b][1]+verts[c][1])/3,
+                (verts[a][2]+verts[b][2]+verts[c][2])/3
+            ]);
+        }
+
+        function edgeMidpoints(verts, edges) {
+            return edges.map(([a,b]) => [
+                (verts[a][0]+verts[b][0])/2,
+                (verts[a][1]+verts[b][1])/2,
+                (verts[a][2]+verts[b][2])/2
+            ]);
+        }
+
+        // Precompute icosahedron
+        const icoEdges = buildEdges(icoVerts, icoEdgeDist);
+        const icoFaces = computeIcoFaces(icoVerts, icoEdges);
+        const icoFaceCenters = faceCenters(icoVerts, icoFaces);
+        const icoEdgeMids = edgeMidpoints(icoVerts, icoEdges);
+
+        // Axes data for each solid
+        function getSolidAxes(type) {
+            switch(type) {
+                case 'tetrahedron': return {
+                    high: { label: 'C₃ vertice-cara', dirs: [[1,1,1],[1,-1,-1],[-1,1,-1],[-1,-1,1]], order: 3, count: 4 },
+                    mid: null, // tetrahedron has no separate vertex axes
+                    low: { label: 'C₂ arista-arista', dirs: [[1,0,0],[0,1,0],[0,0,1]], order: 2, count: 3 },
+                    total: 12, group: 'T', iso: 'A₄',
+                    summary: '4 C₃ + 3 C₂ = 7 ejes → 1 + 8 + 3 = 12 rotaciones'
+                };
+                case 'cube': return {
+                    high: { label: 'C₄ cara-cara', dirs: [[1,0,0],[0,1,0],[0,0,1]], order: 4, count: 3 },
+                    mid: { label: 'C₃ vertice-vertice', dirs: [[1,1,1],[1,1,-1],[1,-1,1],[-1,1,1]], order: 3, count: 4 },
+                    low: { label: 'C₂ arista-arista', dirs: [[1,1,0],[1,-1,0],[1,0,1],[1,0,-1],[0,1,1],[0,1,-1]], order: 2, count: 6 },
+                    total: 24, group: 'O', iso: 'S₄',
+                    summary: '3 C₄ + 4 C₃ + 6 C₂ = 13 ejes → 1 + 9 + 8 + 6 = 24 rotaciones'
+                };
+                case 'icosahedron': return {
+                    high: { label: 'C₅ vertice-vertice', dirs: antipodePairs(icoVerts.map(v=>v.slice())), order: 5, count: 6 },
+                    mid: { label: 'C₃ cara-cara', dirs: antipodePairs(icoFaceCenters), order: 3, count: 10 },
+                    low: { label: 'C₂ arista-arista', dirs: antipodePairs(icoEdgeMids), order: 2, count: 15 },
+                    total: 60, group: 'I', iso: 'A₅',
+                    summary: '6 C₅ + 10 C₃ + 15 C₂ = 31 ejes → 1 + 24 + 20 + 15 = 60 rotaciones'
+                };
+            }
+        }
+
+        // ======= Build 3D objects =======
+        let currentObjects = [];
+        let axisObjects = { high: [], mid: [], low: [] };
+        let showAxes = { high: true, mid: true, low: true };
+        let currentSolid = 'cube';
+
+        function clearScene() {
+            for (const obj of currentObjects) group.remove(obj);
+            currentObjects = [];
+            for (const key of ['high','mid','low'])
+                for (const obj of axisObjects[key]) group.remove(obj);
+            axisObjects = { high: [], mid: [], low: [] };
+        }
+
+        function createSolidMesh(verts, edgeDist) {
+            // Edges as LineSegments
+            const edges = buildEdges(verts, edgeDist);
+            const edgePositions = [];
+            for (const [i,j] of edges) {
+                edgePositions.push(verts[i][0], verts[i][1], verts[i][2]);
+                edgePositions.push(verts[j][0], verts[j][1], verts[j][2]);
+            }
+            const edgeGeo = new THREE.BufferGeometry();
+            edgeGeo.setAttribute('position', new THREE.Float32BufferAttribute(edgePositions, 3));
+            const lines = new THREE.LineSegments(edgeGeo, wireMat);
+
+            // Vertices as Points
+            const ptPositions = [];
+            for (const v of verts) ptPositions.push(v[0], v[1], v[2]);
+            const ptGeo = new THREE.BufferGeometry();
+            ptGeo.setAttribute('position', new THREE.Float32BufferAttribute(ptPositions, 3));
+            const points = new THREE.Points(ptGeo, pointMat);
+
+            // Translucent mesh using built-in geometry
+            let builtinGeo;
+            if (verts.length === 4) builtinGeo = new THREE.TetrahedronGeometry(Math.sqrt(3));
+            else if (verts.length === 8) builtinGeo = new THREE.BoxGeometry(2, 2, 2);
+            else builtinGeo = new THREE.IcosahedronGeometry(Math.sqrt(1 + phi*phi));
+            const mesh = new THREE.Mesh(builtinGeo, meshMat);
+
+            return [lines, points, mesh];
+        }
+
+        function createAxisLine(dir, color, length) {
+            const n = Math.sqrt(dir[0]**2 + dir[1]**2 + dir[2]**2);
+            const d = [dir[0]/n, dir[1]/n, dir[2]/n];
+            const positions = [
+                -d[0]*length, -d[1]*length, -d[2]*length,
+                 d[0]*length,  d[1]*length,  d[2]*length
+            ];
+            const geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(positions, 3));
+            const mat = new THREE.LineBasicMaterial({color, transparent: true, opacity: 0.7, linewidth: 1});
+            return new THREE.LineSegments(geo, mat);
+        }
+
+        function buildSolid(type) {
+            clearScene();
+            let verts, edgeDist;
+            switch(type) {
+                case 'tetrahedron': verts = tetraVerts; edgeDist = tetraEdgeDist; break;
+                case 'cube': verts = cubeVerts; edgeDist = cubeEdgeDist; break;
+                case 'icosahedron': verts = icoVerts; edgeDist = icoEdgeDist; break;
+            }
+
+            const meshObjs = createSolidMesh(verts, edgeDist);
+            for (const obj of meshObjs) { group.add(obj); currentObjects.push(obj); }
+
+            // Build axes
+            const axes = getSolidAxes(type);
+            const axisLen = type === 'icosahedron' ? 2.8 : 2.5;
+
+            for (const key of ['high', 'mid', 'low']) {
+                if (!axes[key]) continue;
+                const {dirs, order, count} = axes[key];
+                const color = axisColors[key];
+                for (const dir of dirs) {
+                    const line = createAxisLine(dir, color, axisLen);
+                    line.visible = showAxes[key];
+                    group.add(line);
+                    axisObjects[key].push(line);
+                }
+            }
+
+            // Update info
+            document.getElementById('lab-info').textContent =
+                axes.group + ' ≅ ' + axes.iso + '  |  ' + axes.summary;
+
+            // Update buttons
+            const btnHigh = document.getElementById('btn-high');
+            const btnMid = document.getElementById('btn-mid');
+            if (type === 'tetrahedron') {
+                btnHigh.innerHTML = 'C<sub>3</sub> vert/cara';
+                btnMid.innerHTML = '—';
+                btnMid.disabled = true;
+                btnMid.style.opacity = '0.3';
+            } else if (type === 'cube') {
+                btnHigh.innerHTML = 'C<sub>4</sub> caras';
+                btnMid.innerHTML = 'C<sub>3</sub> vertices';
+                btnMid.disabled = false;
+                btnMid.style.opacity = '1';
+            } else {
+                btnHigh.innerHTML = 'C<sub>5</sub> vertices';
+                btnMid.innerHTML = 'C<sub>3</sub> caras';
+                btnMid.disabled = false;
+                btnMid.style.opacity = '1';
+            }
+        }
+
+        // ======= Interaction =======
+        window.switchSolid = function(type) {
+            currentSolid = type;
+            buildSolid(type);
+            for (const t of ['tetrahedron','cube','icosahedron']) {
+                const btn = document.getElementById('btn-'+t);
+                if (t === type) {
+                    btn.className = 'px-4 py-2 rounded-lg text-sm font-medium bg-violet-500/20 text-violet-400 transition';
+                } else {
+                    btn.className = 'px-4 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-400 hover:bg-gray-700 transition';
+                }
+            }
+        };
+
+        window.toggleAxes = function(key) {
+            showAxes[key] = !showAxes[key];
+            for (const obj of axisObjects[key]) obj.visible = showAxes[key];
+            const btn = document.getElementById('btn-'+key);
+            const colors = {high: ['violet','a78bfa'], mid: ['cyan','22d3ee'], low: ['amber','fbbf24']};
+            const [name, hex] = colors[key];
+            if (showAxes[key]) {
+                btn.className = `px-3 py-2 rounded-lg text-sm font-medium bg-${name}-500/20 text-${name}-400 transition`;
+            } else {
+                btn.className = 'px-3 py-2 rounded-lg text-sm font-medium bg-gray-800 text-gray-500 transition';
+            }
+        };
+
+        // Drag to rotate
+        let isDragging = false, prevMouse = {x:0,y:0};
+        let autoRotate = true, lastInteraction = 0;
+
+        canvas.addEventListener('pointerdown', e => {
+            isDragging = true;
+            prevMouse = {x: e.clientX, y: e.clientY};
+            autoRotate = false;
+            lastInteraction = performance.now();
+        });
+        window.addEventListener('pointermove', e => {
+            if (!isDragging) return;
+            const dx = e.clientX - prevMouse.x;
+            const dy = e.clientY - prevMouse.y;
+            group.rotation.y += dx * 0.008;
+            group.rotation.x += dy * 0.008;
+            prevMouse = {x: e.clientX, y: e.clientY};
+        });
+        window.addEventListener('pointerup', () => {
+            isDragging = false;
+            lastInteraction = performance.now();
+        });
+
+        // Render loop
+        function animate(time) {
+            requestAnimationFrame(animate);
+            if (!isDragging && performance.now() - lastInteraction > 3000) {
+                autoRotate = true;
+            }
+            if (autoRotate) {
+                group.rotation.y += 0.003;
+            }
+            renderer.render(scene, camera);
+        }
+
+        // Init
+        group.rotation.x = 0.4;
+        group.rotation.y = 0.6;
+        buildSolid('cube');
+        animate(0);
+
+        // Resize
+        window.addEventListener('resize', () => {
+            const w = container.clientWidth, h = container.clientHeight;
+            canvas.width = w * devicePixelRatio;
+            canvas.height = h * devicePixelRatio;
+            canvas.style.width = w + 'px';
+            canvas.style.height = h + 'px';
+            renderer.setSize(w, h);
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+        });
+    })();
+    </script>
 </body>
 </html>

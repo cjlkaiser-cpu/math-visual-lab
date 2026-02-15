@@ -3,137 +3,1645 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 32: Fullerenos y Nanotecnología | Matemáticas Visuales</title>
+    <title>Leccion 32: Fullerenos y Nanotubos | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
-                </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-31.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-33.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
-                </nav>
+<body class="bg-black text-gray-100 min-h-screen">
+
+    <!-- ===== HEADER ===== -->
+    <header class="border-b border-gray-900 sticky top-0 z-50 bg-black/90 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+            <div class="text-xs text-gray-500">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-400">Modulo 06</span>
             </div>
+            <nav class="flex space-x-3 text-sm">
+                <a href="./leccion-31.html" class="px-4 py-1.5 rounded-lg hover:bg-gray-900 text-gray-400 transition">&#8592; Anterior</a>
+                <a href="./leccion-33.html" class="px-4 py-1.5 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente &#8594;</a>
+            </nav>
         </div>
     </header>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+    <!-- ===== MAIN LAYOUT ===== -->
+    <div class="max-w-6xl mx-auto px-6 py-10">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-10">
+
+            <!-- ===== SIDEBAR ===== -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 6</h3>
-                    <p class="text-sm text-gray-400 mb-4">De Platón al Mundo Moderno</p>
+                <div class="sticky top-20 bg-gray-950 border border-gray-900 rounded-2xl p-6">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 06</h3>
+                    <p class="text-sm text-gray-500 mb-4">Aplicaciones Modernas</p>
                     <div class="mb-6">
-                        <div class="flex justify-between text-xs text-gray-400 mb-2">
+                        <div class="flex justify-between text-xs text-gray-500 mb-2">
                             <span>Progreso</span>
                             <span>3/4</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 75%"></div>
+                        <div class="w-full bg-gray-800 rounded-full h-1.5">
+                            <div class="progress-bar h-1.5 rounded-full" style="width: 75%"></div>
                         </div>
                     </div>
                     <nav class="space-y-2">
-                        <a href="./leccion-30.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">30. Cristalografía</a>
-                        <a href="./leccion-31.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">31. Virología</a>
-                        <a href="./leccion-32.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">32. Fullerenos</a>
-                        <a href="./leccion-33.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">33. Quasicristales</a>
+                        <a href="./leccion-30.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">30. Cristales y Redes de Bravais</a>
+                        <a href="./leccion-31.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">31. Virus Icosaedricos</a>
+                        <a href="./leccion-32.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">32. Fullerenos y Nanotubos</a>
+                        <a href="./leccion-33.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">33. Quasicristales y el Gran Final</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- ===== CONTENT ===== -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 32</span>
-                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Fullerenos y Nanotecnología</h1>
-                        <p class="text-gray-400 text-lg">La química del carbono en formas platónicas truncadas.</p>
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+
+                    <!-- Title block -->
+                    <div class="mb-10">
+                        <h1 class="text-3xl md:text-4xl font-bold mb-3">
+                            <span class="text-violet-400 font-medium glow-text">Leccion 32</span> — Fullerenos y Nanotubos
+                        </h1>
+                        <p class="text-gray-400 text-lg">De la formula de Euler a la nanotecnologia del carbono.</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Fullerenos: Buckyballs</h2>
-                        <p class="text-gray-300 mb-4">Los <strong>fullerenos</strong> son moléculas de carbono con forma de icosaedro truncado. El más famoso es C₆₀ (buckyball), descubierto en 1985.</p>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-semibold text-platonic-purple mb-2">Estructura del C₆₀</h3>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
-                                <li>60 átomos de carbono</li>
-                                <li>32 caras: 12 pentágonos + 20 hexágonos</li>
-                                <li>Exactamente como un balón de fútbol</li>
-                                <li>Icosaedro truncado</li>
-                            </ul>
+
+                    <!-- ===== SECTION 1: El Descubrimiento del C60 ===== -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">1. El Descubrimiento del C&#8326;&#8320;</h2>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            En 1985, Harold Kroto, Robert Curl y Richard Smalley realizaron un experimento
+                            de vaporizacion laser sobre grafito. Entre los productos, identificaron una
+                            molecula de 60 atomos de carbono con una estabilidad sorprendente. Habian
+                            descubierto el <strong class="text-cyan-400">buckminsterfullereno</strong>,
+                            por el que recibieron el Premio Nobel de Quimica en 1996.
+                        </p>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            El nombre rinde homenaje a <strong>R. Buckminster Fuller</strong>, el arquitecto
+                            celebre por sus cupulas geodesicas, cuya geometria es identica a la del
+                            C&#8326;&#8320;. La molecula tiene la forma de un <strong class="text-violet-400">icosaedro
+                            truncado</strong> --- exactamente la misma geometria de un balon de futbol clasico.
+                        </p>
+
+                        <div class="bg-violet-500/5 border border-violet-500/20 rounded-xl p-6 mb-6">
+                            <h3 class="text-lg font-semibold text-violet-400 mb-3">Conexion con los solidos arquimedianos</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Si tomamos un icosaedro regular y cortamos cada uno de sus 12 vertices
+                                (operacion de <em>truncamiento</em>), cada vertice se reemplaza por un
+                                pentagono. El resultado es el <strong>icosaedro truncado</strong>: un
+                                solido arquimediano con 12 pentagonos y 20 hexagonos, 60 vertices y 90 aristas.
+                                Cada atomo de carbono del C&#8326;&#8320; ocupa uno de esos 60 vertices.
+                            </p>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Nanotubos de Carbono</h3>
-                        <p class="text-gray-300 mb-4">Los nanotubos pueden pensarse como hojas de grafeno (red hexagonal) enrolladas. Su estructura está relacionada con la geometría del icosaedro.</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Propiedades de los Fullerenos</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-6 ml-4">
-                            <li>Extrema resistencia mecánica</li>
-                            <li>Conductividad eléctrica única</li>
-                            <li>Aplicaciones en medicina (transporte de fármacos)</li>
-                            <li>Paneles solares más eficientes</li>
-                            <li>Lubricantes de nanoescala</li>
+                    </section>
+
+                    <!-- ===== SECTION 2: Anatomia Matematica del C60 ===== -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">2. Anatomia Matematica del C&#8326;&#8320;</h2>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            El icosaedro truncado es uno de los 13 solidos arquimedianos. Sus datos
+                            combinatorios son:
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300 border border-gray-800 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-violet-400">Propiedad</th>
+                                        <th class="px-4 py-3 text-center text-violet-400">Valor</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr><td class="px-4 py-2">Vertices \(V\)</td><td class="px-4 py-2 text-center mono">60</td></tr>
+                                    <tr><td class="px-4 py-2">Aristas \(E\)</td><td class="px-4 py-2 text-center mono">90</td></tr>
+                                    <tr><td class="px-4 py-2">Caras \(F\)</td><td class="px-4 py-2 text-center mono">32</td></tr>
+                                    <tr><td class="px-4 py-2">Pentagonos</td><td class="px-4 py-2 text-center mono">12</td></tr>
+                                    <tr><td class="px-4 py-2">Hexagonos</td><td class="px-4 py-2 text-center mono">20</td></tr>
+                                    <tr><td class="px-4 py-2">Grado de cada vertice</td><td class="px-4 py-2 text-center mono">3</td></tr>
+                                    <tr><td class="px-4 py-2">Grupo de simetria</td><td class="px-4 py-2 text-center mono">\(I_h\), \(|I_h| = 120\)</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            <strong class="text-cyan-400">Verificacion de Euler:</strong>
+                        </p>
+                        $$ V - E + F = 60 - 90 + 32 = 2 \quad \checkmark $$
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            Como cada vertice tiene grado 3, cada atomo de carbono esta enlazado a
+                            exactamente tres vecinos. Existen dos tipos de aristas segun las caras
+                            que comparten:
+                        </p>
+
+                        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-4 ml-4">
+                            <li>
+                                <strong>Aristas pentagono-hexagono:</strong> Cada pentagono tiene 5 aristas,
+                                y cada una es compartida con un hexagono. En total:
+                                \(12 \times 5 = 60\) aristas de tipo 5-6.
+                            </li>
+                            <li>
+                                <strong>Aristas hexagono-hexagono:</strong> El total restante es
+                                \(90 - 60 = 30\) aristas de tipo 6-6.
+                            </li>
                         </ul>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Otros Fullerenos</h3>
-                        <p class="text-gray-300 mb-4">Existen fullerenos con diferentes números de átomos: C₇₀, C₇₆, C₈₀, etc. Todos comparten la característica de tener exactamente 12 pentágonos (teorema de Euler).</p>
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-4 mb-6">
-                            <p class="text-gray-300 text-center">Cualquier fullereno debe tener exactamente <strong>12 pentágonos</strong></p>
-                            <p class="text-sm text-gray-400 text-center mt-2">Demostración: De la fórmula de Euler para esferas</p>
+
+                        <p class="text-gray-300 mb-6 leading-relaxed">
+                            Quimicamente, los enlaces 6-6 (entre dos hexagonos) tienen caracter de
+                            doble enlace con longitud aproximada de 1.40 A, mientras que los enlaces
+                            5-6 tienen caracter de enlace simple con longitud de 1.45 A. Esta
+                            alternancia confiere al C&#8326;&#8320; una estabilidad aromatica notable.
+                        </p>
+                    </section>
+
+                    <!-- ===== SECTION 3: Teorema de los 12 Pentagonos ===== -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">3. La Prueba de los 12 Pentagonos</h2>
+
+                        <div class="bg-cyan-500/5 border border-cyan-500/20 rounded-xl p-6 mb-6">
+                            <h3 class="text-lg font-semibold text-cyan-400 mb-2">Teorema</h3>
+                            <p class="text-gray-200 leading-relaxed">
+                                Todo fullereno --- entendido como un poliedro convexo cuyas caras son
+                                exclusivamente pentagonos y hexagonos, y en el que cada vertice tiene
+                                grado 3 --- contiene <strong>exactamente 12 pentagonos</strong>,
+                                independientemente del numero de hexagonos.
+                            </p>
                         </div>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Fullerenos</h2>
-                        <p class="text-gray-400 mb-4">Visualiza estructuras de fullerenos en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            <strong class="text-violet-400">Demostracion.</strong> Sea \(p\) el numero
+                            de pentagonos y \(h\) el numero de hexagonos. Entonces:
+                        </p>
+
+                        <p class="text-gray-300 mb-2 leading-relaxed">
+                            El numero total de caras es:
+                        </p>
+                        $$ F = p + h $$
+
+                        <p class="text-gray-300 mb-2 leading-relaxed">
+                            Como cada vertice tiene grado 3, el lema del apreton de manos da:
+                        </p>
+                        $$ \sum_{v} \deg(v) = 3V = 2E \quad \Longrightarrow \quad V = \frac{2E}{3} $$
+
+                        <p class="text-gray-300 mb-2 leading-relaxed">
+                            Contamos las incidencias arista-cara. Cada pentagono contribuye 5 aristas
+                            y cada hexagono contribuye 6, pero cada arista es compartida por dos caras:
+                        </p>
+                        $$ 5p + 6h = 2E $$
+
+                        <p class="text-gray-300 mb-2 leading-relaxed">
+                            Sustituimos en la formula de Euler \(V - E + F = 2\):
+                        </p>
+                        $$ \frac{2E}{3} - E + p + h = 2 $$
+                        $$ -\frac{E}{3} + p + h = 2 $$
+
+                        <p class="text-gray-300 mb-2 leading-relaxed">
+                            Despejamos \(E\) de la ecuacion de conteo de aristas:
+                        </p>
+                        $$ E = \frac{5p + 6h}{2} $$
+
+                        <p class="text-gray-300 mb-2 leading-relaxed">
+                            Sustituimos:
+                        </p>
+                        $$ -\frac{5p + 6h}{6} + p + h = 2 $$
+                        $$ \frac{-5p - 6h + 6p + 6h}{6} = 2 $$
+                        $$ \frac{p}{6} = 2 $$
+                        $$ \boxed{p = 12} $$
+
+                        <p class="text-gray-300 mt-4 mb-6 leading-relaxed">
+                            La variable \(h\) se cancela por completo: la topologia esferica fuerza
+                            exactamente 12 pentagonos, sin importar cuantos hexagonos tenga la
+                            estructura. Este resultado es una consecuencia directa y elegante de la
+                            formula de Euler. \(\blacksquare\)
+                        </p>
+
+                        <!-- ILLUSTRATION 1: Schlegel diagram -->
+                        <div class="mb-6">
+                            <div class="bg-black border border-gray-800 rounded-xl overflow-hidden">
+                                <canvas id="canvasSchlegel" class="w-full" style="height: 420px;"></canvas>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mt-2">
+                                Diagrama de Schlegel del C&#8326;&#8320; (icosaedro truncado).
+                                Los 12 pentagonos en cyan, los 20 hexagonos en violeta.
+                            </p>
                         </div>
+                    </section>
+
+                    <!-- ===== SECTION 4: La Familia de Fullerenos ===== -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">4. La Familia de Fullerenos</h2>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            El C&#8326;&#8320; es solo el miembro mas celebre de una familia infinita.
+                            Dado que \(p = 12\) siempre, un fullereno con \(n\) atomos de carbono
+                            queda completamente determinado por su numero de hexagonos:
+                        </p>
+
+                        $$ h = \frac{n}{2} - 10, \qquad E = \frac{3n}{2}, \qquad F = \frac{n}{2} + 2 $$
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            Podemos verificar la consistencia: \(V - E + F = n - \tfrac{3n}{2} + \tfrac{n}{2} + 2 = 2\). Correcto.
+                        </p>
+
+                        <div class="bg-violet-500/5 border border-violet-500/20 rounded-xl p-6 mb-6">
+                            <h3 class="text-lg font-semibold text-violet-400 mb-3">Regla del Pentagono Aislado (IPR)</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Un fullereno es especialmente estable cuando ningun par de pentagonos
+                                comparte una arista. Esta condicion, llamada <em>Isolated Pentagon Rule</em>,
+                                minimiza la tension angular. El C&#8326;&#8320; es el fullereno mas
+                                pequeno que la satisface: sus 12 pentagonos estan todos separados entre si
+                                por hexagonos.
+                            </p>
+                        </div>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300 border border-gray-800 rounded-lg overflow-hidden">
+                                <thead class="bg-gray-900">
+                                    <tr>
+                                        <th class="px-4 py-3 text-left text-violet-400">Fullereno</th>
+                                        <th class="px-4 py-3 text-center text-violet-400">\(n\)</th>
+                                        <th class="px-4 py-3 text-center text-violet-400">\(h\)</th>
+                                        <th class="px-4 py-3 text-center text-violet-400">\(E\)</th>
+                                        <th class="px-4 py-3 text-center text-violet-400">\(F\)</th>
+                                        <th class="px-4 py-3 text-left text-violet-400">Forma</th>
+                                        <th class="px-4 py-3 text-center text-violet-400">IPR</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr>
+                                        <td class="px-4 py-2 mono">C&#8322;&#8320;</td>
+                                        <td class="px-4 py-2 text-center">20</td>
+                                        <td class="px-4 py-2 text-center">0</td>
+                                        <td class="px-4 py-2 text-center">30</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2">Dodecaedro regular</td>
+                                        <td class="px-4 py-2 text-center text-red-400">No</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono text-cyan-400">C&#8326;&#8320;</td>
+                                        <td class="px-4 py-2 text-center">60</td>
+                                        <td class="px-4 py-2 text-center">20</td>
+                                        <td class="px-4 py-2 text-center">90</td>
+                                        <td class="px-4 py-2 text-center">32</td>
+                                        <td class="px-4 py-2">Icosaedro truncado</td>
+                                        <td class="px-4 py-2 text-center text-green-400">Si</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono">C&#8327;&#8320;</td>
+                                        <td class="px-4 py-2 text-center">70</td>
+                                        <td class="px-4 py-2 text-center">25</td>
+                                        <td class="px-4 py-2 text-center">105</td>
+                                        <td class="px-4 py-2 text-center">37</td>
+                                        <td class="px-4 py-2">Balon de rugby</td>
+                                        <td class="px-4 py-2 text-center text-green-400">Si</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono">C&#8327;&#8326;</td>
+                                        <td class="px-4 py-2 text-center">76</td>
+                                        <td class="px-4 py-2 text-center">28</td>
+                                        <td class="px-4 py-2 text-center">114</td>
+                                        <td class="px-4 py-2 text-center">40</td>
+                                        <td class="px-4 py-2">Quiral</td>
+                                        <td class="px-4 py-2 text-center text-green-400">Si</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono">C&#8328;&#8320;</td>
+                                        <td class="px-4 py-2 text-center">80</td>
+                                        <td class="px-4 py-2 text-center">30</td>
+                                        <td class="px-4 py-2 text-center">120</td>
+                                        <td class="px-4 py-2 text-center">42</td>
+                                        <td class="px-4 py-2">Esferoide</td>
+                                        <td class="px-4 py-2 text-center text-green-400">Si</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono">C&#8322;&#8324;&#8320;</td>
+                                        <td class="px-4 py-2 text-center">240</td>
+                                        <td class="px-4 py-2 text-center">110</td>
+                                        <td class="px-4 py-2 text-center">360</td>
+                                        <td class="px-4 py-2 text-center">122</td>
+                                        <td class="px-4 py-2">Icosaedro geodesico</td>
+                                        <td class="px-4 py-2 text-center text-green-400">Si</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 mono">C&#8325;&#8324;&#8320;</td>
+                                        <td class="px-4 py-2 text-center">540</td>
+                                        <td class="px-4 py-2 text-center">260</td>
+                                        <td class="px-4 py-2 text-center">810</td>
+                                        <td class="px-4 py-2 text-center">272</td>
+                                        <td class="px-4 py-2">Fullereno gigante</td>
+                                        <td class="px-4 py-2 text-center text-green-400">Si</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            El caso \(n = 20\) es especialmente notable: con cero hexagonos, el
+                            fullereno es un <strong>dodecaedro regular</strong>, un solido platonico
+                            puro. Sin embargo, el C&#8322;&#8320; es inestable porque cada pentagono
+                            comparte aristas con otros pentagonos (viola la regla IPR), generando una
+                            tension angular insoportable.
+                        </p>
+                    </section>
+
+                    <!-- ===== SECTION 5: Nanotubos de Carbono ===== -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">5. Nanotubos de Carbono</h2>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            En 1991, Sumio Iijima observo al microscopio electronico unas estructuras
+                            tubulares de carbono con diametros de pocos nanometros. Habia descubierto
+                            los <strong class="text-cyan-400">nanotubos de carbono</strong>, que pueden
+                            conceptualizarse como una hoja de grafeno (red hexagonal plana de carbono)
+                            enrollada sobre si misma formando un cilindro.
+                        </p>
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            La estructura de un nanotubo queda determinada por su <strong>vector quiral</strong>
+                            (o vector de enrollamiento):
+                        </p>
+
+                        $$ \vec{C}_h = n\,\vec{a}_1 + m\,\vec{a}_2 $$
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            donde \(\vec{a}_1\) y \(\vec{a}_2\) son los vectores base de la red
+                            hexagonal, y la pareja \((n,m)\) con \(n \geq m \geq 0\) clasifica
+                            completamente al nanotubo. El diametro es:
+                        </p>
+
+                        $$ d = \frac{a\sqrt{n^2 + nm + m^2}}{\pi}, \qquad a = |\vec{a}_1| \approx 2.46 \text{ A} $$
+
+                        <p class="text-gray-300 mb-4 leading-relaxed">
+                            Segun los valores de \((n,m)\), se distinguen tres tipos fundamentales:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <h4 class="text-cyan-400 font-semibold mb-2 mono">Armchair (n,n)</h4>
+                                <p class="text-gray-400 text-sm leading-relaxed">
+                                    Siempre metalico. Los bordes del tubo forman un patron de
+                                    "sillon". Conductor electrico independientemente del diametro.
+                                </p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <h4 class="text-violet-400 font-semibold mb-2 mono">Zigzag (n,0)</h4>
+                                <p class="text-gray-400 text-sm leading-relaxed">
+                                    Metalico si \(n \bmod 3 = 0\), semiconductor en caso contrario.
+                                    El borde describe un patron en zigzag.
+                                </p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <h4 class="text-green-400 font-semibold mb-2 mono">Quiral (n,m)</h4>
+                                <p class="text-gray-400 text-sm leading-relaxed">
+                                    Metalico si \((n - m) \bmod 3 = 0\), semiconductor en caso
+                                    contrario. Posee una helicidad caracteristica.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-cyan-500/5 border border-cyan-500/20 rounded-xl p-6 mb-6">
+                            <h3 class="text-lg font-semibold text-cyan-400 mb-2">Conexion con el teorema de los 12 pentagonos</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Un nanotubo abierto es un cilindro de hexagonos puros. Pero si queremos
+                                <strong>cerrarlo</strong> con tapas semiesfericas, cada tapa debe contener
+                                exactamente <strong>6 pentagonos</strong> (la mitad de un fullereno). Las dos
+                                tapas juntas suman los 12 pentagonos que el teorema exige. Sin esos pentagonos,
+                                la curvatura necesaria para cerrar la estructura es topologicamente imposible.
+                            </p>
+                        </div>
+
+                        <!-- ILLUSTRATION 2: Nanotube lattice vectors -->
+                        <div class="mb-6">
+                            <div class="bg-black border border-gray-800 rounded-xl overflow-hidden">
+                                <canvas id="canvasNanotube" class="w-full" style="height: 400px;"></canvas>
+                            </div>
+                            <p class="text-center text-sm text-gray-500 mt-2">
+                                Red hexagonal con los vectores de enrollamiento para nanotubos armchair, zigzag y quiral.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- ===== SECTION 6: Aplicaciones ===== -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">6. Aplicaciones: Del Laboratorio al Mundo</h2>
+
+                        <p class="text-gray-300 mb-6 leading-relaxed">
+                            Los fullerenos y nanotubos no son meras curiosidades matematicas. Su
+                            estructura, dictada por la formula de Euler y la geometria del icosaedro
+                            truncado, les confiere propiedades fisicas extraordinarias.
+                        </p>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="flex items-start space-x-4">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-violet-400 flex-shrink-0"></div>
+                                <div>
+                                    <h4 class="text-gray-200 font-semibold">Nanoelectronica</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        Los nanotubos de carbono funcionan como transistores de efecto campo
+                                        (CNT-FET). Un solo nanotubo metalico puede transportar corrientes
+                                        de hasta \(10^9\) A/cm\(^2\), tres ordenes de magnitud mas que el cobre.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-cyan-400 flex-shrink-0"></div>
+                                <div>
+                                    <h4 class="text-gray-200 font-semibold">Materiales ultraresistentes</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        La resistencia a la traccion de un nanotubo alcanza los 63 GPa,
+                                        unas 100 veces la del acero, con solo 1/6 de su peso. Esta
+                                        relacion resistencia/peso los convierte en candidatos para el
+                                        hipotetico ascensor espacial.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-violet-400 flex-shrink-0"></div>
+                                <div>
+                                    <h4 class="text-gray-200 font-semibold">Medicina</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        Derivados del C&#8326;&#8320; actuan como antioxidantes potentes,
+                                        capturando radicales libres. Tambien se investigan como
+                                        inhibidores de la proteasa del VIH y como vehiculos de
+                                        liberacion controlada de farmacos (drug delivery).
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-cyan-400 flex-shrink-0"></div>
+                                <div>
+                                    <h4 class="text-gray-200 font-semibold">Energia</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        El PCBM (un derivado funcionalizado del C&#8326;&#8320;) es el
+                                        aceptor de electrones mas usado en celulas solares organicas.
+                                        Los nanotubos tambien se emplean en supercondensadores de alta
+                                        capacidad.
+                                    </p>
+                                </div>
+                            </div>
+                            <div class="flex items-start space-x-4">
+                                <div class="w-2 h-2 mt-2 rounded-full bg-violet-400 flex-shrink-0"></div>
+                                <div>
+                                    <h4 class="text-gray-200 font-semibold">Grafeno</h4>
+                                    <p class="text-gray-400 text-sm leading-relaxed">
+                                        Andre Geim y Konstantin Novoselov recibieron el Nobel de Fisica
+                                        en 2010 por aislar el grafeno: una lamina de carbono de un atomo
+                                        de espesor. Conceptualmente, un nanotubo desenrollado es una tira
+                                        de grafeno, y un fullereno es grafeno curvado en esfera por
+                                        la insercion de 12 pentagonos.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                            <h3 class="text-lg font-semibold text-violet-400 mb-3">El hilo matematico</h3>
+                            <p class="text-gray-300 leading-relaxed">
+                                Formula de Euler \(\rightarrow\) 12 pentagonos obligatorios
+                                \(\rightarrow\) curvatura gaussiana positiva \(\rightarrow\) cierre
+                                en jaula esferica (fullerenos) o semiesferica (tapas de nanotubos).
+                                Sin la topologia, no habria nanotecnologia del carbono.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- ===== EXERCISES ===== -->
+                    <section class="mb-12">
+                        <h2 class="text-2xl font-semibold text-cyan-400 mb-6">Ejercicios</h2>
+
+                        <div class="space-y-6">
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300 leading-relaxed">
+                                    <span class="text-violet-400 font-semibold mono mr-2">E1.</span>
+                                    Verifica la formula de Euler para el C&#8327;&#8320;. Calcula
+                                    \(V\), \(E\) y \(F\) sabiendo que tiene 12 pentagonos y 25 hexagonos.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300 leading-relaxed">
+                                    <span class="text-violet-400 font-semibold mono mr-2">E2.</span>
+                                    Un fullereno tiene 240 atomos de carbono. Determina cuantos
+                                    hexagonos posee y cuantas aristas tiene su grafo molecular.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300 leading-relaxed">
+                                    <span class="text-violet-400 font-semibold mono mr-2">E3.</span>
+                                    Demuestra que el C&#8322;&#8320; (solo pentagonos, cero hexagonos)
+                                    es un dodecaedro regular. Explica por que es quimicamente inestable.
+                                    (Pista: pentagonos adyacentes y tension angular.)
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300 leading-relaxed">
+                                    <span class="text-violet-400 font-semibold mono mr-2">E4.</span>
+                                    Para un nanotubo armchair \((6,6)\), calcula el diametro usando
+                                    la formula \(d = a\sqrt{n^2 + nm + m^2}\,/\,\pi\) con
+                                    \(a = 2.46\) A.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300 leading-relaxed">
+                                    <span class="text-violet-400 font-semibold mono mr-2">E5.</span>
+                                    Explica por que cada tapa de un nanotubo cerrado debe contener
+                                    exactamente 6 pentagonos. (Pista: media esfera = medio fullereno,
+                                    y el teorema de los 12 pentagonos.)
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ===== LAB ===== -->
+                    <section class="mb-8">
+                        <h2 class="text-2xl font-semibold text-cyan-400 mb-2">Laboratorio: Explorador de Fullerenos</h2>
+                        <p class="text-gray-400 mb-4">
+                            Diagrama de Schlegel interactivo. Pulsa los pentagonos para resaltarlos.
+                        </p>
+
+                        <div class="bg-black border border-gray-800 rounded-xl overflow-hidden mb-4">
+                            <div class="flex flex-wrap gap-2 p-3 border-b border-gray-800 bg-gray-950">
+                                <button id="btnC60" class="px-4 py-1.5 rounded-lg bg-violet-500/20 text-violet-400 text-sm mono hover:bg-violet-500/30 transition">C60</button>
+                                <button id="btnC70" class="px-4 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm mono hover:bg-gray-700 transition">C70 (esquema)</button>
+                                <button id="btnGraphene" class="px-4 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm mono hover:bg-gray-700 transition">Red hexagonal (grafeno)</button>
+                            </div>
+                            <canvas id="canvasLab" class="w-full" style="height: 520px;"></canvas>
+                        </div>
+
+                        <div id="labStats" class="grid grid-cols-2 md:grid-cols-4 gap-3">
+                            <div class="bg-gray-900 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Vertices (V)</p>
+                                <p class="text-lg font-semibold text-violet-400 mono" id="statV">60</p>
+                            </div>
+                            <div class="bg-gray-900 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Aristas (E)</p>
+                                <p class="text-lg font-semibold text-cyan-400 mono" id="statE">90</p>
+                            </div>
+                            <div class="bg-gray-900 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Caras (F)</p>
+                                <p class="text-lg font-semibold text-violet-400 mono" id="statF">32</p>
+                            </div>
+                            <div class="bg-gray-900 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">V - E + F</p>
+                                <p class="text-lg font-semibold text-green-400 mono" id="statEuler">2</p>
+                            </div>
+                        </div>
+                        <div class="grid grid-cols-2 md:grid-cols-3 gap-3 mt-3">
+                            <div class="bg-gray-900 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Pentagonos</p>
+                                <p class="text-lg font-semibold text-cyan-400 mono" id="statPent">12</p>
+                            </div>
+                            <div class="bg-gray-900 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Hexagonos</p>
+                                <p class="text-lg font-semibold text-violet-400 mono" id="statHex">20</p>
+                            </div>
+                            <div class="bg-gray-900 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Simetria</p>
+                                <p class="text-lg font-semibold text-gray-300 mono" id="statSym">I_h</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ===== BOTTOM NAVIGATION ===== -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-31.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-300 transition">&#8592; Anterior</a>
+                        <a href="./leccion-33.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg transition">Siguiente: Quasicristales y el Gran Final &#8594;</a>
                     </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-31.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-33.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Quasicristales →</a>
-                    </div>
+
                 </article>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- ===== FOOTER ===== -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales -- De Platon a 4D</p>
         </div>
     </footer>
+
+    <!-- ===== SCRIPTS ===== -->
+
+    <!-- ILLUSTRATION 1: Schlegel diagram of C60 -->
+    <script>
+    (function() {
+        const canvas = document.getElementById('canvasSchlegel');
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+
+        function resize() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            draw();
+        }
+
+        // Precompute a simplified Schlegel diagram for the truncated icosahedron
+        // We place 12 pentagons and 20 hexagons projected onto a plane
+        function generateSchlegelC60() {
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+            const cx = w / 2;
+            const cy = h / 2;
+            const R = Math.min(w, h) * 0.42;
+
+            // Build vertices using concentric rings approximation of Schlegel projection
+            // Ring 0: central pentagon (5 vertices)
+            // Ring 1: 10 vertices around the center
+            // Ring 2: 10 vertices
+            // Ring 3: 10 vertices
+            // Ring 4: 10 vertices
+            // Ring 5: 10 vertices
+            // Ring 6: outer pentagon (5 vertices)
+            // Total: 5+10+10+10+10+10+5 = 60
+
+            const vertices = [];
+            const faces = [];
+
+            // Ring radii (Schlegel projection ratios)
+            const r0 = R * 0.0;
+            const r1 = R * 0.18;
+            const r2 = R * 0.36;
+            const r3 = R * 0.52;
+            const r4 = R * 0.68;
+            const r5 = R * 0.84;
+            const r6 = R * 1.0;
+
+            // Ring 0: central pentagon
+            for (let i = 0; i < 5; i++) {
+                const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                vertices.push([cx + r1 * Math.cos(a), cy + r1 * Math.sin(a)]);
+            }
+
+            // Ring 1: 10 vertices alternating between pentagon and hexagon
+            for (let i = 0; i < 10; i++) {
+                const a = (i / 10) * Math.PI * 2 - Math.PI / 2 + Math.PI / 10;
+                const r = (i % 2 === 0) ? r2 * 0.9 : r2 * 1.1;
+                vertices.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+            }
+
+            // Ring 2: 10 vertices
+            for (let i = 0; i < 10; i++) {
+                const a = (i / 10) * Math.PI * 2 - Math.PI / 2;
+                const r = (i % 2 === 0) ? r3 * 1.05 : r3 * 0.95;
+                vertices.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+            }
+
+            // Ring 3: 10 vertices
+            for (let i = 0; i < 10; i++) {
+                const a = (i / 10) * Math.PI * 2 - Math.PI / 2 + Math.PI / 10;
+                const r = (i % 2 === 0) ? r4 * 0.95 : r4 * 1.05;
+                vertices.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+            }
+
+            // Ring 4: 10 vertices
+            for (let i = 0; i < 10; i++) {
+                const a = (i / 10) * Math.PI * 2 - Math.PI / 2;
+                const r = (i % 2 === 0) ? r5 * 1.02 : r5 * 0.98;
+                vertices.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+            }
+
+            // Ring 5: outer 10 vertices
+            for (let i = 0; i < 10; i++) {
+                const a = (i / 10) * Math.PI * 2 - Math.PI / 2 + Math.PI / 10;
+                vertices.push([cx + r6 * 0.92 * Math.cos(a), cy + r6 * 0.92 * Math.sin(a)]);
+            }
+
+            // Ring 6: outer pentagon (5 vertices)
+            for (let i = 0; i < 5; i++) {
+                const a = (i / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                vertices.push([cx + r6 * Math.cos(a), cy + r6 * Math.sin(a)]);
+            }
+
+            // Define faces (pentagons and hexagons) by vertex indices
+            // Central pentagon
+            faces.push({ type: 5, verts: [0, 1, 2, 3, 4] });
+
+            // 5 hexagons around center
+            for (let i = 0; i < 5; i++) {
+                const i0 = i;
+                const i1 = (i + 1) % 5;
+                const j0 = 5 + i * 2;
+                const j1 = 5 + i * 2 + 1;
+                const j2 = 5 + ((i * 2 + 2) % 10);
+                faces.push({ type: 6, verts: [i0, j0, j1, j2, i1, i0 === 0 ? 4 : i0].slice(0,6) });
+            }
+
+            // 5 pentagons in ring 1-2 junction
+            for (let i = 0; i < 5; i++) {
+                const base = 5 + i * 2 + 1;
+                const next = 5 + ((i * 2 + 2) % 10);
+                const r2base = 15 + ((i * 2 + 1) % 10);
+                const r2next = 15 + ((i * 2 + 2) % 10);
+                const r2mid = 15 + (i * 2);
+                faces.push({ type: 5, verts: [base, next, r2next, r2mid, r2base].slice(0,5) });
+            }
+
+            return { vertices, faces };
+        }
+
+        function draw() {
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+            ctx.clearRect(0, 0, w, h);
+
+            const cx = w / 2;
+            const cy = h / 2;
+            const R = Math.min(w, h) * 0.40;
+
+            // Draw a proper simplified Schlegel diagram
+            // Use concentric pentagons and hexagons pattern
+
+            // Outer boundary circle
+            ctx.beginPath();
+            ctx.arc(cx, cy, R + 10, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(100, 100, 120, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Generate pentagon and hexagon positions for a stylized Schlegel
+            const pentagons = [];
+            const hexagons = [];
+
+            // Central pentagon
+            const cp = [];
+            for (let i = 0; i < 5; i++) {
+                const a = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                cp.push([cx + R * 0.15 * Math.cos(a), cy + R * 0.15 * Math.sin(a)]);
+            }
+            pentagons.push(cp);
+
+            // 5 pentagons at mid radius
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2;
+                const pcx = cx + R * 0.50 * Math.cos(angle);
+                const pcy = cy + R * 0.50 * Math.sin(angle);
+                const pp = [];
+                for (let i = 0; i < 5; i++) {
+                    const a = (i / 5) * Math.PI * 2 + angle + Math.PI;
+                    pp.push([pcx + R * 0.10 * Math.cos(a), pcy + R * 0.10 * Math.sin(a)]);
+                }
+                pentagons.push(pp);
+            }
+
+            // 5 pentagons at outer radius
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                const pcx = cx + R * 0.82 * Math.cos(angle);
+                const pcy = cy + R * 0.82 * Math.sin(angle);
+                const pp = [];
+                for (let i = 0; i < 5; i++) {
+                    const a = (i / 5) * Math.PI * 2 + angle;
+                    pp.push([pcx + R * 0.08 * Math.cos(a), pcy + R * 0.08 * Math.sin(a)]);
+                }
+                pentagons.push(pp);
+            }
+
+            // Outer boundary pentagon (the 12th pentagon in the Schlegel is the exterior)
+            const outerP = [];
+            for (let i = 0; i < 5; i++) {
+                const a = (i / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                outerP.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]);
+            }
+            pentagons.push(outerP);
+
+            // 10 hexagons around center
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 10;
+                const hcx = cx + R * 0.30 * Math.cos(angle);
+                const hcy = cy + R * 0.30 * Math.sin(angle);
+                const hp = [];
+                for (let i = 0; i < 6; i++) {
+                    const a = (i / 6) * Math.PI * 2 + angle;
+                    hp.push([hcx + R * 0.10 * Math.cos(a), hcy + R * 0.10 * Math.sin(a)]);
+                }
+                hexagons.push(hp);
+            }
+
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2;
+                const hcx = cx + R * 0.50 * Math.cos(angle + Math.PI / 10);
+                const hcy = cy + R * 0.50 * Math.sin(angle + Math.PI / 10);
+                const hp = [];
+                for (let i = 0; i < 6; i++) {
+                    const a = (i / 6) * Math.PI * 2 + angle + Math.PI / 6;
+                    hp.push([hcx + R * 0.09 * Math.cos(a), hcy + R * 0.09 * Math.sin(a)]);
+                }
+                hexagons.push(hp);
+            }
+
+            // 10 hexagons at outer ring
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                const hcx = cx + R * 0.66 * Math.cos(angle);
+                const hcy = cy + R * 0.66 * Math.sin(angle);
+                const hp = [];
+                for (let i = 0; i < 6; i++) {
+                    const a = (i / 6) * Math.PI * 2 + angle;
+                    hp.push([hcx + R * 0.09 * Math.cos(a), hcy + R * 0.09 * Math.sin(a)]);
+                }
+                hexagons.push(hp);
+            }
+
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5 + Math.PI / 10;
+                const hcx = cx + R * 0.66 * Math.cos(angle);
+                const hcy = cy + R * 0.66 * Math.sin(angle);
+                const hp = [];
+                for (let i = 0; i < 6; i++) {
+                    const a = (i / 6) * Math.PI * 2 + angle + Math.PI / 6;
+                    hp.push([hcx + R * 0.085 * Math.cos(a), hcy + R * 0.085 * Math.sin(a)]);
+                }
+                hexagons.push(hp);
+            }
+
+            // Draw hexagons (violet fill)
+            hexagons.forEach(hex => {
+                ctx.beginPath();
+                ctx.moveTo(hex[0][0], hex[0][1]);
+                for (let i = 1; i < hex.length; i++) ctx.lineTo(hex[i][0], hex[i][1]);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.08)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(139, 92, 246, 0.35)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            // Draw pentagons (cyan fill)
+            pentagons.forEach(pent => {
+                ctx.beginPath();
+                ctx.moveTo(pent[0][0], pent[0][1]);
+                for (let i = 1; i < pent.length; i++) ctx.lineTo(pent[i][0], pent[i][1]);
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(34, 211, 238, 0.12)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(34, 211, 238, 0.5)';
+                ctx.lineWidth = 1.5;
+                ctx.stroke();
+            });
+
+            // Draw vertices
+            const allVerts = new Set();
+            [...pentagons, ...hexagons].forEach(face => {
+                face.forEach(v => {
+                    const key = Math.round(v[0]) + ',' + Math.round(v[1]);
+                    if (!allVerts.has(key)) {
+                        allVerts.add(key);
+                        ctx.beginPath();
+                        ctx.arc(v[0], v[1], 2, 0, Math.PI * 2);
+                        ctx.fillStyle = 'rgba(200, 200, 220, 0.6)';
+                        ctx.fill();
+                    }
+                });
+            });
+
+            // Labels
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.7)';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Pentagono (cyan)', cx, cy + R + 30);
+            ctx.fillStyle = 'rgba(139, 92, 246, 0.7)';
+            ctx.fillText('Hexagono (violeta)', cx, cy + R + 45);
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+    })();
+    </script>
+
+    <!-- ILLUSTRATION 2: Nanotube lattice vectors -->
+    <script>
+    (function() {
+        const canvas = document.getElementById('canvasNanotube');
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+
+        function resize() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            draw();
+        }
+
+        function draw() {
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+            ctx.clearRect(0, 0, w, h);
+
+            // Hexagonal lattice parameters
+            const a = Math.min(w, h) * 0.065;
+            const a1 = [a * Math.sqrt(3), 0];
+            const a2 = [a * Math.sqrt(3) / 2, a * 3 / 2];
+
+            const ox = w * 0.15;
+            const oy = h * 0.85;
+
+            // Draw hexagonal lattice
+            const hexCenters = [];
+            for (let i = -2; i < 12; i++) {
+                for (let j = -1; j < 8; j++) {
+                    const cx = ox + i * a1[0] + j * a2[0];
+                    const cy = oy - (i * a1[1] + j * a2[1]);
+                    if (cx > -a && cx < w + a && cy > -a && cy < h + a) {
+                        hexCenters.push([cx, cy]);
+                    }
+                }
+            }
+
+            // Draw hexagons
+            hexCenters.forEach(([cx, cy]) => {
+                ctx.beginPath();
+                for (let k = 0; k < 6; k++) {
+                    const angle = Math.PI / 6 + (k / 6) * Math.PI * 2;
+                    const x = cx + a * 0.95 * Math.cos(angle);
+                    const y = cy + a * 0.95 * Math.sin(angle);
+                    if (k === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.strokeStyle = 'rgba(100, 100, 130, 0.25)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            });
+
+            // Draw lattice points
+            const latticePoints = [];
+            for (let i = -1; i < 10; i++) {
+                for (let j = -1; j < 7; j++) {
+                    const x = ox + i * a1[0] + j * a2[0];
+                    const y = oy - (i * a1[1] + j * a2[1]);
+                    if (x > 0 && x < w && y > 0 && y < h) {
+                        latticePoints.push([x, y, i, j]);
+                    }
+                }
+            }
+
+            latticePoints.forEach(([x, y]) => {
+                ctx.beginPath();
+                ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(160, 160, 180, 0.4)';
+                ctx.fill();
+            });
+
+            // Origin point
+            ctx.beginPath();
+            ctx.arc(ox, oy, 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#ffffff';
+            ctx.fill();
+
+            // Draw lattice basis vectors a1, a2
+            const arrowLen = 8;
+
+            // a1 vector
+            const a1x = ox + a1[0];
+            const a1y = oy - a1[1];
+            drawArrow(ctx, ox, oy, a1x, a1y, 'rgba(200,200,220,0.6)', 1.5);
+            ctx.fillStyle = 'rgba(200,200,220,0.7)';
+            ctx.font = '13px JetBrains Mono, monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText('a\u2081', (ox + a1x) / 2, a1y + 18);
+
+            // a2 vector
+            const a2x = ox + a2[0];
+            const a2y = oy - a2[1];
+            drawArrow(ctx, ox, oy, a2x, a2y, 'rgba(200,200,220,0.6)', 1.5);
+            ctx.fillText('a\u2082', a2x - 18, (oy + a2y) / 2);
+
+            // Armchair vector (n,n) = (4,4)
+            const armN = 4;
+            const armEnd = [ox + armN * a1[0] + armN * a2[0], oy - (armN * a1[1] + armN * a2[1])];
+            drawArrow(ctx, ox, oy, armEnd[0], armEnd[1], '#22d3ee', 2.5);
+            ctx.fillStyle = '#22d3ee';
+            ctx.font = 'bold 12px JetBrains Mono, monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText('Armchair (4,4)', armEnd[0] + 8, armEnd[1] - 5);
+
+            // Zigzag vector (6,0)
+            const zigN = 6;
+            const zigEnd = [ox + zigN * a1[0], oy - zigN * a1[1]];
+            drawArrow(ctx, ox, oy, zigEnd[0], zigEnd[1], '#a78bfa', 2.5);
+            ctx.fillStyle = '#a78bfa';
+            ctx.textAlign = 'center';
+            ctx.fillText('Zigzag (6,0)', (ox + zigEnd[0]) / 2, zigEnd[1] + 22);
+
+            // Chiral vector (5,3)
+            const chiN = 5, chiM = 3;
+            const chiEnd = [ox + chiN * a1[0] + chiM * a2[0], oy - (chiN * a1[1] + chiM * a2[1])];
+            drawArrow(ctx, ox, oy, chiEnd[0], chiEnd[1], '#4ade80', 2.5);
+            ctx.fillStyle = '#4ade80';
+            ctx.textAlign = 'left';
+            ctx.fillText('Quiral (5,3)', chiEnd[0] + 8, chiEnd[1] + 5);
+
+            // Legend
+            ctx.fillStyle = 'rgba(160, 160, 180, 0.5)';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('C\u2095 = n a\u2081 + m a\u2082', w - 170, h - 15);
+
+            // Origin label
+            ctx.fillStyle = '#fff';
+            ctx.font = '11px JetBrains Mono, monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText('O', ox - 10, oy + 4);
+        }
+
+        function drawArrow(ctx, x0, y0, x1, y1, color, width) {
+            const angle = Math.atan2(y1 - y0, x1 - x0);
+            const headLen = 10;
+
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x1 - headLen * Math.cos(angle - 0.35), y1 - headLen * Math.sin(angle - 0.35));
+            ctx.lineTo(x1 - headLen * Math.cos(angle + 0.35), y1 - headLen * Math.sin(angle + 0.35));
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+    })();
+    </script>
+
+    <!-- INTERACTIVE LAB: Fullerene Explorer -->
+    <script>
+    (function() {
+        const canvas = document.getElementById('canvasLab');
+        const ctx = canvas.getContext('2d');
+        const dpr = window.devicePixelRatio || 1;
+
+        const btnC60 = document.getElementById('btnC60');
+        const btnC70 = document.getElementById('btnC70');
+        const btnGraphene = document.getElementById('btnGraphene');
+
+        const statV = document.getElementById('statV');
+        const statE = document.getElementById('statE');
+        const statF = document.getElementById('statF');
+        const statEuler = document.getElementById('statEuler');
+        const statPent = document.getElementById('statPent');
+        const statHex = document.getElementById('statHex');
+        const statSym = document.getElementById('statSym');
+
+        let currentMode = 'c60';
+        let highlightedPentagons = new Set();
+        let pentagonRegions = [];
+
+        function resize() {
+            const rect = canvas.getBoundingClientRect();
+            canvas.width = rect.width * dpr;
+            canvas.height = rect.height * dpr;
+            ctx.setTransform(dpr, 0, 0, dpr, 0, 0);
+            pentagonRegions = [];
+            drawLab();
+        }
+
+        function setActiveButton(btn) {
+            [btnC60, btnC70, btnGraphene].forEach(b => {
+                b.className = 'px-4 py-1.5 rounded-lg bg-gray-800 text-gray-400 text-sm mono hover:bg-gray-700 transition';
+            });
+            btn.className = 'px-4 py-1.5 rounded-lg bg-violet-500/20 text-violet-400 text-sm mono hover:bg-violet-500/30 transition';
+        }
+
+        btnC60.addEventListener('click', () => {
+            currentMode = 'c60';
+            highlightedPentagons.clear();
+            setActiveButton(btnC60);
+            updateStats(60, 90, 32, 12, 20, 'I_h');
+            pentagonRegions = [];
+            drawLab();
+        });
+
+        btnC70.addEventListener('click', () => {
+            currentMode = 'c70';
+            highlightedPentagons.clear();
+            setActiveButton(btnC70);
+            updateStats(70, 105, 37, 12, 25, 'D_5h');
+            pentagonRegions = [];
+            drawLab();
+        });
+
+        btnGraphene.addEventListener('click', () => {
+            currentMode = 'graphene';
+            highlightedPentagons.clear();
+            setActiveButton(btnGraphene);
+            updateStats('-', '-', '-', 0, '-', 'p6mm');
+            pentagonRegions = [];
+            drawLab();
+        });
+
+        function updateStats(v, e, f, p, h, sym) {
+            statV.textContent = v;
+            statE.textContent = e;
+            statF.textContent = f;
+            const euler = (typeof v === 'number' && typeof e === 'number' && typeof f === 'number') ? v - e + f : '-';
+            statEuler.textContent = euler;
+            statPent.textContent = p;
+            statHex.textContent = h;
+            statSym.textContent = sym;
+        }
+
+        canvas.addEventListener('click', (evt) => {
+            if (currentMode === 'graphene') return;
+            const rect = canvas.getBoundingClientRect();
+            const mx = evt.clientX - rect.left;
+            const my = evt.clientY - rect.top;
+
+            for (let i = 0; i < pentagonRegions.length; i++) {
+                const { cx, cy, r, idx } = pentagonRegions[i];
+                const dx = mx - cx;
+                const dy = my - cy;
+                if (dx * dx + dy * dy < r * r) {
+                    if (highlightedPentagons.has(idx)) {
+                        highlightedPentagons.delete(idx);
+                    } else {
+                        highlightedPentagons.add(idx);
+                    }
+                    drawLab();
+                    return;
+                }
+            }
+        });
+
+        function drawLab() {
+            const w = canvas.getBoundingClientRect().width;
+            const h = canvas.getBoundingClientRect().height;
+            ctx.clearRect(0, 0, w, h);
+
+            if (currentMode === 'c60') drawSchlegelC60(w, h);
+            else if (currentMode === 'c70') drawSchlegelC70(w, h);
+            else if (currentMode === 'graphene') drawGraphene(w, h);
+        }
+
+        function drawSchlegelC60(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const R = Math.min(w, h) * 0.42;
+
+            pentagonRegions = [];
+
+            // Generate proper Schlegel-like diagram for truncated icosahedron
+            // We approximate with concentric rings of pentagons/hexagons
+
+            // Pentagon positions (12 total)
+            // 1 central, 5 inner ring, 5 outer ring, 1 boundary
+            const pentCenters = [];
+
+            // Central pentagon
+            pentCenters.push({ x: cx, y: cy, r: R * 0.13 });
+
+            // 5 inner pentagons
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2;
+                pentCenters.push({
+                    x: cx + R * 0.48 * Math.cos(angle),
+                    y: cy + R * 0.48 * Math.sin(angle),
+                    r: R * 0.10
+                });
+            }
+
+            // 5 outer pentagons
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                pentCenters.push({
+                    x: cx + R * 0.80 * Math.cos(angle),
+                    y: cy + R * 0.80 * Math.sin(angle),
+                    r: R * 0.08
+                });
+            }
+
+            // Hexagon positions (20 total)
+            const hexCenters = [];
+
+            // 5 inner hexagons (between center and inner ring)
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                hexCenters.push({
+                    x: cx + R * 0.25 * Math.cos(angle),
+                    y: cy + R * 0.25 * Math.sin(angle),
+                    r: R * 0.10
+                });
+            }
+
+            // 10 middle hexagons
+            for (let k = 0; k < 10; k++) {
+                const angle = (k / 10) * Math.PI * 2 - Math.PI / 2 + Math.PI / 10;
+                hexCenters.push({
+                    x: cx + R * 0.58 * Math.cos(angle),
+                    y: cy + R * 0.58 * Math.sin(angle),
+                    r: R * 0.085
+                });
+            }
+
+            // 5 outer hexagons
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2;
+                hexCenters.push({
+                    x: cx + R * 0.85 * Math.cos(angle),
+                    y: cy + R * 0.85 * Math.sin(angle),
+                    r: R * 0.07
+                });
+            }
+
+            // Draw outer boundary (the 12th pentagon)
+            ctx.beginPath();
+            for (let i = 0; i < 5; i++) {
+                const angle = (i / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                const x = cx + R * Math.cos(angle);
+                const y = cy + R * Math.sin(angle);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.closePath();
+            const outerHighlighted = highlightedPentagons.has(11);
+            ctx.fillStyle = outerHighlighted ? 'rgba(34, 211, 238, 0.20)' : 'rgba(34, 211, 238, 0.05)';
+            ctx.fill();
+            ctx.strokeStyle = outerHighlighted ? 'rgba(34, 211, 238, 0.8)' : 'rgba(34, 211, 238, 0.3)';
+            ctx.lineWidth = outerHighlighted ? 2.5 : 1.5;
+            ctx.stroke();
+
+            // Store outer pentagon for click detection
+            pentagonRegions.push({ cx: cx + R * 0.95 * Math.cos(Math.PI / 5 - Math.PI / 2), cy: cy + R * 0.95 * Math.sin(Math.PI / 5 - Math.PI / 2), r: R * 0.12, idx: 11 });
+
+            // Draw hexagons
+            hexCenters.forEach(hc => {
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const angle = (i / 6) * Math.PI * 2;
+                    const x = hc.x + hc.r * Math.cos(angle);
+                    const y = hc.y + hc.r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.06)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(139, 92, 246, 0.30)';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+            });
+
+            // Draw pentagons (inner 11)
+            pentCenters.forEach((pc, idx) => {
+                const highlighted = highlightedPentagons.has(idx);
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                    const x = pc.x + pc.r * Math.cos(angle);
+                    const y = pc.y + pc.r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fillStyle = highlighted ? 'rgba(34, 211, 238, 0.25)' : 'rgba(34, 211, 238, 0.08)';
+                ctx.fill();
+                ctx.strokeStyle = highlighted ? 'rgba(34, 211, 238, 0.9)' : 'rgba(34, 211, 238, 0.4)';
+                ctx.lineWidth = highlighted ? 2.5 : 1.5;
+                ctx.stroke();
+
+                if (highlighted) {
+                    ctx.fillStyle = '#22d3ee';
+                    ctx.font = '10px JetBrains Mono, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('P' + (idx + 1) + '/12', pc.x, pc.y + pc.r + 14);
+                }
+
+                pentagonRegions.push({ cx: pc.x, cy: pc.y, r: pc.r * 1.3, idx });
+            });
+
+            // Draw connecting edges (simplified network)
+            ctx.strokeStyle = 'rgba(150, 150, 170, 0.12)';
+            ctx.lineWidth = 0.5;
+
+            // Connect central to inner ring
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 - Math.PI / 2;
+                ctx.beginPath();
+                ctx.moveTo(cx + R * 0.13 * Math.cos(angle), cy + R * 0.13 * Math.sin(angle));
+                const hAngle = angle + Math.PI / 5;
+                ctx.lineTo(cx + R * 0.25 * Math.cos(hAngle), cy + R * 0.25 * Math.sin(hAngle));
+                ctx.stroke();
+
+                const hAngle2 = angle - Math.PI / 5 + Math.PI * 2 / 5;
+                ctx.beginPath();
+                ctx.moveTo(cx + R * 0.13 * Math.cos(angle), cy + R * 0.13 * Math.sin(angle));
+                ctx.lineTo(cx + R * 0.25 * Math.cos(hAngle2), cy + R * 0.25 * Math.sin(hAngle2));
+                ctx.stroke();
+            }
+
+            // Draw vertex dots
+            const vertexPositions = [];
+            // Add pentagon vertices
+            pentCenters.forEach(pc => {
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                    vertexPositions.push([pc.x + pc.r * Math.cos(angle), pc.y + pc.r * Math.sin(angle)]);
+                }
+            });
+
+            // Outer boundary vertices
+            for (let i = 0; i < 5; i++) {
+                const angle = (i / 5) * Math.PI * 2 - Math.PI / 2 + Math.PI / 5;
+                vertexPositions.push([cx + R * Math.cos(angle), cy + R * Math.sin(angle)]);
+            }
+
+            // Draw unique vertices
+            const drawnVerts = new Set();
+            vertexPositions.forEach(([vx, vy]) => {
+                const key = Math.round(vx * 2) + ',' + Math.round(vy * 2);
+                if (!drawnVerts.has(key)) {
+                    drawnVerts.add(key);
+                    ctx.beginPath();
+                    ctx.arc(vx, vy, 1.8, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(200, 200, 220, 0.5)';
+                    ctx.fill();
+                }
+            });
+
+            // Info text
+            ctx.fillStyle = 'rgba(160, 160, 180, 0.5)';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Pulsa un pentagono para resaltarlo', cx, h - 15);
+        }
+
+        function drawSchlegelC70(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const R = Math.min(w, h) * 0.42;
+
+            pentagonRegions = [];
+
+            // C70 has D5h symmetry (rugby ball shape)
+            // 12 pentagons, 25 hexagons
+            // Schematic representation with elongated structure
+
+            // Draw elongated boundary (ellipse-like)
+            ctx.beginPath();
+            for (let i = 0; i <= 100; i++) {
+                const t = (i / 100) * Math.PI * 2;
+                const x = cx + R * 1.15 * Math.cos(t);
+                const y = cy + R * 0.85 * Math.sin(t);
+                if (i === 0) ctx.moveTo(x, y);
+                else ctx.lineTo(x, y);
+            }
+            ctx.strokeStyle = 'rgba(100, 100, 130, 0.2)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Place 12 pentagons: 1 top cap, 5 upper ring, 5 lower ring, 1 bottom cap
+            const pentPositions = [
+                { x: cx, y: cy - R * 0.65, r: R * 0.09 }, // top
+            ];
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2;
+                pentPositions.push({
+                    x: cx + R * 0.45 * Math.cos(angle),
+                    y: cy - R * 0.30 + R * 0.15 * Math.sin(angle),
+                    r: R * 0.08
+                });
+            }
+            for (let k = 0; k < 5; k++) {
+                const angle = (k / 5) * Math.PI * 2 + Math.PI / 5;
+                pentPositions.push({
+                    x: cx + R * 0.45 * Math.cos(angle),
+                    y: cy + R * 0.30 + R * 0.15 * Math.sin(angle),
+                    r: R * 0.08
+                });
+            }
+            pentPositions.push({ x: cx, y: cy + R * 0.65, r: R * 0.09 }); // bottom
+
+            // Draw equatorial hexagons belt
+            for (let k = 0; k < 10; k++) {
+                const angle = (k / 10) * Math.PI * 2;
+                const hx = cx + R * 0.70 * Math.cos(angle);
+                const hy = cy + R * 0.08 * Math.sin(angle * 3);
+                ctx.beginPath();
+                for (let i = 0; i < 6; i++) {
+                    const a = (i / 6) * Math.PI * 2;
+                    const px = hx + R * 0.07 * Math.cos(a);
+                    const py = hy + R * 0.07 * Math.sin(a);
+                    if (i === 0) ctx.moveTo(px, py);
+                    else ctx.lineTo(px, py);
+                }
+                ctx.closePath();
+                ctx.fillStyle = 'rgba(139, 92, 246, 0.06)';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(139, 92, 246, 0.25)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            }
+
+            // More hexagons in upper and lower caps
+            for (let ring = 0; ring < 2; ring++) {
+                const yOff = ring === 0 ? -R * 0.45 : R * 0.45;
+                for (let k = 0; k < 5; k++) {
+                    const angle = (k / 5) * Math.PI * 2 + (ring === 1 ? Math.PI / 5 : 0);
+                    const hx = cx + R * 0.28 * Math.cos(angle);
+                    const hy = cy + yOff + R * 0.08 * Math.sin(angle);
+                    ctx.beginPath();
+                    for (let i = 0; i < 6; i++) {
+                        const a = (i / 6) * Math.PI * 2;
+                        const px = hx + R * 0.07 * Math.cos(a);
+                        const py = hy + R * 0.07 * Math.sin(a);
+                        if (i === 0) ctx.moveTo(px, py);
+                        else ctx.lineTo(px, py);
+                    }
+                    ctx.closePath();
+                    ctx.fillStyle = 'rgba(139, 92, 246, 0.06)';
+                    ctx.fill();
+                    ctx.strokeStyle = 'rgba(139, 92, 246, 0.25)';
+                    ctx.lineWidth = 0.8;
+                    ctx.stroke();
+                }
+            }
+
+            // Draw pentagons
+            pentPositions.forEach((pc, idx) => {
+                const highlighted = highlightedPentagons.has(idx);
+                ctx.beginPath();
+                for (let i = 0; i < 5; i++) {
+                    const angle = (i / 5) * Math.PI * 2 - Math.PI / 2;
+                    const x = pc.x + pc.r * Math.cos(angle);
+                    const y = pc.y + pc.r * Math.sin(angle);
+                    if (i === 0) ctx.moveTo(x, y);
+                    else ctx.lineTo(x, y);
+                }
+                ctx.closePath();
+                ctx.fillStyle = highlighted ? 'rgba(34, 211, 238, 0.25)' : 'rgba(34, 211, 238, 0.08)';
+                ctx.fill();
+                ctx.strokeStyle = highlighted ? 'rgba(34, 211, 238, 0.9)' : 'rgba(34, 211, 238, 0.4)';
+                ctx.lineWidth = highlighted ? 2.5 : 1.5;
+                ctx.stroke();
+
+                if (highlighted) {
+                    ctx.fillStyle = '#22d3ee';
+                    ctx.font = '10px JetBrains Mono, monospace';
+                    ctx.textAlign = 'center';
+                    ctx.fillText('P' + (idx + 1) + '/12', pc.x, pc.y + pc.r + 14);
+                }
+
+                pentagonRegions.push({ cx: pc.x, cy: pc.y, r: pc.r * 1.5, idx });
+            });
+
+            // Labels
+            ctx.fillStyle = 'rgba(160, 160, 180, 0.6)';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('C\u2087\u2080 -- Simetria D\u2085h (forma de balon de rugby)', cx, h - 35);
+            ctx.fillStyle = 'rgba(160, 160, 180, 0.4)';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText('Pulsa un pentagono para resaltarlo', cx, h - 15);
+        }
+
+        function drawGraphene(w, h) {
+            const cx = w / 2;
+            const cy = h / 2;
+            const a = Math.min(w, h) * 0.05;
+
+            pentagonRegions = [];
+
+            // Draw hexagonal graphene lattice
+            const a1 = [a * Math.sqrt(3), 0];
+            const a2 = [a * Math.sqrt(3) / 2, a * 3 / 2];
+
+            const ox = w * 0.08;
+            const oy = h * 0.92;
+
+            // Draw hexagons
+            for (let i = -2; i < 15; i++) {
+                for (let j = -1; j < 10; j++) {
+                    const hcx = ox + i * a1[0] + j * a2[0];
+                    const hcy = oy - (i * a1[1] + j * a2[1]);
+                    if (hcx < -a * 2 || hcx > w + a * 2 || hcy < -a * 2 || hcy > h + a * 2) continue;
+
+                    ctx.beginPath();
+                    for (let k = 0; k < 6; k++) {
+                        const angle = Math.PI / 6 + (k / 6) * Math.PI * 2;
+                        const x = hcx + a * 0.95 * Math.cos(angle);
+                        const y = hcy + a * 0.95 * Math.sin(angle);
+                        if (k === 0) ctx.moveTo(x, y);
+                        else ctx.lineTo(x, y);
+                    }
+                    ctx.closePath();
+                    ctx.strokeStyle = 'rgba(100, 100, 130, 0.2)';
+                    ctx.lineWidth = 0.7;
+                    ctx.stroke();
+                }
+            }
+
+            // Draw lattice points
+            for (let i = -1; i < 13; i++) {
+                for (let j = -1; j < 9; j++) {
+                    const px = ox + i * a1[0] + j * a2[0];
+                    const py = oy - (i * a1[1] + j * a2[1]);
+                    if (px < 0 || px > w || py < 0 || py > h) continue;
+                    ctx.beginPath();
+                    ctx.arc(px, py, 2, 0, Math.PI * 2);
+                    ctx.fillStyle = 'rgba(160, 160, 180, 0.3)';
+                    ctx.fill();
+                }
+            }
+
+            // Highlight armchair direction
+            const armStart = [ox + 2 * a1[0] + 1 * a2[0], oy - (2 * a1[1] + 1 * a2[1])];
+            const armEnd = [ox + 2 * a1[0] + 1 * a2[0] + 4 * (a1[0] + a2[0]) / 2, oy - (2 * a1[1] + 1 * a2[1]) - 4 * (a1[1] + a2[1]) / 2];
+            drawLabArrow(ctx, armStart[0], armStart[1], armEnd[0], armEnd[1], '#22d3ee', 2);
+            ctx.fillStyle = '#22d3ee';
+            ctx.font = 'bold 11px JetBrains Mono, monospace';
+            ctx.textAlign = 'left';
+            ctx.fillText('Armchair', armEnd[0] + 8, armEnd[1]);
+
+            // Highlight zigzag direction
+            const zigStart = [ox + 1 * a1[0] + 3 * a2[0], oy - (1 * a1[1] + 3 * a2[1])];
+            const zigEnd = [zigStart[0] + 5 * a1[0], zigStart[1]];
+            drawLabArrow(ctx, zigStart[0], zigStart[1], zigEnd[0], zigEnd[1], '#a78bfa', 2);
+            ctx.fillStyle = '#a78bfa';
+            ctx.textAlign = 'center';
+            ctx.fillText('Zigzag', (zigStart[0] + zigEnd[0]) / 2, zigStart[1] + 18);
+
+            // Highlight chiral direction
+            const chiStart = [ox + 5 * a1[0] + 1 * a2[0], oy - (5 * a1[1] + 1 * a2[1])];
+            const chiEnd = [chiStart[0] + 3 * a1[0] + 2 * a2[0], chiStart[1] - (3 * a1[1] + 2 * a2[1])];
+            drawLabArrow(ctx, chiStart[0], chiStart[1], chiEnd[0], chiEnd[1], '#4ade80', 2);
+            ctx.fillStyle = '#4ade80';
+            ctx.textAlign = 'left';
+            ctx.fillText('Quiral', chiEnd[0] + 8, chiEnd[1] + 4);
+
+            // Title
+            ctx.fillStyle = 'rgba(200, 200, 220, 0.6)';
+            ctx.font = '13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Red hexagonal de grafeno con direcciones de enrollamiento', w / 2, 25);
+
+            // Note: no pentagons, all hexagons
+            ctx.fillStyle = 'rgba(160, 160, 180, 0.4)';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText('Sin pentagonos: curvatura gaussiana nula (hoja plana)', w / 2, h - 15);
+        }
+
+        function drawLabArrow(ctx, x0, y0, x1, y1, color, width) {
+            const angle = Math.atan2(y1 - y0, x1 - x0);
+            const headLen = 9;
+
+            ctx.beginPath();
+            ctx.moveTo(x0, y0);
+            ctx.lineTo(x1, y1);
+            ctx.strokeStyle = color;
+            ctx.lineWidth = width;
+            ctx.stroke();
+
+            ctx.beginPath();
+            ctx.moveTo(x1, y1);
+            ctx.lineTo(x1 - headLen * Math.cos(angle - 0.35), y1 - headLen * Math.sin(angle - 0.35));
+            ctx.lineTo(x1 - headLen * Math.cos(angle + 0.35), y1 - headLen * Math.sin(angle + 0.35));
+            ctx.closePath();
+            ctx.fillStyle = color;
+            ctx.fill();
+        }
+
+        window.addEventListener('resize', resize);
+        resize();
+    })();
+    </script>
+
 </body>
 </html>

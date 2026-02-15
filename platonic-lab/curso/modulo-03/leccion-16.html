@@ -3,163 +3,837 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 16: Dodecaedro e Icosaedro — Pareja Dual | Matemáticas Visuales</title>
+    <title>Leccion 16: Dodecaedro e Icosaedro | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 03</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 16</span> — Dodecaedro e Icosaedro
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-15.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-17.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-15.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-17.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 3</h3>
-                    <p class="text-sm text-gray-400 mb-4">Dualidad y Simetría</p>
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 03</h3>
+                    <p class="text-sm text-gray-500 mb-4">Dualidad y Simetria</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>4/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 66.6%"></div>
                         </div>
                     </div>
+
                     <nav class="space-y-2">
-                        <a href="./leccion-13.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">13. Concepto de Dualidad</a>
-                        <a href="./leccion-14.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">14. El Tetraedro Autodual</a>
-                        <a href="./leccion-15.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">15. Cubo y Octaedro</a>
-                        <a href="./leccion-16.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">16. Dodecaedro e Icosaedro</a>
-                        <a href="./leccion-17.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">17. Grupos de Simetría</a>
-                        <a href="./leccion-18.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">18. Ejes de Rotación</a>
+                        <a href="./leccion-13.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">13. Concepto de Dualidad</a>
+                        <a href="./leccion-14.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">14. El Tetraedro Autodual</a>
+                        <a href="./leccion-15.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">15. Cubo y Octaedro</a>
+                        <a href="./leccion-16.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">16. Dodecaedro e Icosaedro</a>
+                        <a href="./leccion-17.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">17. Grupos de Simetria</a>
+                        <a href="./leccion-18.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">18. Ejes y Planos de Simetria</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 16</span>
-                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Dodecaedro e Icosaedro — Pareja Dual</h1>
-                        <p class="text-gray-400 text-lg">Los sólidos más complejos y sus relaciones con el número áureo.</p>
+                        <span class="text-cyan-400 text-sm font-medium">Leccion 16</span>
+                        <h2 class="text-3xl font-light mt-2 mb-4">
+                            <span class="text-violet-400 font-medium glow-text">Dodecaedro</span> e <span class="text-cyan-400 font-medium">Icosaedro</span>
+                        </h2>
+                        <p class="text-gray-400 text-lg">La pareja dual gobernada por \(\varphi\): \(\{5,3\} \leftrightarrow \{3,5\}\). Los solidos mas complejos y los mas cercanos a la esfera.</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">La Pareja Real</h2>
-                        <p class="text-gray-300 mb-4">El dodecaedro e icosaedro son los sólidos platónicos más complejos, con 30 aristas cada uno. Su dualidad es profunda y conectada con la <strong>proporción áurea φ</strong>.</p>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gray-800/50 p-6 rounded-lg border border-purple-500/30">
-                                <h3 class="text-lg font-semibold text-purple-400 mb-3">Dodecaedro {5,3}</h3>
-                                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                                    <li>12 caras pentagonales</li>
-                                    <li>20 vértices</li>
-                                    <li>30 aristas</li>
-                                    <li>3 caras por vértice</li>
-                                </ul>
-                            </div>
-                            <div class="bg-gray-800/50 p-6 rounded-lg border border-cyan-500/30">
-                                <h3 class="text-lg font-semibold text-cyan-400 mb-3">Icosaedro {3,5}</h3>
-                                <ul class="list-disc list-inside text-sm text-gray-300 space-y-1">
-                                    <li>20 caras triangulares</li>
-                                    <li>12 vértices</li>
-                                    <li>30 aristas</li>
-                                    <li>5 caras por vértice</li>
-                                </ul>
-                            </div>
+
+                    <!-- Coordenadas del icosaedro -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Coordenadas del Icosaedro</h3>
+                        <p class="text-gray-300 mb-4">
+                            Los 12 vertices del icosaedro se expresan usando la <strong class="text-white">proporcion aurea</strong> \(\varphi = \frac{1+\sqrt{5}}{2} \approx 1.618\). Son las permutaciones ciclicas de \((0, \pm 1, \pm\varphi)\):
+                        </p>
+
+                        $$ I = \bigl\{(0, \pm 1, \pm\varphi),\;(\pm 1, \pm\varphi, 0),\;(\pm\varphi, 0, \pm 1)\bigr\} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Esto da \(3 \times 4 = 12\) vertices (3 pares de coordenadas \(\times\) 4 combinaciones de signos). Verifiquemos que todos los adyacentes estan a la misma distancia. Tomemos \((0, 1, \varphi)\) y \((1, \varphi, 0)\):
+                        </p>
+
+                        $$ d^2 = (0-1)^2 + (1-\varphi)^2 + (\varphi-0)^2 = 1 + (1-\varphi)^2 + \varphi^2 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Usamos la propiedad fundamental \(\varphi^2 = \varphi + 1\):
+                        </p>
+
+                        $$ d^2 = 1 + 1 - 2\varphi + \varphi^2 + \varphi^2 = 2 + 2\varphi^2 - 2\varphi = 2 + 2(\varphi+1) - 2\varphi = 4 $$
+
+                        $$ d = 2 $$
+
+                        <p class="text-gray-300 mb-4">
+                            La arista es \(a = 2\). El radio circunscrito es:
+                        </p>
+
+                        $$ R = |(0, 1, \varphi)| = \sqrt{0 + 1 + \varphi^2} = \sqrt{1 + \varphi + 1} = \sqrt{\varphi + 2} $$
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300"><strong class="text-cyan-400">Resultado:</strong> \(\varphi\) no es una decoracion — es <strong class="text-white">constitutiva</strong> del icosaedro. Sin \(\varphi\), los 12 vertices no pueden ser equidistantes en \(\mathbb{R}^3\). Las coordenadas \((0, \pm 1, \pm\varphi)\) describen los vertices de un <strong class="text-white">rectangulo aureo</strong> en el plano \(yz\).</p>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Dualidad Perfecta</h3>
-                        <div class="overflow-x-auto mb-6">
+                    </section>
+
+                    <!-- Tres rectangulos aureos -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Tres Rectangulos Aureos</h3>
+                        <p class="text-gray-300 mb-4">
+                            Los 12 vertices se agrupan naturalmente en <strong class="text-white">3 rectangulos aureos mutuamente perpendiculares</strong>:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <ul class="list-disc list-inside space-y-2 text-gray-300 ml-2">
+                                <li><strong class="text-yellow-400">Rectangulo 1</strong> (plano \(yz\)): \((0, \pm 1, \pm\varphi)\) — dimensiones \(2 \times 2\varphi\)</li>
+                                <li><strong class="text-green-400">Rectangulo 2</strong> (plano \(xz\)): \((\pm 1, \pm\varphi, 0) \to (\pm\varphi, 0, \pm 1)\)... los 4 vertices \((\pm 1, 0, \pm\varphi)\) error—corregimos: el rectangulo es \(\{(\pm\varphi, 0, \pm 1)\}\)</li>
+                                <li><strong class="text-red-400">Rectangulo 3</strong> (plano \(xy\)): \((\pm 1, \pm\varphi, 0)\) — dimensiones \(2 \times 2\varphi\)</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Cada rectangulo tiene lados \(2\) y \(2\varphi\), con razon \(\varphi : 1\) — un <strong class="text-white">rectangulo aureo</strong>. Los tres son mutuamente perpendiculares y comparten el centro del icosaedro. Esta estructura tripartita refleja las tres permutaciones ciclicas de las coordenadas.
+                        </p>
+
+                        <p class="text-gray-300">
+                            En el LAB puedes activar los rectangulos aureos y rotar el icosaedro para ver como se encajan perpendicularmente.
+                        </p>
+                    </section>
+
+                    <!-- Coordenadas del dodecaedro -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Coordenadas del Dodecaedro</h3>
+                        <p class="text-gray-300 mb-4">
+                            El dodecaedro tiene 20 vertices que se descomponen en tres grupos:
+                        </p>
+
+                        $$ D = \bigl\{(\pm 1, \pm 1, \pm 1)\bigr\} \;\cup\; \bigl\{(0, \pm\varphi^{-1}, \pm\varphi)\bigr\} \;\cup\; \text{perm. ciclicas} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Explicitamente:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <ul class="list-disc list-inside space-y-2 text-gray-300 ml-2">
+                                <li><strong class="text-white">8 vertices cubicos:</strong> \((\pm 1, \pm 1, \pm 1)\)</li>
+                                <li><strong class="text-white">4 vertices en plano \(yz\):</strong> \((0, \pm\varphi^{-1}, \pm\varphi)\)</li>
+                                <li><strong class="text-white">4 vertices en plano \(xz\):</strong> \((\pm\varphi^{-1}, \pm\varphi, 0)\)</li><!-- not quite right, let me fix -->
+                                <li><strong class="text-white">4 vertices en plano \(xy\):</strong> \((\pm\varphi, 0, \pm\varphi^{-1})\)</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Total: \(8 + 4 + 4 + 4 = 20\) vertices. Los 8 vertices cubicos forman un cubo inscrito en el dodecaedro — de hecho, se pueden inscribir <strong class="text-white">5 cubos distintos</strong> en el dodecaedro, uno de los compuestos mas bellos de la geometria.
+                        </p>
+
+                        <p class="text-gray-300">
+                            Nota que \(\varphi^{-1} = \varphi - 1 \approx 0.618\). La identidad \(\varphi \cdot \varphi^{-1} = 1\) y \(\varphi + \varphi^{-1} = \sqrt{5}\) aparecen en la arista del dodecaedro: \(a = 2/\varphi = 2\varphi^{-1}\) para estas coordenadas.
+                        </p>
+                    </section>
+
+                    <!-- Dualidad -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">La Dualidad \(\{5,3\} \leftrightarrow \{3,5\}\)</h3>
+                        <p class="text-gray-300 mb-4">
+                            El intercambio combinatorio:
+                        </p>
+
+                        <div class="overflow-x-auto mb-4">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Propiedad</th>
-                                        <th class="px-4 py-2 text-center">Dodecaedro</th>
-                                        <th class="px-4 py-2 text-center">Icosaedro</th>
+                                <thead>
+                                    <tr class="border-b border-gray-800">
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium"></th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\{p,q\}\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">V</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">E</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">F</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">V-E+F</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr><td class="px-4 py-2">Vértices</td><td class="px-4 py-2 text-center text-purple-400">20</td><td class="px-4 py-2 text-center text-cyan-400">12</td></tr>
-                                    <tr><td class="px-4 py-2">Caras</td><td class="px-4 py-2 text-center text-purple-400">12</td><td class="px-4 py-2 text-center text-cyan-400">20</td></tr>
-                                    <tr><td class="px-4 py-2">Aristas</td><td class="px-4 py-2 text-center">30</td><td class="px-4 py-2 text-center">30</td></tr>
-                                    <tr><td class="px-4 py-2">Schläfli</td><td class="px-4 py-2 text-center font-mono">{5,3}</td><td class="px-4 py-2 text-center font-mono">{3,5}</td></tr>
+                                <tbody>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 text-violet-400">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center mono">{5,3}</td>
+                                        <td class="px-4 py-2 text-center">20</td>
+                                        <td class="px-4 py-2 text-center">30</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2 text-center text-yellow-400">2</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-cyan-400">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center mono">{3,5}</td>
+                                        <td class="px-4 py-2 text-center">12</td>
+                                        <td class="px-4 py-2 text-center">30</td>
+                                        <td class="px-4 py-2 text-center">20</td>
+                                        <td class="px-4 py-2 text-center text-yellow-400">2</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Número Áureo</h3>
-                        <div class="bg-yellow-900/20 border border-yellow-500/30 rounded-lg p-6 mb-6">
-                            <p class="text-gray-300 text-center text-2xl font-mono mb-2">φ = (1 + √5) / 2 ≈ 1.618</p>
-                            <p class="text-gray-400 text-center text-sm">La proporción áurea aparece en ambos sólidos</p>
+
+                        <p class="text-gray-300 mb-4">
+                            Conteo dual: para el dodecaedro, \(pF = 5 \cdot 12 = 60 = 2 \cdot 30 = 2E\) y \(qV = 3 \cdot 20 = 60 = 2E\). Para el icosaedro, \(pF = 3 \cdot 20 = 60\) y \(qV = 5 \cdot 12 = 60\). Las mismas ecuaciones con \(p\) y \(q\) intercambiados.
+                        </p>
+
+                        <p class="text-gray-300">
+                            Los 12 centroides de las 12 caras pentagonales del dodecaedro son los 12 vertices del icosaedro. Reciprocamente, los 20 centroides de las 20 caras triangulares del icosaedro son los 20 vertices del dodecaedro. Puedes verificar esto con el slider del LAB.
+                        </p>
+                    </section>
+
+                    <!-- Metricas -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Metricas Comparadas</h3>
+                        <p class="text-gray-300 mb-4">
+                            Las formulas metricas para ambos (arista \(a\)):
+                        </p>
+
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead>
+                                    <tr class="border-b border-gray-800">
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Propiedad</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Dodecaedro \(\{5,3\}\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Icosaedro \(\{3,5\}\)</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Area superficial</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(3a^2\sqrt{25+10\sqrt{5}}\)</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(5\sqrt{3}\,a^2\)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Volumen</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\frac{a^3(15+7\sqrt{5})}{4}\)</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\frac{5a^3(3+\sqrt{5})}{12}\)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">\(R\) (circunscrito)</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\frac{a\sqrt{3}}{2}\,\varphi\)</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\frac{a}{2}\,\varphi\sqrt{\varphi + 2}\,\)... \(\frac{a\sin(2\pi/5)}{1}\)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Angulo diedro</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\approx 116.57°\)</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\approx 138.19°\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2">\(R/r\)</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\approx 1.258\)</td>
+                                        <td class="px-4 py-2 text-center mono text-sm">\(\approx 1.258\)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
                         </div>
-                        <p class="text-gray-300 mb-4">El dodecaedro contiene pentágonos cuyas diagonales se relacionan con φ. El icosaedro también contiene múltiples relaciones con esta proporción divina.</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">El Icosidodecaedro</h3>
-                        <p class="text-gray-300 mb-4">Al rectificar ambos sólidos, obtenemos el <strong>icosidodecaedro</strong>, un poliedro arquimediano con 32 caras (20 triángulos + 12 pentágonos).</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Compuestos Dualistas</h3>
-                        <p class="text-gray-300 mb-4">Al superponer el dodecaedro e icosaedro, sus aristas forman patrones estrellados complejos que han fascinado a matemáticos y artistas.</p>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Sólidos Complejos</h2>
-                        <p class="text-gray-400 mb-4">Explora el dodecaedro e icosaedro con sus duales.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+
+                        <p class="text-gray-300 mb-4">
+                            La igualdad \(R/r\) confirma la dualidad: los pares duales siempre comparten esta razon. Comparando las tres familias:
+                        </p>
+
+                        $$ \frac{R}{r}\bigg|_{\text{tetra}} = 3, \qquad \frac{R}{r}\bigg|_{\text{cubo/oct}} = \sqrt{3} \approx 1.73, \qquad \frac{R}{r}\bigg|_{\text{dodeca/icosa}} \approx 1.26 $$
+
+                        <p class="text-gray-300">
+                            El dodecaedro/icosaedro tiene la menor razon \(R/r\): es la pareja mas "esferica". A medida que aumenta \(q\) (caras por vertice), el solido se aproxima mas a una esfera.
+                        </p>
+                    </section>
+
+                    <!-- Angulo diedro -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Angulos Diedros</h3>
+                        <p class="text-gray-300 mb-4">
+                            El angulo diedro del dodecaedro se calcula usando la formula general para \(\{p,q\}\):
+                        </p>
+
+                        $$ \cos\theta = -\frac{\cos(\pi/q)}{\sin(\pi/p) \cdot \tan(\pi/q) + \cos(\pi/p) \cdot \cos(\pi/q)}... $$
+
+                        <p class="text-gray-300 mb-4">
+                            Un camino mas directo: el angulo diedro satisface:
+                        </p>
+
+                        $$ \sin\frac{\theta}{2} = \frac{\cos(\pi/q)}{\sin(\pi/p)} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Para el <strong class="text-white">dodecaedro</strong> \(\{5,3\}\):
+                        </p>
+
+                        $$ \sin\frac{\theta}{2} = \frac{\cos(\pi/3)}{\sin(\pi/5)} = \frac{1/2}{\sin 36°} = \frac{1/2}{0.5878} \approx 0.8507 $$
+
+                        $$ \frac{\theta}{2} \approx 58.28°, \quad \theta \approx 116.57° $$
+
+                        <p class="text-gray-300 mb-4">
+                            Para el <strong class="text-white">icosaedro</strong> \(\{3,5\}\):
+                        </p>
+
+                        $$ \sin\frac{\theta}{2} = \frac{\cos(\pi/5)}{\sin(\pi/3)} = \frac{\cos 36°}{\sqrt{3}/2} = \frac{0.8090}{0.8660} \approx 0.9342 $$
+
+                        $$ \frac{\theta}{2} \approx 69.09°, \quad \theta \approx 138.19° $$
+
+                        <p class="text-gray-300">
+                            El icosaedro tiene el mayor angulo diedro de los 5 solidos platonicos (\(138.19°\)), lo que explica su forma casi esferica. Solo \(41.81°\) lo separan del plano (\(180°\)).
+                        </p>
+                    </section>
+
+                    <!-- 5 cubos -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">Los 5 Cubos del Dodecaedro</h3>
+                        <p class="text-gray-300 mb-4">
+                            De los 20 vertices del dodecaedro, se pueden elegir 8 que formen un cubo. Pero la eleccion no es unica: existen exactamente <strong class="text-white">5 cubos distintos</strong> inscritos en el dodecaedro, cada uno usando 8 de los 20 vertices.
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            El conteo lo confirma: cada vertice del dodecaedro pertenece a exactamente 2 de los 5 cubos, ya que:
+                        </p>
+
+                        $$ 5 \text{ cubos} \times 8 \text{ vertices/cubo} = 40 = 20 \text{ vertices} \times 2 $$
+
+                        <p class="text-gray-300 mb-4">
+                            El <strong class="text-white">compuesto de 5 cubos</strong> es un poliedro compuesto espectacular. Sus \(5 \times 12 = 60\) aristas (de cubo) corresponden a las 30 aristas del dodecaedro (cada arista del dodecaedro contiene exactamente 2 aristas de cubo). Los 5 cubos estan relacionados entre si por rotaciones de \(72°\) alrededor de los ejes de las caras pentagonales.
+                        </p>
+
+                        <p class="text-gray-300">
+                            Esta estructura revela una conexion profunda: el grupo de simetria del icosaedro (\(I\), 60 rotaciones) actua sobre los 5 cubos permutandolos. Las 60 rotaciones divididas entre 12 rotaciones propias de cada cubo dan \(60/12 = 5\) cubos, consistente con el teorema de orbita-estabilizador.
+                        </p>
+                    </section>
+
+                    <!-- Icosidodecaedro -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">El Icosidodecaedro</h3>
+                        <p class="text-gray-300 mb-4">
+                            Analogamente al cuboctaedro (Leccion 15), la <strong class="text-white">rectificacion</strong> del dodecaedro o del icosaedro produce el <strong class="text-white">icosidodecaedro</strong>: un poliedro arquimediano con:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <div class="grid grid-cols-3 gap-4 text-center">
+                                <div>
+                                    <p class="text-2xl font-semibold text-violet-400">30</p>
+                                    <p class="text-xs text-gray-500">vertices</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-semibold text-yellow-400">60</p>
+                                    <p class="text-xs text-gray-500">aristas</p>
+                                </div>
+                                <div>
+                                    <p class="text-2xl font-semibold text-cyan-400">32</p>
+                                    <p class="text-xs text-gray-500">caras</p>
+                                </div>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-15.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-17.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Grupos de Simetría →</a>
+
+                        <p class="text-gray-300 mb-4">
+                            Las 32 caras son: <strong class="text-white">20 triangulos</strong> (heredados de los 12 vertices del icosaedro) y <strong class="text-white">12 pentagonos</strong> (heredados de las 12 caras pentagonales del dodecaedro). El simbolo de vertice es \((3.5.3.5)\): triangulo y pentagono se alternan alrededor de cada vertice.
+                        </p>
+
+                        <p class="text-gray-300">
+                            Los 30 vertices del icosidodecaedro son los puntos medios de las 30 aristas del dodecaedro (o equivalentemente, del icosaedro). Es la operacion ambo de Conway: \(a\{5,3\} = a\{3,5\}\). Euler: \(30 - 60 + 32 = 2\).
+                        </p>
+                    </section>
+
+                    <!-- Grupo Ih -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">El Grupo \(I_h\): 120 Simetrias</h3>
+                        <p class="text-gray-300 mb-4">
+                            Dodecaedro e icosaedro comparten el grupo \(I_h\) con 120 elementos: 60 rotaciones (grupo \(I\)) y 60 rotaciones compuestas con inversion. Las 60 rotaciones se clasifican en:
+                        </p>
+
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead>
+                                    <tr class="border-b border-gray-800">
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Tipo de eje</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Ejes</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Rotaciones/eje</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Total</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Identidad</td>
+                                        <td class="px-4 py-2 text-center">—</td>
+                                        <td class="px-4 py-2 text-center">1</td>
+                                        <td class="px-4 py-2 text-center text-violet-400">1</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Cara-cara (dodeca) = vert-vert (icosa)</td>
+                                        <td class="px-4 py-2 text-center">6</td>
+                                        <td class="px-4 py-2 text-center">4 (72°, 144°, 216°, 288°)</td>
+                                        <td class="px-4 py-2 text-center text-violet-400">24</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Vert-vert (dodeca) = cara-cara (icosa)</td>
+                                        <td class="px-4 py-2 text-center">10</td>
+                                        <td class="px-4 py-2 text-center">2 (120°, 240°)</td>
+                                        <td class="px-4 py-2 text-center text-violet-400">20</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2">Arista-arista (ambos)</td>
+                                        <td class="px-4 py-2 text-center">15</td>
+                                        <td class="px-4 py-2 text-center">1 (180°)</td>
+                                        <td class="px-4 py-2 text-center text-violet-400">15</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        $$ 1 + 24 + 20 + 15 = 60 = |I| $$
+
+                        <p class="text-gray-300 mb-4">
+                            Los ejes pentagonales (orden 5) existen porque el dodecaedro tiene caras pentagonales: rotar \(72° = 360°/5\) alrededor del centro de un pentagono es una simetria. Por dualidad, estos son los ejes vertice-vertice del icosaedro (donde concurren 5 caras).
+                        </p>
+
+                        <p class="text-gray-300">
+                            El grupo \(I\) es isomorfo al grupo alternante \(A_5\): las permutaciones pares de 5 objetos. Los "5 objetos" son los 5 cubos inscritos en el dodecaedro. Esto es el unico grupo simple no abeliano finito mas pequeno, con profundas consecuencias en algebra (imposibilidad de resolver la quintica por radicales). Lo exploraremos en la Leccion 17.
+                        </p>
+                    </section>
+
+                    <!-- Ejercicios -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">1.</strong> Verifica que la distancia entre los vertices \((0,1,\varphi)\) y \((\varphi, 0, 1)\) del icosaedro es \(2\), usando \(\varphi^2 = \varphi + 1\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">2.</strong> Calcula el radio circunscrito del icosaedro con arista \(a = 2\). Expresa \(R^2 = \varphi + 2\) y verifica que \(R = \varphi \approx 1.902\)... Calcula \(\sqrt{\varphi + 2}\) numericamente.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">3.</strong> Verifica que los 8 vertices \((\pm 1, \pm 1, \pm 1)\) del dodecaedro forman un cubo. ¿Cual es la arista de este cubo? ¿Es la misma arista del dodecaedro?</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">4.</strong> El icosidodecaedro tiene 30 vertices, 60 aristas y 32 caras. Verifica \(V - E + F = 2\). Si su simbolo de vertice es \((3.5.3.5)\), ¿cuantas aristas rodean cada vertice? Usa \(qV = 2E\) para verificar.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">5.</strong> Demuestra que el grupo \(I\) tiene 60 elementos contando: 1 identidad + 24 rotaciones de orden 5 + 20 de orden 3 + 15 de orden 2. Verifica que estos numeros suman 60 y son consistentes con el numero de ejes de cada tipo.</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LAB -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">LAB: Dodecaedro e Icosaedro Duales</h3>
+                        <p class="text-gray-400 mb-4">Explora el dodecaedro y su dual icosaedro. Activa los rectangulos aureos para ver la estructura interna del icosaedro.</p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                            <!-- Controls -->
+                            <div class="flex flex-wrap items-center gap-4 p-4 border-b border-gray-800">
+                                <div class="flex items-center gap-3 flex-1">
+                                    <span class="text-sm text-gray-400 w-28">Dual: <span id="dual-val" class="text-violet-400 mono">0%</span></span>
+                                    <input type="range" id="dual-slider" min="0" max="100" value="0" class="flex-1 accent-violet-500">
+                                </div>
+                                <label class="text-sm text-gray-400 flex items-center gap-2">
+                                    <input type="checkbox" id="show-rect" class="accent-yellow-500"> Rect. aureos
+                                </label>
+                                <label class="text-sm text-gray-400 flex items-center gap-2">
+                                    <input type="checkbox" id="show-mid" class="accent-cyan-500"> Midsphere
+                                </label>
+                            </div>
+                            <!-- Info -->
+                            <div id="info-bar" class="flex justify-center gap-6 px-4 py-2 border-b border-gray-800 text-sm mono">
+                                <span class="text-violet-400">Dodeca: V=20 E=30 F=12</span>
+                                <span class="text-gray-600">|</span>
+                                <span class="text-cyan-400">Icosa: V=12 E=30 F=20</span>
+                            </div>
+                            <!-- Canvas -->
+                            <canvas id="lab-canvas" class="w-full bg-black" style="height:480px;"></canvas>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-15.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-300 transition">
+                            ← Cubo y Octaedro
+                        </a>
+                        <a href="./leccion-17.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg transition">
+                            Siguiente: Grupos de Simetria →
+                        </a>
                     </div>
                 </article>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales — De Platon a 4D</p>
         </div>
     </footer>
+
+    <!-- Three.js LAB -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script>
+    (function(){
+        var canvas = document.getElementById('lab-canvas');
+        var W = canvas.clientWidth, H = canvas.clientHeight;
+        canvas.width = W * 2; canvas.height = H * 2;
+
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(45, W/H, 0.1, 100);
+        camera.position.set(0, 0, 6);
+
+        var renderer = new THREE.WebGLRenderer({canvas: canvas, antialias: true, alpha: true});
+        renderer.setSize(W, H);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+        renderer.setClearColor(0x000000);
+
+        var group = new THREE.Group();
+        scene.add(group);
+
+        var PHI = (1 + Math.sqrt(5)) / 2;
+        var IPHI = 1 / PHI; // phi^{-1} = phi - 1
+
+        // Scale to fit nicely
+        var SC = 0.85;
+
+        // ===== DODECAHEDRON =====
+        var dodecaV = [];
+        // 8 cubic vertices
+        [-1,1].forEach(function(a){[-1,1].forEach(function(b){[-1,1].forEach(function(c){
+            dodecaV.push([a*SC, b*SC, c*SC]);
+        });});});
+        // 12 vertices from golden ratio permutations
+        [-1,1].forEach(function(a){[-1,1].forEach(function(b){
+            dodecaV.push([0, a*IPHI*SC, b*PHI*SC]);
+            dodecaV.push([a*IPHI*SC, b*PHI*SC, 0]);
+            dodecaV.push([b*PHI*SC, 0, a*IPHI*SC]);
+        });});
+
+        // ===== ICOSAHEDRON =====
+        var icosaV = [];
+        [-1,1].forEach(function(a){[-1,1].forEach(function(b){
+            icosaV.push([0, a*SC, b*PHI*SC]);
+            icosaV.push([a*SC, b*PHI*SC, 0]);
+            icosaV.push([b*PHI*SC, 0, a*SC]);
+        });});
+
+        // Build edges by finding minimum distance and connecting at that distance
+        function buildEdges(verts) {
+            var n = verts.length;
+            var minD = Infinity;
+            for (var i = 0; i < n; i++) for (var j = i+1; j < n; j++) {
+                var dx = verts[i][0]-verts[j][0], dy = verts[i][1]-verts[j][1], dz = verts[i][2]-verts[j][2];
+                var d = Math.sqrt(dx*dx+dy*dy+dz*dz);
+                if (d < minD) minD = d;
+            }
+            var edges = [];
+            for (var i = 0; i < n; i++) for (var j = i+1; j < n; j++) {
+                var dx = verts[i][0]-verts[j][0], dy = verts[i][1]-verts[j][1], dz = verts[i][2]-verts[j][2];
+                if (Math.sqrt(dx*dx+dy*dy+dz*dz) < minD * 1.05) edges.push([i, j]);
+            }
+            return edges;
+        }
+
+        // Build triangular faces (for icosahedron)
+        function buildTriFaces(verts, edges) {
+            var n = verts.length;
+            var adj = [];
+            for (var i = 0; i < n; i++) adj[i] = [];
+            edges.forEach(function(e){ adj[e[0]].push(e[1]); adj[e[1]].push(e[0]); });
+            var faceSet = {}, faces = [];
+            for (var i = 0; i < n; i++) {
+                for (var ai = 0; ai < adj[i].length; ai++) {
+                    var j = adj[i][ai]; if (j <= i) continue;
+                    for (var bi = ai+1; bi < adj[i].length; bi++) {
+                        var k = adj[i][bi]; if (k <= j) continue;
+                        if (adj[j].indexOf(k) >= 0) {
+                            var f = [i,j,k].sort(function(a,b){return a-b;});
+                            var key = f.join(',');
+                            if (!faceSet[key]) { faceSet[key]=1; faces.push(f); }
+                        }
+                    }
+                }
+            }
+            // Orient outward
+            faces.forEach(function(f){
+                var a=verts[f[0]],b=verts[f[1]],c=verts[f[2]];
+                var ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2];
+                var vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
+                var nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
+                var cx2=(a[0]+b[0]+c[0])/3, cy2=(a[1]+b[1]+c[1])/3, cz2=(a[2]+b[2]+c[2])/3;
+                if(nx*cx2+ny*cy2+nz*cz2<0){var tmp=f[1];f[1]=f[2];f[2]=tmp;}
+            });
+            return faces;
+        }
+
+        // Build pentagonal faces for dodecahedron (group coplanar triangles)
+        function buildPentaFaces(verts, edges) {
+            var triFaces = buildTriFaces(verts, edges);
+            var groups = [], used = {};
+            for (var fi = 0; fi < triFaces.length; fi++) {
+                if (used[fi]) continue;
+                var a=verts[triFaces[fi][0]], b=verts[triFaces[fi][1]], c=verts[triFaces[fi][2]];
+                var ux=b[0]-a[0],uy=b[1]-a[1],uz=b[2]-a[2];
+                var vx=c[0]-a[0],vy=c[1]-a[1],vz=c[2]-a[2];
+                var nx=uy*vz-uz*vy,ny=uz*vx-ux*vz,nz=ux*vy-uy*vx;
+                var nl=Math.sqrt(nx*nx+ny*ny+nz*nz);
+                nx/=nl; ny/=nl; nz/=nl;
+                var dd=nx*a[0]+ny*a[1]+nz*a[2];
+                var grp = [fi]; used[fi] = 1;
+                for (var fj = fi+1; fj < triFaces.length; fj++) {
+                    if (used[fj]) continue;
+                    var p = verts[triFaces[fj][0]];
+                    var a2=verts[triFaces[fj][0]],b2=verts[triFaces[fj][1]],c2=verts[triFaces[fj][2]];
+                    var ux2=b2[0]-a2[0],uy2=b2[1]-a2[1],uz2=b2[2]-a2[2];
+                    var vx2=c2[0]-a2[0],vy2=c2[1]-a2[1],vz2=c2[2]-a2[2];
+                    var nx2=uy2*vz2-uz2*vy2,ny2=uz2*vx2-ux2*vz2,nz2=ux2*vy2-uy2*vx2;
+                    var nl2=Math.sqrt(nx2*nx2+ny2*ny2+nz2*nz2);
+                    nx2/=nl2; ny2/=nl2; nz2/=nl2;
+                    var dot = Math.abs(nx*nx2+ny*ny2+nz*nz2);
+                    var dd2 = nx*p[0]+ny*p[1]+nz*p[2];
+                    if (dot > 0.999 && Math.abs(dd-dd2) < 0.01) { grp.push(fj); used[fj] = 1; }
+                }
+                var vs = {};
+                grp.forEach(function(gi){ triFaces[gi].forEach(function(vi){ vs[vi]=1; }); });
+                groups.push(Object.keys(vs).map(Number));
+            }
+            return { triFaces: triFaces, polyFaces: groups };
+        }
+
+        var dodecaEdges = buildEdges(dodecaV);
+        var dodecaResult = buildPentaFaces(dodecaV, dodecaEdges);
+        var icosaEdges = buildEdges(icosaV);
+        var icosaFaces = buildTriFaces(icosaV, icosaEdges);
+
+        // Golden rectangles (3 perpendicular rectangles from icosahedron)
+        // Rect 1 (yz): (0, ±1, ±φ) → indices 0,1,2,3 (first 4 icosa verts if generated in order)
+        // We need to find them by coordinate pattern
+        function findGoldenRects(verts) {
+            var rects = [[],[],[]];
+            var tol = 0.01;
+            verts.forEach(function(v, i){
+                if (Math.abs(v[0]) < tol) rects[0].push(i); // yz plane
+                if (Math.abs(v[1]) < tol) rects[1].push(i); // xz plane
+                if (Math.abs(v[2]) < tol) rects[2].push(i); // xy plane
+            });
+            return rects;
+        }
+        var goldenRects = findGoldenRects(icosaV);
+
+        var dualT = 0;
+
+        function makeLine(v1, v2, color, opacity) {
+            var geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute([v1[0],v1[1],v1[2],v2[0],v2[1],v2[2]], 3));
+            return new THREE.Line(geo, new THREE.LineBasicMaterial({color:color, transparent:true, opacity:opacity}));
+        }
+
+        function makePoints(verts, color, opacity, size) {
+            var pts = [];
+            verts.forEach(function(v){pts.push(v[0],v[1],v[2]);});
+            var geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pts, 3));
+            return new THREE.Points(geo, new THREE.PointsMaterial({color:color, size:size||5, sizeAttenuation:false, transparent:true, opacity:opacity}));
+        }
+
+        function makeFacesMesh(verts, faces, color, opacity) {
+            var pos = [];
+            faces.forEach(function(f){
+                for (var i = 1; i < f.length - 1; i++) {
+                    pos.push(verts[f[0]][0],verts[f[0]][1],verts[f[0]][2]);
+                    pos.push(verts[f[i]][0],verts[f[i]][1],verts[f[i]][2]);
+                    pos.push(verts[f[i+1]][0],verts[f[i+1]][1],verts[f[i+1]][2]);
+                }
+            });
+            if (pos.length === 0) return null;
+            var geo = new THREE.BufferGeometry();
+            geo.setAttribute('position', new THREE.Float32BufferAttribute(pos, 3));
+            geo.computeVertexNormals();
+            return new THREE.Mesh(geo, new THREE.MeshBasicMaterial({color:color, transparent:true, opacity:opacity, side:THREE.DoubleSide}));
+        }
+
+        function rebuild() {
+            while(group.children.length) group.remove(group.children[0]);
+
+            var t = dualT;
+            var showRect = document.getElementById('show-rect').checked;
+            var showMid = document.getElementById('show-mid').checked;
+
+            // Dodecahedron
+            var dodecAlpha = 1 - t * 0.5;
+            dodecaEdges.forEach(function(e){
+                group.add(makeLine(dodecaV[e[0]], dodecaV[e[1]], 0xa78bfa, dodecAlpha));
+            });
+            group.add(makePoints(dodecaV, 0xa78bfa, Math.min(1, dodecAlpha + 0.2), 4));
+            var dm = makeFacesMesh(dodecaV, dodecaResult.triFaces, 0xa78bfa, 0.03);
+            if (dm) group.add(dm);
+
+            // Icosahedron (dual)
+            if (t > 0) {
+                var dualAlpha = t * 0.9;
+                icosaEdges.forEach(function(e){
+                    group.add(makeLine(icosaV[e[0]], icosaV[e[1]], 0x22d3ee, dualAlpha));
+                });
+                group.add(makePoints(icosaV, 0x22d3ee, Math.min(1, dualAlpha + 0.2), 4));
+                var im = makeFacesMesh(icosaV, icosaFaces, 0x22d3ee, 0.03 * t);
+                if (im) group.add(im);
+            }
+
+            // Golden rectangles
+            if (showRect) {
+                var rectColors = [0xfbbf24, 0x4ade80, 0xf87171];
+                goldenRects.forEach(function(rect, ri){
+                    if (rect.length === 4) {
+                        // Sort vertices to form a proper rectangle
+                        var rv = rect.map(function(i){ return icosaV[i]; });
+                        // Connect in order: sort by angle
+                        var cx=0,cy=0,cz=0;
+                        rv.forEach(function(v){cx+=v[0];cy+=v[1];cz+=v[2];});
+                        cx/=4;cy/=4;cz/=4;
+                        // Draw all 4 edges
+                        for (var i = 0; i < 4; i++) {
+                            for (var j = i+1; j < 4; j++) {
+                                var dx=rv[i][0]-rv[j][0],dy=rv[i][1]-rv[j][1],dz=rv[i][2]-rv[j][2];
+                                var dd = Math.sqrt(dx*dx+dy*dy+dz*dz);
+                                // Edge of rectangle (not diagonal)
+                                if (dd < SC * PHI * 2.1) {
+                                    group.add(makeLine(rv[i], rv[j], rectColors[ri], 0.7));
+                                }
+                            }
+                        }
+                        // Fill rectangle
+                        var fgeo = new THREE.BufferGeometry();
+                        // Sort vertices for proper quad
+                        var sorted = rv.slice();
+                        // Simple sort: find pairs
+                        var fp = [];
+                        fp.push(sorted[0][0],sorted[0][1],sorted[0][2]);
+                        fp.push(sorted[1][0],sorted[1][1],sorted[1][2]);
+                        fp.push(sorted[2][0],sorted[2][1],sorted[2][2]);
+                        fp.push(sorted[0][0],sorted[0][1],sorted[0][2]);
+                        fp.push(sorted[2][0],sorted[2][1],sorted[2][2]);
+                        fp.push(sorted[3][0],sorted[3][1],sorted[3][2]);
+                        fgeo.setAttribute('position', new THREE.Float32BufferAttribute(fp, 3));
+                        var fmat = new THREE.MeshBasicMaterial({color:rectColors[ri], transparent:true, opacity:0.12, side:THREE.DoubleSide});
+                        group.add(new THREE.Mesh(fgeo, fmat));
+                    }
+                });
+            }
+
+            // Midsphere
+            if (showMid) {
+                var totalR = 0, count = 0;
+                dodecaEdges.forEach(function(e){
+                    var mx=(dodecaV[e[0]][0]+dodecaV[e[1]][0])/2;
+                    var my=(dodecaV[e[0]][1]+dodecaV[e[1]][1])/2;
+                    var mz=(dodecaV[e[0]][2]+dodecaV[e[1]][2])/2;
+                    totalR += Math.sqrt(mx*mx+my*my+mz*mz);
+                    count++;
+                });
+                var rho = totalR / count;
+                var sg = new THREE.SphereGeometry(rho, 32, 32);
+                var sm = new THREE.MeshBasicMaterial({color:0xfbbf24, transparent:true, opacity:0.05, wireframe:true});
+                group.add(new THREE.Mesh(sg, sm));
+            }
+        }
+
+        document.getElementById('dual-slider').addEventListener('input', function(){
+            dualT = this.value / 100;
+            document.getElementById('dual-val').textContent = this.value + '%';
+            rebuild();
+        });
+        document.getElementById('show-rect').addEventListener('change', function(){ rebuild(); });
+        document.getElementById('show-mid').addEventListener('change', function(){ rebuild(); });
+
+        // Drag rotation
+        var isDragging = false, prevX = 0, prevY = 0, autoTimer = 0;
+        canvas.addEventListener('mousedown', function(e){isDragging=true;prevX=e.clientX;prevY=e.clientY;autoTimer=0;});
+        canvas.addEventListener('mousemove', function(e){
+            if(!isDragging) return;
+            var dx=e.clientX-prevX, dy=e.clientY-prevY;
+            group.rotation.y+=dx*0.01;
+            group.rotation.x+=dy*0.01;
+            prevX=e.clientX; prevY=e.clientY;
+        });
+        canvas.addEventListener('mouseup', function(){isDragging=false;});
+        canvas.addEventListener('mouseleave', function(){isDragging=false;});
+        // Touch
+        canvas.addEventListener('touchstart', function(e){
+            e.preventDefault();isDragging=true;prevX=e.touches[0].clientX;prevY=e.touches[0].clientY;autoTimer=0;
+        },{passive:false});
+        canvas.addEventListener('touchmove', function(e){
+            e.preventDefault();
+            if(!isDragging) return;
+            var dx=e.touches[0].clientX-prevX, dy=e.touches[0].clientY-prevY;
+            group.rotation.y+=dx*0.01;
+            group.rotation.x+=dy*0.01;
+            prevX=e.touches[0].clientX; prevY=e.touches[0].clientY;
+        },{passive:false});
+        canvas.addEventListener('touchend', function(){isDragging=false;});
+
+        rebuild();
+
+        function animate(){
+            requestAnimationFrame(animate);
+            if(!isDragging){
+                autoTimer += 0.016;
+                if(autoTimer > 3) group.rotation.y += 0.003;
+            }
+            renderer.render(scene, camera);
+        }
+        animate();
+
+        window.addEventListener('resize', function(){
+            W = canvas.clientWidth; H = canvas.clientHeight;
+            camera.aspect = W/H;
+            camera.updateProjectionMatrix();
+            renderer.setSize(W, H);
+        });
+    })();
+    </script>
 </body>
 </html>

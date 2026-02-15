@@ -3,283 +3,640 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 11: ¿Por Qué Solo Existen 5 Sólidos? | Matemáticas Visuales</title>
+    <title>Leccion 11: Por Que Solo 5 | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 02</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 11</span> — Por Que Solo 5
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-10.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-12.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-10.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">&larr; Anterior</a>
+                    <a href="./leccion-12.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente &rarr;</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 2</h3>
-                    <p class="text-sm text-gray-400 mb-4">La Fórmula de Euler</p>
-                    
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 02</h3>
+                    <p class="text-sm text-gray-500 mb-4">La Formula de Euler</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>5/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 83.3%"></div>
                         </div>
                     </div>
 
                     <nav class="space-y-2">
-                        <a href="./leccion-07.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">7. Vértices, Aristas y Caras</a>
-                        <a href="./leccion-08.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">8. La Fórmula Mágica</a>
-                        <a href="./leccion-09.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">9. Demostración Visual</a>
-                        <a href="./leccion-10.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">10. Verificación en 5 Sólidos</a>
-                        <a href="./leccion-11.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">11. ¿Por qué Solo 5?</a>
-                        <a href="./leccion-12.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">12. Topología y la Esfera</a>
+                        <a href="./leccion-07.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">7. Vertices, Aristas y Caras</a>
+                        <a href="./leccion-08.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">8. La Formula de Euler</a>
+                        <a href="./leccion-09.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">9. Demostracion Visual</a>
+                        <a href="./leccion-10.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">10. De {p, q} a V, E, F</a>
+                        <a href="./leccion-11.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">11. Por Que Solo 5</a>
+                        <a href="./leccion-12.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">12. Topologia y la Esfera</a>
                     </nav>
                 </div>
             </aside>
 
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 11</span>
-                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
+                            <span class="text-cyan-400 text-sm font-medium">Leccion 11</span>
+                            <span class="text-gray-400 text-sm">~30 min</span>
                         </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">¿Por Qué Solo Existen 5 Sólidos?</h1>
-                        <p class="text-gray-400 text-lg">La demostración matemática rigurosa de la unicidad de los sólidos platónicos.</p>
+                        <h1 class="text-3xl font-bold mb-4 text-violet-400 glow-text">Por Que Solo 5</h1>
+                        <p class="text-gray-400 text-lg">Tres demostraciones convergentes, la cuestion de existencia, y que sucede cuando relajamos las condiciones.</p>
                     </div>
 
+                    <!-- Content -->
                     <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">El Teorema de Unicidad</h2>
+
+                        <!-- 1. Tres caminos -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Tres Caminos a la Misma Respuesta</h2>
                         <p class="text-gray-300 mb-4">
-                            Uno de los resultados más elegantes de la geometría es que <strong>exactamente cinco</strong> poliedros regulares convexos existen en el espacio tridimensional. No más, no menos.
+                            A lo largo de este curso hemos encontrado tres argumentos independientes que conducen a la misma conclusion: solo 5 combinaciones \(\{p, q\}\) son posibles. Recopilemos.
                         </p>
 
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-semibold text-platonic-purple mb-2">Argumento Principal</h3>
-                            <p class="text-gray-300">
-                                La restricción proviene de la <strong>convexidad</strong>: la suma de los ángulos que concurren en un vértice debe ser menor que 360°.
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-gray-900/50 rounded-lg p-5 border border-gray-800">
+                                <p class="text-violet-400 font-medium mb-2">1. Argumento angular</p>
+                                <p class="text-sm text-gray-400 mb-2">Leccion 4, Modulo 1</p>
+                                <p class="text-gray-300 text-sm">La suma de angulos en cada vertice debe ser \(< 360°\):</p>
+                                <p class="text-gray-200 text-sm mt-2">\(q \cdot \alpha_p < 360°\)</p>
+                                <p class="text-gray-500 text-xs mt-2">Geometrico: condicion de convexidad local.</p>
+                            </div>
+                            <div class="bg-gray-900/50 rounded-lg p-5 border border-gray-800">
+                                <p class="text-violet-400 font-medium mb-2">2. Argumento algebraico</p>
+                                <p class="text-sm text-gray-400 mb-2">Leccion 10</p>
+                                <p class="text-gray-300 text-sm">El denominador de \(E = \frac{2pq}{2p+2q-pq}\) debe ser positivo:</p>
+                                <p class="text-gray-200 text-sm mt-2">\(2p + 2q - pq > 0\)</p>
+                                <p class="text-gray-500 text-xs mt-2">Algebraico: consistencia de Euler + doble conteo.</p>
+                            </div>
+                            <div class="bg-gray-900/50 rounded-lg p-5 border border-gray-800">
+                                <p class="text-violet-400 font-medium mb-2">3. Defecto angular</p>
+                                <p class="text-sm text-gray-400 mb-2">Leccion 8</p>
+                                <p class="text-gray-300 text-sm">La curvatura total es fija: \(\sum \delta_v = 4\pi\), con \(\delta > 0\):</p>
+                                <p class="text-gray-200 text-sm mt-2">\(q \cdot \alpha_p < 2\pi\)</p>
+                                <p class="text-gray-500 text-xs mt-2">Topologico: curvatura total de la esfera.</p>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-300 mb-6">
+                            Todos conducen a \((p-2)(q-2) < 4\), con exactamente 5 soluciones enteras. Pero esta convergencia no es coincidencia: los tres argumentos expresan la misma restriccion fundamental. La curvatura gaussiana total de la esfera es \(4\pi\), y eso limita cuantos poligonos regulares pueden concurrir en cada vertice. Cada camino ilumina un aspecto: el primero es constructivo (puedes intentar pegar poligonos), el segundo es algebraico (una ecuacion resiste numeros negativos), el tercero es topologico (hay curvatura fija que repartir).
+                        </p>
+
+                        <!-- 2. Necesario vs Suficiente -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Necesario vs. Suficiente</h2>
+                        <p class="text-gray-300 mb-4">
+                            Hasta ahora hemos demostrado que <strong class="text-cyan-400">como maximo</strong> 5 combinaciones son posibles. Pero, existen realmente todas? El argumento angular descarta candidatos; no construye poliedros.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            La condicion \((p-2)(q-2) < 4\) es <strong>necesaria</strong>: si un poliedro regular \(\{p,q\}\) existe, debe satisfacerla. Pero es tambien <strong>suficiente</strong>? Para demostrarlo, necesitamos exhibir cada uno de los 5 poliedros. Hay dos estrategias clasicas:
+                        </p>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4 border-l-4 border-violet-400">
+                            <p class="text-violet-400 font-medium mb-2">Estrategia 1: Construccion por coordenadas</p>
+                            <p class="text-gray-300 text-sm">
+                                Dar las coordenadas explicitas de los vertices y verificar que todas las aristas tienen la misma longitud y todas las caras son poligonos regulares congruentes. Por ejemplo, el cubo tiene vertices \((\pm 1, \pm 1, \pm 1)\); el icosaedro tiene vertices en las permutaciones ciclicas de \((0, \pm 1, \pm \varphi)\).
                             </p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ángulos de Polígonos Regulares</h3>
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-violet-400">
+                            <p class="text-violet-400 font-medium mb-2">Estrategia 2: Construccion inductiva (Euclides, Libro XIII)</p>
+                            <p class="text-gray-300 text-sm">
+                                Euclides construyo cada solido inscribiendolo en una esfera. Para el tetraedro: partir de un triangulo equilatero y levantar un vertice. Para el cubo: construir sobre un cuadrado. Para el icosaedro: usar los rectangulos aureos. En cada caso, la prueba verifica que el resultado es un poliedro regular, completando la clasificacion.
+                            </p>
+                        </div>
+
+                        <p class="text-gray-300 mb-6">
+                            La clasificacion queda asi: <em>necesidad</em> (argumento angular) + <em>existencia</em> (construccion explicita) = <strong class="text-cyan-400">exactamente 5 poliedros regulares convexos en 3D</strong>. Este es el teorema del Libro XIII de los <em>Elementos</em>.
+                        </p>
+
+                        <!-- 3. El Defecto como Presupuesto -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">El Defecto Angular como Presupuesto</h2>
+                        <p class="text-gray-300 mb-4">
+                            Hay una forma particularmente elegante de entender la restriccion. Cada vertice de un poliedro convexo tiene un <strong class="text-cyan-400">defecto angular</strong>:
+                        </p>
+                        <div class="bg-violet-500/5 border border-violet-500/20 rounded-2xl p-6 mb-6 text-center">
+                            <p class="text-gray-200 text-lg">\(\delta = 2\pi - q \cdot \alpha_p\)</p>
+                            <p class="text-sm text-gray-500 mt-2">El "sobrante" angular en cada vertice que permite a la superficie curvarse</p>
+                        </div>
+                        <p class="text-gray-300 mb-4">
+                            El teorema de Descartes (equivalente a Euler, como vimos en la Leccion 8) dice que el presupuesto total de defecto es fijo:
+                        </p>
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-4 border-l-4 border-cyan-400">
+                            <p class="text-xl text-center text-gray-200">\(V \cdot \delta = 4\pi\)</p>
+                            <p class="text-sm text-gray-500 text-center mt-2">para un poliedro regular (todos los vertices iguales)</p>
+                        </div>
+                        <p class="text-gray-300 mb-4">
+                            Imagina que tienes un presupuesto de \(4\pi\) radianes de curvatura para "gastar". Cada vertice consume \(\delta\) de ese presupuesto. Cuantos vertices puedes crear?
+                        </p>
                         <div class="overflow-x-auto mb-6">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
+                                <thead class="bg-gray-900/70">
                                     <tr>
-                                        <th class="px-4 py-2 text-left">Polígono</th>
-                                        <th class="px-4 py-2 text-center">Lados (p)</th>
-                                        <th class="px-4 py-2 text-center">Ángulo Interior</th>
-                                        <th class="px-4 py-2 text-center">Fórmula</th>
+                                        <th class="px-3 py-2 text-center text-gray-400">\(\{p,q\}\)</th>
+                                        <th class="px-3 py-2 text-center text-gray-400">\(q \cdot \alpha_p\)</th>
+                                        <th class="px-3 py-2 text-center text-gray-400">\(\delta\)</th>
+                                        <th class="px-3 py-2 text-center text-gray-400">\(V = 4\pi / \delta\)</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">\(\{3,3\}\)</td><td class="px-3 py-2 text-center">\(180°\)</td><td class="px-3 py-2 text-center text-cyan-400">\(180°\)</td><td class="px-3 py-2 text-center">4</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">\(\{4,3\}\)</td><td class="px-3 py-2 text-center">\(270°\)</td><td class="px-3 py-2 text-center text-cyan-400">\(90°\)</td><td class="px-3 py-2 text-center">8</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">\(\{3,4\}\)</td><td class="px-3 py-2 text-center">\(240°\)</td><td class="px-3 py-2 text-center text-cyan-400">\(120°\)</td><td class="px-3 py-2 text-center">6</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">\(\{5,3\}\)</td><td class="px-3 py-2 text-center">\(324°\)</td><td class="px-3 py-2 text-center text-cyan-400">\(36°\)</td><td class="px-3 py-2 text-center">20</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">\(\{3,5\}\)</td><td class="px-3 py-2 text-center">\(300°\)</td><td class="px-3 py-2 text-center text-cyan-400">\(60°\)</td><td class="px-3 py-2 text-center">12</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <p class="text-gray-300 mb-6">
+                            El dodecaedro \(\{5,3\}\) apenas tiene defecto (\(36°\) por vertice), asi que necesita 20 vertices para gastar los \(720° = 4\pi\). El tetraedro tiene el defecto maximo (\(180°\)), asi que solo necesita 4. Esta perspectiva revela por que los solidos con mas caras por cara o mas caras por vertice son "mas grandes": cada vertice consume menos curvatura, asi que se necesitan mas para cubrir la esfera.
+                        </p>
+
+                        <!-- 4. Mas alla de la regularidad -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Mas Alla de la Regularidad</h2>
+                        <p class="text-gray-300 mb-4">
+                            La restriccion a <em>exactamente</em> 5 depende crucialmente de las condiciones de regularidad. Si relajamos alguna, aparecen familias mas amplias:
+                        </p>
+
+                        <div class="space-y-4 mb-6">
+                            <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-5">
+                                <p class="text-violet-400 font-medium mb-2">Solidos de Arquimedes (13)</p>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    <strong>Condicion relajada:</strong> las caras siguen siendo poligonos regulares, pero no necesariamente todas iguales. La configuracion de caras en cada vertice si debe ser identica.
+                                </p>
+                                <p class="text-gray-400 text-sm">
+                                    Ejemplos: el <em>cuboctaedro</em> (8 triangulos + 6 cuadrados), el <em>icosidodecaedro</em> (20 triangulos + 12 pentagonos), el <em>balones de futbol</em> = icosaedro truncado (12 pentagonos + 20 hexagonos).
+                                </p>
+                            </div>
+
+                            <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-5">
+                                <p class="text-violet-400 font-medium mb-2">Poliedros de Kepler-Poinsot (4)</p>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    <strong>Condicion relajada:</strong> se permite que las caras se crucen entre si (poligonos estrellados). Siguen siendo "regulares" en el sentido de que todas las caras son congruentes y todos los vertices son equivalentes.
+                                </p>
+                                <p class="text-gray-400 text-sm">
+                                    Los 4 solidos estrellados regulares: gran dodecaedro, pequeno dodecaedro estrellado, gran icosaedro, gran dodecaedro estrellado. Tienen \(\chi \neq 2\) porque no son homeomorfos a la esfera.
+                                </p>
+                            </div>
+
+                            <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-5">
+                                <p class="text-violet-400 font-medium mb-2">Solidos de Johnson (92)</p>
+                                <p class="text-gray-300 text-sm mb-2">
+                                    <strong>Condicion relajada:</strong> las caras son poligonos regulares, pero los vertices no necesitan ser equivalentes. Se exige convexidad.
+                                </p>
+                                <p class="text-gray-400 text-sm">
+                                    Norman Johnson los enumero en 1966; Viktor Zalgaller demostro que la lista de 92 es completa en 1969. Incluye piramides, cupulas, rotondas y combinaciones exoticas.
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-300 mb-6">
+                            Cada relajacion revela que la condicion que elimina es la que hace la clasificacion tan restrictiva. La regularidad (todas las caras iguales + todos los vertices iguales) es una condicion extraordinariamente fuerte: de los infinitos poliedros convexos posibles, solo 5 la satisfacen.
+                        </p>
+
+                        <!-- 5. La clasificacion dimensional -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">La Clasificacion Dimensional</h2>
+                        <p class="text-gray-300 mb-4">
+                            Quizas lo mas sorprendente es que el numero de politopos regulares depende de la dimension, y 3D resulta ser especial:
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead class="bg-gray-900/70">
                                     <tr>
-                                        <td class="px-4 py-2">Triángulo</td>
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center text-green-400">60°</td>
-                                        <td class="px-4 py-2 text-center font-mono">(3-2)×180°/3</td>
+                                        <th class="px-3 py-2 text-center text-gray-400">Dim.</th>
+                                        <th class="px-3 py-2 text-center text-gray-400">Regulares</th>
+                                        <th class="px-3 py-2 text-left text-gray-400">Descripcion</th>
                                     </tr>
-                                    <tr>
-                                        <td class="px-4 py-2">Cuadrado</td>
-                                        <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-center text-yellow-400">90°</td>
-                                        <td class="px-4 py-2 text-center font-mono">(4-2)×180°/4</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2">Pentágono</td>
-                                        <td class="px-4 py-2 text-center">5</td>
-                                        <td class="px-4 py-2 text-center text-orange-400">108°</td>
-                                        <td class="px-4 py-2 text-center font-mono">(5-2)×180°/5</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2">Hexágono</td>
-                                        <td class="px-4 py-2 text-center">6</td>
-                                        <td class="px-4 py-2 text-center text-red-400">120°</td>
-                                        <td class="px-4 py-2 text-center font-mono">(6-2)×180°/6</td>
-                                    </tr>
+                                </thead>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">2</td><td class="px-3 py-2 text-center text-cyan-400">\(\infty\)</td><td class="px-3 py-2">Poligonos regulares: triangulo, cuadrado, pentagono, ...</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">3</td><td class="px-3 py-2 text-center text-cyan-400">5</td><td class="px-3 py-2">Los solidos platonicos</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">4</td><td class="px-3 py-2 text-center text-cyan-400">6</td><td class="px-3 py-2">Incluye el 24-celda \(\{3,4,3\}\), sin analogo 3D</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">5</td><td class="px-3 py-2 text-center text-cyan-400">3</td><td class="px-3 py-2">Simplejo, hipercubo, hiperoctaedro</td></tr>
+                                    <tr><td class="px-3 py-2 text-center text-violet-400">\(n \geq 5\)</td><td class="px-3 py-2 text-center text-cyan-400">3</td><td class="px-3 py-2">Siempre los mismos tres: \(\alpha_n, \beta_n, \gamma_n\)</td></tr>
                                 </tbody>
                             </table>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">La Condición de Convexidad</h3>
                         <p class="text-gray-300 mb-4">
-                            En cada vértice de un poliedro convexo, concurren <strong>q</strong> caras. La suma de los ángulos interiores debe ser menor que 360°:
+                            En 2D no hay restriccion angular (un poligono regular de \(n\) lados siempre existe). En 5D y superiores, la condicion es tan restrictiva que solo sobreviven las tres familias infinitas:
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6 text-center">
-                            <p class="text-lg text-gray-300 mb-2">Condición:</p>
-                            <p class="text-2xl font-bold text-platonic-cyan font-mono">q × α<sub>p</sub> < 360°</p>
-                            <p class="text-sm text-gray-400 mt-2">donde α<sub>p</sub> = (p-2) × 180° / p</p>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-gray-900/50 rounded-lg p-4 text-center border border-gray-800">
+                                <p class="text-cyan-400 font-medium mb-1">Simplejo \(\alpha_n\)</p>
+                                <p class="text-xs text-gray-500 mb-2">\(\{3, 3, \ldots, 3\}\)</p>
+                                <p class="text-sm text-gray-400">Generaliza el tetraedro. \(n+1\) vertices, todos conectados.</p>
+                            </div>
+                            <div class="bg-gray-900/50 rounded-lg p-4 text-center border border-gray-800">
+                                <p class="text-cyan-400 font-medium mb-1">Hipercubo \(\beta_n\)</p>
+                                <p class="text-xs text-gray-500 mb-2">\(\{4, 3, \ldots, 3\}\)</p>
+                                <p class="text-sm text-gray-400">Generaliza el cubo. \(2^n\) vertices, caras cubicas.</p>
+                            </div>
+                            <div class="bg-gray-900/50 rounded-lg p-4 text-center border border-gray-800">
+                                <p class="text-cyan-400 font-medium mb-1">Hiperoctaedro \(\gamma_n\)</p>
+                                <p class="text-xs text-gray-500 mb-2">\(\{3, \ldots, 3, 4\}\)</p>
+                                <p class="text-sm text-gray-400">Dual del hipercubo. \(2n\) vertices, caras simpliciales.</p>
+                            </div>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Búsqueda de Soluciones</h3>
-                        <p class="text-gray-300 mb-4">
-                            Sustituyendo la fórmula del ángulo:
+                        <p class="text-gray-300 mb-6">
+                            Las dimensiones 3 y 4 son "excepcionales" — admiten politopos regulares que no pertenecen a estas tres familias. En 3D, son el dodecaedro e icosaedro. En 4D, aparece el 24-celda (un politopo autodual con 24 celdas octaedricas que no tiene analogo en ninguna otra dimension), ademas de los analogos del dodecaedro (120-celda) y el icosaedro (600-celda).
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-4 mb-6 text-center font-mono text-lg">
-                            q × (p-2) × 180° / p < 360°
-                        </div>
-
-                        <p class="text-gray-300 mb-4">
-                            Simplificando (dividiendo por 180°):
-                        </p>
-
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6 text-center">
-                            <p class="text-2xl font-bold text-platonic-cyan font-mono">(p-2)(q-2) < 4</p>
-                            <p class="text-sm text-gray-400 mt-2">Condición de Schläfli</p>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Las Únicas Soluciones Enteras</h3>
-                        <p class="text-gray-300 mb-4">
-                            Buscamos enteros p ≥ 3 (polígono) y q ≥ 3 (poliedro) que satisfagan (p-2)(q-2) < 4:
-                        </p>
-
-                        <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-center">p</th>
-                                        <th class="px-4 py-2 text-center">q</th>
-                                        <th class="px-4 py-2 text-center">(p-2)(q-2)</th>
-                                        <th class="px-4 py-2 text-left">Sólido</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr class="bg-green-900/20">
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center text-green-400">1</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
-                                    </tr>
-                                    <tr class="bg-green-900/20">
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-center text-green-400">2</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
-                                    </tr>
-                                    <tr class="bg-green-900/20">
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center">5</td>
-                                        <td class="px-4 py-2 text-center text-green-400">3</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
-                                    </tr>
-                                    <tr class="bg-green-900/20">
-                                        <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center text-green-400">2</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
-                                    </tr>
-                                    <tr class="bg-green-900/20">
-                                        <td class="px-4 py-2 text-center">5</td>
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center text-green-400">3</td>
-                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
-                                    </tr>
-                                    <tr class="bg-red-900/20">
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center">6</td>
-                                        <td class="px-4 py-2 text-center text-red-400">4</td>
-                                        <td class="px-4 py-2 text-gray-500">No válido (teselación plana)</td>
-                                    </tr>
-                                    <tr class="bg-red-900/20">
-                                        <td class="px-4 py-2 text-center">6</td>
-                                        <td class="px-4 py-2 text-center">3</td>
-                                        <td class="px-4 py-2 text-center text-red-400">4</td>
-                                        <td class="px-4 py-2 text-gray-500">No válido (teselación plana)</td>
-                                    </tr>
-                                    <tr class="bg-red-900/20">
-                                        <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-center">4</td>
-                                        <td class="px-4 py-2 text-center text-red-400">4</td>
-                                        <td class="px-4 py-2 text-gray-500">No válido</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">¿Qué pasa con p = 6?</h3>
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
-                            <p class="text-gray-300 mb-2">Para hexágonos (p=6, α=120°):</p>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
-                                <li>3 hexágonos: 3 × 120° = 360° (aplanado)</li>
-                                <li>No se puede formar un vértice convexo</li>
-                                <li>Los hexágonos teselan el plano, no forman poliedro</li>
-                            </ul>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Conclusión</h3>
-                        <div class="bg-green-900/30 border border-green-500/30 rounded-lg p-6 mb-6">
-                            <p class="text-gray-300 text-center text-lg">
-                                La condición matemática (p-2)(q-2) < 4 permite <strong>exactamente 5</strong> combinaciones válidas de (p,q).
+                        <!-- 6. Resumen -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">El Teorema Completo</h2>
+                        <div class="bg-violet-500/5 border border-violet-500/20 rounded-2xl p-8 mb-6">
+                            <p class="text-sm text-gray-500 uppercase tracking-wider mb-3 text-center">Clasificacion de poliedros regulares convexos (3D)</p>
+                            <p class="text-gray-200 text-center mb-4">
+                                Existen <strong class="text-violet-400">exactamente cinco</strong> poliedros regulares convexos:
                             </p>
-                            <p class="text-gray-400 text-center mt-2">
-                                Por tanto, existen exactamente <strong>cinco sólidos platónicos</strong>.
-                            </p>
+                            <div class="text-center text-gray-300 space-y-1">
+                                <p>Tetraedro \(\{3,3\}\), Cubo \(\{4,3\}\), Octaedro \(\{3,4\}\), Dodecaedro \(\{5,3\}\), Icosaedro \(\{3,5\}\)</p>
+                            </div>
+                            <div class="border-t border-gray-800 mt-4 pt-4 text-sm text-gray-400 text-center">
+                                <p><strong>Necesidad:</strong> \((p-2)(q-2) < 4\) solo admite 5 pares con \(p,q \geq 3\).</p>
+                                <p><strong>Existencia:</strong> Euclides, <em>Elementos</em> XIII, Proposiciones 13-17.</p>
+                            </div>
+                        </div>
+
+                        <!-- 7. Ejercicios -->
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Ejercicios</h2>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <ol class="list-decimal list-inside space-y-4 text-gray-300">
+                                <li>Calcula el defecto angular \(\delta\) para cada uno de los cinco solidos. Verifica que \(V \cdot \delta = 720°\) en cada caso.</li>
+                                <li>El cuboctaedro tiene 8 caras triangulares y 6 cuadradas, con 2 triangulos y 2 cuadrados en cada vertice. Calcula su defecto angular por vertice y verifica que \(\sum \delta_v = 4\pi\).
+                                    <span class="text-gray-500 text-sm block ml-6 mt-1">(Pista: la suma angular en cada vertice es \(2 \times 60° + 2 \times 90°\).)</span>
+                                </li>
+                                <li>En 4D, los politopos regulares se describen con \(\{p, q, r\}\), donde las celdas son \(\{p,q\}\) y \(r\) celdas rodean cada arista. La condicion de existencia requiere que las celdas \(\{p,q\}\) sean poliedros regulares validos <em>y</em> que la "figura de vertice" \(\{q,r\}\) tambien lo sea. Explica por que \(\{6,3,3\}\) no puede existir.</li>
+                                <li>Si relajamos la condicion de convexidad pero mantenemos la regularidad (caras regulares congruentes, vertices equivalentes), obtenemos los 4 solidos de Kepler-Poinsot. Uno de ellos es el "gran dodecaedro" \(\{5, 5/2\}\). Que significaria geometricamente que \(q = 5/2\)?</li>
+                                <li>Por que en dimension 2 hay infinitos poligonos regulares, pero a partir de dimension 5 solo hay 3 politopos regulares? Explica la diferencia en terminos de la "dificultad" de cerrar la superficie alrededor de cada vertice.</li>
+                            </ol>
                         </div>
                     </div>
 
+                    <!-- LAB Section -->
                     <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
-                            <span class="mr-2">🔬</span> LAB: Explora la Limitación
-                        </h2>
-                        <p class="text-gray-400 mb-4">Intenta "construir" poliedros imposibles en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-4">LAB: Figuras de Vertice</h2>
+                        <p class="text-gray-400 mb-4">Selecciona \(p\) (lados por cara) y \(q\) (caras por vertice) para ver si los poligonos cierran, teselan, o se solapan.</p>
+
+                        <div class="relative rounded-xl border border-gray-800 overflow-hidden" style="background:#030712;">
+                            <svg id="vertex-svg" viewBox="0 0 500 400" style="width:100%; height:380px; display:block;">
+                                <!-- Dynamic content rendered by JS -->
+                            </svg>
+                            <div class="absolute top-4 left-4 text-left mono">
+                                <div class="text-base font-medium text-gray-300" id="vf-label">{3, 3} — Tetraedro</div>
+                                <div class="text-sm text-gray-500" id="vf-angle">Suma angular: 180° &lt; 360°</div>
+                                <div class="text-sm" id="vf-deficit"></div>
+                            </div>
+                        </div>
+
+                        <!-- Controls -->
+                        <div class="mt-3 grid grid-cols-2 gap-4">
+                            <div>
+                                <div class="text-xs text-gray-600 mb-1.5 mono">p (lados por cara)</div>
+                                <div class="flex flex-wrap gap-2" id="p-btns">
+                                    <button data-p="3" class="p-btn px-4 py-2 rounded-lg text-sm transition border mono">3</button>
+                                    <button data-p="4" class="p-btn px-4 py-2 rounded-lg text-sm transition border mono">4</button>
+                                    <button data-p="5" class="p-btn px-4 py-2 rounded-lg text-sm transition border mono">5</button>
+                                    <button data-p="6" class="p-btn px-4 py-2 rounded-lg text-sm transition border mono">6</button>
+                                    <button data-p="7" class="p-btn px-4 py-2 rounded-lg text-sm transition border mono">7</button>
+                                </div>
+                            </div>
+                            <div>
+                                <div class="text-xs text-gray-600 mb-1.5 mono">q (caras por vertice)</div>
+                                <div class="flex flex-wrap gap-2" id="q-btns">
+                                    <button data-q="3" class="q-btn px-4 py-2 rounded-lg text-sm transition border mono">3</button>
+                                    <button data-q="4" class="q-btn px-4 py-2 rounded-lg text-sm transition border mono">4</button>
+                                    <button data-q="5" class="q-btn px-4 py-2 rounded-lg text-sm transition border mono">5</button>
+                                    <button data-q="6" class="q-btn px-4 py-2 rounded-lg text-sm transition border mono">6</button>
+                                </div>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-10.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
-                            ← Anterior
+                    <script>
+                    (function(){
+                        var svg = document.getElementById('vertex-svg');
+                        var NS = 'http://www.w3.org/2000/svg';
+                        var curP = 3, curQ = 3;
+
+                        var names = {
+                            '3,3':'Tetraedro','4,3':'Cubo','3,4':'Octaedro',
+                            '5,3':'Dodecaedro','3,5':'Icosaedro',
+                            '3,6':'Teselacion triangular','4,4':'Teselacion cuadrada','6,3':'Teselacion hexagonal'
+                        };
+
+                        function interiorAngle(p){
+                            return (p - 2) * 180 / p;
+                        }
+
+                        function drawVertexFigure(p, q){
+                            while(svg.firstChild) svg.removeChild(svg.firstChild);
+
+                            var cx = 250, cy = 200;
+                            var alpha = interiorAngle(p);
+                            var totalAngle = q * alpha;
+                            var deficit = 360 - totalAngle;
+
+                            // Draw q regular p-gons around center point
+                            var R = 90; // radius of each polygon
+                            var r = R * Math.cos(Math.PI / p); // apothem
+
+                            // Starting angle: distribute polygons symmetrically
+                            var alphaRad = alpha * Math.PI / 180;
+                            // Angle subtended at center by one polygon edge = alpha
+                            // We place q polygons, each taking alphaRad of angular space
+
+                            // For each polygon, the center-to-vertex angle from the central point
+                            var polyAngles = [];
+                            var startAngle = -Math.PI / 2; // start from top
+
+                            for(var i = 0; i < q; i++){
+                                polyAngles.push(startAngle + i * alphaRad);
+                            }
+
+                            // Draw each polygon
+                            for(var i = 0; i < q; i++){
+                                var a1 = polyAngles[i];
+                                var a2 = a1 + alphaRad;
+
+                                // The two edges of the polygon at the central vertex
+                                var edge1x = cx + R * Math.cos(a1);
+                                var edge1y = cy + R * Math.sin(a1);
+                                var edge2x = cx + R * Math.cos(a2);
+                                var edge2y = cy + R * Math.sin(a2);
+
+                                // Build full polygon: vertex at center, then p-1 more vertices
+                                // Each polygon has p vertices. The central shared vertex + (p-1) others.
+                                // But we only show the "fan" from the central vertex outward
+                                var pts = [[cx, cy]];
+                                for(var k = 0; k <= p - 1; k++){
+                                    var frac = k / (p - 1);
+                                    // Interpolate angle from a1 to a2 along polygon boundary
+                                    // Actually, we need to place the polygon vertices properly
+                                    // The polygon has p vertices. Two of them are on edges from center.
+                                    // We trace the polygon boundary from edge1 to edge2 (the far side)
+                                }
+
+                                // Better approach: draw the polygon sector
+                                // Place polygon center at distance d from central vertex
+                                var midA = (a1 + a2) / 2;
+                                var d = r; // apothem = distance from polygon center to edge
+                                var pcx = cx + d * Math.cos(midA);
+                                var pcy = cy + d * Math.sin(midA);
+
+                                // Draw a regular p-gon centered at (pcx, pcy)
+                                // rotated so that one edge faces the central vertex
+                                var rotAngle = midA + Math.PI; // edge faces center
+                                var polyPts = [];
+                                for(var k = 0; k < p; k++){
+                                    var a = rotAngle + (2 * Math.PI * k / p) + (Math.PI / p);
+                                    polyPts.push([
+                                        pcx + R * Math.cos(a),
+                                        pcy + R * Math.sin(a)
+                                    ]);
+                                }
+
+                                // Determine fill color based on classification
+                                var fillColor, strokeColor;
+                                var val = (p-2)*(q-2);
+                                if(val < 4){
+                                    fillColor = 'rgba(167,139,250,0.08)';
+                                    strokeColor = '#a78bfa';
+                                } else if(val === 4){
+                                    fillColor = 'rgba(34,211,238,0.06)';
+                                    strokeColor = '#22d3ee';
+                                } else {
+                                    fillColor = 'rgba(248,113,113,0.06)';
+                                    strokeColor = '#f87171';
+                                }
+
+                                var poly = document.createElementNS(NS, 'polygon');
+                                poly.setAttribute('points', polyPts.map(function(pt){ return pt[0]+','+pt[1]; }).join(' '));
+                                poly.setAttribute('fill', fillColor);
+                                poly.setAttribute('stroke', strokeColor);
+                                poly.setAttribute('stroke-width', '1.5');
+                                poly.setAttribute('opacity', '0.8');
+                                svg.appendChild(poly);
+                            }
+
+                            // Draw the angle arcs and gap/overlap indicator
+                            var arcR = 30;
+                            if(deficit > 0.5){
+                                // Gap — draw arc showing unused angle
+                                var gapStart = startAngle + q * alphaRad;
+                                var gapEnd = startAngle + 2 * Math.PI;
+                                var gapPath = describeArc(cx, cy, arcR + 8, gapStart * 180 / Math.PI, gapEnd * 180 / Math.PI);
+                                var gapArc = document.createElementNS(NS, 'path');
+                                gapArc.setAttribute('d', gapPath);
+                                gapArc.setAttribute('fill', 'none');
+                                gapArc.setAttribute('stroke', '#22d3ee');
+                                gapArc.setAttribute('stroke-width', '2.5');
+                                gapArc.setAttribute('stroke-dasharray', '4,3');
+                                gapArc.setAttribute('opacity', '0.8');
+                                svg.appendChild(gapArc);
+
+                                // Label the deficit
+                                var labelA = (gapStart + gapEnd) / 2;
+                                var labelR = arcR + 24;
+                                var txt = document.createElementNS(NS, 'text');
+                                txt.setAttribute('x', cx + labelR * Math.cos(labelA));
+                                txt.setAttribute('y', cy + labelR * Math.sin(labelA));
+                                txt.setAttribute('text-anchor', 'middle');
+                                txt.setAttribute('dominant-baseline', 'middle');
+                                txt.setAttribute('fill', '#22d3ee');
+                                txt.setAttribute('font-size', '12');
+                                txt.setAttribute('font-family', 'JetBrains Mono, monospace');
+                                txt.textContent = Math.round(deficit) + '\u00B0';
+                                svg.appendChild(txt);
+                            } else if(deficit < -0.5){
+                                // Overlap indicator
+                                var txt = document.createElementNS(NS, 'text');
+                                txt.setAttribute('x', cx);
+                                txt.setAttribute('y', cy + arcR + 24);
+                                txt.setAttribute('text-anchor', 'middle');
+                                txt.setAttribute('fill', '#f87171');
+                                txt.setAttribute('font-size', '12');
+                                txt.setAttribute('font-family', 'JetBrains Mono, monospace');
+                                txt.textContent = 'Solapamiento: ' + Math.round(-deficit) + '\u00B0';
+                                svg.appendChild(txt);
+                            }
+
+                            // Draw used angle arc
+                            var usedEnd = startAngle + q * alphaRad;
+                            if(q * alphaRad < 360){
+                                var usedPath = describeArc(cx, cy, arcR, startAngle * 180 / Math.PI, Math.min(usedEnd, startAngle + 2*Math.PI) * 180 / Math.PI);
+                                var usedArc = document.createElementNS(NS, 'path');
+                                usedArc.setAttribute('d', usedPath);
+                                usedArc.setAttribute('fill', 'none');
+                                usedArc.setAttribute('stroke', '#a78bfa');
+                                usedArc.setAttribute('stroke-width', '2');
+                                usedArc.setAttribute('opacity', '0.6');
+                                svg.appendChild(usedArc);
+                            }
+
+                            // Draw edge lines from center
+                            for(var i = 0; i <= q; i++){
+                                var a = startAngle + i * alphaRad;
+                                if(i > q) break;
+                                var line = document.createElementNS(NS, 'line');
+                                line.setAttribute('x1', cx);
+                                line.setAttribute('y1', cy);
+                                line.setAttribute('x2', cx + (R + 10) * Math.cos(a));
+                                line.setAttribute('y2', cy + (R + 10) * Math.sin(a));
+                                line.setAttribute('stroke', '#6b7280');
+                                line.setAttribute('stroke-width', '1');
+                                line.setAttribute('opacity', '0.5');
+                                svg.appendChild(line);
+                            }
+
+                            // Central vertex dot
+                            var dot = document.createElementNS(NS, 'circle');
+                            dot.setAttribute('cx', cx);
+                            dot.setAttribute('cy', cy);
+                            dot.setAttribute('r', '5');
+                            dot.setAttribute('fill', '#22d3ee');
+                            svg.appendChild(dot);
+
+                            // Update labels
+                            var name = names[p+','+q] || '';
+                            var label = '{' + p + ', ' + q + '}';
+                            if(name) label += ' \u2014 ' + name;
+                            document.getElementById('vf-label').textContent = label;
+
+                            var angleStr = 'Suma angular: ' + q + ' \u00D7 ' + alpha.toFixed(1) + '\u00B0 = ' + totalAngle.toFixed(1) + '\u00B0';
+                            if(totalAngle < 360) angleStr += ' < 360\u00B0';
+                            else if(Math.abs(totalAngle - 360) < 0.1) angleStr += ' = 360\u00B0';
+                            else angleStr += ' > 360\u00B0';
+                            document.getElementById('vf-angle').textContent = angleStr;
+
+                            var defEl = document.getElementById('vf-deficit');
+                            if(deficit > 0.5){
+                                defEl.style.color = '#22d3ee';
+                                defEl.textContent = 'Deficit: ' + deficit.toFixed(1) + '\u00B0 \u2192 se curva, forma poliedro';
+                            } else if(Math.abs(deficit) < 0.5){
+                                defEl.style.color = '#22d3ee';
+                                defEl.textContent = 'Deficit: 0\u00B0 \u2192 plano, forma teselacion';
+                            } else {
+                                defEl.style.color = '#f87171';
+                                defEl.textContent = 'Exceso: ' + (-deficit).toFixed(1) + '\u00B0 \u2192 imposible en geometria euclidiana';
+                            }
+                        }
+
+                        function describeArc(cx, cy, r, startDeg, endDeg){
+                            var s = startDeg * Math.PI / 180;
+                            var e = endDeg * Math.PI / 180;
+                            var diff = e - s;
+                            if(diff < 0) diff += 2 * Math.PI;
+                            var large = diff > Math.PI ? 1 : 0;
+                            var sx = cx + r * Math.cos(s);
+                            var sy = cy + r * Math.sin(s);
+                            var ex = cx + r * Math.cos(e);
+                            var ey = cy + r * Math.sin(e);
+                            return 'M ' + sx + ' ' + sy + ' A ' + r + ' ' + r + ' 0 ' + large + ' 1 ' + ex + ' ' + ey;
+                        }
+
+                        function updateButtons(){
+                            var pBtns = document.querySelectorAll('.p-btn');
+                            for(var i = 0; i < pBtns.length; i++){
+                                if(+pBtns[i].dataset.p === curP){
+                                    pBtns[i].style.background = 'rgba(167,139,250,0.15)';
+                                    pBtns[i].style.borderColor = '#a78bfa';
+                                    pBtns[i].style.color = '#a78bfa';
+                                } else {
+                                    pBtns[i].style.background = '#111827';
+                                    pBtns[i].style.borderColor = '#1f2937';
+                                    pBtns[i].style.color = '#9ca3af';
+                                }
+                            }
+                            var qBtns = document.querySelectorAll('.q-btn');
+                            for(var i = 0; i < qBtns.length; i++){
+                                if(+qBtns[i].dataset.q === curQ){
+                                    qBtns[i].style.background = 'rgba(167,139,250,0.15)';
+                                    qBtns[i].style.borderColor = '#a78bfa';
+                                    qBtns[i].style.color = '#a78bfa';
+                                } else {
+                                    qBtns[i].style.background = '#111827';
+                                    qBtns[i].style.borderColor = '#1f2937';
+                                    qBtns[i].style.color = '#9ca3af';
+                                }
+                            }
+                        }
+
+                        document.querySelectorAll('.p-btn').forEach(function(btn){
+                            btn.addEventListener('click', function(){
+                                curP = +this.dataset.p;
+                                drawVertexFigure(curP, curQ);
+                                updateButtons();
+                            });
+                        });
+                        document.querySelectorAll('.q-btn').forEach(function(btn){
+                            btn.addEventListener('click', function(){
+                                curQ = +this.dataset.q;
+                                drawVertexFigure(curP, curQ);
+                                updateButtons();
+                            });
+                        });
+
+                        drawVertexFigure(curP, curQ);
+                        updateButtons();
+                    })();
+                    </script>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-10.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-400 rounded-lg font-semibold transition">
+                            &larr; De {p, q} a V, E, F
                         </a>
-                        <a href="./leccion-12.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
-                            Siguiente: Topología →
+                        <a href="./leccion-12.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg font-semibold transition">
+                            Siguiente: Topologia y la Esfera &rarr;
                         </a>
                     </div>
                 </article>
@@ -287,11 +644,21 @@
         </div>
     </div>
 
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">
-                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
-            </p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <nav class="text-xs text-gray-600 mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Modulo 02</span>
+            </nav>
+            <p class="text-gray-700 text-sm mono">Modulo 02 &middot; La Formula de Euler</p>
         </div>
     </footer>
 </body>

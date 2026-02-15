@@ -3,172 +3,1036 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 21: Politopos 4D Regulares | Matemáticas Visuales</title>
+    <title>Leccion 21: Euler-Poincare y Dualidad | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 04</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 21</span> — Euler-Poincare y Dualidad
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-20.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-22.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-20.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-22.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 4</h3>
-                    <p class="text-sm text-gray-400 mb-4">Más Allá de la 3D</p>
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 04</h3>
+                    <p class="text-sm text-gray-500 mb-4">Mas Alla de la Tercera Dimension</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>3/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 50%"></div>
                         </div>
                     </div>
+
                     <nav class="space-y-2">
-                        <a href="./leccion-19.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">19. Introducción a 4D</a>
-                        <a href="./leccion-20.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">20. El Teseracto</a>
-                        <a href="./leccion-21.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">21. Politopos 4D</a>
-                        <a href="./leccion-22.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">22. Proyecciones</a>
-                        <a href="./leccion-23.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">23. Navegando en 4D</a>
-                        <a href="./leccion-24.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">24. Visualización 4D→3D</a>
+                        <a href="./leccion-19.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">19. El Salto a la Cuarta Dimension</a>
+                        <a href="./leccion-20.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">20. Los Seis Politopos Regulares</a>
+                        <a href="./leccion-21.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">21. Euler-Poincare y Dualidad</a>
+                        <a href="./leccion-22.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">22. Proyecciones: De 4D a Pantalla</a>
+                        <a href="./leccion-23.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">23. Rotaciones en 4D y el 24-celda</a>
+                        <a href="./leccion-24.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">24. Dimensiones Superiores y Sintesis</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 21</span>
-                            <span class="text-gray-400 text-sm">⏱️ 30 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Politopos 4D Regulares</h1>
-                        <p class="text-gray-400 text-lg">Los seis politopos regulares convexos del espacio tetradimensional.</p>
+                        <span class="text-cyan-400 text-sm font-medium">Leccion 21</span>
+                        <h2 class="text-3xl font-light mt-2 mb-4">
+                            <span class="text-violet-400 font-medium glow-text">Euler-Poincare</span> y Dualidad
+                        </h2>
+                        <p class="text-gray-400 text-lg">La topologia explica por que \(V - E + F - C = 0\): la frontera de un politopo 4D es \(S^3\), y \(\chi(S^3) = 0\).</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Los Seis Politopos 4D</h2>
-                        <p class="text-gray-300 mb-4">En 4D existen exactamente 6 politopos regulares convexos. Cada uno está construido a partir de sólidos platónicos 3D como "celdas".</p>
-                        <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Politopo</th>
-                                        <th class="px-4 py-2 text-center">Schläfli</th>
-                                        <th class="px-4 py-2 text-center">Celdas 3D</th>
-                                        <th class="px-4 py-2 text-center">Vértices</th>
+
+                    <!-- 1. De V-E+F=2 a V-E+F-C=0 -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">1. De \(V - E + F = 2\) a \(V - E + F - C = 0\)</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            En la Leccion 20 verificamos que los seis politopos regulares 4D satisfacen \(V - E + F - C = 0\). Pero, por que siempre da cero? No es una coincidencia numerica: es un <strong class="text-white">teorema topologico</strong> profundo, el mismo que en dimension 3 nos da la formula de Euler \(V - E + F = 2\).
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            Recordemos el argumento en 3D. Todo poliedro convexo tiene como frontera una superficie homeomorfa a la esfera \(S^2\). La <strong class="text-white">caracteristica de Euler</strong> de \(S^2\) es 2, lo que fuerza \(V - E + F = 2\) para cualquier triangulacion (y, por tanto, para cualquier poliedro convexo).
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            En 4D, un politopo convexo es una region acotada de \(\mathbb{R}^4\). Su <strong class="text-white">frontera</strong> -- la "superficie" que lo envuelve -- es una variedad tridimensional cerrada. Si el politopo es convexo, esta frontera es homeomorfa a la esfera \(S^3\). Y aqui reside la clave: la caracteristica de Euler de \(S^3\) es <strong class="text-white">cero</strong>.
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-2">La suma alternante de las componentes de la frontera computa la caracteristica de Euler del espacio frontera:</p>
+                            $$ \chi(\partial P) \;=\; V - E + F - C $$
+                            <p class="text-gray-300 mt-2">Para un politopo 4D convexo, \(\partial P \cong S^3\), y \(\chi(S^3) = 0\). Por tanto:</p>
+                            $$ V - E + F - C \;=\; 0 $$
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Verifiquemos esta identidad para los seis politopos regulares de dimension 4:
+                        </p>
+
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm text-gray-300 border border-gray-800">
+                                <thead>
+                                    <tr class="bg-gray-900 text-gray-200">
+                                        <th class="px-4 py-3 text-left border-b border-gray-800">Politopo</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">\(\{p,q,r\}\)</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">\(V\)</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">\(E\)</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">\(F\)</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">\(C\)</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">\(V{-}E{+}F{-}C\)</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">5-celda</td>
-                                        <td class="px-4 py-2 text-center font-mono">{3,3,3}</td>
-                                        <td class="px-4 py-2 text-center">5 tetraedros</td>
+                                <tbody>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-violet-400">5-celda</td>
+                                        <td class="px-4 py-2 text-center mono text-xs">{3,3,3}</td>
                                         <td class="px-4 py-2 text-center">5</td>
+                                        <td class="px-4 py-2 text-center">10</td>
+                                        <td class="px-4 py-2 text-center">10</td>
+                                        <td class="px-4 py-2 text-center">5</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
                                     </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Teseracto</td>
-                                        <td class="px-4 py-2 text-center font-mono">{4,3,3}</td>
-                                        <td class="px-4 py-2 text-center">8 cubos</td>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-violet-400">Teseracto</td>
+                                        <td class="px-4 py-2 text-center mono text-xs">{4,3,3}</td>
                                         <td class="px-4 py-2 text-center">16</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">16-celda</td>
-                                        <td class="px-4 py-2 text-center font-mono">{3,3,4}</td>
-                                        <td class="px-4 py-2 text-center">8 tetraedros</td>
-                                        <td class="px-4 py-2 text-center">8</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">24-celda</td>
-                                        <td class="px-4 py-2 text-center font-mono">{3,4,3}</td>
-                                        <td class="px-4 py-2 text-center">24 octaedros</td>
+                                        <td class="px-4 py-2 text-center">32</td>
                                         <td class="px-4 py-2 text-center">24</td>
+                                        <td class="px-4 py-2 text-center">8</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
                                     </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">120-celda</td>
-                                        <td class="px-4 py-2 text-center font-mono">{5,3,3}</td>
-                                        <td class="px-4 py-2 text-center">120 dodecaedros</td>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-violet-400">16-celda</td>
+                                        <td class="px-4 py-2 text-center mono text-xs">{3,3,4}</td>
+                                        <td class="px-4 py-2 text-center">8</td>
+                                        <td class="px-4 py-2 text-center">24</td>
+                                        <td class="px-4 py-2 text-center">32</td>
+                                        <td class="px-4 py-2 text-center">16</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-violet-400">24-celda</td>
+                                        <td class="px-4 py-2 text-center mono text-xs">{3,4,3}</td>
+                                        <td class="px-4 py-2 text-center">24</td>
+                                        <td class="px-4 py-2 text-center">96</td>
+                                        <td class="px-4 py-2 text-center">96</td>
+                                        <td class="px-4 py-2 text-center">24</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-violet-400">120-celda</td>
+                                        <td class="px-4 py-2 text-center mono text-xs">{5,3,3}</td>
                                         <td class="px-4 py-2 text-center">600</td>
+                                        <td class="px-4 py-2 text-center">1200</td>
+                                        <td class="px-4 py-2 text-center">720</td>
+                                        <td class="px-4 py-2 text-center">120</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
                                     </tr>
                                     <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">600-celda</td>
-                                        <td class="px-4 py-2 text-center font-mono">{3,3,5}</td>
-                                        <td class="px-4 py-2 text-center">600 tetraedros</td>
+                                        <td class="px-4 py-2 text-violet-400">600-celda</td>
+                                        <td class="px-4 py-2 text-center mono text-xs">{3,3,5}</td>
                                         <td class="px-4 py-2 text-center">120</td>
+                                        <td class="px-4 py-2 text-center">720</td>
+                                        <td class="px-4 py-2 text-center">1200</td>
+                                        <td class="px-4 py-2 text-center">600</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
                                     </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Fórmula de Euler en 4D</h3>
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6 text-center">
-                            <p class="text-xl font-mono text-platonic-cyan">V - E + F - C = 0</p>
-                            <p class="text-sm text-gray-400 mt-2">Vértices - Aristas + Caras - Celdas = 0</p>
+
+                        <p class="text-gray-300">
+                            La columna final confirma universalmente \(V - E + F - C = 0\). No es aritmetica accidental: es la topologia de \(S^3\) haciendose presente en la combinatoria.
+                        </p>
+                    </section>
+
+                    <!-- 2. La Caracteristica de Euler-Poincare -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">2. La Caracteristica de Euler-Poincare</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            La formula \(V - E + F = 2\) en 3D y \(V - E + F - C = 0\) en 4D son casos particulares de un patron general. La <strong class="text-white">caracteristica de Euler-Poincare</strong> de la esfera \(n\)-dimensional \(S^n\) viene dada por:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            $$ \chi(S^n) \;=\; 1 + (-1)^n $$
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Dualidad en 4D</h3>
-                        <p class="text-gray-300 mb-4">Los pares duales en 4D son: Teseracto ↔ 16-celda, 120-celda ↔ 600-celda. La 5-celda y 24-celda son autoduales.</p>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Politopos 4D</h2>
-                        <p class="text-gray-400 mb-4">Explora todos los politopos 4D.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+
+                        <p class="text-gray-300 mb-4">
+                            Esta formula se demuestra en topologia algebraica a traves de los <strong class="text-white">grupos de homologia</strong> de \(S^n\). Los unicos grupos no triviales son \(H_0(S^n) \cong \mathbb{Z}\) y \(H_n(S^n) \cong \mathbb{Z}\), de modo que los numeros de Betti son \(\beta_0 = 1\), \(\beta_n = 1\), y \(\beta_k = 0\) para \(0 < k < n\). La caracteristica de Euler es la suma alternante de los numeros de Betti:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            $$ \chi(S^n) = \sum_{k=0}^{n} (-1)^k \beta_k = 1 + 0 + \cdots + 0 + (-1)^n \cdot 1 = 1 + (-1)^n $$
                         </div>
-                    </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-20.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-22.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Proyecciones →</a>
+
+                        <p class="text-gray-300 mb-4">Evaluemos para las primeras dimensiones:</p>
+
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm text-gray-300 border border-gray-800">
+                                <thead>
+                                    <tr class="bg-gray-900 text-gray-200">
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">Esfera</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">Descripcion</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">\(\chi\)</th>
+                                        <th class="px-4 py-3 text-center border-b border-gray-800">Frontera de politopo en dim...</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-center text-violet-400">\(S^0\)</td>
+                                        <td class="px-4 py-2 text-center">Dos puntos</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">2</td>
+                                        <td class="px-4 py-2 text-center">1 (segmento)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-center text-violet-400">\(S^1\)</td>
+                                        <td class="px-4 py-2 text-center">Circulo</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
+                                        <td class="px-4 py-2 text-center">2 (poligono)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-center text-violet-400">\(S^2\)</td>
+                                        <td class="px-4 py-2 text-center">Esfera usual</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">2</td>
+                                        <td class="px-4 py-2 text-center">3 (poliedro)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800/50">
+                                        <td class="px-4 py-2 text-center text-violet-400">\(S^3\)</td>
+                                        <td class="px-4 py-2 text-center">Hiperesfera</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">0</td>
+                                        <td class="px-4 py-2 text-center">4 (politopo 4D)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center text-violet-400">\(S^4\)</td>
+                                        <td class="px-4 py-2 text-center">4-esfera</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400 mono">2</td>
+                                        <td class="px-4 py-2 text-center">5 (politopo 5D)</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-2"><strong class="text-white">Patron.</strong> Un politopo convexo en \(\mathbb{R}^n\) tiene como frontera la esfera \(S^{n-1}\). Por tanto, la suma alternante de sus \(k\)-caras satisface:</p>
+                            $$ \sum_{k=0}^{n-1} (-1)^k f_k \;=\; \chi(S^{n-1}) \;=\; 1 + (-1)^{n-1} $$
+                            <p class="text-gray-300 mt-3">Casos concretos:</p>
+                            <ul class="list-disc list-inside text-gray-300 mt-2 space-y-1">
+                                <li>\(n = 3\): \(\;V - E + F = 1 + (-1)^2 = 2\) (formula de Euler clasica)</li>
+                                <li>\(n = 4\): \(\;V - E + F - C = 1 + (-1)^3 = 0\) (Euler-Poincare 4D)</li>
+                                <li>\(n = 5\): \(\;V - E + F - C + H = 1 + (-1)^4 = 2\) (dimension 5, con \(H\) = hiperceldas)</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-gray-300">
+                            La alternancia entre 0 y 2 refleja una propiedad topologica fundamental: las esferas de dimension par tienen \(\chi = 2\), y las de dimension impar tienen \(\chi = 0\). Esto esta intimamente ligado al <strong class="text-white">teorema de la bola peluda</strong> (Hairy Ball Theorem): en \(S^{2k}\) no existe un campo vectorial tangente que nunca se anule, mientras que en \(S^{2k+1}\) si existe.
+                        </p>
+                    </section>
+
+                    <!-- 3. Formulas Combinatorias desde {p,q,r} -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">3. Formulas Combinatorias desde \(\{p,q,r\}\)</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            El simbolo de Schlafli \(\{p,q,r\}\) codifica toda la informacion combinatoria del politopo. Las <strong class="text-white">relaciones de incidencia</strong> permiten deducir \(V, E, F, C\) a partir de \(p, q, r\) y la restriccion \(V - E + F - C = 0\).
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            Cada celda es un poliedro \(\{p,q\}\) con su propio numero de vertices \(v_c\), aristas \(e_c\) y caras \(f_c\). La figura de vertice es el poliedro \(\{q,r\}\) con \(v_f\) vertices, \(e_f\) aristas y \(f_f\) caras. Estas cantidades generan cuatro <strong class="text-white">ecuaciones de doble conteo</strong>:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-3"><strong class="text-white">Ecuacion 1</strong> (conteo de aristas por vertices). Cada vertice toca \(v_f\) aristas (una por cada vertice de la figura de vertice \(\{q,r\}\)), y cada arista tiene 2 extremos:</p>
+                            $$ 2E = V \cdot v_f $$
+
+                            <p class="text-gray-300 mb-3 mt-4"><strong class="text-white">Ecuacion 2</strong> (conteo de aristas por caras). Cada cara es un \(p\)-gono con \(p\) aristas, y cada arista pertenece a exactamente 2 caras:</p>
+                            $$ 2E = p \cdot F $$
+
+                            <p class="text-gray-300 mb-3 mt-4"><strong class="text-white">Ecuacion 3</strong> (conteo de caras por celdas). Cada celda \(\{p,q\}\) tiene \(f_c\) caras, y cada cara pertenece a exactamente 2 celdas:</p>
+                            $$ 2F = f_c \cdot C $$
+
+                            <p class="text-gray-300 mt-4"><strong class="text-white">Ecuacion 4</strong> (Euler-Poincare):</p>
+                            $$ V - E + F - C = 0 $$
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Con estas cuatro ecuaciones y cuatro incognitas \((V, E, F, C)\), el sistema queda completamente determinado. Veamos el calculo explicito para el <strong class="text-white">teseracto</strong> \(\{4,3,3\}\).
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-violet-400 font-medium mb-3">Ejemplo: Teseracto \(\{4,3,3\}\)</p>
+                            <p class="text-gray-300 mb-2">Celda = cubo \(\{4,3\}\): tiene \(v_c = 8\) vertices, \(e_c = 12\) aristas, \(f_c = 6\) caras.</p>
+                            <p class="text-gray-300 mb-3">Figura de vertice = tetraedro \(\{3,3\}\): tiene \(v_f = 4\) vertices, \(e_f = 6\) aristas, \(f_f = 4\) caras.</p>
+
+                            <p class="text-gray-300 mb-1">De la ecuacion 1: \(2E = V \cdot 4\), es decir, \(E = 2V\).</p>
+                            <p class="text-gray-300 mb-1">De la ecuacion 2: \(2E = 4F\), es decir, \(F = E/2 = V\).</p>
+                            <p class="text-gray-300 mb-1">De la ecuacion 3: \(2F = 6C\), es decir, \(C = F/3 = V/3\).</p>
+                            <p class="text-gray-300 mb-3">De Euler-Poincare: \(V - 2V + V - V/3 = 0\), lo que da \(-V/3 = 0\)...</p>
+
+                            <p class="text-gray-300 mb-3">Esto parece contradictorio, pero falta una restriccion adicional: el numero de celdas que inciden en cada arista es \(r = 3\). Por el conteo de aristas por celdas:</p>
+                            $$ r \cdot E = e_c \cdot C \quad \Longrightarrow \quad 3E = 12C \quad \Longrightarrow \quad E = 4C $$
+
+                            <p class="text-gray-300 mb-1 mt-3">Combinando \(E = 2V\) y \(E = 4C\) obtenemos \(C = V/2\).</p>
+                            <p class="text-gray-300 mb-1">De \(2F = 6C = 3V\), obtenemos \(F = 3V/2\).</p>
+                            <p class="text-gray-300 mb-1">Euler-Poincare: \(V - 2V + 3V/2 - V/2 = 0\). Esto da \(0 = 0\), que es consistente pero no fija \(V\).</p>
+                            <p class="text-gray-300 mb-3 mt-2">Para fijar \(V\), usamos que cada vertice pertenece a \(f_f = 4\) celdas y cada celda tiene \(v_c = 8\) vertices:</p>
+                            $$ V \cdot f_f = v_c \cdot C \quad \Longrightarrow \quad 4V = 8C = 4V \quad \checkmark $$
+
+                            <p class="text-gray-300 mt-2">El valor concreto de \(V\) se obtiene del conteo alternativo: cada vertice esta en \(f_f = 4\) celdas, y cada celda tiene 8 vertices. Como \(C = V/2\), esto es consistente. Fijamos \(C = 8\) (hay 8 cubos que envuelven al teseracto), y entonces:</p>
+                            $$ C = 8, \quad V = 2C = 16, \quad E = 4C = 32, \quad F = 3C = 24 $$
+                            <p class="text-gray-300 mt-2">Verificacion: \(16 - 32 + 24 - 8 = 0\). Correcto.</p>
+                        </div>
+                    </section>
+
+                    <!-- 4. Dualidad en 4D -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">4. Dualidad en 4D</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            La <strong class="text-white">dualidad</strong> es una de las simetrias mas profundas de la geometria regular. En 3D, ya sabemos que el dual de un poliedro \(\{p,q\}\) es \(\{q,p\}\): el cubo \(\{4,3\}\) es dual del octaedro \(\{3,4\}\), el dodecaedro \(\{5,3\}\) es dual del icosaedro \(\{3,5\}\), y el tetraedro \(\{3,3\}\) es autodual.
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            En 4D, la regla se extiende de forma natural: el dual del politopo \(\{p,q,r\}\) es el politopo \(\{r,q,p\}\). Se <strong class="text-white">invierte</strong> el simbolo de Schlafli.
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-2"><strong class="text-white">Construccion geometrica del dual.</strong> Dado un politopo \(P\), su dual \(P^*\) se construye asi:</p>
+                            <ul class="list-disc list-inside text-gray-300 space-y-2 mt-2">
+                                <li>Colocar un vertice de \(P^*\) en el centro de cada <strong class="text-white">celda</strong> de \(P\).</li>
+                                <li>Conectar dos vertices de \(P^*\) con una arista si las celdas correspondientes de \(P\) comparten una <strong class="text-white">cara</strong>.</li>
+                                <li>Las caras de \(P^*\) corresponden a las <strong class="text-white">aristas</strong> de \(P\).</li>
+                                <li>Las celdas de \(P^*\) corresponden a los <strong class="text-white">vertices</strong> de \(P\).</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            El efecto sobre los vectores-f es una <strong class="text-white">reflexion</strong>: si \(P\) tiene vector-f \((V, E, F, C)\), entonces \(P^*\) tiene vector-f \((C, F, E, V)\). Los elementos se intercambian simetricamente:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            $$ V^* = C, \quad E^* = F, \quad F^* = E, \quad C^* = V $$
+                            <p class="text-gray-300 mt-2">Notese que vertices y celdas se intercambian, <strong class="text-white">y tambien aristas y caras</strong>. Este segundo intercambio no tiene analogo en 3D (donde aristas se intercambian consigo mismas).</p>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">Los pares duales en 4D son:</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-center">
+                                <p class="text-violet-400 font-medium mb-1">Teseracto \(\{4,3,3\}\)</p>
+                                <p class="text-2xl text-gray-500 my-2">&#8596;</p>
+                                <p class="text-cyan-400 font-medium">16-celda \(\{3,3,4\}\)</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4 text-center">
+                                <p class="text-violet-400 font-medium mb-1">120-celda \(\{5,3,3\}\)</p>
+                                <p class="text-2xl text-gray-500 my-2">&#8596;</p>
+                                <p class="text-cyan-400 font-medium">600-celda \(\{3,3,5\}\)</p>
+                            </div>
+                        </div>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-4">
+                            <div class="bg-gray-900 border border-violet-500/30 rounded-xl p-4 text-center">
+                                <p class="text-violet-400 font-medium mb-1">5-celda \(\{3,3,3\}\)</p>
+                                <p class="text-xs text-gray-500 mt-1">Autodual: \(\{3,3,3\} = \{3,3,3\}\)</p>
+                            </div>
+                            <div class="bg-gray-900 border border-violet-500/30 rounded-xl p-4 text-center">
+                                <p class="text-violet-400 font-medium mb-1">24-celda \(\{3,4,3\}\)</p>
+                                <p class="text-xs text-gray-500 mt-1">Autodual: \(\{3,4,3\} = \{3,4,3\}\)</p>
+                            </div>
+                        </div>
+
+                        <p class="text-gray-300">
+                            La autodualidad del 24-celda es particularmente notable: no tiene analogo en dimension 3 (el tetraedro es el unico poliedro regular autodual) ni en dimensiones superiores. El 24-celda \(\{3,4,3\}\) es el unico politopo regular en cualquier dimension que es autodual <em>sin</em> ser un simplejo.
+                        </p>
+                    </section>
+
+                    <!-- 5. La Dualidad en Numeros -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">5. La Dualidad en Numeros</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            Comparemos lado a lado los vectores-f de cada par dual para observar concretamente como operan los intercambios \(V \leftrightarrow C\) y \(E \leftrightarrow F\).
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-violet-400 font-medium mb-3">Par dual: Teseracto y 16-celda</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-gray-300 border border-gray-800">
+                                    <thead>
+                                        <tr class="bg-gray-800 text-gray-200">
+                                            <th class="px-3 py-2 text-left border-b border-gray-700"></th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(V\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(E\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(F\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(C\)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="px-3 py-2 text-violet-400">Teseracto</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">16</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">32</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">24</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">8</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-3 py-2 text-cyan-400">16-celda</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">8</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">24</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">32</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">16</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-gray-400 text-sm mt-3">Observese: \(V_{\text{tes}} = 16 = C_{\text{16c}}\), \(E_{\text{tes}} = 32 = F_{\text{16c}}\), \(F_{\text{tes}} = 24 = E_{\text{16c}}\), \(C_{\text{tes}} = 8 = V_{\text{16c}}\).</p>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-violet-400 font-medium mb-3">Par dual: 120-celda y 600-celda</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-gray-300 border border-gray-800">
+                                    <thead>
+                                        <tr class="bg-gray-800 text-gray-200">
+                                            <th class="px-3 py-2 text-left border-b border-gray-700"></th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(V\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(E\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(F\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(C\)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="px-3 py-2 text-violet-400">120-celda</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">600</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">1200</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">720</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">120</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-3 py-2 text-cyan-400">600-celda</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">120</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">720</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">1200</td>
+                                            <td class="px-3 py-2 text-center font-medium text-white">600</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-gray-400 text-sm mt-3">De nuevo, la correspondencia \(V \leftrightarrow C\) y \(E \leftrightarrow F\) se verifica numero a numero.</p>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-violet-400 font-medium mb-3">Autoduales: 5-celda y 24-celda</p>
+                            <div class="overflow-x-auto">
+                                <table class="w-full text-sm text-gray-300 border border-gray-800">
+                                    <thead>
+                                        <tr class="bg-gray-800 text-gray-200">
+                                            <th class="px-3 py-2 text-left border-b border-gray-700"></th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(V\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(E\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(F\)</th>
+                                            <th class="px-3 py-2 text-center border-b border-gray-700">\(C\)</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <tr class="border-b border-gray-800/50">
+                                            <td class="px-3 py-2 text-violet-400">5-celda</td>
+                                            <td class="px-3 py-2 text-center">5</td>
+                                            <td class="px-3 py-2 text-center">10</td>
+                                            <td class="px-3 py-2 text-center">10</td>
+                                            <td class="px-3 py-2 text-center">5</td>
+                                        </tr>
+                                        <tr>
+                                            <td class="px-3 py-2 text-violet-400">24-celda</td>
+                                            <td class="px-3 py-2 text-center">24</td>
+                                            <td class="px-3 py-2 text-center">96</td>
+                                            <td class="px-3 py-2 text-center">96</td>
+                                            <td class="px-3 py-2 text-center">24</td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <p class="text-gray-400 text-sm mt-3">La autodualidad exige \(V = C\) y \(E = F\). Ambos politopos lo satisfacen: \((5, 10, 10, 5)\) y \((24, 96, 96, 24)\).</p>
+                        </div>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-2"><strong class="text-white">Proposicion.</strong> La dualidad preserva la caracteristica de Euler.</p>
+                            <p class="text-gray-300">Si el politopo \(P\) tiene \(\chi = V - E + F - C\), su dual \(P^*\) tiene:</p>
+                            $$ \chi^* = V^* - E^* + F^* - C^* = C - F + E - V = -(V - E + F - C) = -\chi $$
+                            <p class="text-gray-300 mt-2">Pero como \(\chi = 0\), se tiene \(\chi^* = -0 = 0\). La dualidad preserva \(\chi\) en 4D. Notese que en 3D, donde \(\chi = 2\), tambien se verifica: \(\chi^* = F - E + V = V - E + F = 2\), ya que la expresion es la misma reordenada.</p>
+                        </div>
+                    </section>
+
+                    <!-- 6. Derivacion Alternativa -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">6. Derivacion Alternativa: Sumando Euler por Celdas</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            Hay una forma elegante de <em>derivar</em> \(V - E + F - C = 0\) sin usar topologia algebraica, partiendo unicamente de la formula de Euler en 3D. La idea es sumar la formula \(V - E + F = 2\) sobre cada celda del politopo.
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            Sea \(P\) un politopo 4D convexo con \(C\) celdas. Cada celda \(c_i\) es un poliedro convexo 3D que satisface:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            $$ V_i - E_i + F_i = 2 \quad \text{para cada celda } c_i $$
+                            <p class="text-gray-300 mt-3">Sumando sobre las \(C\) celdas:</p>
+                            $$ \sum_{i=1}^{C} V_i \;-\; \sum_{i=1}^{C} E_i \;+\; \sum_{i=1}^{C} F_i \;=\; 2C $$
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Ahora debemos relacionar estas sumas con las cantidades globales \(V, E, F\) del politopo. Cada elemento de la frontera del politopo pertenece a varias celdas:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-3"><strong class="text-white">Vertices.</strong> Cada vertice global pertenece a \(n_v\) celdas (el numero depende del politopo). Por tanto:</p>
+                            $$ \sum_{i=1}^{C} V_i = \sum_{v \in \text{vertices}} n_v $$
+
+                            <p class="text-gray-300 mb-3 mt-4"><strong class="text-white">Aristas.</strong> Cada arista global pertenece a \(r\) celdas (el tercer indice de Schlafli). Por tanto:</p>
+                            $$ \sum_{i=1}^{C} E_i = r \cdot E $$
+
+                            <p class="text-gray-300 mt-4"><strong class="text-white">Caras.</strong> Cada cara global es compartida por exactamente <strong class="text-white">2</strong> celdas (propiedad de las variedades). Por tanto:</p>
+                            $$ \sum_{i=1}^{C} F_i = 2F $$
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Para los vertices, usamos que cada vertice pertenece a \(f_f\) celdas (donde \(f_f\) es el numero de caras de la figura de vertice \(\{q,r\}\)). Ademas, sabemos que \(f_f \cdot V = v_c \cdot C\) por doble conteo. Entonces \(\sum V_i = f_f \cdot V\).
+                        </p>
+
+                        <p class="text-gray-300 mb-4">La ecuacion sumada queda:</p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            $$ f_f \cdot V \;-\; r \cdot E \;+\; 2F \;=\; 2C $$
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            Para el caso del teseracto \(\{4,3,3\}\): \(f_f = 4\) (caras del tetraedro), \(r = 3\). La ecuacion da \(4(16) - 3(32) + 2(24) = 64 - 96 + 48 = 16 = 2(8) = 2C\). Correcto.
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            De forma mas general, combinando esta ecuacion con las relaciones de incidencia de la Seccion 3, se puede demostrar que siempre se reduce a \(V - E + F - C = 0\). La demostracion completa procede asi: las relaciones \(2E = V \cdot v_f\), \(rE = e_c \cdot C\), y \(2F = f_c \cdot C\) permiten expresar todo en terminos de una sola variable, y la consistencia del sistema fuerza la identidad de Euler-Poincare.
+                        </p>
+                    </section>
+
+                    <!-- Ejercicios -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+
+                        <div class="space-y-6">
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">1.</strong> Verifica \(V - E + F - C = 0\) para el 24-celda directamente: \(24 - 96 + 96 - 24\). Luego, usando que la celda del 24-celda es el octaedro \(\{3,4\}\) con \(v_c = 6, e_c = 12, f_c = 8\), y la figura de vertice es el cubo \(\{4,3\}\) con \(v_f = 8\), verifica las relaciones de doble conteo \(2E = V \cdot v_f\) y \(2F = f_c \cdot C\).</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">2.</strong> Usando \(\chi(S^n) = 1 + (-1)^n\), determina el valor de la suma alternante \(V - E + F - C + H\) para un politopo convexo en \(\mathbb{R}^5\), donde \(H\) es el numero de hiperceldas (facetas 4D). Verifica tu prediccion con el 5-simplejo, que tiene \(V = 6, E = 15, F = 20, C = 15, H = 6\).</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">3.</strong> Si un politopo \(\{p,q,r\}\) es autodual, entonces \(\{p,q,r\} = \{r,q,p\}\). Demuestra que esto implica \(p = r\). Deduce que \(V = C\) y \(E = F\). De los seis politopos 4D regulares, cuales satisfacen \(p = r\)?</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">4.</strong> La figura de vertice del teseracto \(\{4,3,3\}\) es el tetraedro \(\{3,3\}\) con \(v_f = 4\) vertices. Verifica que \(2E = V \cdot v_f\) da \(2(32) = 16 \cdot 4 = 64\). Luego haz lo mismo para la 16-celda \(\{3,3,4\}\), cuya figura de vertice es el octaedro \(\{3,4\}\) con \(v_f = 6\): verifica \(2(24) = 8 \cdot 6 = 48\).</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">5.</strong> Demuestra algebraicamente que la dualidad preserva la caracteristica de Euler en 4D. Si \(P\) tiene vector-f \((V, E, F, C)\) y su dual \(P^*\) tiene \((V^*, E^*, F^*, C^*) = (C, F, E, V)\), calcula \(V^* - E^* + F^* - C^*\) y muestra que es igual a \(V - E + F - C\). Generaliza: funciona este argumento en dimension \(n\) impar? Y en dimension \(n\) par?</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LAB -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">LAB: Euler-Poincare Interactivo</h3>
+                        <p class="text-gray-400 mb-4">Visualizacion de politopos 4D con verificacion de la formula de Euler-Poincare. Selecciona un politopo, observa su proyeccion 4D a 3D y comprueba que \(V - E + F - C = 0\). Activa "Mostrar dual" para superponer el politopo dual en cian. Arrastra para rotar en 3D; la rotacion en el plano XW es automatica.</p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                            <!-- Polytope selector -->
+                            <div class="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-gray-800">
+                                <button class="polytope-btn px-3 py-1.5 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition" data-polytope="5cell">5-celda</button>
+                                <button class="polytope-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-400 border border-gray-700 hover:text-violet-400 transition" data-polytope="tesseract">Teseracto</button>
+                                <button class="polytope-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-400 border border-gray-700 hover:text-violet-400 transition" data-polytope="16cell">16-celda</button>
+                                <button class="polytope-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-400 border border-gray-700 hover:text-violet-400 transition" data-polytope="24cell">24-celda</button>
+                                <div class="ml-auto flex items-center gap-3">
+                                    <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                                        <input type="checkbox" id="show-dual" class="accent-cyan-500">
+                                        <span>Mostrar dual</span>
+                                    </label>
+                                    <button id="pause-btn" class="px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Pausa</button>
+                                </div>
+                            </div>
+                            <!-- Info bar -->
+                            <div id="euler-bar" class="flex flex-wrap justify-center gap-4 px-4 py-2 border-b border-gray-800 text-sm mono">
+                                <span class="text-gray-400">V=<span id="info-v" class="text-violet-400">5</span></span>
+                                <span class="text-gray-400">E=<span id="info-e" class="text-violet-400">10</span></span>
+                                <span class="text-gray-400">F=<span id="info-f" class="text-violet-400">10</span></span>
+                                <span class="text-gray-400">C=<span id="info-c" class="text-violet-400">5</span></span>
+                                <span class="text-gray-500">|</span>
+                                <span id="euler-sum" class="text-cyan-400">5 - 10 + 10 - 5 = 0</span>
+                            </div>
+                            <!-- Canvas -->
+                            <div id="lab-container" class="w-full bg-black" style="height:520px; position:relative;">
+                                <canvas id="lab-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-20.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-300 transition">
+                            ← Los Seis Politopos
+                        </a>
+                        <a href="./leccion-22.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg transition">
+                            Siguiente: Proyecciones →
+                        </a>
                     </div>
                 </article>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales -- De Platon a 4D</p>
         </div>
     </footer>
+
+    <!-- Three.js LAB -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script>
+    (function(){
+        // =============================================
+        // Polytope data definitions
+        // =============================================
+
+        // 5-cell: regular simplex in R^4
+        // Vertices of the standard 4-simplex
+        var s5v = [
+            [ 1,  1,  1, -1/Math.sqrt(5)],
+            [ 1, -1, -1, -1/Math.sqrt(5)],
+            [-1,  1, -1, -1/Math.sqrt(5)],
+            [-1, -1,  1, -1/Math.sqrt(5)],
+            [ 0,  0,  0, Math.sqrt(5) - 1/Math.sqrt(5)]
+        ];
+        // Normalize to unit distance from origin
+        (function(){
+            var sc = 1.0 / Math.sqrt(s5v[0][0]*s5v[0][0]+s5v[0][1]*s5v[0][1]+s5v[0][2]*s5v[0][2]+s5v[0][3]*s5v[0][3]);
+            for(var i=0;i<5;i++) for(var j=0;j<4;j++) s5v[i][j]*=sc;
+        })();
+        // All pairs = 10 edges
+        var s5e = [];
+        for(var i=0;i<5;i++) for(var j=i+1;j<5;j++) s5e.push([i,j]);
+
+        // Tesseract: 16 vertices (+-1,+-1,+-1,+-1), 32 edges
+        var tesV = [];
+        for(var i=0;i<16;i++){
+            tesV.push([
+                (i&1)?1:-1,
+                (i&2)?1:-1,
+                (i&4)?1:-1,
+                (i&8)?1:-1
+            ]);
+        }
+        var tesE = [];
+        for(var i=0;i<16;i++){
+            for(var j=i+1;j<16;j++){
+                var diff=0;
+                for(var k=0;k<4;k++) if(tesV[i][k]!==tesV[j][k]) diff++;
+                if(diff===1) tesE.push([i,j]);
+            }
+        }
+
+        // 16-cell: 8 vertices (permutations of +-1,0,0,0), 24 edges
+        var c16V = [
+            [ 1, 0, 0, 0], [-1, 0, 0, 0],
+            [ 0, 1, 0, 0], [ 0,-1, 0, 0],
+            [ 0, 0, 1, 0], [ 0, 0,-1, 0],
+            [ 0, 0, 0, 1], [ 0, 0, 0,-1]
+        ];
+        var c16E = [];
+        for(var i=0;i<8;i++){
+            for(var j=i+1;j<8;j++){
+                // Two vertices of the 16-cell are connected iff they are not antipodal
+                // Antipodal pairs: (0,1),(2,3),(4,5),(6,7)
+                var antipodal = (Math.floor(i/2)===Math.floor(j/2)) && (Math.abs(i-j)===1);
+                if(!antipodal) c16E.push([i,j]);
+            }
+        }
+
+        // 24-cell: 24 vertices = all permutations of (+-1,+-1,0,0)
+        var c24V = [];
+        // Generate all permutations of (+-1, +-1, 0, 0)
+        for(var a=0;a<4;a++){
+            for(var b=a+1;b<4;b++){
+                for(var sa=-1;sa<=1;sa+=2){
+                    for(var sb=-1;sb<=1;sb+=2){
+                        var v=[0,0,0,0];
+                        v[a]=sa; v[b]=sb;
+                        c24V.push(v);
+                    }
+                }
+            }
+        }
+        // 24-cell edges: two vertices connected iff distance = sqrt(2)
+        var c24E = [];
+        for(var i=0;i<24;i++){
+            for(var j=i+1;j<24;j++){
+                var d2=0;
+                for(var k=0;k<4;k++){
+                    var dd=c24V[i][k]-c24V[j][k];
+                    d2+=dd*dd;
+                }
+                if(Math.abs(d2-2)<0.01) c24E.push([i,j]);
+            }
+        }
+
+        // Polytope data store
+        var polytopes = {
+            '5cell':     { name:'5-celda',   V:s5v,   E:s5e,  fv:5,  fe:10, ff:10, fc:5,  dual:'5cell',     scale:2.0 },
+            'tesseract': { name:'Teseracto', V:tesV,  E:tesE, fv:16, fe:32, ff:24, fc:8,  dual:'16cell',    scale:1.0 },
+            '16cell':    { name:'16-celda',  V:c16V,  E:c16E, fv:8,  fe:24, ff:32, fc:16, dual:'tesseract', scale:1.8 },
+            '24cell':    { name:'24-celda',  V:c24V,  E:c24E, fv:24, fe:96, ff:96, fc:24, dual:'24cell',    scale:1.4 }
+        };
+
+        // =============================================
+        // Three.js setup
+        // =============================================
+        var container = document.getElementById('lab-container');
+        var canvas = document.getElementById('lab-canvas');
+        var W = container.clientWidth;
+        var H = container.clientHeight;
+
+        var renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+        renderer.setSize(W, H);
+        renderer.setPixelRatio(window.devicePixelRatio || 1);
+        renderer.setClearColor(0x000000, 1);
+
+        var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(50, W/H, 0.1, 100);
+        camera.position.set(0, 0, 6);
+
+        // State
+        var currentKey = '5cell';
+        var showDual = false;
+        var angle4D = 0;
+        var paused = false;
+        var rotX = 0, rotY = 0;
+        var isDragging = false;
+        var prevMX = 0, prevMY = 0;
+
+        // Groups for polytope and dual
+        var mainGroup = new THREE.Group();
+        var dualGroup = new THREE.Group();
+        scene.add(mainGroup);
+        scene.add(dualGroup);
+
+        // =============================================
+        // 4D -> 3D projection
+        // =============================================
+        function project4Dto3D(verts4, angleXW, scale) {
+            var projected = [];
+            var cosA = Math.cos(angleXW);
+            var sinA = Math.sin(angleXW);
+            var viewDist = 3.0;
+
+            for (var i = 0; i < verts4.length; i++) {
+                var x = verts4[i][0];
+                var y = verts4[i][1];
+                var z = verts4[i][2];
+                var w = verts4[i][3];
+
+                // Rotate in XW plane
+                var nx = x * cosA - w * sinA;
+                var nw = x * sinA + w * cosA;
+
+                // Perspective projection from 4D to 3D
+                var denom = viewDist - nw;
+                if (denom < 0.3) denom = 0.3;
+                var factor = viewDist / denom;
+
+                projected.push({
+                    x: nx * factor * scale,
+                    y: y * factor * scale,
+                    z: z * factor * scale,
+                    w: nw, // keep w for coloring
+                    factor: factor
+                });
+            }
+            return projected;
+        }
+
+        // =============================================
+        // Build geometry from projected vertices/edges
+        // =============================================
+        function clearGroup(group) {
+            while(group.children.length > 0) {
+                var child = group.children[0];
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) child.material.dispose();
+                group.remove(child);
+            }
+        }
+
+        function buildPolytope(group, verts4, edges, angleXW, scale, colorHex, isDualPoly) {
+            clearGroup(group);
+            var projected = project4Dto3D(verts4, angleXW, scale);
+
+            // Find w range for coloring
+            var minW = Infinity, maxW = -Infinity;
+            for(var i=0;i<projected.length;i++){
+                if(projected[i].w < minW) minW = projected[i].w;
+                if(projected[i].w > maxW) maxW = projected[i].w;
+            }
+            var wRange = maxW - minW;
+            if(wRange < 0.01) wRange = 1;
+
+            // Draw edges
+            for(var i=0; i<edges.length; i++){
+                var a = projected[edges[i][0]];
+                var b = projected[edges[i][1]];
+                var geom = new THREE.BufferGeometry();
+                var positions = new Float32Array([a.x,a.y,a.z, b.x,b.y,b.z]);
+                geom.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+                var mat = new THREE.LineBasicMaterial({
+                    color: colorHex,
+                    transparent: true,
+                    opacity: isDualPoly ? 0.5 : 0.7
+                });
+                group.add(new THREE.Line(geom, mat));
+            }
+
+            // Draw vertices as small spheres
+            for(var i=0;i<projected.length;i++){
+                var p = projected[i];
+                var t = (p.w - minW) / wRange; // 0 to 1
+                var vertColor;
+                if(isDualPoly) {
+                    // Cyan gradient
+                    var r = Math.round(34 * (1-t));
+                    var g = Math.round(180 + 31*t);
+                    var bl = Math.round(211 + 27*t);
+                    vertColor = new THREE.Color('rgb('+r+','+g+','+bl+')');
+                } else {
+                    // Violet to white gradient based on w
+                    var r = Math.round(120 + 135*t);
+                    var g = Math.round(80 + 175*t);
+                    var bl = Math.round(200 + 55*t);
+                    vertColor = new THREE.Color('rgb('+r+','+g+','+bl+')');
+                }
+                var size = 0.04 * p.factor;
+                if(size < 0.02) size = 0.02;
+                if(size > 0.12) size = 0.12;
+                var sphere = new THREE.Mesh(
+                    new THREE.SphereGeometry(size, 8, 6),
+                    new THREE.MeshBasicMaterial({ color: vertColor })
+                );
+                sphere.position.set(p.x, p.y, p.z);
+                group.add(sphere);
+            }
+        }
+
+        // =============================================
+        // Update info bar
+        // =============================================
+        function updateInfoBar(key) {
+            var p = polytopes[key];
+            document.getElementById('info-v').textContent = p.fv;
+            document.getElementById('info-e').textContent = p.fe;
+            document.getElementById('info-f').textContent = p.ff;
+            document.getElementById('info-c').textContent = p.fc;
+            var sum = p.fv - p.fe + p.ff - p.fc;
+            document.getElementById('euler-sum').textContent =
+                p.fv + ' - ' + p.fe + ' + ' + p.ff + ' - ' + p.fc + ' = ' + sum;
+        }
+
+        // =============================================
+        // Update full scene
+        // =============================================
+        function updateScene() {
+            var poly = polytopes[currentKey];
+            buildPolytope(mainGroup, poly.V, poly.E, angle4D, poly.scale, 0xa78bfa, false);
+
+            if (showDual) {
+                var dualKey = poly.dual;
+                var dpoly = polytopes[dualKey];
+                buildPolytope(dualGroup, dpoly.V, dpoly.E, angle4D, dpoly.scale, 0x22d3ee, true);
+                dualGroup.visible = true;
+            } else {
+                clearGroup(dualGroup);
+                dualGroup.visible = false;
+            }
+
+            // Apply mouse rotation
+            mainGroup.rotation.x = rotX;
+            mainGroup.rotation.y = rotY;
+            dualGroup.rotation.x = rotX;
+            dualGroup.rotation.y = rotY;
+        }
+
+        // =============================================
+        // UI: Polytope buttons
+        // =============================================
+        var btns = document.querySelectorAll('.polytope-btn');
+        btns.forEach(function(btn){
+            btn.addEventListener('click', function(){
+                btns.forEach(function(b){
+                    b.classList.remove('bg-violet-500/20','text-violet-400','border-violet-500/30');
+                    b.classList.add('bg-gray-800','text-gray-400','border-gray-700');
+                });
+                this.classList.remove('bg-gray-800','text-gray-400','border-gray-700');
+                this.classList.add('bg-violet-500/20','text-violet-400','border-violet-500/30');
+                currentKey = this.getAttribute('data-polytope');
+                updateInfoBar(currentKey);
+            });
+        });
+
+        // Dual toggle
+        document.getElementById('show-dual').addEventListener('change', function(){
+            showDual = this.checked;
+        });
+
+        // Pause button
+        var pauseBtn = document.getElementById('pause-btn');
+        pauseBtn.addEventListener('click', function(){
+            paused = !paused;
+            this.textContent = paused ? 'Reanudar' : 'Pausa';
+            if(paused){
+                this.classList.remove('text-gray-400','border-gray-700');
+                this.classList.add('text-cyan-400','border-cyan-700');
+            } else {
+                this.classList.remove('text-cyan-400','border-cyan-700');
+                this.classList.add('text-gray-400','border-gray-700');
+            }
+        });
+
+        // =============================================
+        // Mouse drag for 3D rotation
+        // =============================================
+        canvas.addEventListener('mousedown', function(e){
+            isDragging = true;
+            prevMX = e.clientX;
+            prevMY = e.clientY;
+        });
+        window.addEventListener('mousemove', function(e){
+            if(!isDragging) return;
+            var dx = e.clientX - prevMX;
+            var dy = e.clientY - prevMY;
+            rotY += dx * 0.005;
+            rotX += dy * 0.005;
+            prevMX = e.clientX;
+            prevMY = e.clientY;
+        });
+        window.addEventListener('mouseup', function(){ isDragging = false; });
+
+        // Touch events
+        canvas.addEventListener('touchstart', function(e){
+            e.preventDefault();
+            isDragging = true;
+            prevMX = e.touches[0].clientX;
+            prevMY = e.touches[0].clientY;
+        }, { passive: false });
+        canvas.addEventListener('touchmove', function(e){
+            e.preventDefault();
+            if(!isDragging) return;
+            var dx = e.touches[0].clientX - prevMX;
+            var dy = e.touches[0].clientY - prevMY;
+            rotY += dx * 0.005;
+            rotX += dy * 0.005;
+            prevMX = e.touches[0].clientX;
+            prevMY = e.touches[0].clientY;
+        }, { passive: false });
+        canvas.addEventListener('touchend', function(){ isDragging = false; });
+
+        // =============================================
+        // Animation loop
+        // =============================================
+        var lastTime = 0;
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+
+            var dt = lastTime ? (time - lastTime) / 1000 : 0.016;
+            lastTime = time;
+            if(dt > 0.1) dt = 0.016;
+
+            if(!paused) {
+                angle4D += dt * 0.5;
+            }
+
+            updateScene();
+            renderer.render(scene, camera);
+        }
+
+        // Initial state
+        updateInfoBar(currentKey);
+        animate(0);
+
+        // =============================================
+        // Resize handler
+        // =============================================
+        window.addEventListener('resize', function(){
+            W = container.clientWidth;
+            H = container.clientHeight;
+            camera.aspect = W / H;
+            camera.updateProjectionMatrix();
+            renderer.setSize(W, H);
+        });
+
+    })();
+    </script>
 </body>
 </html>

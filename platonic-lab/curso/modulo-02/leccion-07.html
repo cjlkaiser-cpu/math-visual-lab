@@ -5,222 +5,407 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Lección 7: Vértices, Aristas y Caras | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- KaTeX -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Módulo 02</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Lección 7</span> — Vértices, Aristas y Caras
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="../modulo-01/leccion-06.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior Módulo</a>
-                    <a href="./leccion-08.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="../modulo-01/leccion-06.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-08.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 2</h3>
-                    <p class="text-sm text-gray-400 mb-4">La Fórmula de Euler</p>
-                    
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Módulo 02</h3>
+                    <p class="text-sm text-gray-500 mb-4">La Fórmula de Euler</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>1/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 16.6%"></div>
                         </div>
                     </div>
 
                     <nav class="space-y-2">
-                        <a href="./leccion-07.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">7. Vértices, Aristas y Caras</a>
-                        <a href="./leccion-08.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">8. La Fórmula Mágica</a>
-                        <a href="./leccion-09.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">9. Demostración Visual</a>
-                        <a href="./leccion-10.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">10. Verificación en 5 Sólidos</a>
-                        <a href="./leccion-11.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">11. ¿Por qué Solo 5?</a>
-                        <a href="./leccion-12.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">12. Topología y la Esfera</a>
+                        <a href="./leccion-07.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">7. Vértices, Aristas y Caras</a>
+                        <a href="./leccion-08.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">8. La Fórmula de Euler</a>
+                        <a href="./leccion-09.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">9. Demostración Visual</a>
+                        <a href="./leccion-10.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">10. Verificación en 5 Sólidos</a>
+                        <a href="./leccion-11.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">11. ¿Por qué Solo 5?</a>
+                        <a href="./leccion-12.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">12. Topología y la Esfera</a>
                     </nav>
                 </div>
             </aside>
 
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <!-- Header -->
                     <div class="mb-8">
                         <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 7</span>
-                            <span class="text-gray-400 text-sm">⏱️ 15 minutos</span>
+                            <span class="text-cyan-400 text-sm font-medium">Lección 7</span>
+                            <span class="text-gray-400 text-sm">~25 min</span>
                         </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Vértices, Aristas y Caras</h1>
-                        <p class="text-gray-400 text-lg">Los tres componentes fundamentales de cualquier poliedro y sus relaciones.</p>
+                        <h1 class="text-3xl font-bold mb-4 text-violet-400 glow-text">Vértices, Aristas y Caras</h1>
+                        <p class="text-gray-400 text-lg">De la observación empírica al principio combinatorio: por qué V, E y F no son números independientes.</p>
                     </div>
 
+                    <!-- Content -->
                     <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Los Tres Elementos</h2>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">De los Platónicos a lo General</h2>
                         <p class="text-gray-300 mb-4">
-                            Todo poliedro está compuesto por tres tipos de elementos geométricos: <strong class="text-platonic-cyan">vértices</strong> (puntos), <strong class="text-platonic-cyan">aristas</strong> (líneas) y <strong class="text-platonic-cyan">caras</strong> (superficies).
+                            En el Módulo 1 descubrimos que \(V - E + F = 2\) para los cinco sólidos platónicos. Pero esos cinco poliedros son muy especiales: todas sus caras son idénticas y todos sus vértices equivalentes. ¿Se mantiene esta relación para poliedros <em>cualquiera</em>?
+                        </p>
+                        <p class="text-gray-300 mb-6">
+                            La respuesta es sí, y este módulo está dedicado a entender por qué. Pero antes de demostrar la fórmula de Euler, necesitamos comprender qué tipo de información codifican \(V\), \(E\) y \(F\), y qué restricciones los conectan.
                         </p>
 
-                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
-                            <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 text-center">
-                                <div class="text-4xl mb-2">●</div>
-                                <h4 class="font-semibold text-platonic-purple mb-2">Vértices (V)</h4>
-                                <p class="text-sm text-gray-400">Puntos donde se encuentran las aristas. Esquinas del poliedro.</p>
-                            </div>
-                            <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 text-center">
-                                <div class="text-4xl mb-2">━</div>
-                                <h4 class="font-semibold text-platonic-purple mb-2">Aristas (E)</h4>
-                                <p class="text-sm text-gray-400">Segmentos de línea que conectan vértices. Lados de las caras.</p>
-                            </div>
-                            <div class="bg-gray-800/50 p-6 rounded-lg border border-gray-700 text-center">
-                                <div class="text-4xl mb-2">◆</div>
-                                <h4 class="font-semibold text-platonic-purple mb-2">Caras (C)</h4>
-                                <p class="text-sm text-gray-400">Polígonos que forman la superficie. Regiones planas.</p>
-                            </div>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Contando en los Sólidos Platónicos</h3>
-                        <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Sólido</th>
-                                        <th class="px-4 py-2 text-center text-yellow-400">V</th>
-                                        <th class="px-4 py-2 text-center text-white">E</th>
-                                        <th class="px-4 py-2 text-center text-green-400">C</th>
-                                    </tr>
-                                </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Tetraedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">4</td>
-                                        <td class="px-4 py-2 text-center font-mono">6</td>
-                                        <td class="px-4 py-2 text-center font-mono">4</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Cubo</td>
-                                        <td class="px-4 py-2 text-center font-mono">8</td>
-                                        <td class="px-4 py-2 text-center font-mono">12</td>
-                                        <td class="px-4 py-2 text-center font-mono">6</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Octaedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">6</td>
-                                        <td class="px-4 py-2 text-center font-mono">12</td>
-                                        <td class="px-4 py-2 text-center font-mono">8</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Dodecaedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">20</td>
-                                        <td class="px-4 py-2 text-center font-mono">30</td>
-                                        <td class="px-4 py-2 text-center font-mono">12</td>
-                                    </tr>
-                                    <tr>
-                                        <td class="px-4 py-2 text-platonic-purple">Icosaedro</td>
-                                        <td class="px-4 py-2 text-center font-mono">12</td>
-                                        <td class="px-4 py-2 text-center font-mono">30</td>
-                                        <td class="px-4 py-2 text-center font-mono">20</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Relaciones de Incidencia</h3>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Invariantes Combinatorios</h2>
                         <p class="text-gray-300 mb-4">
-                            Las relaciones entre V, E y C siguen patrones matemáticos:
+                            Los números \(V\), \(E\) y \(F\) son <strong class="text-cyan-400">invariantes combinatorios</strong>: dependen solo de cómo se conectan los elementos del poliedro, no de su forma métrica.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Imagina un cubo de goma. Puedes estirarlo, aplastarlo, deformarlo hasta que no parezca un cubo en absoluto. Mientras no pegues ni cortes nada, seguirá teniendo 8 vértices, 12 aristas y 6 caras. Incluso podrías inflarlo hasta convertirlo en una esfera con las aristas dibujadas sobre ella: seguiría siendo \(V=8\), \(E=12\), \(F=6\).
+                        </p>
+                        <p class="text-gray-300 mb-6">
+                            Esto sugiere que \(V - E + F = 2\) es una propiedad <strong class="text-cyan-400">topológica</strong>, no geométrica. No depende de ángulos ni longitudes, sino de la estructura de conexión. Lo formalizaremos en la Lección 12.
                         </p>
 
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-3">Contando Aristas de Dos Formas:</h4>
-                            <p class="text-gray-300 text-sm mb-2">Cada cara tiene p aristas, pero cada arista pertenece a 2 caras:</p>
-                            <p class="text-center text-lg text-platonic-cyan my-2 font-mono">2E = C × p</p>
-                            
-                            <p class="text-gray-300 text-sm mb-2 mt-4">Cada vértice tiene q aristas, pero cada arista conecta 2 vértices:</p>
-                            <p class="text-center text-lg text-platonic-cyan my-2 font-mono">2E = V × q</p>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">El Principio del Doble Conteo</h2>
+                        <p class="text-gray-300 mb-4">
+                            Antes de la fórmula de Euler, hay restricciones más elementales que conectan \(V\), \(E\) y \(F\). Surgen de un principio simple: <strong class="text-cyan-400">contar lo mismo de dos maneras</strong>.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Contar aristas desde las caras</h3>
+                        <p class="text-gray-300 mb-4">
+                            Cada cara es un polígono con cierto número de lados. Cada lado de una cara es una arista del poliedro, pero cada arista pertenece exactamente a <strong>dos</strong> caras. Si sumamos los lados de todas las caras, contamos cada arista dos veces:
+                        </p>
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-violet-400">
+                            <p class="text-xl text-center text-gray-200">
+                                $$\sum_{i=1}^{F} (\text{lados de la cara } i) = 2E$$
+                            </p>
+                        </div>
+                        <p class="text-gray-300 mb-6">
+                            Para un poliedro <strong>regular</strong> \(\{p, q\}\), todas las caras tienen \(p\) lados, y hay \(F\) caras, así que la suma se simplifica a \(pF = 2E\).
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Contar aristas desde los vértices</h3>
+                        <p class="text-gray-300 mb-4">
+                            El <strong>grado</strong> de un vértice es el número de aristas que confluyen en él. Cada arista conecta exactamente dos vértices, así que al sumar todos los grados contamos cada arista dos veces:
+                        </p>
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-violet-400">
+                            <p class="text-xl text-center text-gray-200">
+                                $$\sum_{i=1}^{V} \deg(v_i) = 2E$$
+                            </p>
+                        </div>
+                        <p class="text-gray-300 mb-4">
+                            Este resultado se conoce en teoría de grafos como el <strong class="text-cyan-400">lema del apretón de manos</strong> (<em>handshaking lemma</em>): en cualquier grafo, la suma de los grados de todos los vértices es par e igual al doble del número de aristas.
+                        </p>
+                        <p class="text-gray-300 mb-6">
+                            Para un poliedro regular \(\{p, q\}\), todos los vértices tienen grado \(q\), así que \(qV = 2E\).
+                        </p>
+
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Ejemplo: Octaedro \(\{3, 4\}\)</h4>
+                            <div class="space-y-2 text-gray-300">
+                                <p>8 caras triangulares (\(p=3\)), 4 caras por vértice (\(q=4\))</p>
+                                <p class="ml-4">Desde las caras: \(pF = 3 \times 8 = 24 = 2E \implies E = 12\)</p>
+                                <p class="ml-4">Desde los vértices: \(qV = 4V = 2 \times 12 = 24 \implies V = 6\)</p>
+                                <p class="ml-4">Verificación: \(V - E + F = 6 - 12 + 8 = 2\) </p>
+                            </div>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejemplo: El Cubo</h3>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <p class="text-gray-300 mb-2">Para un cubo {4,3}:</p>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
-                                <li>6 caras cuadradas (p=4)</li>
-                                <li>3 caras por vértice (q=3)</li>
-                                <li>De 2E = C × p: 2E = 6 × 4 = 24 → E = 12 ✓</li>
-                                <li>De 2E = V × q: 2E = 8 × 3 = 24 → E = 12 ✓</li>
-                            </ul>
+                        <h2 class="text-2xl font-semibold text-violet-400 mb-4">Más Allá de los Platónicos</h2>
+                        <p class="text-gray-300 mb-4">
+                            El doble conteo funciona para <em>cualquier</em> poliedro, no solo los regulares. Y lo que es más notable: \(V - E + F = 2\) también se mantiene. Veamos dos familias infinitas de poliedros que no son platónicos.
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Prismas</h3>
+                        <p class="text-gray-300 mb-4">
+                            Un <strong>prisma \(n\)-gonal</strong> tiene dos bases (polígonos de \(n\) lados) conectadas por \(n\) rectángulos laterales:
+                        </p>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <div class="space-y-2 text-gray-300">
+                                <p>\(V = 2n\) (dos copias de \(n\) vértices)</p>
+                                <p>\(E = 3n\) (\(n\) aristas superiores + \(n\) inferiores + \(n\) laterales)</p>
+                                <p>\(F = n + 2\) (\(n\) rectángulos laterales + 2 bases)</p>
+                                <p class="text-violet-400 mt-3">$$V - E + F = 2n - 3n + (n+2) = 2$$</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 mb-6">
+                            Esto vale para <em>todo</em> \(n \geq 3\): prisma triangular, cubo (prisma cuadrado), prisma pentagonal, hexagonal...
+                        </p>
+
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Pirámides</h3>
+                        <p class="text-gray-300 mb-4">
+                            Una <strong>pirámide \(n\)-gonal</strong> tiene una base de \(n\) lados y un vértice apical conectado a todos los vértices de la base:
+                        </p>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <div class="space-y-2 text-gray-300">
+                                <p>\(V = n + 1\) (\(n\) vértices base + 1 ápice)</p>
+                                <p>\(E = 2n\) (\(n\) aristas base + \(n\) aristas laterales)</p>
+                                <p>\(F = n + 1\) (\(n\) triángulos laterales + 1 base)</p>
+                                <p class="text-violet-400 mt-3">$$V - E + F = (n+1) - 2n + (n+1) = 2$$</p>
+                            </div>
+                        </div>
+                        <p class="text-gray-300 mb-4">
+                            El tetraedro es la pirámide triangular (\(n=3\)). Para \(n=4\) obtenemos la pirámide cuadrada (como las de Egipto).
+                        </p>
+
+                        <div class="bg-gray-900/50 rounded-lg p-6 mb-6 border-l-4 border-cyan-400">
+                            <p class="text-gray-300">
+                                <strong class="text-cyan-400">Observación clave:</strong> ni los prismas ni las pirámides son poliedros regulares (excepto el tetraedro y el cubo). Sus caras tienen formas distintas. Sin embargo, \(V - E + F = 2\) se cumple en todos. Esto sugiere que la fórmula de Euler es una verdad profunda sobre la topología de las superficies, no sobre la regularidad geométrica.
+                            </p>
                         </div>
 
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejercicio de Verificación</h3>
-                        <div class="bg-platonic-cyan/10 border border-platonic-cyan rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-cyan mb-3">Verifica para el icosaedro:</h4>
-                            <p class="text-gray-300 mb-2">Icosaedro {3,5}: 20 caras triangulares, 5 caras por vértice</p>
-                            <ol class="list-decimal list-inside space-y-1 text-gray-300">
-                                <li>Calcula E usando caras: 2E = 20 × 3 = ?</li>
-                                <li>Calcula V usando aristas: 2×30 = V × 5 → V = ?</li>
-                                <li>Verifica con la tabla</li>
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">El doble conteo en poliedros no regulares</h3>
+                        <p class="text-gray-300 mb-4">
+                            Cuando las caras no son todas iguales, la relación \(pF = 2E\) ya no aplica directamente. Pero la forma general sí:
+                        </p>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <h4 class="font-semibold text-violet-400 mb-3">Ejemplo: Prisma triangular</h4>
+                            <div class="space-y-2 text-gray-300">
+                                <p>Caras: 2 triángulos (3 lados) + 3 cuadriláteros (4 lados)</p>
+                                <p class="ml-4">\(\sum \text{lados} = 2 \times 3 + 3 \times 4 = 6 + 12 = 18 = 2E\)</p>
+                                <p class="ml-4">\(\implies E = 9\)</p>
+                            </div>
+                        </div>
+
+                        <!-- Ejercicios -->
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-3">Ejercicios</h3>
+                        <div class="bg-violet-500/10 border border-violet-500/30 rounded-lg p-6 mb-6">
+                            <ol class="list-decimal list-inside space-y-4 text-gray-300">
+                                <li>Verifica el doble conteo para el dodecaedro \(\{5, 3\}\): calcula \(E\) desde las caras (\(pF = 2E\)) y \(V\) desde los vértices (\(qV = 2E\)).</li>
+                                <li>Un balón de fútbol tiene 12 caras pentagonales y 20 caras hexagonales. Usando \(\sum \text{lados} = 2E\), calcula \(E\). Luego usa \(V - E + F = 2\) para encontrar \(V\).</li>
+                                <li>Calcula \(V\), \(E\) y \(F\) para un prisma hexagonal (\(n=6\)). Verifica \(V - E + F = 2\).</li>
+                                <li>Demuestra que para <em>cualquier</em> prisma \(n\)-gonal, \(V - E + F = 2\) usando las fórmulas generales.</li>
+                                <li>Un poliedro tiene 10 caras triangulares y 2 caras cuadradas. ¿Cuántas aristas tiene? ¿Puedes determinar \(V\)?</li>
                             </ol>
                         </div>
                     </div>
 
+                    <!-- LAB Section -->
                     <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center">
-                            <span class="mr-2">🔬</span> LAB: Cuenta V, E, C
-                        </h2>
-                        <p class="text-gray-400 mb-4">Usa PlatonicLab para contar visualmente vértices, aristas y caras de cada sólido.</p>
-                        <div class="lab-container">
-                            <iframe src="../../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                        <h2 class="text-2xl font-bold text-cyan-400 mb-4">LAB: Conteo Visual</h2>
+                        <p class="text-gray-400 mb-4">Arrastra para rotar. Comprueba V, E, F y el doble conteo para poliedros regulares e irregulares.</p>
+
+                        <div class="relative rounded-xl border border-gray-800 overflow-hidden" style="background:#030712;">
+                            <canvas id="mini-lab" style="width:100%; height:420px; display:block; cursor:grab;"></canvas>
+                            <div class="absolute top-4 right-4 text-right mono">
+                                <div class="text-base font-medium text-gray-300 mb-1" id="solid-name">Tetraedro</div>
+                                <div id="vef-info" class="space-y-0.5 text-xs"></div>
+                            </div>
                         </div>
-                        <div class="mt-4 flex gap-2">
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'tetrahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">Tetraedro</button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'cube'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">Cubo</button>
-                            <button onclick="document.querySelector('iframe').contentWindow.postMessage({solid: 'icosahedron'}, '*')" class="px-4 py-2 bg-gray-800 hover:bg-gray-700 rounded text-sm">Icosaedro</button>
+
+                        <div class="mt-3">
+                            <div class="text-xs text-gray-600 mb-1.5">Regulares</div>
+                            <div class="flex flex-wrap gap-2 mb-2">
+                                <button data-solid="0" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Tetraedro</button>
+                                <button data-solid="1" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Cubo</button>
+                                <button data-solid="2" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Octaedro</button>
+                                <button data-solid="3" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Dodecaedro</button>
+                                <button data-solid="4" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Icosaedro</button>
+                            </div>
+                            <div class="text-xs text-gray-600 mb-1.5">No regulares</div>
+                            <div class="flex flex-wrap gap-2">
+                                <button data-solid="5" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Prisma triangular</button>
+                                <button data-solid="6" class="solid-btn px-4 py-2 rounded-lg text-sm transition border">Pirámide cuadrada</button>
+                            </div>
                         </div>
                     </div>
 
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="../modulo-01/leccion-06.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">
-                            ← Módulo 1
+                    <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
+                    <script>
+                    (function(){
+                        var canvas = document.getElementById('mini-lab');
+                        var renderer = new THREE.WebGLRenderer({canvas:canvas, antialias:true});
+                        renderer.setPixelRatio(Math.min(window.devicePixelRatio,2));
+                        renderer.setClearColor(0x030712);
+
+                        var scene = new THREE.Scene();
+                        var camera = new THREE.PerspectiveCamera(35,2,0.1,100);
+                        camera.position.z = 4.8;
+
+                        // Custom geometries for non-platonic solids
+                        function makePrism(){
+                            var g=new THREE.BufferGeometry();
+                            var r=1.0, h=1.1, s=Math.sqrt(3)/2;
+                            g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+                                r,h,0, -r/2,h,r*s, -r/2,h,-r*s,
+                                r,-h,0, -r/2,-h,r*s, -r/2,-h,-r*s
+                            ]),3));
+                            g.setIndex([0,1,2, 3,5,4, 0,3,4,0,4,1, 1,4,5,1,5,2, 2,5,3,2,3,0]);
+                            g.computeVertexNormals();
+                            return g;
+                        }
+                        function makePyramid(){
+                            var g=new THREE.BufferGeometry();
+                            var s=1.0, h=1.4;
+                            g.setAttribute('position', new THREE.BufferAttribute(new Float32Array([
+                                s,-0.3,s, -s,-0.3,s, -s,-0.3,-s, s,-0.3,-s, 0,h,0
+                            ]),3));
+                            g.setIndex([0,2,1,0,3,2, 0,1,4, 1,2,4, 2,3,4, 3,0,4]);
+                            g.computeVertexNormals();
+                            return g;
+                        }
+
+                        var solids = [
+                            {name:'Tetraedro', V:4, E:6, F:4, regular:true, p:3, q:3,
+                             geo:new THREE.TetrahedronGeometry(1.3)},
+                            {name:'Cubo', V:8, E:12, F:6, regular:true, p:4, q:3,
+                             geo:new THREE.BoxGeometry(1.7,1.7,1.7)},
+                            {name:'Octaedro', V:6, E:12, F:8, regular:true, p:3, q:4,
+                             geo:new THREE.OctahedronGeometry(1.4)},
+                            {name:'Dodecaedro', V:20, E:30, F:12, regular:true, p:5, q:3,
+                             geo:new THREE.DodecahedronGeometry(1.3)},
+                            {name:'Icosaedro', V:12, E:30, F:20, regular:true, p:3, q:5,
+                             geo:new THREE.IcosahedronGeometry(1.3)},
+                            {name:'Prisma triangular', V:6, E:9, F:5, regular:false,
+                             sides:'2\u00D73 + 3\u00D74 = 18', geo:makePrism()},
+                            {name:'Pir\u00E1mide cuadrada', V:5, E:8, F:5, regular:false,
+                             sides:'1\u00D74 + 4\u00D73 = 16', geo:makePyramid()}
+                        ];
+
+                        var group, rotX=0.4, rotY=0.6, dragging=false, px,py, autoRot=true, autoTimer;
+
+                        function show(i){
+                            if(group) scene.remove(group);
+                            group = new THREE.Group();
+                            var s=solids[i];
+
+                            group.add(new THREE.Mesh(s.geo, new THREE.MeshBasicMaterial({
+                                color:0xa78bfa, transparent:true, opacity:0.06, side:THREE.DoubleSide
+                            })));
+                            group.add(new THREE.LineSegments(
+                                new THREE.EdgesGeometry(s.geo),
+                                new THREE.LineBasicMaterial({color:0xa78bfa, transparent:true, opacity:0.7})
+                            ));
+
+                            var pos=s.geo.getAttribute('position'),seen={},uv=[];
+                            for(var j=0;j<pos.count;j++){
+                                var k=pos.getX(j).toFixed(3)+','+pos.getY(j).toFixed(3)+','+pos.getZ(j).toFixed(3);
+                                if(!seen[k]){seen[k]=1;uv.push(pos.getX(j),pos.getY(j),pos.getZ(j));}
+                            }
+                            var pg=new THREE.BufferGeometry();
+                            pg.setAttribute('position',new THREE.Float32BufferAttribute(uv,3));
+                            group.add(new THREE.Points(pg,new THREE.PointsMaterial({color:0x22d3ee,size:5,sizeAttenuation:false})));
+
+                            scene.add(group);
+
+                            // UI
+                            document.getElementById('solid-name').textContent=s.name;
+                            var h='';
+                            h+='<div style="color:#9ca3af">V = <span style="color:#a78bfa">'+s.V+'</span> &nbsp; E = <span style="color:#a78bfa">'+s.E+'</span> &nbsp; F = <span style="color:#a78bfa">'+s.F+'</span></div>';
+                            if(s.regular){
+                                h+='<div style="color:#6b7280;margin-top:4px">{'+s.p+', '+s.q+'}</div>';
+                                h+='<div style="color:#9ca3af;margin-top:3px">'+s.p+'F = '+s.p+'\u00D7'+s.F+' = <span style="color:#e5e7eb">'+(s.p*s.F)+'</span> = 2E</div>';
+                                h+='<div style="color:#9ca3af">'+s.q+'V = '+s.q+'\u00D7'+s.V+' = <span style="color:#e5e7eb">'+(s.q*s.V)+'</span> = 2E</div>';
+                            } else {
+                                h+='<div style="color:#6b7280;margin-top:4px">no regular</div>';
+                                h+='<div style="color:#9ca3af;margin-top:3px">\u03A3 lados = '+s.sides+' = 2E</div>';
+                            }
+                            h+='<div style="color:#22d3ee;margin-top:6px;padding-top:4px;border-top:1px solid #1f2937">V \u2212 E + F = '+s.V+' \u2212 '+s.E+' + '+s.F+' = <span style="color:#22d3ee;font-weight:600">2</span></div>';
+                            document.getElementById('vef-info').innerHTML=h;
+
+                            var btns=document.querySelectorAll('.solid-btn');
+                            for(var b=0;b<btns.length;b++){
+                                if(b===i){
+                                    btns[b].style.background='rgba(167,139,250,0.15)';
+                                    btns[b].style.borderColor='#a78bfa';
+                                    btns[b].style.color='#a78bfa';
+                                } else {
+                                    btns[b].style.background='#111827';
+                                    btns[b].style.borderColor='#1f2937';
+                                    btns[b].style.color='#9ca3af';
+                                }
+                            }
+                        }
+
+                        canvas.addEventListener('pointerdown',function(e){
+                            dragging=true;px=e.clientX;py=e.clientY;autoRot=false;
+                            clearTimeout(autoTimer);canvas.style.cursor='grabbing';
+                        });
+                        window.addEventListener('pointerup',function(){
+                            dragging=false;canvas.style.cursor='grab';
+                            autoTimer=setTimeout(function(){autoRot=true;},3000);
+                        });
+                        window.addEventListener('pointermove',function(e){
+                            if(!dragging)return;
+                            rotY+=(e.clientX-px)*0.008;rotX+=(e.clientY-py)*0.008;
+                            px=e.clientX;py=e.clientY;
+                        });
+
+                        function resize(){
+                            var w=canvas.clientWidth,h=canvas.clientHeight;
+                            renderer.setSize(w,h,false);
+                            camera.aspect=w/h;camera.updateProjectionMatrix();
+                        }
+                        window.addEventListener('resize',resize);
+                        resize();
+
+                        var btns=document.querySelectorAll('.solid-btn');
+                        for(var b=0;b<btns.length;b++){
+                            btns[b].addEventListener('click',function(){show(+this.dataset.solid);});
+                        }
+
+                        show(0);
+                        (function loop(){
+                            requestAnimationFrame(loop);
+                            if(autoRot) rotY+=0.004;
+                            if(group) group.rotation.set(rotX,rotY,0);
+                            renderer.render(scene,camera);
+                        })();
+                    })();
+                    </script>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="../modulo-01/leccion-06.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 text-gray-400 rounded-lg font-semibold transition">
+                            ← Módulo 1: Schläfli
                         </a>
-                        <a href="./leccion-08.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">
-                            Siguiente: Fórmula de Euler →
+                        <a href="./leccion-08.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg font-semibold transition">
+                            Siguiente: La Fórmula de Euler →
                         </a>
                     </div>
                 </article>
@@ -228,11 +413,21 @@
         </div>
     </div>
 
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">
-                © 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D
-            </p>
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6 text-center">
+            <nav class="text-xs text-gray-600 mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-500">Módulo 02</span>
+            </nav>
+            <p class="text-gray-700 text-sm mono">Módulo 02 · La Fórmula de Euler</p>
         </div>
     </footer>
 </body>

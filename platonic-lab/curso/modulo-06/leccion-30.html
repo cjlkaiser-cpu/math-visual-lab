@@ -3,141 +3,1271 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 30: Cristalografía y Redes | Matemáticas Visuales</title>
+    <title>Leccion 30: Cristales y Redes de Bravais | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 06</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 30</span> — Cristales y Redes de Bravais
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="../modulo-05/leccion-29.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior Módulo</a>
-                    <a href="./leccion-31.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="../modulo-05/leccion-29.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">&larr; Modulo 5</a>
+                    <a href="./leccion-31.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente &rarr;</a>
                 </nav>
             </div>
         </div>
     </header>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 6</h3>
-                    <p class="text-sm text-gray-400 mb-4">De Platón al Mundo Moderno</p>
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 06</h3>
+                    <p class="text-sm text-gray-500 mb-4">Aplicaciones Modernas</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>1/4</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 25%"></div>
                         </div>
                     </div>
+
                     <nav class="space-y-2">
-                        <a href="./leccion-30.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">30. Cristalografía</a>
-                        <a href="./leccion-31.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">31. Virología</a>
-                        <a href="./leccion-32.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">32. Fullerenos</a>
-                        <a href="./leccion-33.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">33. Quasicristales</a>
+                        <a href="./leccion-30.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">30. Cristales y Redes de Bravais</a>
+                        <a href="./leccion-31.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">31. Virus Icosaedricos</a>
+                        <a href="./leccion-32.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">32. Fullerenos y Nanotubos</a>
+                        <a href="./leccion-33.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">33. Quasicristales y el Gran Final</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 30</span>
-                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Cristalografía y Redes</h1>
-                        <p class="text-gray-400 text-lg">Los sólidos platónicos en estructuras cristalinas naturales.</p>
+                        <span class="text-cyan-400 text-sm font-medium">Leccion 30</span>
+                        <h2 class="text-3xl font-light mt-2 mb-4">
+                            <span class="text-violet-400 font-medium glow-text">Cristales</span> y Redes de Bravais
+                        </h2>
+                        <p class="text-gray-400 text-lg">La simetria platonica abandona el mundo abstracto y cristaliza en la materia. Los atomos se ordenan obedeciendo las mismas leyes de grupo que estudiamos en el Modulo 3.</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Cristales y Geometría</h2>
-                        <p class="text-gray-300 mb-4">Muchos minerales cristalizan en formas relacionadas con sólidos platónicos. El sistema cúbico, en particular, muestra simetrías de cubo y octaedro.</p>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-semibold text-platonic-purple mb-2">Ejemplos de Cristales</h3>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
-                                <li><strong>Halita (NaCl):</strong> Estructura cúbica</li>
-                                <li><strong>Fluorita:</strong> Cristales cúbicos perfectos</li>
-                                <li><strong>Pirita (FeS₂):</strong> Pseudocúbica, a veces dodecaédrica</li>
-                                <li><strong>Diamante:</strong> Estructura tetraédrica</li>
-                            </ul>
-                        </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Sistemas Cristalinos</h3>
+
+                    <!-- 1. De la Abstraccion a la Naturaleza -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">1. De la Abstraccion a la Naturaleza</h3>
+                        <p class="text-gray-300 mb-4">
+                            Durante cinco modulos hemos construido un edificio matematico: partimos de la clasificacion de los cinco solidos platonicos (Modulo 1), exploramos sus coordenadas y metricas (Modulo 2), descubrimos la estructura algebraica de sus simetrias (Modulo 3), los extendimos a la cuarta dimension (Modulo 4) y extrajimos su esqueleto combinatorio (Modulo 5). Ahora es el momento de hacer la pregunta inversa: <strong class="text-white">donde aparecen estas formas en el mundo fisico?</strong>
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            La respuesta esta en un principio fundamental: <strong class="text-white">la naturaleza minimiza energia</strong>. Cuando un sistema de atomos busca su configuracion de equilibrio, tiende a maximizar la simetria compatible con sus restricciones. Y las simetrias mas altas posibles son exactamente las que hemos estudiado: los grupos puntuales de los solidos platonicos.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Los cristales son el ejemplo mas directo. Un cristal es un solido cuya estructura atomica se repite periodicamente en las tres dimensiones del espacio. Esta periodicidad impone restricciones severas sobre las simetrias permitidas, y conecta directamente con la teoria de grupos del Modulo 3. En esta leccion veremos como la geometria platonica gobierna la arquitectura de la materia cristalina.
+                        </p>
+                    </section>
+
+                    <!-- 2. Los 7 Sistemas Cristalinos -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">2. Los 7 Sistemas Cristalinos</h3>
+                        <p class="text-gray-300 mb-4">
+                            Un cristal se describe mediante una <strong class="text-white">celda unitaria</strong>: el bloque minimo que, repetido por traslacion, genera toda la estructura. La celda unitaria es un paralelepipedo definido por tres vectores base \(\mathbf{a}_1, \mathbf{a}_2, \mathbf{a}_3\) con longitudes \(a, b, c\) y angulos entre ellos \(\alpha, \beta, \gamma\).
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Las restricciones de simetria clasifican todas las celdas posibles en exactamente <strong class="text-white">7 sistemas cristalinos</strong>:
+                        </p>
+
                         <div class="overflow-x-auto mb-6">
-                            <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Sistema</th>
-                                        <th class="px-4 py-2 text-center">Sólido Relacionado</th>
-                                        <th class="px-4 py-2 text-left">Ejemplos</th>
+                            <table class="w-full text-sm text-gray-300 border-collapse">
+                                <thead>
+                                    <tr class="border-b border-gray-700">
+                                        <th class="px-4 py-3 text-left text-violet-400 font-medium">Sistema</th>
+                                        <th class="px-4 py-3 text-left text-violet-400 font-medium">Parametros de red</th>
+                                        <th class="px-4 py-3 text-center text-violet-400 font-medium">Grupos puntuales</th>
+                                        <th class="px-4 py-3 text-left text-violet-400 font-medium">Ejemplos</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr><td class="px-4 py-2">Cúbico</td><td class="px-4 py-2 text-center">Cubo</td><td class="px-4 py-2">Halita, galena, pirita</td></tr>
-                                    <tr><td class="px-4 py-2">Cúbico</td><td class="px-4 py-2 text-center">Octaedro</td><td class="px-4 py-2">Diamante, magnetita</td></tr>
-                                    <tr><td class="px-4 py-2">Cúbico</td><td class="px-4 py-2 text-center">Dodecaedro</td><td class="px-4 py-2">Granate</td></tr>
-                                    <tr><td class="px-4 py-2">Tetragonal</td><td class="px-4 py-2 text-center">Tetraedro</td><td class="px-4 py-2">Esfalerita (ZnS)</td></tr>
+                                <tbody class="divide-y divide-gray-800">
+                                    <tr class="bg-violet-500/5">
+                                        <td class="px-4 py-3 font-medium text-white">Cubico</td>
+                                        <td class="px-4 py-3">\(a = b = c\), \(\alpha = \beta = \gamma = 90°\)</td>
+                                        <td class="px-4 py-3 text-center">5</td>
+                                        <td class="px-4 py-3">NaCl, diamante, Au</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium text-white">Tetragonal</td>
+                                        <td class="px-4 py-3">\(a = b \neq c\), \(\alpha = \beta = \gamma = 90°\)</td>
+                                        <td class="px-4 py-3 text-center">7</td>
+                                        <td class="px-4 py-3">TiO\(_2\), SnO\(_2\)</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium text-white">Ortorrombico</td>
+                                        <td class="px-4 py-3">\(a \neq b \neq c\), \(\alpha = \beta = \gamma = 90°\)</td>
+                                        <td class="px-4 py-3 text-center">3</td>
+                                        <td class="px-4 py-3">azufre, topacio</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium text-white">Hexagonal</td>
+                                        <td class="px-4 py-3">\(a = b \neq c\), \(\alpha = \beta = 90°\), \(\gamma = 120°\)</td>
+                                        <td class="px-4 py-3 text-center">7</td>
+                                        <td class="px-4 py-3">grafito, ZnO</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium text-white">Trigonal</td>
+                                        <td class="px-4 py-3">\(a = b = c\), \(\alpha = \beta = \gamma \neq 90°\)</td>
+                                        <td class="px-4 py-3 text-center">5</td>
+                                        <td class="px-4 py-3">cuarzo, calcita</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium text-white">Monoclinico</td>
+                                        <td class="px-4 py-3">\(a \neq b \neq c\), \(\alpha = \gamma = 90°\), \(\beta \neq 90°\)</td>
+                                        <td class="px-4 py-3 text-center">3</td>
+                                        <td class="px-4 py-3">yeso, ortoclasa</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-3 font-medium text-white">Triclinico</td>
+                                        <td class="px-4 py-3">\(a \neq b \neq c\), \(\alpha \neq \beta \neq \gamma\)</td>
+                                        <td class="px-4 py-3 text-center">2</td>
+                                        <td class="px-4 py-3">plagioclasa, turquesa</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Redes de Bravais</h3>
-                        <p class="text-gray-300 mb-4">Las redes cristalinas pueden describirse con base en geometría platónica. La red cúbica es la más simple y común.</p>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Cristales</h2>
-                        <p class="text-gray-400 mb-4">Visualiza estructuras cristalinas en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+
+                        <div class="bg-violet-500/5 border border-violet-500/20 rounded-xl p-5 mb-4">
+                            <p class="text-gray-300">
+                                <strong class="text-violet-400">Conexion clave:</strong> el sistema cubico posee la maxima simetria. Su grupo puntual de mayor orden es \(O_h\), el <strong class="text-white">grupo octaedrico completo</strong> con 48 elementos, que es exactamente el grupo de simetrias del cubo y del octaedro que analizamos en el Modulo 3. La dualidad cubo-octaedro se manifiesta fisicamente: ambas formas cristalinas pertenecen al mismo sistema.
+                            </p>
                         </div>
-                    </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="../modulo-05/leccion-29.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Módulo 5</a>
-                        <a href="./leccion-31.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Virología →</a>
+                    </section>
+
+                    <!-- 3. Redes Cubicas: SC, BCC, FCC -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">3. Redes Cubicas: SC, BCC, FCC</h3>
+                        <p class="text-gray-300 mb-4">
+                            Dentro del sistema cubico existen tres tipos de redes de Bravais, que se distinguen por la posicion de los atomos en la celda unitaria. Cada una tiene propiedades geometricas radicalmente distintas.
+                        </p>
+
+                        <h4 class="text-lg font-medium text-cyan-400 mb-3">Cubica Simple (SC)</h4>
+                        <p class="text-gray-300 mb-3">
+                            Los atomos se situan unicamente en los 8 vertices del cubo. Cada vertice es compartido por 8 celdas vecinas, asi que cada celda contiene \(8 \times \frac{1}{8} = 1\) atomo. Los atomos se tocan a lo largo de las aristas, por lo que \(2r = a\), donde \(r\) es el radio atomico y \(a\) la constante de red. La fraccion de empaquetamiento es:
+                        </p>
+
+                        $$ f_{\text{SC}} = \frac{1 \cdot \frac{4}{3}\pi r^3}{a^3} = \frac{\frac{4}{3}\pi r^3}{(2r)^3} = \frac{\pi}{6} \approx 0.524 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Cada atomo tiene <strong class="text-white">6 vecinos</strong> (numero de coordinacion 6). El unico elemento que cristaliza en SC puro es el polonio.
+                        </p>
+
+                        <h4 class="text-lg font-medium text-cyan-400 mb-3">Cubica Centrada en el Cuerpo (BCC)</h4>
+                        <p class="text-gray-300 mb-3">
+                            Se anade un atomo en el centro del cubo. Total: \(8 \times \frac{1}{8} + 1 = 2\) atomos por celda. Los atomos se tocan a lo largo de la diagonal del cuerpo (de longitud \(a\sqrt{3}\)), por lo que \(4r = a\sqrt{3}\). La fraccion de empaquetamiento es:
+                        </p>
+
+                        $$ f_{\text{BCC}} = \frac{2 \cdot \frac{4}{3}\pi r^3}{a^3} = \frac{2 \cdot \frac{4}{3}\pi \left(\frac{a\sqrt{3}}{4}\right)^3}{a^3} = \frac{\pi\sqrt{3}}{8} \approx 0.680 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Numero de coordinacion: <strong class="text-white">8</strong>. Ejemplos: hierro (Fe-\(\alpha\)), tungsteno (W), cromo (Cr).
+                        </p>
+
+                        <h4 class="text-lg font-medium text-cyan-400 mb-3">Cubica Centrada en las Caras (FCC)</h4>
+                        <p class="text-gray-300 mb-3">
+                            Se anade un atomo en el centro de cada una de las 6 caras. Cada atomo de cara es compartido por 2 celdas. Total: \(8 \times \frac{1}{8} + 6 \times \frac{1}{2} = 4\) atomos por celda. Los atomos se tocan a lo largo de la diagonal de la cara (de longitud \(a\sqrt{2}\)), por lo que \(4r = a\sqrt{2}\). La fraccion de empaquetamiento es:
+                        </p>
+
+                        $$ f_{\text{FCC}} = \frac{4 \cdot \frac{4}{3}\pi r^3}{a^3} = \frac{4 \cdot \frac{4}{3}\pi \left(\frac{a\sqrt{2}}{4}\right)^3}{a^3} = \frac{\pi}{3\sqrt{2}} \approx 0.740 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Numero de coordinacion: <strong class="text-white">12</strong>. Este es el empaquetamiento mas eficiente posible para esferas identicas (conjetura de Kepler, demostrada por Hales en 1998). Ejemplos: aluminio (Al), oro (Au), cobre (Cu), plata (Ag).
+                        </p>
+
+                        <!-- Canvas: 3 unit cells -->
+                        <div class="my-6">
+                            <canvas id="unit-cells-canvas" class="w-full rounded-xl border border-gray-800" style="height: 300px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Celdas unitarias cubicas: SC (izquierda), BCC (centro), FCC (derecha). Gris: vertices. Cyan: centro del cuerpo. Violeta: centros de caras.</p>
+                        </div>
+                    </section>
+
+                    <!-- 4. La Ley de Hauy y el Angulo Tetraedrico -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">4. La Ley de Hauy y el Angulo Tetraedrico</h3>
+                        <p class="text-gray-300 mb-4">
+                            En 1784, Rene Just Hauy establecio una ley fundamental: <strong class="text-white">los angulos diedros entre caras correspondientes de cristales de la misma sustancia son constantes</strong>, independientemente del tamano o la forma externa del cristal. Esta ley fue la primera evidencia de que los cristales tienen una estructura interna regular y periodica.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Un angulo aparece con insistencia en la quimica: el <strong class="text-white">angulo tetraedrico</strong> \(\theta_T\), definido como el angulo entre dos lineas que conectan el centro de un tetraedro regular con dos de sus vertices:
+                        </p>
+
+                        $$ \theta_T = \cos^{-1}\!\left(-\frac{1}{3}\right) \approx 109.47° $$
+
+                        <p class="text-gray-300 mb-4">
+                            Este angulo gobierna la quimica del carbono y de practicamente toda la quimica organica. La razon profunda esta en la teoria VSEPR (repulsion de pares electronicos): los pares de electrones de valencia se distribuyen alrededor del atomo central buscando <strong class="text-white">maximizar su separacion mutua</strong>, lo que produce configuraciones platonicas:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                                <p class="text-cyan-400 font-medium mb-1">4 pares: Tetraedro</p>
+                                <p class="text-gray-400 text-sm">CH\(_4\) (metano): \(109.5°\)</p>
+                                <p class="text-gray-400 text-sm">NH\(_3\), H\(_2\)O</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                                <p class="text-cyan-400 font-medium mb-1">6 pares: Octaedro</p>
+                                <p class="text-gray-400 text-sm">SF\(_6\): \(90°\)</p>
+                                <p class="text-gray-400 text-sm">PCl\(_6^-\), [Fe(CN)\(_6\)]\(^{4-}\)</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-4">
+                                <p class="text-cyan-400 font-medium mb-1">12 pares: Icosaedro</p>
+                                <p class="text-gray-400 text-sm">B\(_{12}\)H\(_{12}^{2-}\)</p>
+                                <p class="text-gray-400 text-sm">Clusters de boro</p>
+                            </div>
+                        </div>
+
+                        <!-- Canvas: Tetrahedral angle -->
+                        <div class="my-6">
+                            <canvas id="tetrahedral-canvas" class="w-full rounded-xl border border-gray-800" style="height: 280px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Angulo tetraedrico: 4 vertices de un tetraedro regular inscritos en vertices alternos de un cubo. El angulo central es \(\cos^{-1}(-1/3) \approx 109.47°\).</p>
+                        </div>
+                    </section>
+
+                    <!-- 5. La Red de Diamante y el Tetraedro -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">5. La Red de Diamante y el Tetraedro</h3>
+                        <p class="text-gray-300 mb-4">
+                            La estructura del diamante es una de las mas elegantes de la cristalografia, y conecta directamente la geometria del tetraedro (Modulos 1-3) con el mundo real. El diamante consiste en <strong class="text-white">dos redes FCC interpenetradas</strong>, desplazadas una respecto de la otra por un vector \(\frac{1}{4}(a, a, a)\), es decir, un cuarto de la diagonal del cuerpo.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Cada atomo de carbono esta rodeado por exactamente 4 vecinos dispuestos en un <strong class="text-white">tetraedro regular</strong>. La distancia entre atomos vecinos (la longitud del enlace C-C) se calcula a partir de la constante de red \(a\):
+                        </p>
+
+                        $$ d_{\text{C-C}} = \frac{a\sqrt{3}}{4} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Derivacion: los dos atomos estan en posiciones \((0,0,0)\) y \(\frac{a}{4}(1,1,1)\). La distancia es:
+                        </p>
+
+                        $$ d = \sqrt{\left(\frac{a}{4}\right)^2 + \left(\frac{a}{4}\right)^2 + \left(\frac{a}{4}\right)^2} = \frac{a}{4}\sqrt{3} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Para el diamante, \(a = 3.567\) A, asi que \(d_{\text{C-C}} = 1.544\) A, en excelente acuerdo con el valor experimental de \(1.544\) A. La celda unitaria del diamante contiene <strong class="text-white">8 atomos</strong>: los 4 de la red FCC mas 4 atomos interiores en posiciones tetraedricas.
+                        </p>
+
+                        <div class="bg-cyan-500/5 border border-cyan-500/20 rounded-xl p-5 mb-4">
+                            <p class="text-gray-300">
+                                <strong class="text-cyan-400">La conexion tecnologica:</strong> el silicio cristaliza exactamente en la misma estructura que el diamante (con \(a = 5.431\) A). Toda la industria de semiconductores, desde los transistores hasta los microprocesadores, se basa en la geometria tetraedrica del silicio. El tetraedro del Modulo 1 es literalmente el fundamento de la era digital.
+                            </p>
+                        </div>
+
+                        <!-- Canvas: Diamond unit cell -->
+                        <div class="my-6">
+                            <canvas id="diamond-canvas" class="w-full rounded-xl border border-gray-800" style="height: 320px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Celda unitaria del diamante (proyeccion 2D): atomos FCC en gris, atomos tetraedricos interiores en cyan, enlaces en violeta.</p>
+                        </div>
+                    </section>
+
+                    <!-- 6. De Bravais a los 230 Grupos Espaciales -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">6. De Bravais a los 230 Grupos Espaciales</h3>
+                        <p class="text-gray-300 mb-4">
+                            En 1850, Auguste Bravais demostro que existen exactamente <strong class="text-white">14 tipos distintos de redes</strong> en tres dimensiones: las 14 redes de Bravais. Estas se distribuyen entre los 7 sistemas cristalinos (el sistema cubico admite SC, BCC y FCC; el tetragonal admite P e I; etc.).
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Cada red de Bravais tiene un <strong class="text-white">grupo puntual</strong> asociado: el conjunto de rotaciones, reflexiones e inversiones que dejan invariante la red. En total hay <strong class="text-white">32 grupos puntuales cristalograficos</strong>. Combinando los 32 grupos puntuales con las 14 redes y las operaciones de simetria que incluyen traslaciones parciales (ejes helicoidales y planos de deslizamiento), se obtienen exactamente <strong class="text-white">230 grupos espaciales</strong>.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Esta clasificacion es la version cristalografica de la teoria de grupos del Modulo 3. Los 230 grupos espaciales son los <strong class="text-white">subgrupos discretos del grupo euclidiano \(E(3)\)</strong> compatibles con periodicidad traslacional.
+                        </p>
+
+                        <div class="bg-violet-500/5 border border-violet-500/20 rounded-xl p-5 mb-4">
+                            <p class="text-gray-300 mb-3">
+                                <strong class="text-violet-400">La restriccion cristalografica:</strong> un resultado profundo conecta la periodicidad traslacional con las rotaciones permitidas. En una red periodica, los unicos ordenes de rotacion compatibles son:
+                            </p>
+                            <p class="text-center text-white text-lg mb-3">\(n = 1, 2, 3, 4, 6\)</p>
+                            <p class="text-gray-300">
+                                Notablemente, <strong class="text-white">\(n = 5\) esta prohibido</strong>. La simetria pentagonal del icosaedro y del dodecaedro es incompatible con la periodicidad traslacional. El grupo icosaedrico \(I_h\) (120 elementos, Modulo 3) no es un grupo puntual cristalografico. Esta es la razon por la que no existen cristales con simetria de orden 5... al menos no cristales periodicos. La leccion 33 sobre quasicristales nos dara la sorpresa final.
+                            </p>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            La demostracion de la restriccion cristalografica es elegante. Supongamos que una red tiene un eje de rotacion de orden \(n\). Si \(\mathbf{v}\) es un vector de la red y \(R\) es la rotacion por \(2\pi/n\), entonces \(R\mathbf{v}\) tambien debe ser un vector de la red. Por lo tanto \(R\mathbf{v} - \mathbf{v}\) es un vector de la red, y su longitud es \(|R\mathbf{v} - \mathbf{v}| = 2|\mathbf{v}|\sin(\pi/n)\). Para que la red sea discreta, necesitamos que \(2\sin(\pi/n)\) sea un entero no negativo o cero, lo que restringe \(n\) a los valores 1, 2, 3, 4 y 6.
+                        </p>
+
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mb-4">
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-violet-400 font-medium text-lg">7</p>
+                                <p class="text-gray-500 text-xs">Sistemas cristalinos</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-violet-400 font-medium text-lg">14</p>
+                                <p class="text-gray-500 text-xs">Redes de Bravais</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-violet-400 font-medium text-lg">32</p>
+                                <p class="text-gray-500 text-xs">Grupos puntuales</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-violet-400 font-medium text-lg">230</p>
+                                <p class="text-gray-500 text-xs">Grupos espaciales</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Exercises -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+                        <div class="space-y-4">
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">Ejercicio 1.</strong> Calcula la fraccion de empaquetamiento de la red BCC expresando el radio atomico \(r\) en funcion de la constante de red \(a\). Los atomos se tocan a lo largo de la diagonal del cuerpo, cuya longitud es \(a\sqrt{3}\).</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">Ejercicio 2.</strong> Demuestra que el angulo tetraedrico satisface \(\cos\theta = -1/3\) colocando los 4 vertices de un tetraedro regular en vertices alternos de un cubo de lado 1 (posiciones \((0,0,0)\), \((1,1,0)\), \((1,0,1)\), \((0,1,1)\)) y calculando el angulo en el centro.</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">Ejercicio 3.</strong> Cuantos atomos por celda unitaria tiene el diamante? (Pista: cuenta las contribuciones de vertices, caras e interiores por separado.)</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">Ejercicio 4.</strong> Explica por que la simetria icosaedrica (\(I_h\)) es incompatible con la periodicidad traslacional (restriccion cristalografica). Que sucede cuando intentamos teselar el plano con pentagonos regulares?</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-5">
+                                <p class="text-gray-300"><strong class="text-white">Ejercicio 5.</strong> El mineral fluorita (CaF\(_2\)) tiene los iones Ca\(^{2+}\) en posiciones FCC y los iones F\(^-\) en todos los intersticios tetraedricos. Cuantos iones F\(^-\) hay por celda unitaria? (Pista: una celda FCC tiene 8 intersticios tetraedricos.)</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LAB -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-6">LAB: Explorador de Redes Cristalinas</h3>
+                        <p class="text-gray-400 mb-4">Selecciona un tipo de red para visualizar su celda unitaria, conteo de atomos y propiedades de empaquetamiento.</p>
+
+                        <!-- Controls -->
+                        <div class="flex flex-wrap gap-2 mb-4">
+                            <button class="lab-btn px-4 py-2 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition" data-lattice="SC">Cubica Simple (SC)</button>
+                            <button class="lab-btn px-4 py-2 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition" data-lattice="BCC">Centrada en Cuerpo (BCC)</button>
+                            <button class="lab-btn px-4 py-2 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition" data-lattice="FCC">Centrada en Caras (FCC)</button>
+                        </div>
+
+                        <div class="flex items-center gap-3 mb-4">
+                            <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                                <input type="checkbox" id="toggle-bonds" class="w-4 h-4 accent-violet-500" checked>
+                                Mostrar enlaces
+                            </label>
+                            <label class="flex items-center gap-2 text-sm text-gray-400 cursor-pointer">
+                                <input type="checkbox" id="toggle-fractions" class="w-4 h-4 accent-violet-500">
+                                Conteo fraccionario
+                            </label>
+                        </div>
+
+                        <!-- Canvas -->
+                        <div id="lab-container" class="relative rounded-xl border border-gray-800 overflow-hidden" style="height: 420px;">
+                            <canvas id="lab-canvas" class="w-full h-full"></canvas>
+                        </div>
+
+                        <!-- Info panel -->
+                        <div class="grid grid-cols-2 md:grid-cols-4 gap-3 mt-4">
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Atomos / celda</p>
+                                <p id="lab-atoms" class="text-lg font-medium text-violet-400 mono">1</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Coordinacion</p>
+                                <p id="lab-coord" class="text-lg font-medium text-cyan-400 mono">6</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Empaquetamiento</p>
+                                <p id="lab-packing" class="text-lg font-medium text-violet-400 mono">0.524</p>
+                            </div>
+                            <div class="bg-gray-900 border border-gray-800 rounded-lg p-3 text-center">
+                                <p class="text-xs text-gray-500 mb-1">Ejemplo</p>
+                                <p id="lab-example" class="text-lg font-medium text-cyan-400 mono">Po</p>
+                            </div>
+                        </div>
+
+                        <div class="mt-3 text-sm text-gray-500" id="lab-fractions-info">
+                            Conteo: 8 vertices x 1/8 = 1 atomo
+                        </div>
+                    </section>
+
+                    <!-- Bottom Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="../modulo-05/leccion-29.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-300 transition">&larr; Modulo 5</a>
+                        <a href="./leccion-31.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg transition">Siguiente: Virus Icosaedricos &rarr;</a>
                     </div>
                 </article>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales -- De Platon a 4D</p>
         </div>
     </footer>
+
+    <!-- Scripts -->
+    <script>
+    // ============================================================
+    // ILLUSTRATION 1: Three Cubic Unit Cells (SC, BCC, FCC)
+    // ============================================================
+    (function() {
+        var canvas = document.getElementById('unit-cells-canvas');
+        if (!canvas) return;
+        var container = canvas.parentElement;
+
+        var W, H, dpr, ctx;
+
+        function resize() {
+            W = container.clientWidth;
+            H = container.clientHeight || 300;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+        }
+
+        // Isometric projection helpers
+        var ISO_ANGLE = Math.PI / 6;
+        var cosA = Math.cos(ISO_ANGLE);
+        var sinA = Math.sin(ISO_ANGLE);
+
+        function project(x, y, z, cx, cy, scale) {
+            var px = cx + scale * (x - z) * cosA;
+            var py = cy - scale * (y - (x + z) * sinA);
+            return [px, py];
+        }
+
+        function drawCube(cx, cy, scale, atoms, label) {
+            var corners = [
+                [0,0,0],[1,0,0],[1,0,1],[0,0,1],
+                [0,1,0],[1,1,0],[1,1,1],[0,1,1]
+            ];
+            var edges = [
+                [0,1],[1,2],[2,3],[3,0],
+                [4,5],[5,6],[6,7],[7,4],
+                [0,4],[1,5],[2,6],[3,7]
+            ];
+
+            // Offset to center
+            var pts = corners.map(function(c) {
+                return project(c[0] - 0.5, c[1] - 0.5, c[2] - 0.5, cx, cy, scale);
+            });
+
+            // Draw back edges first (dashed)
+            var backEdges = [[3,0],[0,4],[3,7]];
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = 'rgba(107, 114, 128, 0.3)';
+            ctx.lineWidth = 1;
+            backEdges.forEach(function(e) {
+                ctx.beginPath();
+                ctx.moveTo(pts[e[0]][0], pts[e[0]][1]);
+                ctx.lineTo(pts[e[1]][0], pts[e[1]][1]);
+                ctx.stroke();
+            });
+            ctx.setLineDash([]);
+
+            // Draw front edges
+            ctx.strokeStyle = 'rgba(107, 114, 128, 0.6)';
+            ctx.lineWidth = 1.2;
+            edges.forEach(function(e) {
+                if (backEdges.some(function(b) { return (b[0]===e[0]&&b[1]===e[1])||(b[0]===e[1]&&b[1]===e[0]); })) return;
+                ctx.beginPath();
+                ctx.moveTo(pts[e[0]][0], pts[e[0]][1]);
+                ctx.lineTo(pts[e[1]][0], pts[e[1]][1]);
+                ctx.stroke();
+            });
+
+            // Draw atoms
+            atoms.forEach(function(atom) {
+                var p = project(atom.pos[0] - 0.5, atom.pos[1] - 0.5, atom.pos[2] - 0.5, cx, cy, scale);
+                var r = atom.r || 8;
+                ctx.beginPath();
+                ctx.arc(p[0], p[1], r, 0, Math.PI * 2);
+                ctx.fillStyle = atom.color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            });
+
+            // Label
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(label, cx, cy + scale * 0.95 + 24);
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            var cellW = W / 3;
+            var scale = Math.min(cellW * 0.32, H * 0.32);
+            var yOff = H * 0.45;
+
+            var gray = '#6b7280';
+            var cyan = '#22d3ee';
+            var violet = '#a78bfa';
+            var atomR = Math.max(5, Math.min(10, scale * 0.12));
+
+            // SC atoms: 8 corners
+            var scAtoms = [
+                [0,0,0],[1,0,0],[1,0,1],[0,0,1],
+                [0,1,0],[1,1,0],[1,1,1],[0,1,1]
+            ].map(function(p) { return { pos: p, color: gray, r: atomR }; });
+
+            // BCC atoms: 8 corners + 1 body center
+            var bccAtoms = scAtoms.map(function(a) { return { pos: a.pos, color: gray, r: atomR }; });
+            bccAtoms.push({ pos: [0.5, 0.5, 0.5], color: cyan, r: atomR * 1.3 });
+
+            // FCC atoms: 8 corners + 6 face centers
+            var fccAtoms = scAtoms.map(function(a) { return { pos: a.pos, color: gray, r: atomR }; });
+            var faceC = [
+                [0.5,0.5,0],[0.5,0.5,1],
+                [0.5,0,0.5],[0.5,1,0.5],
+                [0,0.5,0.5],[1,0.5,0.5]
+            ];
+            faceC.forEach(function(p) { fccAtoms.push({ pos: p, color: violet, r: atomR * 1.15 }); });
+
+            drawCube(cellW * 0.5, yOff, scale, scAtoms, 'SC (1 at/celda)');
+            drawCube(cellW * 1.5, yOff, scale, bccAtoms, 'BCC (2 at/celda)');
+            drawCube(cellW * 2.5, yOff, scale, fccAtoms, 'FCC (4 at/celda)');
+        }
+
+        resize();
+        draw();
+        window.addEventListener('resize', function() { resize(); draw(); });
+    })();
+
+    // ============================================================
+    // ILLUSTRATION 2: Tetrahedral Angle in Cube
+    // ============================================================
+    (function() {
+        var canvas = document.getElementById('tetrahedral-canvas');
+        if (!canvas) return;
+        var container = canvas.parentElement;
+
+        var W, H, dpr, ctx;
+
+        function resize() {
+            W = container.clientWidth;
+            H = container.clientHeight || 280;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+        }
+
+        var ISO_ANGLE = Math.PI / 6;
+        var cosA = Math.cos(ISO_ANGLE);
+        var sinA = Math.sin(ISO_ANGLE);
+
+        function project(x, y, z, cx, cy, scale) {
+            var px = cx + scale * (x - z) * cosA;
+            var py = cy - scale * (y - (x + z) * sinA);
+            return [px, py];
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            var cx = W * 0.45;
+            var cy = H * 0.5;
+            var scale = Math.min(W * 0.2, H * 0.35);
+
+            // Cube corners (centered)
+            var corners = [
+                [0,0,0],[1,0,0],[1,0,1],[0,0,1],
+                [0,1,0],[1,1,0],[1,1,1],[0,1,1]
+            ];
+            var pts = corners.map(function(c) {
+                return project(c[0]-0.5, c[1]-0.5, c[2]-0.5, cx, cy, scale);
+            });
+
+            // Cube edges (faint)
+            var edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+            ctx.strokeStyle = 'rgba(107, 114, 128, 0.25)';
+            ctx.lineWidth = 0.8;
+            ctx.setLineDash([3, 4]);
+            edges.forEach(function(e) {
+                ctx.beginPath();
+                ctx.moveTo(pts[e[0]][0], pts[e[0]][1]);
+                ctx.lineTo(pts[e[1]][0], pts[e[1]][1]);
+                ctx.stroke();
+            });
+            ctx.setLineDash([]);
+
+            // Tetrahedron: vertices at alternating corners of cube
+            // (0,0,0), (1,1,0), (1,0,1), (0,1,1)
+            var tetIdx = [0, 5, 2, 7];
+            var tetEdges = [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]];
+
+            ctx.strokeStyle = '#a78bfa';
+            ctx.lineWidth = 2;
+            tetEdges.forEach(function(e) {
+                var a = tetIdx[e[0]], b = tetIdx[e[1]];
+                ctx.beginPath();
+                ctx.moveTo(pts[a][0], pts[a][1]);
+                ctx.lineTo(pts[b][0], pts[b][1]);
+                ctx.stroke();
+            });
+
+            // Center of tetrahedron
+            var center3D = [0.5, 0.5, 0.5];
+            var centerPt = project(center3D[0]-0.5, center3D[1]-0.5, center3D[2]-0.5, cx, cy, scale);
+
+            // Draw lines from center to two vertices (showing angle)
+            var v1 = tetIdx[0]; // (0,0,0)
+            var v2 = tetIdx[1]; // (1,1,0)
+            ctx.strokeStyle = '#22d3ee';
+            ctx.lineWidth = 1.5;
+            ctx.setLineDash([4, 3]);
+            ctx.beginPath();
+            ctx.moveTo(pts[v1][0], pts[v1][1]);
+            ctx.lineTo(centerPt[0], centerPt[1]);
+            ctx.lineTo(pts[v2][0], pts[v2][1]);
+            ctx.stroke();
+            ctx.setLineDash([]);
+
+            // Draw angle arc
+            var ang1 = Math.atan2(pts[v1][1] - centerPt[1], pts[v1][0] - centerPt[0]);
+            var ang2 = Math.atan2(pts[v2][1] - centerPt[1], pts[v2][0] - centerPt[0]);
+            ctx.beginPath();
+            ctx.arc(centerPt[0], centerPt[1], 18, Math.min(ang1, ang2), Math.max(ang1, ang2));
+            ctx.strokeStyle = '#22d3ee';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+
+            // Tetrahedron vertices
+            tetIdx.forEach(function(idx) {
+                ctx.beginPath();
+                ctx.arc(pts[idx][0], pts[idx][1], 7, 0, Math.PI * 2);
+                ctx.fillStyle = '#a78bfa';
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.3)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+            });
+
+            // Center dot
+            ctx.beginPath();
+            ctx.arc(centerPt[0], centerPt[1], 4, 0, Math.PI * 2);
+            ctx.fillStyle = '#22d3ee';
+            ctx.fill();
+
+            // Non-tet cube vertices (faint)
+            [1,3,4,6].forEach(function(idx) {
+                ctx.beginPath();
+                ctx.arc(pts[idx][0], pts[idx][1], 3, 0, Math.PI * 2);
+                ctx.fillStyle = 'rgba(107, 114, 128, 0.4)';
+                ctx.fill();
+            });
+
+            // Annotations on the right
+            var tx = W * 0.72;
+            var ty = H * 0.22;
+            ctx.fillStyle = '#d1d5db';
+            ctx.font = '14px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('Angulo tetraedrico:', tx, ty);
+
+            ctx.fillStyle = '#a78bfa';
+            ctx.font = '16px "JetBrains Mono", monospace';
+            ctx.fillText('109.47\u00b0', tx, ty + 26);
+
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.fillText('cos(\u03b8) = -1/3', tx, ty + 52);
+
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText('Aparece en:', tx, ty + 82);
+            ctx.fillText('- CH\u2084 (metano)', tx + 8, ty + 100);
+            ctx.fillText('- Diamante (C-C-C)', tx + 8, ty + 118);
+            ctx.fillText('- Silicio (Si-Si-Si)', tx + 8, ty + 136);
+        }
+
+        resize();
+        draw();
+        window.addEventListener('resize', function() { resize(); draw(); });
+    })();
+
+    // ============================================================
+    // ILLUSTRATION 3: Diamond Unit Cell (2D Projection)
+    // ============================================================
+    (function() {
+        var canvas = document.getElementById('diamond-canvas');
+        if (!canvas) return;
+        var container = canvas.parentElement;
+
+        var W, H, dpr, ctx;
+
+        function resize() {
+            W = container.clientWidth;
+            H = container.clientHeight || 320;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+        }
+
+        var ISO_ANGLE = Math.PI / 6;
+        var cosA = Math.cos(ISO_ANGLE);
+        var sinA = Math.sin(ISO_ANGLE);
+
+        function project(x, y, z, cx, cy, scale) {
+            var px = cx + scale * (x - z) * cosA;
+            var py = cy - scale * (y - (x + z) * sinA);
+            return [px, py];
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            var cx = W * 0.42;
+            var cy = H * 0.52;
+            var scale = Math.min(W * 0.22, H * 0.28);
+
+            // FCC atom positions (fractional coords)
+            var fccCorners = [
+                [0,0,0],[1,0,0],[1,0,1],[0,0,1],
+                [0,1,0],[1,1,0],[1,1,1],[0,1,1]
+            ];
+            var fccFaces = [
+                [0.5,0.5,0],[0.5,0.5,1],
+                [0.5,0,0.5],[0.5,1,0.5],
+                [0,0.5,0.5],[1,0.5,0.5]
+            ];
+            // Tetrahedral interior atoms (second FCC, shifted by 1/4,1/4,1/4)
+            var tetAtoms = [
+                [0.25,0.25,0.25],
+                [0.75,0.75,0.25],
+                [0.75,0.25,0.75],
+                [0.25,0.75,0.75]
+            ];
+
+            // Cube edges
+            var edges = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+            var backEdgeSet = [[3,0],[0,4],[3,7]];
+
+            var pts = fccCorners.map(function(c) {
+                return project(c[0]-0.5, c[1]-0.5, c[2]-0.5, cx, cy, scale);
+            });
+
+            // Back edges (dashed)
+            ctx.setLineDash([3, 3]);
+            ctx.strokeStyle = 'rgba(107, 114, 128, 0.2)';
+            ctx.lineWidth = 0.8;
+            backEdgeSet.forEach(function(e) {
+                ctx.beginPath();
+                ctx.moveTo(pts[e[0]][0], pts[e[0]][1]);
+                ctx.lineTo(pts[e[1]][0], pts[e[1]][1]);
+                ctx.stroke();
+            });
+            ctx.setLineDash([]);
+
+            // Front edges
+            ctx.strokeStyle = 'rgba(107, 114, 128, 0.4)';
+            ctx.lineWidth = 1;
+            edges.forEach(function(e) {
+                if (backEdgeSet.some(function(b) { return (b[0]===e[0]&&b[1]===e[1])||(b[0]===e[1]&&b[1]===e[0]); })) return;
+                ctx.beginPath();
+                ctx.moveTo(pts[e[0]][0], pts[e[0]][1]);
+                ctx.lineTo(pts[e[1]][0], pts[e[1]][1]);
+                ctx.stroke();
+            });
+
+            // All atom positions
+            var allAtoms = [];
+            fccCorners.forEach(function(p) { allAtoms.push({ pos: p, type: 'corner' }); });
+            fccFaces.forEach(function(p) { allAtoms.push({ pos: p, type: 'face' }); });
+            tetAtoms.forEach(function(p) { allAtoms.push({ pos: p, type: 'tet' }); });
+
+            // Project all
+            var projAtoms = allAtoms.map(function(a) {
+                var p = project(a.pos[0]-0.5, a.pos[1]-0.5, a.pos[2]-0.5, cx, cy, scale);
+                return { x: p[0], y: p[1], type: a.type, pos: a.pos };
+            });
+
+            // Draw bonds from tetrahedral atoms to nearest FCC neighbors
+            ctx.strokeStyle = 'rgba(167, 139, 250, 0.5)';
+            ctx.lineWidth = 1.5;
+            tetAtoms.forEach(function(ta) {
+                var tp = project(ta[0]-0.5, ta[1]-0.5, ta[2]-0.5, cx, cy, scale);
+                // Each tet atom bonds to 4 FCC neighbors
+                var neighbors = fccCorners.concat(fccFaces);
+                var dists = neighbors.map(function(n) {
+                    var dx = ta[0]-n[0], dy = ta[1]-n[1], dz = ta[2]-n[2];
+                    return { pos: n, d: Math.sqrt(dx*dx+dy*dy+dz*dz) };
+                });
+                dists.sort(function(a,b) { return a.d - b.d; });
+                // Nearest 4
+                for (var i = 0; i < 4 && i < dists.length; i++) {
+                    if (dists[i].d < 0.5) {
+                        var np = project(dists[i].pos[0]-0.5, dists[i].pos[1]-0.5, dists[i].pos[2]-0.5, cx, cy, scale);
+                        ctx.beginPath();
+                        ctx.moveTo(tp[0], tp[1]);
+                        ctx.lineTo(np[0], np[1]);
+                        ctx.stroke();
+                    }
+                }
+            });
+
+            // Sort atoms by depth for drawing order
+            projAtoms.sort(function(a, b) {
+                return (a.pos[1] + a.pos[0] * sinA + a.pos[2] * sinA) -
+                       (b.pos[1] + b.pos[0] * sinA + b.pos[2] * sinA);
+            });
+
+            // Draw atoms
+            var rBase = Math.max(4, Math.min(8, scale * 0.1));
+            projAtoms.forEach(function(a) {
+                var r, color;
+                if (a.type === 'corner') { r = rBase; color = '#6b7280'; }
+                else if (a.type === 'face') { r = rBase * 0.95; color = '#6b7280'; }
+                else { r = rBase * 1.2; color = '#22d3ee'; }
+
+                ctx.beginPath();
+                ctx.arc(a.x, a.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.2)';
+                ctx.lineWidth = 0.6;
+                ctx.stroke();
+            });
+
+            // Legend on the right
+            var lx = W * 0.72;
+            var ly = H * 0.18;
+
+            ctx.fillStyle = '#d1d5db';
+            ctx.font = '14px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('Estructura diamante', lx, ly);
+
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.fillText('2 redes FCC interpenetradas', lx, ly + 22);
+
+            // Legend items
+            var items = [
+                { color: '#6b7280', label: 'Atomos FCC (red 1)' },
+                { color: '#22d3ee', label: 'Atomos tetraedricos (red 2)' },
+                { color: 'rgba(167, 139, 250, 0.7)', label: 'Enlaces C-C' }
+            ];
+            items.forEach(function(item, i) {
+                var y = ly + 50 + i * 24;
+                ctx.beginPath();
+                ctx.arc(lx + 6, y - 4, 5, 0, Math.PI * 2);
+                ctx.fillStyle = item.color;
+                ctx.fill();
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = '11px Inter, sans-serif';
+                ctx.fillText(item.label, lx + 18, y);
+            });
+
+            // Stats
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '11px "JetBrains Mono", monospace';
+            ctx.fillText('Atomos/celda: 8', lx, ly + 140);
+            ctx.fillText('Coordinacion: 4', lx, ly + 158);
+            ctx.fillText('Enlace C-C: a\u221A3/4', lx, ly + 176);
+        }
+
+        resize();
+        draw();
+        window.addEventListener('resize', function() { resize(); draw(); });
+    })();
+
+    // ============================================================
+    // LAB: Crystal Lattice Explorer
+    // ============================================================
+    (function() {
+        var container = document.getElementById('lab-container');
+        var canvas = document.getElementById('lab-canvas');
+        if (!container || !canvas) return;
+
+        var W, H, dpr, ctx;
+        var currentLattice = 'SC';
+        var showBonds = true;
+        var showFractions = false;
+
+        var LATTICE_DATA = {
+            SC: {
+                atoms: 1,
+                coord: 6,
+                packing: 0.524,
+                packingExact: '\u03c0/6',
+                example: 'Po',
+                fractionInfo: '8 vertices x 1/8 = 1 atomo',
+                touchDir: 'arista'
+            },
+            BCC: {
+                atoms: 2,
+                coord: 8,
+                packing: 0.680,
+                packingExact: '\u03c0\u221A3/8',
+                example: 'Fe, W, Cr',
+                fractionInfo: '8 vertices x 1/8 + 1 centro = 2 atomos',
+                touchDir: 'diagonal del cuerpo'
+            },
+            FCC: {
+                atoms: 4,
+                coord: 12,
+                packing: 0.740,
+                packingExact: '\u03c0/(3\u221A2)',
+                example: 'Al, Au, Cu, Ag',
+                fractionInfo: '8 vertices x 1/8 + 6 caras x 1/2 = 4 atomos',
+                touchDir: 'diagonal de la cara'
+            }
+        };
+
+        function resize() {
+            W = container.clientWidth;
+            H = container.clientHeight || 420;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            canvas.style.width = W + 'px';
+            canvas.style.height = H + 'px';
+            ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+        }
+
+        var ISO_ANGLE = Math.PI / 6;
+        var cosA = Math.cos(ISO_ANGLE);
+        var sinA = Math.sin(ISO_ANGLE);
+
+        function project(x, y, z, cx, cy, scale) {
+            var px = cx + scale * (x - z) * cosA;
+            var py = cy - scale * (y - (x + z) * sinA);
+            return [px, py];
+        }
+
+        function getAtomPositions() {
+            var corners = [
+                [0,0,0],[1,0,0],[1,0,1],[0,0,1],
+                [0,1,0],[1,1,0],[1,1,1],[0,1,1]
+            ];
+            var atoms = corners.map(function(p) {
+                return { pos: p, type: 'corner', frac: '1/8' };
+            });
+
+            if (currentLattice === 'BCC') {
+                atoms.push({ pos: [0.5,0.5,0.5], type: 'body', frac: '1' });
+            }
+
+            if (currentLattice === 'FCC') {
+                var faceC = [
+                    [0.5,0.5,0],[0.5,0.5,1],
+                    [0.5,0,0.5],[0.5,1,0.5],
+                    [0,0.5,0.5],[1,0.5,0.5]
+                ];
+                faceC.forEach(function(p) {
+                    atoms.push({ pos: p, type: 'face', frac: '1/2' });
+                });
+            }
+
+            return atoms;
+        }
+
+        function getBonds(atoms) {
+            if (!showBonds) return [];
+            var bonds = [];
+            // Cube edges
+            var edgeIdx = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]];
+            edgeIdx.forEach(function(e) {
+                bonds.push([atoms[e[0]].pos, atoms[e[1]].pos]);
+            });
+
+            if (currentLattice === 'BCC') {
+                // Bonds from center to all corners
+                var center = [0.5, 0.5, 0.5];
+                for (var i = 0; i < 8; i++) {
+                    bonds.push([center, atoms[i].pos]);
+                }
+            }
+
+            if (currentLattice === 'FCC') {
+                // Bonds from face centers to neighboring corners
+                for (var i = 8; i < atoms.length; i++) {
+                    var fp = atoms[i].pos;
+                    for (var j = 0; j < 8; j++) {
+                        var cp = atoms[j].pos;
+                        var dx = fp[0]-cp[0], dy = fp[1]-cp[1], dz = fp[2]-cp[2];
+                        var d = Math.sqrt(dx*dx+dy*dy+dz*dz);
+                        if (d < 0.75) {
+                            bonds.push([fp, cp]);
+                        }
+                    }
+                }
+            }
+
+            return bonds;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            var cx = W * 0.42;
+            var cy = H * 0.5;
+            var scale = Math.min(W * 0.25, H * 0.3);
+
+            var atoms = getAtomPositions();
+            var bonds = getBonds(atoms);
+
+            // Title
+            ctx.fillStyle = '#d1d5db';
+            ctx.font = '16px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            var titleMap = { SC: 'Cubica Simple (SC)', BCC: 'Centrada en Cuerpo (BCC)', FCC: 'Centrada en Caras (FCC)' };
+            ctx.fillText(titleMap[currentLattice], cx, 30);
+
+            // Project all atoms
+            var projAtoms = atoms.map(function(a) {
+                var p = project(a.pos[0]-0.5, a.pos[1]-0.5, a.pos[2]-0.5, cx, cy, scale);
+                var depth = a.pos[1] + a.pos[0] * sinA + a.pos[2] * sinA;
+                return { x: p[0], y: p[1], type: a.type, frac: a.frac, depth: depth, pos: a.pos };
+            });
+
+            // Draw bonds
+            var backEdgeSet = [[3,0],[0,4],[3,7]];
+            bonds.forEach(function(bond, idx) {
+                var p1 = project(bond[0][0]-0.5, bond[0][1]-0.5, bond[0][2]-0.5, cx, cy, scale);
+                var p2 = project(bond[1][0]-0.5, bond[1][1]-0.5, bond[1][2]-0.5, cx, cy, scale);
+
+                var isBack = false;
+                if (idx < 12) {
+                    var e = [[0,1],[1,2],[2,3],[3,0],[4,5],[5,6],[6,7],[7,4],[0,4],[1,5],[2,6],[3,7]][idx];
+                    isBack = backEdgeSet.some(function(b) { return (b[0]===e[0]&&b[1]===e[1])||(b[0]===e[1]&&b[1]===e[0]); });
+                }
+
+                if (isBack) {
+                    ctx.setLineDash([3, 3]);
+                    ctx.strokeStyle = 'rgba(107, 114, 128, 0.2)';
+                } else {
+                    ctx.setLineDash([]);
+                    if (idx >= 12) {
+                        ctx.strokeStyle = currentLattice === 'BCC' ? 'rgba(34, 211, 238, 0.3)' : 'rgba(167, 139, 250, 0.3)';
+                    } else {
+                        ctx.strokeStyle = 'rgba(107, 114, 128, 0.5)';
+                    }
+                }
+                ctx.lineWidth = 1;
+                ctx.beginPath();
+                ctx.moveTo(p1[0], p1[1]);
+                ctx.lineTo(p2[0], p2[1]);
+                ctx.stroke();
+            });
+            ctx.setLineDash([]);
+
+            // Sort by depth for proper rendering
+            projAtoms.sort(function(a, b) { return a.depth - b.depth; });
+
+            // Draw atoms
+            var rBase = Math.max(6, Math.min(14, scale * 0.14));
+            projAtoms.forEach(function(a) {
+                var r, color;
+                if (a.type === 'corner') {
+                    r = rBase;
+                    color = '#6b7280';
+                } else if (a.type === 'body') {
+                    r = rBase * 1.4;
+                    color = '#22d3ee';
+                } else {
+                    r = rBase * 1.2;
+                    color = '#a78bfa';
+                }
+
+                // Glow for non-corner atoms
+                if (a.type !== 'corner') {
+                    ctx.beginPath();
+                    ctx.arc(a.x, a.y, r + 4, 0, Math.PI * 2);
+                    ctx.fillStyle = a.type === 'body' ? 'rgba(34, 211, 238, 0.15)' : 'rgba(167, 139, 250, 0.15)';
+                    ctx.fill();
+                }
+
+                ctx.beginPath();
+                ctx.arc(a.x, a.y, r, 0, Math.PI * 2);
+                ctx.fillStyle = color;
+                ctx.fill();
+                ctx.strokeStyle = 'rgba(255,255,255,0.25)';
+                ctx.lineWidth = 0.8;
+                ctx.stroke();
+
+                // Fraction labels
+                if (showFractions) {
+                    ctx.fillStyle = '#d1d5db';
+                    ctx.font = '9px "JetBrains Mono", monospace';
+                    ctx.textAlign = 'center';
+                    ctx.textBaseline = 'middle';
+                    ctx.fillText(a.frac, a.x, a.y + r + 11);
+                }
+            });
+
+            // Right panel info
+            var data = LATTICE_DATA[currentLattice];
+            var rx = W * 0.72;
+            var ry = H * 0.15;
+
+            ctx.fillStyle = '#a78bfa';
+            ctx.font = 'bold 15px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText(titleMap[currentLattice], rx, ry);
+
+            var infoLines = [
+                ['Atomos/celda:', '' + data.atoms],
+                ['Coordinacion:', '' + data.coord],
+                ['Empaquetam.:', data.packing.toFixed(3) + ' (' + data.packingExact + ')'],
+                ['Contacto:', data.touchDir],
+                ['Ejemplo:', data.example]
+            ];
+
+            infoLines.forEach(function(line, i) {
+                var y = ry + 30 + i * 24;
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = '12px Inter, sans-serif';
+                ctx.fillText(line[0], rx, y);
+                ctx.fillStyle = '#d1d5db';
+                ctx.font = '12px "JetBrains Mono", monospace';
+                ctx.fillText(line[1], rx + 100, y);
+            });
+
+            // Legend
+            var ly = ry + 190;
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText('Leyenda:', rx, ly);
+
+            var legendItems = [{ color: '#6b7280', label: 'Vertices (1/8)' }];
+            if (currentLattice === 'BCC') legendItems.push({ color: '#22d3ee', label: 'Centro del cuerpo (1)' });
+            if (currentLattice === 'FCC') legendItems.push({ color: '#a78bfa', label: 'Centros de caras (1/2)' });
+
+            legendItems.forEach(function(item, i) {
+                var y = ly + 20 + i * 22;
+                ctx.beginPath();
+                ctx.arc(rx + 6, y - 3, 5, 0, Math.PI * 2);
+                ctx.fillStyle = item.color;
+                ctx.fill();
+                ctx.fillStyle = '#9ca3af';
+                ctx.font = '11px Inter, sans-serif';
+                ctx.fillText(item.label, rx + 18, y);
+            });
+
+            // Packing bar visualization
+            var barY = ly + 20 + legendItems.length * 22 + 20;
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.fillText('Fraccion de empaquetamiento:', rx, barY);
+
+            var barX = rx;
+            var barW = W - rx - 30;
+            var barH = 14;
+            barY += 12;
+
+            ctx.fillStyle = '#1f2937';
+            ctx.fillRect(barX, barY, barW, barH);
+
+            var grad = ctx.createLinearGradient(barX, barY, barX + barW * data.packing, barY);
+            grad.addColorStop(0, '#a855f7');
+            grad.addColorStop(1, '#22d3ee');
+            ctx.fillStyle = grad;
+            ctx.fillRect(barX, barY, barW * data.packing, barH);
+
+            ctx.fillStyle = '#d1d5db';
+            ctx.font = '10px "JetBrains Mono", monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText((data.packing * 100).toFixed(1) + '%', barX + barW, barY + barH + 14);
+            ctx.textAlign = 'left';
+        }
+
+        function updateInfo() {
+            var data = LATTICE_DATA[currentLattice];
+            document.getElementById('lab-atoms').textContent = data.atoms;
+            document.getElementById('lab-coord').textContent = data.coord;
+            document.getElementById('lab-packing').textContent = data.packing.toFixed(3);
+            document.getElementById('lab-example').textContent = data.example;
+            document.getElementById('lab-fractions-info').textContent = 'Conteo: ' + data.fractionInfo;
+        }
+
+        // Button events
+        var btns = document.querySelectorAll('.lab-btn');
+        btns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentLattice = this.getAttribute('data-lattice');
+                btns.forEach(function(b) {
+                    b.className = 'lab-btn px-4 py-2 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition';
+                });
+                this.className = 'lab-btn px-4 py-2 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition';
+                updateInfo();
+                draw();
+            });
+        });
+
+        // Toggle events
+        document.getElementById('toggle-bonds').addEventListener('change', function() {
+            showBonds = this.checked;
+            draw();
+        });
+        document.getElementById('toggle-fractions').addEventListener('change', function() {
+            showFractions = this.checked;
+            draw();
+        });
+
+        // Init
+        resize();
+        updateInfo();
+        draw();
+        window.addEventListener('resize', function() { resize(); draw(); });
+    })();
+    </script>
 </body>
 </html>

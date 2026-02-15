@@ -3,134 +3,900 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 23: Navegando en 4D | Matemáticas Visuales</title>
+    <title>Lección 23: Rotaciones en 4D y el 24-celda | Matemáticas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
-                </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-22.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-24.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
-                </nav>
-            </div>
+<body class="bg-black text-gray-100 min-h-screen">
+
+    <!-- HEADER -->
+    <header class="border-b border-gray-800 sticky top-0 z-50 bg-black/90 backdrop-blur">
+        <div class="max-w-6xl mx-auto px-6 py-3 flex items-center justify-between">
+            <nav class="text-xs text-gray-500">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                <span class="mx-1">/</span>
+                <span class="text-gray-400">Modulo 04</span>
+            </nav>
+            <nav class="flex space-x-3 text-sm">
+                <a href="./leccion-22.html" class="px-3 py-1.5 rounded border border-gray-700 hover:border-violet-500 text-gray-400 hover:text-violet-300 transition">Anterior</a>
+                <a href="./leccion-24.html" class="px-3 py-1.5 rounded bg-violet-600 hover:bg-violet-500 text-white transition">Siguiente</a>
+            </nav>
         </div>
     </header>
 
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
-            <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 4</h3>
-                    <p class="text-sm text-gray-400 mb-4">Más Allá de la 3D</p>
-                    <div class="mb-6">
-                        <div class="flex justify-between text-xs text-gray-400 mb-2">
-                            <span>Progreso</span>
-                            <span>5/6</span>
-                        </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
-                            <div class="progress-bar h-2 rounded-full" style="width: 83.3%"></div>
-                        </div>
+    <div class="max-w-6xl mx-auto px-6 py-10 grid grid-cols-1 lg:grid-cols-4 gap-10">
+
+        <!-- SIDEBAR -->
+        <aside class="lg:col-span-1">
+            <div class="border border-gray-800 rounded-lg p-5 sticky top-20">
+                <h3 class="text-sm font-semibold text-violet-400 mb-1">Modulo 04</h3>
+                <p class="text-xs text-gray-500 mb-4">Mas Alla de la 3D</p>
+                <div class="mb-5">
+                    <div class="flex justify-between text-xs text-gray-500 mb-1.5">
+                        <span>Progreso</span>
+                        <span>5/6</span>
                     </div>
-                    <nav class="space-y-2">
-                        <a href="./leccion-19.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">19. Introducción a 4D</a>
-                        <a href="./leccion-20.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">20. El Teseracto</a>
-                        <a href="./leccion-21.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">21. Politopos 4D</a>
-                        <a href="./leccion-22.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">22. Proyecciones</a>
-                        <a href="./leccion-23.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">23. Navegando en 4D</a>
-                        <a href="./leccion-24.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">24. Visualización 4D→3D</a>
-                    </nav>
+                    <div class="w-full bg-gray-800 rounded-full h-1.5">
+                        <div class="progress-bar h-1.5 rounded-full" style="width: 83.3%"></div>
+                    </div>
                 </div>
-            </aside>
-            <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 23</span>
-                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Navegando en 4D</h1>
-                        <p class="text-gray-400 text-lg">Cómo moverse y orientarse en el espacio tetradimensional.</p>
+                <nav class="space-y-1 text-sm">
+                    <a href="./leccion-19.html" class="block px-3 py-2 rounded text-gray-400 hover:text-gray-200 hover:bg-gray-900 transition">19. El Salto a la Cuarta Dimension</a>
+                    <a href="./leccion-20.html" class="block px-3 py-2 rounded text-gray-400 hover:text-gray-200 hover:bg-gray-900 transition">20. Los Seis Politopos Regulares</a>
+                    <a href="./leccion-21.html" class="block px-3 py-2 rounded text-gray-400 hover:text-gray-200 hover:bg-gray-900 transition">21. Euler-Poincare y Dualidad</a>
+                    <a href="./leccion-22.html" class="block px-3 py-2 rounded text-gray-400 hover:text-gray-200 hover:bg-gray-900 transition">22. Proyecciones: De 4D a Pantalla</a>
+                    <a href="./leccion-23.html" class="block px-3 py-2 rounded bg-violet-500/10 border border-violet-500/30 text-violet-400 font-medium">23. Rotaciones en 4D y el 24-celda</a>
+                    <a href="./leccion-24.html" class="block px-3 py-2 rounded text-gray-400 hover:text-gray-200 hover:bg-gray-900 transition">24. Dimensiones Superiores y Sintesis</a>
+                </nav>
+            </div>
+        </aside>
+
+        <!-- MAIN CONTENT -->
+        <main class="lg:col-span-3 space-y-10">
+
+            <!-- TITLE BLOCK -->
+            <section>
+                <span class="text-cyan-400 text-sm font-medium">Leccion 23</span>
+                <h2 class="text-3xl font-light mt-2 mb-4">
+                    <span class="text-violet-400 font-medium glow-text">Rotaciones en 4D</span> y el 24-celda
+                </h2>
+                <p class="text-gray-400 text-lg">En 4D las rotaciones ocurren en planos, no alrededor de ejes. El 24-celda emerge naturalmente de los cuaterniones.</p>
+            </section>
+
+            <!-- ARTICLE -->
+            <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8 space-y-10">
+
+                <!-- 1. PLANOS DE ROTACION, NO EJES -->
+                <section>
+                    <h3 class="text-xl font-semibold text-violet-400 mb-4">1. Planos de Rotacion, No Ejes</h3>
+                    <p class="text-gray-300 mb-4">
+                        En 3D estamos acostumbrados a pensar en rotaciones <span class="text-white font-medium">alrededor de un eje</span>.
+                        Una rotacion en \(\mathbb{R}^3\) fija una recta (el eje, un subespacio de dimension 1) y rota
+                        el plano ortogonal a esa recta. En general, en \(\mathbb{R}^n\), una rotacion simple fija un
+                        subespacio de dimension \(n - 2\) y rota el plano complementario de dimension 2.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">En \(\mathbb{R}^4\)</span>, una rotacion simple fija un
+                        <span class="text-white font-medium">plano</span> (subespacio de dimension 2) y rota el plano
+                        ortogonal complementario. La rotacion ocurre <span class="text-white font-medium">en</span> un plano, no
+                        <span class="text-white font-medium">alrededor de</span> un eje. Este cambio conceptual es fundamental.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        En \(\mathbb{R}^4\) hay exactamente 6 planos coordenados independientes:
+                    </p>
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-5 text-center">
+                        <p class="mono text-violet-300 text-lg">
+                            \(XY, \quad XZ, \quad XW, \quad YZ, \quad YW, \quad ZW\)
+                        </p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Movimiento en 4D</h2>
-                        <p class="text-gray-300 mb-4">En 4D podemos movernos no solo en x, y, z, sino también en la cuarta dimensión w. Esto abre nuevas posibilidades de navegación.</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">6 Planos de Rotación</h3>
-                        <p class="text-gray-300 mb-4">En 3D, las rotaciones ocurren en 3 planos: xy, xz, yz. En 4D, hay 6 planos de rotación: xy, xz, yz, xw, yw, zw.</p>
-                        <div class="bg-gray-800/50 rounded-lg p-4 mb-6">
-                            <h4 class="font-semibold text-platonic-cyan mb-2">Rotaciones Dobles</h4>
-                            <p class="text-sm text-gray-300">En 4D, dos rotaciones independientes pueden ocurrir simultáneamente en planos ortogonales (ej: rotación en xy mientras rota en zw).</p>
-                        </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Vista de "Corte"</h3>
-                        <p class="text-gray-300 mb-4">Otra forma de visualizar 4D es tomar "cortes" 3D del objeto 4D a diferentes valores de w. Esto es similar a cómo un plano 2D corta un objeto 3D.</p>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-2">Ejemplo: Corte del Teseracto</h4>
-                            <p class="text-sm text-gray-300">Al cortar un teseracto perpendicular a w:</p>
-                            <ul class="list-disc list-inside space-y-1 text-gray-400 mt-2 ml-4">
-                                <li>En w=0: Un cubo central</li>
-                                <li>A medida que w aumenta: Cubo que crece</li>
-                                <li>En w=±1: Otro cubo</li>
-                            </ul>
-                        </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Interacción 4D</h3>
-                        <p class="text-gray-300 mb-4">En PlatonicLab puedes usar sliders para controlar la rotación 4D y explorar diferentes perspectivas.</p>
+                    <p class="text-gray-300 mb-4">
+                        Este conteo se explica por la formula general para la dimension del grupo de rotaciones.
+                        El grupo especial ortogonal \(\text{SO}(n)\) tiene dimension:
+                    </p>
+                    $$\dim \text{SO}(n) = \frac{n(n-1)}{2}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        que corresponde al numero de planos coordenados independientes en \(\mathbb{R}^n\).
+                        Esto da:
+                    </p>
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-4 overflow-x-auto">
+                        <table class="text-sm text-gray-300 mono w-full">
+                            <thead>
+                                <tr class="border-b border-gray-700">
+                                    <th class="text-left py-2 px-3 text-violet-400">Grupo</th>
+                                    <th class="text-left py-2 px-3 text-violet-400">Dimension</th>
+                                    <th class="text-left py-2 px-3 text-violet-400">Parametros</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">SO(2)</td>
+                                    <td class="py-2 px-3">\(2 \cdot 1 / 2 = 1\)</td>
+                                    <td class="py-2 px-3">1 angulo</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">SO(3)</td>
+                                    <td class="py-2 px-3">\(3 \cdot 2 / 2 = 3\)</td>
+                                    <td class="py-2 px-3">3 angulos (Euler)</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">SO(4)</td>
+                                    <td class="py-2 px-3">\(4 \cdot 3 / 2 = 6\)</td>
+                                    <td class="py-2 px-3">6 angulos</td>
+                                </tr>
+                            </tbody>
+                        </table>
                     </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Navegación 4D</h2>
-                        <p class="text-gray-400 mb-4">Usa los controles 4D de PlatonicLab para navegar.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
-                        </div>
+                    <p class="text-gray-300">
+                        Un resultado fundamental de algebra lineal garantiza que toda rotacion en \(\text{SO}(4)\)
+                        puede descomponerse en <span class="text-white font-medium">a lo sumo 2 rotaciones simples</span>
+                        actuando en planos mutuamente ortogonales. Esta es la descomposicion en bloques de la forma
+                        normal de una matriz ortogonal.
+                    </p>
+                </section>
+
+                <!-- 2. ROTACIONES SIMPLES -->
+                <section>
+                    <h3 class="text-xl font-semibold text-violet-400 mb-4">2. Rotaciones Simples</h3>
+                    <p class="text-gray-300 mb-4">
+                        Una <span class="text-white font-medium">rotacion simple</span> en \(\mathbb{R}^4\) fija un plano
+                        de dimension 2 y rota su complemento ortogonal por un angulo \(\theta\).
+                        Consideremos la rotacion en el plano \(XW\), que fija el plano \(YZ\):
+                    </p>
+                    $$R_{XW}(\theta) = \begin{pmatrix} \cos\theta & 0 & 0 & -\sin\theta \\ 0 & 1 & 0 & 0 \\ 0 & 0 & 1 & 0 \\ \sin\theta & 0 & 0 & \cos\theta \end{pmatrix}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        <span class="text-white font-medium">Verificacion.</span>
+                        Apliquemos esta matriz al vector base \(\mathbf{e}_1 = (1, 0, 0, 0)\):
+                    </p>
+                    $$R_{XW}(\theta) \begin{pmatrix} 1 \\ 0 \\ 0 \\ 0 \end{pmatrix} = \begin{pmatrix} \cos\theta \\ 0 \\ 0 \\ \sin\theta \end{pmatrix}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        El punto se mueve en el plano \(XW\) trazando un circulo, exactamente como esperamos.
+                        Mientras tanto, los vectores \(\mathbf{e}_2 = (0,1,0,0)\) y \(\mathbf{e}_3 = (0,0,1,0)\)
+                        permanecen fijos:
+                    </p>
+                    $$R_{XW}(\theta)\,\mathbf{e}_2 = \mathbf{e}_2, \qquad R_{XW}(\theta)\,\mathbf{e}_3 = \mathbf{e}_3$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        El plano \(YZ\) completo queda invariante. Este es el analogo 4D del "eje" de rotacion en 3D,
+                        pero ahora el subespacio fijo tiene dimension 2 en lugar de 1.
+                    </p>
+                    <p class="text-gray-300">
+                        De manera analoga, podemos escribir matrices de rotacion para cada uno de los 6 planos
+                        coordenados. La estructura es siempre la misma: una submatriz \(2 \times 2\) de rotacion
+                        en las posiciones correspondientes a los ejes del plano, y la identidad en las demas.
+                    </p>
+                </section>
+
+                <!-- 3. ROTACIONES DOBLES (ISOCLINICAS) -->
+                <section>
+                    <h3 class="text-xl font-semibold text-violet-400 mb-4">3. Rotaciones Dobles (Isoclinicas)</h3>
+                    <p class="text-gray-300 mb-4">
+                        Lo verdaderamente extraordinario de \(\mathbb{R}^4\) es la posibilidad de realizar
+                        <span class="text-white font-medium">dos rotaciones simultaneas</span> en planos ortogonales.
+                        Dado que \(\mathbb{R}^4\) se descompone como suma directa de dos planos ortogonales
+                        (por ejemplo, \(XY\) y \(ZW\)), podemos rotar ambos independientemente:
+                    </p>
+                    $$R(\theta_1, \theta_2) = \begin{pmatrix} \cos\theta_1 & -\sin\theta_1 & 0 & 0 \\ \sin\theta_1 & \cos\theta_1 & 0 & 0 \\ 0 & 0 & \cos\theta_2 & -\sin\theta_2 \\ 0 & 0 & \sin\theta_2 & \cos\theta_2 \end{pmatrix}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        Si \(\theta_1 \neq 0\) y \(\theta_2 \neq 0\), esta es una <span class="text-white font-medium">rotacion doble</span>:
+                        ningun plano queda fijo. Los casos especiales reciben nombres propios:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 mb-4 ml-2">
+                        <li><span class="text-white font-medium">\(\theta_1 = \theta_2\):</span> rotacion <span class="text-violet-300">isoclinica izquierda</span>. Ambos planos rotan a la misma velocidad y en el mismo sentido.</li>
+                        <li><span class="text-white font-medium">\(\theta_1 = -\theta_2\):</span> rotacion <span class="text-violet-300">isoclinica derecha</span>. Ambos planos rotan a la misma velocidad pero en sentidos opuestos.</li>
+                    </ul>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Propiedad fundamental:</span> en una rotacion doble con
+                        \(\theta_1, \theta_2 \neq 0\), <span class="text-white font-medium">ningun punto</span>
+                        (salvo el origen) permanece fijo. Veamoslo: si \(R(\theta_1, \theta_2)\,\mathbf{v} = \mathbf{v}\),
+                        entonces las componentes \((v_1, v_2)\) satisfacen la ecuacion de rotacion por \(\theta_1\)
+                        y las componentes \((v_3, v_4)\) la de rotacion por \(\theta_2\).
+                        Si \(\theta_1 \neq 0\), la unica solucion es \(v_1 = v_2 = 0\); si \(\theta_2 \neq 0\),
+                        la unica solucion es \(v_3 = v_4 = 0\). Por tanto \(\mathbf{v} = \mathbf{0}\).
+                    </p>
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-4">
+                        <p class="text-sm text-gray-500 mb-2 mono">Contraste con 3D</p>
+                        <p class="text-gray-300">
+                            En \(\mathbb{R}^3\), toda rotacion no trivial tiene un eje fijo (el teorema de Euler).
+                            En \(\mathbb{R}^4\), las rotaciones dobles <span class="text-white font-medium">no tienen
+                            ningun punto fijo</span> salvo el origen. Esta es una propiedad genuinamente nueva
+                            que no tiene analogo en dimensiones inferiores.
+                        </p>
                     </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-22.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-24.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Visualización →</a>
+                    <p class="text-gray-300">
+                        <span class="text-white font-medium">Ejemplo concreto.</span> Tomemos \(\theta_1 = \theta_2 = \pi/2\)
+                        (rotacion isoclinica izquierda). Aplicada al punto \((1, 0, 0, 0)\):
+                    </p>
+                    $$R\!\left(\frac{\pi}{2}, \frac{\pi}{2}\right) \begin{pmatrix} 1 \\ 0 \\ 0 \\ 0 \end{pmatrix} = \begin{pmatrix} \cos(\pi/2) \\ \sin(\pi/2) \\ 0 \\ 0 \end{pmatrix} = \begin{pmatrix} 0 \\ 1 \\ 0 \\ 0 \end{pmatrix}$$
+                </section>
+
+                <!-- 4. SO(4) Y LOS CUATERNIONES -->
+                <section>
+                    <h3 class="text-xl font-semibold text-violet-400 mb-4">4. SO(4) y los Cuaterniones</h3>
+                    <p class="text-gray-300 mb-4">
+                        Los <span class="text-white font-medium">cuaterniones</span>, descubiertos por Hamilton en 1843,
+                        proporcionan la descripcion algebraica mas elegante de las rotaciones en 4D.
+                        Un cuaternion es un numero de la forma:
+                    </p>
+                    $$q = a + bi + cj + dk, \qquad a, b, c, d \in \mathbb{R}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        con las reglas de multiplicacion:
+                    </p>
+                    $$i^2 = j^2 = k^2 = ijk = -1$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        de donde se derivan \(ij = k\), \(jk = i\), \(ki = j\), \(ji = -k\), \(kj = -i\), \(ik = -j\).
+                        La norma de un cuaternion es \(|q| = \sqrt{a^2 + b^2 + c^2 + d^2}\), y los
+                        <span class="text-white font-medium">cuaterniones unitarios</span> (\(|q| = 1\)) forman la
+                        3-esfera \(S^3 \subset \mathbb{R}^4\).
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Rotaciones en 3D.</span>
+                        Si identificamos \(\mathbb{R}^3\) con los cuaterniones puramente imaginarios
+                        \(\{bi + cj + dk\}\), toda rotacion en \(\text{SO}(3)\) se escribe como:
+                    </p>
+                    $$\mathbf{v} \mapsto q \mathbf{v} q^{-1}, \qquad q \in S^3$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        donde \(q\) y \(-q\) producen la misma rotacion, dando el isomorfismo
+                        \(\text{SO}(3) \cong S^3 / \{\pm 1\}\).
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Rotaciones en 4D.</span>
+                        Si identificamos \(\mathbb{R}^4\) con el espacio de cuaterniones \(\mathbb{H}\),
+                        toda rotacion en \(\text{SO}(4)\) se escribe como:
+                    </p>
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-5">
+                        <p class="text-sm text-gray-500 mb-2 mono">Teorema fundamental</p>
+                        $$\mathbf{v} \mapsto q_1 \cdot \mathbf{v} \cdot q_2^{-1}, \qquad q_1, q_2 \in S^3$$
                     </div>
-                </article>
-            </main>
-        </div>
+                    <p class="text-gray-300 mb-4">
+                        donde \(q_1\) controla la rotacion "izquierda" y \(q_2\) la "derecha". Los pares
+                        \((q_1, q_2)\) y \((-q_1, -q_2)\) producen la misma rotacion, lo que da el isomorfismo:
+                    </p>
+                    $$\text{SO}(4) \cong (S^3 \times S^3) / \mathbb{Z}_2$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        Este es el <span class="text-white font-medium">hecho algebraico clave</span> de la geometria 4D.
+                        El grupo de rotaciones se factoriza como producto de dos copias de \(S^3 \cong \text{SU}(2)\),
+                        y esta factorizacion es la razon por la cual las rotaciones isoclinicas existen:
+                    </p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-2 mb-4 ml-2">
+                        <li><span class="text-white font-medium">Isoclinica izquierda:</span> \(q_2 = 1\), solo actua \(q_1\). La transformacion es \(\mathbf{v} \mapsto q_1 \cdot \mathbf{v}\).</li>
+                        <li><span class="text-white font-medium">Isoclinica derecha:</span> \(q_1 = 1\), solo actua \(q_2\). La transformacion es \(\mathbf{v} \mapsto \mathbf{v} \cdot q_2^{-1}\).</li>
+                    </ul>
+                    <p class="text-gray-300">
+                        La multiplicacion izquierda por un cuaternion unitario y la multiplicacion derecha
+                        conmutan entre si, reflejando la estructura de producto directo
+                        \(\text{SU}(2) \times \text{SU}(2)\).
+                    </p>
+                </section>
+
+                <!-- 5. EL 24-CELDA: EL POLITOPO SIN ANALOGO -->
+                <section>
+                    <h3 class="text-xl font-semibold text-violet-400 mb-4">5. El 24-celda: El Politopo sin Analogo</h3>
+                    <p class="text-gray-300 mb-4">
+                        El <span class="text-white font-medium">24-celda</span> es el politopo regular mas extraordinario
+                        de la geometria 4D. No tiene analogo en ninguna otra dimension: su existencia depende
+                        fundamentalmente de la estructura algebraica de \(\mathbb{R}^4\), es decir, de los cuaterniones.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        Sus 24 vertices son los <span class="text-white font-medium">24 cuaterniones unitarios de Hurwitz</span>,
+                        que forman dos familias:
+                    </p>
+                    <p class="text-gray-300 mb-2">
+                        <span class="text-white font-medium">8 cuaterniones basicos</span> (vertices del hiperoctaedro):
+                    </p>
+                    $$\pm 1, \quad \pm i, \quad \pm j, \quad \pm k$$
+                    <p class="text-gray-300 mb-2 mt-4">
+                        <span class="text-white font-medium">16 cuaterniones semi-enteros</span> (vertices del teseracto dual):
+                    </p>
+                    $$\frac{\pm 1 \pm i \pm j \pm k}{2} \qquad \text{(las 16 combinaciones de signos)}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        Un hecho notable: estos 24 cuaterniones forman un <span class="text-white font-medium">grupo</span>
+                        bajo la multiplicacion de cuaterniones, llamado el <span class="text-white font-medium">grupo
+                        binario tetraedral</span> \(2T\), de orden 24. Esta es la unica vez que los vertices de un
+                        politopo regular forman un grupo multiplicativo.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Coordenadas alternativas.</span>
+                        En coordenadas cartesianas, los 24 vertices del 24-celda se pueden describir como
+                        todas las permutaciones de:
+                    </p>
+                    $$(\pm 1, \pm 1, 0, 0)$$
+                    <p class="text-gray-300 mt-4">
+                        Hay \(\binom{4}{2} = 6\) formas de elegir las dos posiciones no nulas, y \(2^2 = 4\)
+                        combinaciones de signos para cada una, dando \(6 \times 4 = 24\) vertices en total.
+                        En esta representacion, cada vertice tiene norma \(\sqrt{1^2 + 1^2 + 0^2 + 0^2} = \sqrt{2}\).
+                    </p>
+                </section>
+
+                <!-- 6. VERIFICACION DEL 24-CELDA -->
+                <section>
+                    <h3 class="text-xl font-semibold text-violet-400 mb-4">6. Verificacion del 24-celda</h3>
+                    <p class="text-gray-300 mb-4">
+                        Verifiquemos las propiedades combinatorias del 24-celda usando las coordenadas
+                        de permutaciones de \((\pm 1, \pm 1, 0, 0)\).
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Distancia entre vertices adyacentes.</span>
+                        Tomemos dos vertices, por ejemplo \((1, 1, 0, 0)\) y \((1, 0, 1, 0)\).
+                        La distancia es:
+                    </p>
+                    $$d = \sqrt{(1-1)^2 + (1-0)^2 + (0-1)^2 + (0-0)^2} = \sqrt{0 + 1 + 1 + 0} = \sqrt{2}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        Dos vertices son adyacentes si y solo si su distancia es \(\sqrt{2}\). Para cada vertice,
+                        se puede verificar que exactamente <span class="text-white font-medium">8 vertices</span> estan
+                        a distancia \(\sqrt{2}\). Esto da:
+                    </p>
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-5">
+                        <p class="text-sm text-gray-500 mb-2 mono">Conteo de aristas</p>
+                        $$E = \frac{24 \times 8}{2} = 96 \text{ aristas}$$
+                    </div>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Caras y celdas.</span>
+                        El 24-celda tiene 96 caras triangulares y 24 celdas octaedricas. Cada celda es un
+                        octaedro regular. Verificamos la formula de Euler-Poincare para 4-politopos:
+                    </p>
+                    $$V - E + F - C = 24 - 96 + 96 - 24 = 0 \quad \checkmark$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        Este es el valor correcto de la caracteristica de Euler para la 3-esfera \(S^3\),
+                        que es el borde del 4-politopo.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Autodualidad.</span>
+                        El simbolo de Schlafli del 24-celda es \(\{3, 4, 3\}\), un palindromo. Esto indica
+                        que el 24-celda es <span class="text-white font-medium">autodual</span>: su dual
+                        (obtenido intercambiando vertices y celdas) es otro 24-celda. Las simetrias numericas
+                        lo confirman:
+                    </p>
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-4 overflow-x-auto">
+                        <table class="text-sm text-gray-300 mono w-full">
+                            <thead>
+                                <tr class="border-b border-gray-700">
+                                    <th class="text-left py-2 px-3 text-violet-400">Elemento</th>
+                                    <th class="text-left py-2 px-3 text-violet-400">Cantidad</th>
+                                    <th class="text-left py-2 px-3 text-violet-400">Dual</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">Vertices (V)</td>
+                                    <td class="py-2 px-3">24</td>
+                                    <td class="py-2 px-3">Celdas (C) = 24</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">Aristas (E)</td>
+                                    <td class="py-2 px-3">96</td>
+                                    <td class="py-2 px-3">Caras (F) = 96</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">Caras (F)</td>
+                                    <td class="py-2 px-3">96</td>
+                                    <td class="py-2 px-3">Aristas (E) = 96</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">Celdas (C)</td>
+                                    <td class="py-2 px-3">24</td>
+                                    <td class="py-2 px-3">Vertices (V) = 24</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-gray-300">
+                        La simetria \(V = C = 24\) y \(E = F = 96\) es la firma de la autodualidad.
+                    </p>
+                </section>
+
+                <!-- 7. POR QUE 4D ES ESPECIAL -->
+                <section>
+                    <h3 class="text-xl font-semibold text-violet-400 mb-4">7. Por Que 4D Es Especial</h3>
+                    <p class="text-gray-300 mb-4">
+                        La dimension 4 ocupa un lugar unico en la matematica por varias razones convergentes,
+                        todas ligadas a la existencia de los cuaterniones.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Algebras de division.</span>
+                        Por el teorema de Hurwitz (1898), las unicas algebras de division con norma sobre
+                        \(\mathbb{R}\) son \(\mathbb{R}\) (dim 1), \(\mathbb{C}\) (dim 2),
+                        \(\mathbb{H}\) (dim 4) y \(\mathbb{O}\) (dim 8). Los cuaterniones \(\mathbb{H}\)
+                        dotan a \(\mathbb{R}^4\) de una estructura multiplicativa que no existe en
+                        \(\mathbb{R}^3\), \(\mathbb{R}^5\) ni ninguna otra dimension general.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Factorizacion de SO(4).</span>
+                        El grupo de rotaciones se factoriza:
+                    </p>
+                    $$\text{SO}(4) \cong \frac{\text{SU}(2) \times \text{SU}(2)}{\mathbb{Z}_2}$$
+                    <p class="text-gray-300 mb-4 mt-4">
+                        Esta descomposicion como producto de dos grupos simples no ocurre para \(\text{SO}(3)\)
+                        (que es simple) ni para \(\text{SO}(5)\) (que tambien es simple). La factorizacion permite
+                        las rotaciones isoclinicas y es la razon algebraica profunda de la riqueza geometrica de 4D.
+                    </p>
+                    <p class="text-gray-300 mb-4">
+                        <span class="text-white font-medium">Politopos regulares excepcionales.</span>
+                        La riqueza de 4D se manifiesta en el numero de politopos regulares por dimension:
+                    </p>
+                    <div class="bg-gray-900 border border-gray-800 rounded-lg p-5 mb-4 overflow-x-auto">
+                        <table class="text-sm text-gray-300 mono w-full">
+                            <thead>
+                                <tr class="border-b border-gray-700">
+                                    <th class="text-left py-2 px-3 text-violet-400">Dimension</th>
+                                    <th class="text-left py-2 px-3 text-violet-400">Politopos regulares</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">2</td>
+                                    <td class="py-2 px-3">Infinitos (poligonos regulares)</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">3</td>
+                                    <td class="py-2 px-3">5 (solidos platonicos)</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3 text-violet-300 font-medium">4</td>
+                                    <td class="py-2 px-3 text-violet-300 font-medium">6 (incluyendo 24-celda, 120-celda, 600-celda)</td>
+                                </tr>
+                                <tr class="border-b border-gray-800">
+                                    <td class="py-2 px-3">5, 6, 7, ...</td>
+                                    <td class="py-2 px-3">3 (simplejo, hiperoctaedro, hipercubo)</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                    <p class="text-gray-300">
+                        En dimension 5 o superior, solo sobreviven las tres familias infinitas: el simplejo
+                        \(\alpha_n\), el hiperoctaedro \(\beta_n\) y el hipercubo \(\gamma_n\). Los tres politopos
+                        excepcionales de 4D -- el 24-celda \(\{3,4,3\}\), el 120-celda \(\{5,3,3\}\) y el
+                        600-celda \(\{3,3,5\}\) -- son consecuencias directas de la existencia de los cuaterniones
+                        y la factorizacion de \(\text{SO}(4)\).
+                    </p>
+                </section>
+
+            </article>
+
+            <!-- EXERCISES -->
+            <section class="border-t border-gray-800 pt-8">
+                <h3 class="text-xl font-semibold text-cyan-400 mb-6">Ejercicios</h3>
+
+                <div class="space-y-6">
+                    <div class="bg-gray-900/50 border border-gray-800 rounded-lg p-5">
+                        <p class="text-sm text-cyan-400 mono mb-2">Ejercicio 1</p>
+                        <p class="text-gray-300">
+                            Escribe la matriz \(4 \times 4\) de rotacion en el plano \(YZ\) por un angulo \(\theta\)
+                            (que fija el plano \(XW\)). Verifica explicitamente que \(R_{YZ}(\theta)^T R_{YZ}(\theta) = I_4\),
+                            comprobando que es una rotacion ortogonal.
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-900/50 border border-gray-800 rounded-lg p-5">
+                        <p class="text-sm text-cyan-400 mono mb-2">Ejercicio 2</p>
+                        <p class="text-gray-300">
+                            Considera la rotacion isoclinica izquierda con \(\theta_1 = \theta_2 = \pi/2\).
+                            Aplica la matriz \(R(\pi/2, \pi/2)\) al vector \((1, 0, 0, 0)\). Donde termina?
+                            Aplica la misma rotacion al resultado. Que observas tras aplicar la rotacion 4 veces?
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-900/50 border border-gray-800 rounded-lg p-5">
+                        <p class="text-sm text-cyan-400 mono mb-2">Ejercicio 3</p>
+                        <p class="text-gray-300">
+                            Verifica que \(q_1 = \frac{1 + i + j + k}{2}\) es un cuaternion unitario, calculando
+                            \(|q_1|^2 = a^2 + b^2 + c^2 + d^2\). Luego computa \(q_1^2\) usando las reglas de
+                            multiplicacion de cuaterniones. El resultado es otro cuaternion de Hurwitz?
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-900/50 border border-gray-800 rounded-lg p-5">
+                        <p class="text-sm text-cyan-400 mono mb-2">Ejercicio 4</p>
+                        <p class="text-gray-300">
+                            En la representacion como cuaterniones, los vertices \(1 = (1, 0, 0, 0)\) y
+                            \(\frac{1+i+j+k}{2} = \left(\frac{1}{2}, \frac{1}{2}, \frac{1}{2}, \frac{1}{2}\right)\)
+                            son vertices del 24-celda (cuaterniones de Hurwitz). Calcula la distancia euclidiana
+                            entre ellos en \(\mathbb{R}^4\). Son adyacentes en el 24-celda?
+                        </p>
+                    </div>
+
+                    <div class="bg-gray-900/50 border border-gray-800 rounded-lg p-5">
+                        <p class="text-sm text-cyan-400 mono mb-2">Ejercicio 5</p>
+                        <p class="text-gray-300">
+                            Verifica las siguientes multiplicaciones de cuaterniones:
+                            (a) \(1 \cdot i = i\),
+                            (b) \(i \cdot j = k\).
+                            Luego calcula \(\frac{1+i+j+k}{2} \cdot i\) y verifica que el resultado es
+                            otro cuaternion de Hurwitz (vertice del 24-celda).
+                        </p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- LAB -->
+            <section class="border-t border-gray-800 pt-8">
+                <h3 class="text-xl font-semibold text-cyan-400 mb-2">LAB: Rotacion Isoclinica del 24-celda</h3>
+                <p class="text-gray-400 mb-5">Visualiza el 24-celda {3,4,3} bajo rotaciones dobles. Arrastra para rotar la escena 3D. Los vertices se colorean segun su coordenada w (azul a rojo).</p>
+
+                <!-- Controls -->
+                <div class="bg-gray-900 border border-gray-800 rounded-lg p-4 mb-4 space-y-4">
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <label class="text-xs text-gray-500 mono w-36">Plano XY: <span id="theta1-value" class="text-violet-300">0.00</span></label>
+                        <input id="slider-theta1" type="range" min="0" max="6.2832" step="0.01" value="0" class="flex-1 accent-violet-500">
+                    </div>
+                    <div class="flex flex-wrap gap-4 items-center">
+                        <label class="text-xs text-gray-500 mono w-36">Plano ZW: <span id="theta2-value" class="text-violet-300">0.00</span></label>
+                        <input id="slider-theta2" type="range" min="0" max="6.2832" step="0.01" value="0" class="flex-1 accent-violet-500">
+                    </div>
+                    <div class="flex flex-wrap gap-3 items-center">
+                        <button id="btn-auto" class="px-3 py-1.5 text-xs mono rounded bg-violet-600 text-white transition">Auto-rotacion</button>
+                        <button id="btn-reset" class="px-3 py-1.5 text-xs mono rounded bg-gray-700 text-gray-300 hover:bg-gray-600 transition">Reset</button>
+                        <span id="isoclinic-label" class="text-xs mono text-gray-600 ml-2">--</span>
+                    </div>
+                    <div class="flex flex-wrap gap-4 items-center text-xs text-gray-500 mono">
+                        <span>24-celda {3,4,3}</span>
+                        <span class="text-gray-700">|</span>
+                        <span>V=24</span>
+                        <span>E=96</span>
+                        <span>F=96</span>
+                        <span>C=24</span>
+                    </div>
+                </div>
+
+                <!-- Three.js Canvas -->
+                <div id="lab-container" class="border border-gray-800 rounded-lg overflow-hidden" style="height: 520px; background: #050505;"></div>
+            </section>
+
+            <!-- BOTTOM NAV -->
+            <nav class="border-t border-gray-800 pt-8 flex justify-between items-center">
+                <a href="./leccion-22.html" class="px-5 py-2.5 rounded border border-gray-700 hover:border-violet-500 text-gray-400 hover:text-violet-300 transition text-sm">
+                    &larr; Proyecciones
+                </a>
+                <a href="./leccion-24.html" class="px-5 py-2.5 rounded bg-violet-600 hover:bg-violet-500 text-white transition text-sm">
+                    Siguiente: Dimensiones Superiores &rarr;
+                </a>
+            </nav>
+        </main>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- FOOTER -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales -- De Platon a 4D</p>
         </div>
     </footer>
+
+    <!-- THREE.JS -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script>
+    (function() {
+        'use strict';
+
+        // === 24-CELL DATA ===
+        // Vertices: all permutations of (+-1, +-1, 0, 0)
+        function build24Cell() {
+            const verts = [];
+            const positions = [
+                [0, 1], [0, 2], [0, 3], [1, 2], [1, 3], [2, 3]
+            ];
+            for (const [a, b] of positions) {
+                for (const sa of [-1, 1]) {
+                    for (const sb of [-1, 1]) {
+                        const v = [0, 0, 0, 0];
+                        v[a] = sa;
+                        v[b] = sb;
+                        verts.push(v);
+                    }
+                }
+            }
+
+            // Edges: vertices at squared distance = 2
+            const edges = [];
+            for (let i = 0; i < verts.length; i++) {
+                for (let j = i + 1; j < verts.length; j++) {
+                    let d2 = 0;
+                    for (let k = 0; k < 4; k++) {
+                        const diff = verts[i][k] - verts[j][k];
+                        d2 += diff * diff;
+                    }
+                    if (Math.abs(d2 - 2) < 0.01) {
+                        edges.push([i, j]);
+                    }
+                }
+            }
+
+            return { vertices: verts, edges: edges };
+        }
+
+        const cellData = build24Cell();
+        // Scale vertices for visualization
+        const SCALE = 1.5;
+        const scaledVerts = cellData.vertices.map(function(v) {
+            return v.map(function(c) { return c * SCALE; });
+        });
+
+        // === STATE ===
+        let theta1 = 0;
+        let theta2 = 0;
+        let autoRotate = true;
+        let mouseRotX = 0.4;
+        let mouseRotY = 0.6;
+        let isDragging = false;
+        let lastMouse = { x: 0, y: 0 };
+        const projDist = 3.0;
+
+        // === THREE.JS SETUP ===
+        const container = document.getElementById('lab-container');
+        const width = container.clientWidth;
+        const height = container.clientHeight;
+
+        const scene = new THREE.Scene();
+        scene.background = new THREE.Color(0x050505);
+
+        const camera = new THREE.PerspectiveCamera(50, width / height, 0.1, 100);
+        camera.position.set(0, 0, 7);
+
+        const renderer = new THREE.WebGLRenderer({ antialias: true });
+        renderer.setSize(width, height);
+        renderer.setPixelRatio(Math.min(window.devicePixelRatio || 1, 2));
+        container.appendChild(renderer.domElement);
+
+        const rootGroup = new THREE.Group();
+        scene.add(rootGroup);
+
+        const sphereGeo = new THREE.SphereGeometry(0.05, 8, 8);
+
+        // === 4D DOUBLE ROTATION ===
+        function doubleRotate(v, t1, t2) {
+            // Rotate XY plane by t1, ZW plane by t2
+            var c1 = Math.cos(t1), s1 = Math.sin(t1);
+            var c2 = Math.cos(t2), s2 = Math.sin(t2);
+            return [
+                v[0] * c1 - v[1] * s1,
+                v[0] * s1 + v[1] * c1,
+                v[2] * c2 - v[3] * s2,
+                v[2] * s2 + v[3] * c2
+            ];
+        }
+
+        // === PERSPECTIVE PROJECTION 4D -> 3D ===
+        function project4D(v) {
+            var d = projDist;
+            var denom = v[3] + d;
+            if (Math.abs(denom) < 0.001) {
+                return new THREE.Vector3(v[0] * 500, v[1] * 500, v[2] * 500);
+            }
+            var s = d / denom;
+            return new THREE.Vector3(v[0] * s, v[1] * s, v[2] * s);
+        }
+
+        // === COLOR BY W COORDINATE ===
+        function wToColor(w) {
+            // w ranges roughly from -SCALE to +SCALE
+            // blue (w < 0) -> white (w ~ 0) -> red (w > 0)
+            var t = (w / SCALE + 1) / 2; // 0..1
+            var r = Math.min(1, 0.15 + 1.7 * t);
+            var g = Math.min(1, 0.15 + 0.85 * (1 - Math.abs(2 * t - 1)));
+            var b = Math.min(1, 0.15 + 1.7 * (1 - t));
+            return new THREE.Color(r, g, b);
+        }
+
+        // === UI ELEMENTS ===
+        var slider1 = document.getElementById('slider-theta1');
+        var slider2 = document.getElementById('slider-theta2');
+        var val1 = document.getElementById('theta1-value');
+        var val2 = document.getElementById('theta2-value');
+        var btnAuto = document.getElementById('btn-auto');
+        var btnReset = document.getElementById('btn-reset');
+        var isoLabel = document.getElementById('isoclinic-label');
+
+        slider1.addEventListener('input', function() {
+            theta1 = parseFloat(this.value);
+            val1.textContent = theta1.toFixed(2);
+            autoRotate = false;
+            updateAutoButton();
+            updateIsoLabel();
+        });
+
+        slider2.addEventListener('input', function() {
+            theta2 = parseFloat(this.value);
+            val2.textContent = theta2.toFixed(2);
+            autoRotate = false;
+            updateAutoButton();
+            updateIsoLabel();
+        });
+
+        btnAuto.addEventListener('click', function() {
+            autoRotate = !autoRotate;
+            updateAutoButton();
+        });
+
+        btnReset.addEventListener('click', function() {
+            theta1 = 0;
+            theta2 = 0;
+            slider1.value = 0;
+            slider2.value = 0;
+            val1.textContent = '0.00';
+            val2.textContent = '0.00';
+            mouseRotX = 0.4;
+            mouseRotY = 0.6;
+            autoRotate = true;
+            updateAutoButton();
+            updateIsoLabel();
+        });
+
+        function updateAutoButton() {
+            if (autoRotate) {
+                btnAuto.className = 'px-3 py-1.5 text-xs mono rounded bg-violet-600 text-white transition';
+            } else {
+                btnAuto.className = 'px-3 py-1.5 text-xs mono rounded bg-gray-700 text-gray-300 hover:bg-gray-600 transition';
+            }
+        }
+
+        function updateIsoLabel() {
+            var diff = Math.abs(theta1 - theta2);
+            var twoPi = 2 * Math.PI;
+            var diffMod = Math.min(diff, twoPi - diff);
+            if (diffMod < 0.08 && theta1 > 0.01) {
+                isoLabel.textContent = 'Isoclinica izquierda';
+                isoLabel.style.color = '#fbbf24';
+                isoLabel.style.textShadow = '0 0 10px rgba(251, 191, 36, 0.5)';
+            } else if (Math.abs(theta1 + theta2 - twoPi) < 0.08 && theta1 > 0.01 && theta2 > 0.01) {
+                isoLabel.textContent = 'Isoclinica derecha';
+                isoLabel.style.color = '#fbbf24';
+                isoLabel.style.textShadow = '0 0 10px rgba(251, 191, 36, 0.5)';
+            } else if (theta1 < 0.01 && theta2 < 0.01) {
+                isoLabel.textContent = '--';
+                isoLabel.style.color = '#4b5563';
+                isoLabel.style.textShadow = 'none';
+            } else if (theta2 < 0.01) {
+                isoLabel.textContent = 'Rotacion simple (XY)';
+                isoLabel.style.color = '#a78bfa';
+                isoLabel.style.textShadow = 'none';
+            } else if (theta1 < 0.01) {
+                isoLabel.textContent = 'Rotacion simple (ZW)';
+                isoLabel.style.color = '#a78bfa';
+                isoLabel.style.textShadow = 'none';
+            } else {
+                isoLabel.textContent = 'Rotacion doble';
+                isoLabel.style.color = '#9ca3af';
+                isoLabel.style.textShadow = 'none';
+            }
+        }
+
+        // === MOUSE INTERACTION ===
+        renderer.domElement.addEventListener('mousedown', function(e) {
+            isDragging = true;
+            lastMouse.x = e.clientX;
+            lastMouse.y = e.clientY;
+        });
+        renderer.domElement.addEventListener('mousemove', function(e) {
+            if (!isDragging) return;
+            var dx = e.clientX - lastMouse.x;
+            var dy = e.clientY - lastMouse.y;
+            mouseRotY += dx * 0.005;
+            mouseRotX += dy * 0.005;
+            lastMouse.x = e.clientX;
+            lastMouse.y = e.clientY;
+        });
+        renderer.domElement.addEventListener('mouseup', function() { isDragging = false; });
+        renderer.domElement.addEventListener('mouseleave', function() { isDragging = false; });
+
+        // Touch support
+        renderer.domElement.addEventListener('touchstart', function(e) {
+            isDragging = true;
+            lastMouse.x = e.touches[0].clientX;
+            lastMouse.y = e.touches[0].clientY;
+        }, { passive: true });
+        renderer.domElement.addEventListener('touchmove', function(e) {
+            if (!isDragging) return;
+            var dx = e.touches[0].clientX - lastMouse.x;
+            var dy = e.touches[0].clientY - lastMouse.y;
+            mouseRotY += dx * 0.005;
+            mouseRotX += dy * 0.005;
+            lastMouse.x = e.touches[0].clientX;
+            lastMouse.y = e.touches[0].clientY;
+        }, { passive: true });
+        renderer.domElement.addEventListener('touchend', function() { isDragging = false; });
+
+        // Resize
+        window.addEventListener('resize', function() {
+            var w = container.clientWidth;
+            var h = container.clientHeight;
+            camera.aspect = w / h;
+            camera.updateProjectionMatrix();
+            renderer.setSize(w, h);
+        });
+
+        // === BUILD SCENE ===
+        function rebuildScene() {
+            while (rootGroup.children.length > 0) {
+                var child = rootGroup.children[0];
+                rootGroup.remove(child);
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) child.material.dispose();
+            }
+
+            // Apply double rotation to all vertices
+            var rotated = scaledVerts.map(function(v) { return doubleRotate(v, theta1, theta2); });
+            var projected = rotated.map(function(v) { return project4D(v); });
+
+            // Draw edges
+            for (var e = 0; e < cellData.edges.length; e++) {
+                var i = cellData.edges[e][0];
+                var j = cellData.edges[e][1];
+                var p1 = projected[i];
+                var p2 = projected[j];
+                var geo = new THREE.BufferGeometry().setFromPoints([p1, p2]);
+                var avgW = (rotated[i][3] + rotated[j][3]) / 2;
+                var col = wToColor(avgW);
+                var mat = new THREE.LineBasicMaterial({ color: col, transparent: true, opacity: 0.45 });
+                var line = new THREE.Line(geo, mat);
+                rootGroup.add(line);
+            }
+
+            // Draw vertices
+            for (var vi = 0; vi < projected.length; vi++) {
+                var p = projected[vi];
+                var vc = wToColor(rotated[vi][3]);
+                var vm = new THREE.MeshBasicMaterial({ color: vc });
+                var mesh = new THREE.Mesh(sphereGeo, vm);
+                mesh.position.copy(p);
+                rootGroup.add(mesh);
+            }
+        }
+
+        // === ANIMATION LOOP ===
+        var lastTime = performance.now();
+
+        function animate(time) {
+            requestAnimationFrame(animate);
+            var dt = (time - lastTime) / 1000;
+            lastTime = time;
+
+            if (autoRotate) {
+                // Isoclinic auto-rotation: both angles advance equally
+                theta1 += dt * 0.35;
+                theta2 += dt * 0.35;
+                if (theta1 > 2 * Math.PI) theta1 -= 2 * Math.PI;
+                if (theta2 > 2 * Math.PI) theta2 -= 2 * Math.PI;
+                slider1.value = theta1;
+                slider2.value = theta2;
+                val1.textContent = theta1.toFixed(2);
+                val2.textContent = theta2.toFixed(2);
+                updateIsoLabel();
+            }
+
+            rootGroup.rotation.x = mouseRotX;
+            rootGroup.rotation.y = mouseRotY;
+
+            rebuildScene();
+            renderer.render(scene, camera);
+        }
+
+        requestAnimationFrame(animate);
+
+    })();
+    </script>
+
 </body>
 </html>

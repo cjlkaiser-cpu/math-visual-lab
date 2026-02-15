@@ -3,143 +3,1132 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 31: Virología — Cápsides Icosaédricas | Matemáticas Visuales</title>
+    <title>Leccion 31: Virus Icosaedricos | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 06</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 31</span> — Virus Icosaedricos
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-30.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-32.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-30.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">&larr; Anterior</a>
+                    <a href="./leccion-32.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente &rarr;</a>
                 </nav>
             </div>
         </div>
     </header>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 6</h3>
-                    <p class="text-sm text-gray-400 mb-4">De Platón al Mundo Moderno</p>
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 06</h3>
+                    <p class="text-sm text-gray-500 mb-4">Aplicaciones Modernas</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>2/4</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 50%"></div>
                         </div>
                     </div>
+
                     <nav class="space-y-2">
-                        <a href="./leccion-30.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">30. Cristalografía</a>
-                        <a href="./leccion-31.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">31. Virología</a>
-                        <a href="./leccion-32.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">32. Fullerenos</a>
-                        <a href="./leccion-33.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">33. Quasicristales</a>
+                        <a href="./leccion-30.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">30. Cristales y Redes de Bravais</a>
+                        <a href="./leccion-31.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">31. Virus Icosaedricos</a>
+                        <a href="./leccion-32.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">32. Fullerenos y Nanotubos</a>
+                        <a href="./leccion-33.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">33. Quasicristales y el Gran Final</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 31</span>
-                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Virología — Cápsides Icosaédricas</h1>
-                        <p class="text-gray-400 text-lg">La geometría perfecta para empaquetar material genético.</p>
+                        <span class="text-cyan-400 text-sm font-medium">Leccion 31</span>
+                        <h2 class="text-3xl font-light mt-2 mb-4">
+                            <span class="text-violet-400 font-medium glow-text">Virus</span> Icosaedricos
+                        </h2>
+                        <p class="text-gray-400 text-lg">La geometria del icosaedro resuelve el problema fundamental de la virologia: encapsular un genoma con el minimo de informacion genetica.</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Virus y Geometría</h2>
-                        <p class="text-gray-300 mb-4">Muchos virus usan <strong>cápsides icosaédricas</strong> para proteger su material genético. El icosaedro es la forma óptima para empaquetar información con mínima energía.</p>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-semibold text-platonic-purple mb-2">Principio de Cuasi-Equivalencia</h3>
-                            <p class="text-gray-300">Caspar y Klug (1962) explicaron cómo los virus usan subunidades idénticas para formar esferas casi icosaédricas. La fórmula T = h² + hk + k² describe el número de subunidades.</p>
-                        </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ventajas del Icosaedro</h3>
-                        <ul class="list-disc list-inside space-y-2 text-gray-300 mb-6 ml-4">
-                            <li>Mayor volumen interno para el genoma</li>
-                            <li>Estabilidad estructural máxima</li>
-                            <li>Eficiencia energética en la ensamblaje</li>
-                            <li>Simetría que facilita la replicación</li>
+
+                    <!-- 1. La Geometria como Estrategia Evolutiva -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">1. La Geometria como Estrategia Evolutiva</h3>
+                        <p class="text-gray-300 mb-4">
+                            Por que la naturaleza recurre una y otra vez a la simetria icosaedrica para construir virus? La respuesta reside en tres presiones evolutivas que convergen en una unica solucion geometrica:
+                        </p>
+                        <ul class="list-none text-gray-300 space-y-3 mb-4">
+                            <li><strong class="text-white">Minimizar la energia libre.</strong> Las formas esfericas minimizan la relacion superficie/volumen. Entre los solidos platonicos, el icosaedro es el que mejor aproxima una esfera: con 20 caras triangulares, su <strong class="text-white">esfericidad</strong> es la mas alta de los cinco.</li>
+                            <li><strong class="text-white">Maximizar la economia genetica.</strong> El genoma de un virus es diminuto -- a menudo codifica solo unas pocas proteinas. Usar una unica proteina repetida muchas veces para construir la capside reduce drasticamente la informacion genetica necesaria. Un icosaedro con \(60T\) subunidades identicas (o cuasi-identicas) resuelve el problema.</li>
+                            <li><strong class="text-white">Maximizar la estabilidad estructural.</strong> Las caras triangulares son inherentemente rigidas (un triangulo es la unica figura plana que no se deforma por presion en sus vertices). El icosaedro, compuesto enteramente de triangulos, es el solido platonico mas resistente mecanicamente.</li>
                         </ul>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Virus Icosaédricos Famosos</h3>
+                        <p class="text-gray-300 mb-4">
+                            En el Modulo 1 estudiamos las propiedades del icosaedro: 12 vertices, 30 aristas, 20 caras triangulares, con el simbolo de Schlafli \(\{3, 5\}\). En el Modulo 3 encontramos su grupo de simetria \(I_h\) con \(|I_h| = 120\) elementos (60 rotaciones y 60 rotaciones impropias). Estas simetrias son exactamente las que explotan los virus.
+                        </p>
+                        <p class="text-gray-300">
+                            El numero 60 no es casual: el grupo de rotaciones del icosaedro tiene orden \(|I| = 60\), el grupo simple mas pequenio no abeliano. Es tambien el maximo comun divisor de 12 vertices con 5 caras en cada uno (\(12 \times 5 = 60\)), de 20 caras con 3 vertices cada una (\(20 \times 3 = 60\)), y de 30 aristas con 2 caras cada una (\(30 \times 2 = 60\)). Este numero fundamental --60-- determina la unidad minima de la capside viral.
+                        </p>
+                    </section>
+
+                    <!-- 2. Anatomia de un Virus Icosaedrico -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">2. Anatomia de un Virus Icosaedrico</h3>
+                        <p class="text-gray-300 mb-4">
+                            En su forma mas esencial, un virus es material genetico (ADN o ARN) encapsulado en una cubierta proteica llamada <strong class="text-white">capside</strong>. La capside esta formada por <strong class="text-white">capsomeros</strong> -- subunidades proteicas que se autoensamblan siguiendo las leyes de la simetria icosaedrica.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            El autoensamblaje es un punto crucial: las subunidades proteicas se unen espontaneamente, sin un plan externo, guiadas unicamente por las interacciones quimicas entre ellas. La simetria icosaedrica permite que un unico tipo de proteina forme una estructura cerrada y estable.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Los capsomeros se organizan en dos tipos segun su entorno geometrico:
+                        </p>
+                        <ul class="list-disc list-inside text-gray-300 mb-4 space-y-2">
+                            <li><strong class="text-white">Pentameros</strong> (grupos de 5 subunidades): se situan en los 12 vertices del icosaedro, donde convergen 5 caras triangulares. Siempre hay exactamente 12 pentameros.</li>
+                            <li><strong class="text-white">Hexameros</strong> (grupos de 6 subunidades): ocupan las posiciones intermedias entre los vertices. Su numero depende de la complejidad de la capside.</li>
+                        </ul>
+                        <p class="text-gray-300 mb-4">
+                            La complejidad se mide con el <strong class="text-white">numero de triangulacion</strong> \(T\). Cada cara triangular del icosaedro se subdivide en \(T\) sub-triangulos, y cada sub-triangulo alberga subunidades proteicas. El total de subunidades es:
+                        </p>
+
+                        $$ \text{Subunidades totales} = 60T $$
+
+                        <p class="text-gray-300 mb-4">
+                            Y el numero de capsomeros (pentameros + hexameros) es:
+                        </p>
+
+                        $$ \text{Capsomeros} = 10T + 2 $$
+
+                        <p class="text-gray-300">
+                            con exactamente 12 pentameros y \(10(T - 1)\) hexameros.
+                        </p>
+                    </section>
+
+                    <!-- 3. Numeros de Triangulacion: Caspar-Klug -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">3. Numeros de Triangulacion: Caspar-Klug</h3>
+                        <p class="text-gray-300 mb-4">
+                            Donald Caspar y Aaron Klug formularon en 1962 la teoria matematica de las capsides virales, trabajo que le valio a Klug el Premio Nobel de Quimica en 1982. La idea central es elegante: sobre una red triangular equilatera, se define un <strong class="text-white">vector de red</strong> \(\mathbf{T} = h\mathbf{a}_1 + k\mathbf{a}_2\), donde \(\mathbf{a}_1\) y \(\mathbf{a}_2\) son los vectores base de la red y \(h, k\) son enteros no negativos. El numero de triangulacion es el cuadrado de la magnitud de este vector (normalizado):
+                        </p>
+
+                        $$ T = h^2 + hk + k^2 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Los enteros \((h, k)\) definen como se subdivide cada cara del icosaedro. El vector \(\mathbf{T}\) conecta el centro de un pentamero con el centro del pentamero mas cercano, recorriendo \(h\) pasos en la direccion \(\mathbf{a}_1\) y \(k\) pasos en la direccion \(\mathbf{a}_2\) (que forma un angulo de 60 grados con \(\mathbf{a}_1\)).
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            Los valores permitidos de \(T\) son: 1, 3, 4, 7, 9, 12, 13, 16, 19, 21, 25, ... No todos los enteros son numeros de triangulacion validos; por ejemplo, \(T = 2, 5, 6, 8\) no lo son. La condicion es que \(T\) sea representable como \(h^2 + hk + k^2\) con \(h, k \geq 0\).
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            La interpretacion fisica es directa: \(T\) cuenta cuantos sub-triangulos contiene cada cara del icosaedro original. A mayor \(T\), mayor la capside y mas subunidades proteicas se necesitan.
+                        </p>
+
+                        <!-- Caspar-Klug Table -->
                         <div class="overflow-x-auto mb-6">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Virus</th>
-                                        <th class="px-4 py-2 text-center">Número T</th>
-                                        <th class="px-4 py-2 text-left">Enfermedad</th>
+                                <thead>
+                                    <tr class="border-b border-gray-800">
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\((h,k)\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(T\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Subunidades \((60T)\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Capsomeros \((10T+2)\)</th>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Ejemplo</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr><td class="px-4 py-2">Poliovirus</td><td class="px-4 py-2 text-center">T=3</td><td class="px-4 py-2">Poliomielitis</td></tr>
-                                    <tr><td class="px-4 py-2">Rinovirus</td><td class="px-4 py-2 text-center">T=3</td><td class="px-4 py-2">Resfriado común</td></tr>
-                                    <tr><td class="px-4 py-2">Adenovirus</td><td class="px-4 py-2 text-center">T=25</td><td class="px-4 py-2">Infecciones respiratorias</td></tr>
-                                    <tr><td class="px-4 py-2">VPH</td><td class="px-4 py-2 text-center">T=7</td><td class="px-4 py-2">Papiloma humano</td></tr>
+                                <tbody>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 text-center mono text-cyan-400">(1,0)</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">1</td>
+                                        <td class="px-4 py-2 text-center mono">60</td>
+                                        <td class="px-4 py-2 text-center mono">12</td>
+                                        <td class="px-4 py-2">Parvovirus, Sat. Tobacco Mosaic</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 text-center mono text-cyan-400">(1,1)</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">3</td>
+                                        <td class="px-4 py-2 text-center mono">180</td>
+                                        <td class="px-4 py-2 text-center mono">32</td>
+                                        <td class="px-4 py-2">Poliovirus, Rinovirus</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 text-center mono text-cyan-400">(2,0)</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">4</td>
+                                        <td class="px-4 py-2 text-center mono">240</td>
+                                        <td class="px-4 py-2 text-center mono">42</td>
+                                        <td class="px-4 py-2">Hepatitis B</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 text-center mono text-cyan-400">(2,1)</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">7</td>
+                                        <td class="px-4 py-2 text-center mono">420</td>
+                                        <td class="px-4 py-2 text-center mono">72</td>
+                                        <td class="px-4 py-2">Papilomavirus (VPH)</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 text-center mono text-cyan-400">(3,0)</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">9</td>
+                                        <td class="px-4 py-2 text-center mono">540</td>
+                                        <td class="px-4 py-2 text-center mono">92</td>
+                                        <td class="px-4 py-2">--</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2 text-center mono text-cyan-400">(4,0)</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">16</td>
+                                        <td class="px-4 py-2 text-center mono">960</td>
+                                        <td class="px-4 py-2 text-center mono">162</td>
+                                        <td class="px-4 py-2">Herpesvirus</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2 text-center mono text-cyan-400">(5,0)</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">25</td>
+                                        <td class="px-4 py-2 text-center mono">1500</td>
+                                        <td class="px-4 py-2 text-center mono">252</td>
+                                        <td class="px-4 py-2">Adenovirus</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Estructura de la Cápside</h3>
-                        <p class="text-gray-300 mb-4">Las cápsides están compuestas por <strong>capsómeros</strong> (subunidades proteicas) que se ensamblan espontáneamente en forma icosaédrica.</p>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Estructuras Virales</h2>
-                        <p class="text-gray-400 mb-4">Visualiza cápsides icosaédricas en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+
+                        <!-- ILLUSTRATION 1: T-number triangulations -->
+                        <div class="my-6">
+                            <canvas id="triangulation-canvas" class="w-full rounded-xl" style="height: 280px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Cara icosaedrica subdividida: T=1 (sin subdivison), T=3 vector (1,1) y T=4 vector (2,0)</p>
                         </div>
-                    </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-30.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-32.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Fullerenos →</a>
+                    </section>
+
+                    <!-- 4. Derivacion del Numero de Capsomeros -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">4. Derivacion del Numero de Capsomeros</h3>
+                        <p class="text-gray-300 mb-4">
+                            La formula \(10T + 2\) se deduce de la formula de Euler para poliedros, \(V - E + F = 2\), aplicada al icosaedro subdividido. Procedamos paso a paso.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Partimos del icosaedro original con \(V_0 = 12\), \(E_0 = 30\), \(F_0 = 20\). Cada cara triangular se subdivide en \(T\) sub-triangulos. La subdivison de un triangulo equilatero en \(T = h^2 + hk + k^2\) partes genera una malla triangular sobre cada cara.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            En la estructura subdividida, contamos los elementos:
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-2"><strong class="text-cyan-400">Caras:</strong> Cada una de las 20 caras originales se subdivide en \(T\) sub-triangulos:</p>
+
+                            $$ F = 20T $$
+
+                            <p class="text-gray-300 mb-2 mt-4"><strong class="text-cyan-400">Aristas:</strong> Cada sub-triangulo tiene 3 aristas, pero cada arista interna es compartida por 2 triangulos. Las aristas en el borde de cada cara original son compartidas con la cara adyacente:</p>
+
+                            $$ E = 30T $$
+
+                            <p class="text-gray-300 mb-2 mt-4"><strong class="text-cyan-400">Vertices:</strong> Aplicamos la formula de Euler:</p>
+
+                            $$ V = 2 + E - F = 2 + 30T - 20T = 10T + 2 $$
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            El resultado \(V = 10T + 2\) cuenta exactamente los <strong class="text-white">capsomeros</strong>: cada vertice de la malla subdividida corresponde a un capsomero. Ahora determinamos cuantos son pentameros y cuantos hexameros.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Los 12 vertices originales del icosaedro son puntos donde convergen 5 caras. En la subdivision, estos siguen siendo vertices con 5 vecinos: son los <strong class="text-white">12 pentameros</strong>. Todos los demas vertices (los nuevos, creados por la subdivision) tienen 6 vecinos: son <strong class="text-white">hexameros</strong>.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Verificacion:
+                        </p>
+
+                        $$ \text{Pentameros} = 12, \quad \text{Hexameros} = (10T + 2) - 12 = 10(T - 1) $$
+
+                        <p class="text-gray-300 mb-4">
+                            Cada pentamero contiene 5 subunidades y cada hexamero contiene 6. El total de subunidades es:
+                        </p>
+
+                        $$ 12 \times 5 + 10(T-1) \times 6 = 60 + 60T - 60 = 60T $$
+
+                        <p class="text-gray-300">
+                            La formula se cierra perfectamente: \(60T\) subunidades distribuidas en \(10T + 2\) capsomeros. Esta es la esencia de la teoria de Caspar-Klug.
+                        </p>
+                    </section>
+
+                    <!-- 5. Virus Reales y su Geometria -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">5. Virus Reales y su Geometria</h3>
+
+                        <div class="space-y-6 mb-6">
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                                <p class="text-gray-300 mb-2"><strong class="text-cyan-400">T=1 -- Parvovirus</strong></p>
+                                <p class="text-gray-300">
+                                    La capside mas simple posible: 60 subunidades identicas organizadas en solo 12 pentameros, sin hexameros. Diametro de aproximadamente 25 nm. El parvovirus B19 causa la quinta enfermedad en ninos. El virus satelite del mosaico del tabaco (STMV) es otro ejemplo clasico de \(T=1\), uno de los primeros en ser cristalizado.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                                <p class="text-gray-300 mb-2"><strong class="text-cyan-400">T=3 -- Poliovirus</strong></p>
+                                <p class="text-gray-300">
+                                    Con 180 subunidades en 32 capsomeros (12 pentameros + 20 hexameros), el poliovirus fue el triunfo de la teoria de Caspar-Klug. Las 180 subunidades no son identicas en sentido estricto: ocupan tres posiciones <strong class="text-white">cuasi-equivalentes</strong> (A, B, C), cada una ligeramente diferente en su entorno local. Esta cuasi-equivalencia fue la contribucion conceptual central de Caspar y Klug. El rinovirus (resfriado comun) comparte esta arquitectura.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                                <p class="text-gray-300 mb-2"><strong class="text-cyan-400">T=7 -- Papilomavirus (VPH)</strong></p>
+                                <p class="text-gray-300">
+                                    72 capsomeros (12 pentameros + 60 hexameros), 420 subunidades. El virus del papiloma humano es la base de la vacuna Gardasil. Aqui, \(T = 7\) corresponde a \((h,k) = (2,1)\), un caso <strong class="text-white">quiral</strong>: el vector \((2,1)\) y su reflejo \((1,2)\) producen configuraciones enantiomericas (imagen especular). Los virus quirales con \(h \neq k\) existen en una unica forma, seleccionada durante la evolucion.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                                <p class="text-gray-300 mb-2"><strong class="text-cyan-400">T=25 -- Adenovirus</strong></p>
+                                <p class="text-gray-300">
+                                    Una arquitectura compleja con 1500 subunidades en 252 capsomeros. El adenovirus presenta fibras proteicas en cada uno de sus 12 vertices (pentameros), que funcionan como mecanismos de anclaje a la celula huesped. Diametro de 90-100 nm. El vector \((h,k) = (5,0)\) produce una subdivision puramente paralela, sin quiralidad.
+                                </p>
+                            </div>
+
+                            <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                                <p class="text-gray-300 mb-2"><strong class="text-cyan-400">Nota sobre SARS-CoV-2</strong></p>
+                                <p class="text-gray-300">
+                                    El virus causante de COVID-19 <strong class="text-white">no</strong> es icosaedrico en su exterior. SARS-CoV-2 es un virus envuelto: posee una membrana lipidica externa de la que emergen las proteinas Spike (las "espinas" que le dan el nombre de coronavirus). Sin embargo, la nucleocapside interna --la estructura que empaqueta el ARN-- presenta elementos de simetria icosaedrica. La distincion entre capside desnuda (icosaedrica pura) y virus envuelto (capside + membrana) es fundamental en virologia.
+                                </p>
+                            </div>
+                        </div>
+
+                        <!-- ILLUSTRATION 2: Schematic Capsid from above -->
+                        <div class="my-6">
+                            <canvas id="capsid-canvas" class="w-full rounded-xl" style="height: 320px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Vista esquematica de una capside T=3: pentameros (cyan) en los vertices de 5 pliegues, hexameros (violeta) en posiciones intermedias</p>
+                        </div>
+                    </section>
+
+                    <!-- 6. Vacunas y Diseno Racional -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">6. Vacunas y Diseno Racional</h3>
+                        <p class="text-gray-300 mb-4">
+                            La geometria icosaedrica no es solo un objeto de estudio academico: es una herramienta tecnologica. Las <strong class="text-white">VLP</strong> (Virus-Like Particles, particulas similares a virus) son capsides vacias --sin material genetico-- que conservan la geometria icosaedrica de la superficie viral. Son inmunogenicas (el sistema inmune las reconoce como virus reales) pero no infecciosas (no contienen genoma).
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 mb-4">
+                            <p class="text-gray-300 mb-3"><strong class="text-cyan-400">Vacunas basadas en VLP:</strong></p>
+                            <ul class="list-disc list-inside text-gray-300 space-y-2">
+                                <li><strong class="text-white">Gardasil (VPH):</strong> VLPs con \(T=7\), protege contra 4 o 9 tipos de VPH. La proteina L1 se autoensambla en capsides vacias con la misma geometria icosaedrica del virus real.</li>
+                                <li><strong class="text-white">Engerix-B (Hepatitis B):</strong> VLPs con \(T=4\), basadas en el antigeno de superficie HBsAg. Una de las primeras vacunas recombinantes de la historia.</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-gray-300 mb-4">
+                            El <strong class="text-white">diseno racional de farmacos</strong> tambien aprovecha la geometria capsidica. Moleculas pequenias que se unen a las interfaces entre capsomeros pueden impedir el ensamblaje de la capside. Pleconaril, por ejemplo, se inserta en un bolsillo hidrofobico de los capsomeros del rinovirus (\(T=3\)), bloqueando el cambio conformacional necesario para la infeccion.
+                        </p>
+                        <p class="text-gray-300">
+                            Las VLPs se utilizan tambien como <strong class="text-white">vehiculos de entrega genica</strong>: capsides vacias cargadas con material genetico terapeutico pueden dirigirse a celulas especificas. Los vectores adenovirales (\(T=25\)) son la base de vacunas como la de Oxford-AstraZeneca contra COVID-19, donde la capside icosaedrica transporta ADN que codifica la proteina Spike.
+                        </p>
+                    </section>
+
+                    <!-- Ejercicios -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">1.</strong> Calcula \(T\) para \((h,k) = (3,1)\). Cuantas subunidades y cuantos capsomeros tendria un virus con este numero de triangulacion? Cuantos pentameros y cuantos hexameros?</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">2.</strong> Verifica que la formula \(10T + 2\) da 12 para \(T=1\) (solo pentameros, sin hexameros). A que corresponde geometricamente? Relaciona este caso con el icosaedro original sin subdividir.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">3.</strong> Usando la formula de Euler para el icosaedro (\(V=12, E=30, F=20\)), verifica que \(V-E+F=2\). Ahora, para el icosaedro subdividido con \(T=3\), calcula \(V\), \(E\), y \(F\). Verifica que la formula de Euler se sigue cumpliendo.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">4.</strong> Por que es imposible construir una capside cerrada con solo capsomeros hexagonales (sin pentagonos)? (Pista: usa la formula de Euler y el hecho de que la esfera tiene genero 0. Recuerda que en una teselacion puramente hexagonal, \(3V = 2E\) y \(6F' = 2E\), y observa la contradiccion.)</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">5.</strong> Un virus tiene 240 subunidades proteicas organizadas icosaedricamente. Cual es su numero \(T\)? Cuantos pentameros y cuantos hexameros tiene? Que virus real podria ser?</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LAB: Constructor de Capsides -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">LAB: Constructor de Capsides</h3>
+                        <p class="text-gray-400 mb-4">Selecciona un numero de triangulacion para visualizar la capside icosaedrica correspondiente. La vista muestra la capside desde un eje de simetria 5-fold, con pentameros (cyan) y hexameros (violeta).</p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                            <!-- Controls -->
+                            <div class="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-gray-800">
+                                <button data-t="1" class="capsid-btn px-3 py-1.5 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition">T=1</button>
+                                <button data-t="3" class="capsid-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">T=3</button>
+                                <button data-t="4" class="capsid-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">T=4</button>
+                                <button data-t="7" class="capsid-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">T=7</button>
+                            </div>
+                            <!-- Info -->
+                            <div class="flex flex-wrap justify-center gap-4 px-4 py-2 border-b border-gray-800 text-sm mono">
+                                <span class="text-gray-400">T=<span id="lab-t" class="text-violet-400">1</span></span>
+                                <span class="text-gray-400">(h,k)=<span id="lab-hk" class="text-cyan-400">(1,0)</span></span>
+                                <span class="text-gray-400">Subunidades=<span id="lab-sub" class="text-violet-400">60</span></span>
+                                <span class="text-gray-400">Pentameros=<span id="lab-pent" class="text-cyan-400">12</span></span>
+                                <span class="text-gray-400">Hexameros=<span id="lab-hex" class="text-violet-400">0</span></span>
+                                <span class="text-gray-400">Ejemplo: <span id="lab-example" class="text-white">Parvovirus</span></span>
+                            </div>
+                            <!-- Canvas -->
+                            <div id="lab-container" class="w-full bg-black" style="height:480px; position:relative;">
+                                <canvas id="lab-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-30.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-300 transition">
+                            &larr; Anterior
+                        </a>
+                        <a href="./leccion-32.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg transition">
+                            Siguiente: Fullerenos y Nanotubos &rarr;
+                        </a>
                     </div>
                 </article>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales -- De Platon a 4D</p>
         </div>
     </footer>
+
+    <script>
+    // ============================================================
+    // ILLUSTRATION 1: Triangulation Numbers T=1, T=3, T=4
+    // Three equilateral triangles side by side, showing subdivision
+    // ============================================================
+    (function() {
+        var c = document.getElementById('triangulation-canvas');
+        if (!c) return;
+        var W = c.clientWidth, H = c.clientHeight;
+        var dpr = window.devicePixelRatio || 1;
+        c.width = W * dpr; c.height = H * dpr;
+        var ctx = c.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        var cases = [
+            { label: 'T=1  (1,0)', T: 1, h: 1, k: 0 },
+            { label: 'T=3  (1,1)', T: 3, h: 1, k: 1 },
+            { label: 'T=4  (2,0)', T: 4, h: 2, k: 0 }
+        ];
+
+        var triW = W / 3;
+        var side = Math.min(triW * 0.7, H * 0.7);
+        var topPad = 40;
+
+        for (var ci = 0; ci < cases.length; ci++) {
+            var cx = triW * ci + triW / 2;
+            var cs = cases[ci];
+
+            // Draw outer equilateral triangle
+            var triH = side * Math.sqrt(3) / 2;
+            var ax = cx - side / 2;
+            var ay = topPad + triH;
+            var bx = cx + side / 2;
+            var by = topPad + triH;
+            var tx = cx;
+            var ty = topPad;
+
+            // Label
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '13px "JetBrains Mono", monospace';
+            ctx.textAlign = 'center';
+            ctx.fillText(cs.label, cx, H - 12);
+
+            // Subdivision based on (h,k)
+            var n = cs.h + cs.k; // subdivisions per edge for drawing
+            if (cs.T === 1) n = 1;
+            else if (cs.T === 3) n = 3;
+            else if (cs.T === 4) n = 2;
+
+            // Generate lattice points using barycentric coordinates
+            // For T=1: no subdivision
+            // For T=3: 3 subdivisions per edge (hexagonal)
+            // For T=4: 2 subdivisions per edge (regular)
+            var subdivN;
+            if (cs.T === 1) subdivN = 1;
+            else if (cs.T === 3) subdivN = 3;
+            else if (cs.T === 4) subdivN = 2;
+
+            // Vertices of the outer triangle
+            var vA = [ax, ay];
+            var vB = [bx, by];
+            var vC = [tx, ty];
+
+            // Generate grid points
+            function baryToCart(i, j, k, n) {
+                var x = (i * vA[0] + j * vB[0] + k * vC[0]) / n;
+                var y = (i * vA[1] + j * vB[1] + k * vC[1]) / n;
+                return [x, y];
+            }
+
+            var points = [];
+            var ptMap = {};
+            for (var ii = 0; ii <= subdivN; ii++) {
+                for (var jj = 0; jj <= subdivN - ii; jj++) {
+                    var kk = subdivN - ii - jj;
+                    var pt = baryToCart(ii, jj, kk, subdivN);
+                    var key = ii + ',' + jj;
+                    ptMap[key] = points.length;
+                    points.push(pt);
+                }
+            }
+
+            // Draw sub-triangle edges
+            ctx.strokeStyle = 'rgba(167, 139, 250, 0.6)';
+            ctx.lineWidth = 1.5;
+
+            for (var ii = 0; ii <= subdivN; ii++) {
+                for (var jj = 0; jj <= subdivN - ii; jj++) {
+                    var kk = subdivN - ii - jj;
+                    var p0 = baryToCart(ii, jj, kk, subdivN);
+                    // Edge to right neighbor
+                    if (jj + 1 <= subdivN - ii) {
+                        var p1 = baryToCart(ii, jj + 1, kk - 1, subdivN);
+                        ctx.beginPath();
+                        ctx.moveTo(p0[0], p0[1]);
+                        ctx.lineTo(p1[0], p1[1]);
+                        ctx.stroke();
+                    }
+                    // Edge to bottom neighbor
+                    if (ii + 1 <= subdivN && jj <= subdivN - ii - 1) {
+                        var p2 = baryToCart(ii + 1, jj, kk - 1, subdivN);
+                        ctx.beginPath();
+                        ctx.moveTo(p0[0], p0[1]);
+                        ctx.lineTo(p2[0], p2[1]);
+                        ctx.stroke();
+                    }
+                    // Diagonal for upward triangles
+                    if (ii > 0 && jj + 1 <= subdivN - ii + 1) {
+                        var p3key = (ii - 1) + ',' + (jj + 1);
+                        if (ptMap.hasOwnProperty(p3key)) {
+                            var p3 = baryToCart(ii - 1, jj + 1, kk, subdivN);
+                            // Only draw if not already drawn
+                        }
+                    }
+                }
+            }
+
+            // For T=3, draw the diagonal lines that create the hexagonal pattern
+            if (cs.T === 3) {
+                for (var ii = 0; ii <= subdivN; ii++) {
+                    for (var jj = 0; jj <= subdivN - ii; jj++) {
+                        var kk = subdivN - ii - jj;
+                        var p0 = baryToCart(ii, jj, kk, subdivN);
+                        // Diagonal: connect (i,j,k) to (i-1, j+1, k)
+                        if (ii - 1 >= 0 && jj + 1 <= subdivN) {
+                            var kk2 = subdivN - (ii - 1) - (jj + 1);
+                            if (kk2 >= 0) {
+                                var p3 = baryToCart(ii - 1, jj + 1, kk2, subdivN);
+                                ctx.beginPath();
+                                ctx.moveTo(p0[0], p0[1]);
+                                ctx.lineTo(p3[0], p3[1]);
+                                ctx.stroke();
+                            }
+                        }
+                    }
+                }
+            }
+
+            // Draw outer triangle on top with stronger color
+            ctx.strokeStyle = 'rgba(167, 139, 250, 0.9)';
+            ctx.lineWidth = 2.5;
+            ctx.beginPath();
+            ctx.moveTo(ax, ay);
+            ctx.lineTo(bx, by);
+            ctx.lineTo(tx, ty);
+            ctx.closePath();
+            ctx.stroke();
+
+            // Draw vertices
+            for (var pi = 0; pi < points.length; pi++) {
+                ctx.beginPath();
+                ctx.arc(points[pi][0], points[pi][1], 4, 0, Math.PI * 2);
+                ctx.fillStyle = '#22d3ee';
+                ctx.fill();
+            }
+
+            // Highlight corner vertices larger
+            var corners = [vA, vB, vC];
+            for (var cri = 0; cri < corners.length; cri++) {
+                ctx.beginPath();
+                ctx.arc(corners[cri][0], corners[cri][1], 6, 0, Math.PI * 2);
+                ctx.fillStyle = '#22d3ee';
+                ctx.fill();
+                ctx.strokeStyle = '#a78bfa';
+                ctx.lineWidth = 2;
+                ctx.stroke();
+            }
+
+            // Draw T number in center
+            var centX = (ax + bx + tx) / 3;
+            var centY = (ay + by + ty) / 3;
+            ctx.fillStyle = 'rgba(167, 139, 250, 0.3)';
+            ctx.font = 'bold 28px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'middle';
+            ctx.fillText('' + cs.T, centX, centY);
+        }
+    })();
+
+    // ============================================================
+    // ILLUSTRATION 2: Schematic Capsid from 5-fold axis (T=3)
+    // Pentamers at vertices (cyan), hexamers between (violet)
+    // ============================================================
+    (function() {
+        var c = document.getElementById('capsid-canvas');
+        if (!c) return;
+        var W = c.clientWidth, H = c.clientHeight;
+        var dpr = window.devicePixelRatio || 1;
+        c.width = W * dpr; c.height = H * dpr;
+        var ctx = c.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        var cx = W / 2;
+        var cy = H / 2;
+        var R = Math.min(W, H) * 0.38;
+
+        // Draw a schematic top-down view of an icosahedral capsid
+        // Central pentamer + ring of 5 pentamers + hexamers between
+
+        function drawPentagon(x, y, r, fill, stroke) {
+            ctx.beginPath();
+            for (var i = 0; i < 5; i++) {
+                var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                var px = x + r * Math.cos(a);
+                var py = y + r * Math.sin(a);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fillStyle = fill;
+            ctx.fill();
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+
+        function drawHexagon(x, y, r, fill, stroke) {
+            ctx.beginPath();
+            for (var i = 0; i < 6; i++) {
+                var a = (2 * Math.PI * i) / 6;
+                var px = x + r * Math.cos(a);
+                var py = y + r * Math.sin(a);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fillStyle = fill;
+            ctx.fill();
+            ctx.strokeStyle = stroke;
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+        }
+
+        // Background circle (capsid outline)
+        ctx.beginPath();
+        ctx.arc(cx, cy, R + 10, 0, Math.PI * 2);
+        ctx.strokeStyle = 'rgba(107, 114, 128, 0.2)';
+        ctx.lineWidth = 1;
+        ctx.stroke();
+
+        var pentR = R * 0.13;
+        var hexR = R * 0.11;
+
+        // Central pentamer
+        drawPentagon(cx, cy, pentR, 'rgba(34, 211, 238, 0.25)', 'rgba(34, 211, 238, 0.8)');
+
+        // 5 surrounding pentamers at vertices of outer ring
+        var pentPositions = [];
+        var ringR = R * 0.55;
+        for (var i = 0; i < 5; i++) {
+            var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+            var px = cx + ringR * Math.cos(a);
+            var py = cy + ringR * Math.sin(a);
+            pentPositions.push([px, py]);
+        }
+
+        // Hexamers between pentamers (inner ring)
+        var hexInnerR = R * 0.32;
+        for (var i = 0; i < 5; i++) {
+            var a1 = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+            var a2 = -Math.PI / 2 + (2 * Math.PI * (i + 1)) / 5;
+            var midA = (a1 + a2) / 2;
+            var hx = cx + hexInnerR * Math.cos(midA);
+            var hy = cy + hexInnerR * Math.sin(midA);
+            drawHexagon(hx, hy, hexR, 'rgba(167, 139, 250, 0.2)', 'rgba(167, 139, 250, 0.7)');
+        }
+
+        // Hexamers between pentamers (outer ring, two per sector)
+        var hexOuterR = R * 0.72;
+        for (var i = 0; i < 5; i++) {
+            var a1 = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+            var a2 = -Math.PI / 2 + (2 * Math.PI * (i + 1)) / 5;
+            // Two hexamers per sector
+            var frac1 = 0.33, frac2 = 0.67;
+            var ha1 = a1 + (a2 - a1) * frac1;
+            var ha2 = a1 + (a2 - a1) * frac2;
+            drawHexagon(cx + hexOuterR * Math.cos(ha1), cy + hexOuterR * Math.sin(ha1), hexR, 'rgba(167, 139, 250, 0.2)', 'rgba(167, 139, 250, 0.7)');
+            drawHexagon(cx + hexOuterR * Math.cos(ha2), cy + hexOuterR * Math.sin(ha2), hexR, 'rgba(167, 139, 250, 0.2)', 'rgba(167, 139, 250, 0.7)');
+        }
+
+        // Outer ring of pentamers (at edge between visible faces)
+        var outerPentR = R * 0.88;
+        var outerPentPositions = [];
+        for (var i = 0; i < 5; i++) {
+            var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+            var midA = a + Math.PI / 5;
+            var px = cx + outerPentR * Math.cos(midA);
+            var py = cy + outerPentR * Math.sin(midA);
+            outerPentPositions.push([px, py]);
+        }
+
+        // Draw outer pentamers
+        for (var i = 0; i < outerPentPositions.length; i++) {
+            drawPentagon(outerPentPositions[i][0], outerPentPositions[i][1], pentR * 0.85, 'rgba(34, 211, 238, 0.15)', 'rgba(34, 211, 238, 0.5)');
+        }
+
+        // Draw inner ring pentamers on top
+        for (var i = 0; i < pentPositions.length; i++) {
+            drawPentagon(pentPositions[i][0], pentPositions[i][1], pentR, 'rgba(34, 211, 238, 0.25)', 'rgba(34, 211, 238, 0.8)');
+        }
+
+        // Connecting lines (structural edges) between capsomers
+        ctx.strokeStyle = 'rgba(107, 114, 128, 0.15)';
+        ctx.lineWidth = 1;
+        // Center to inner pentamers
+        for (var i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.moveTo(cx, cy);
+            ctx.lineTo(pentPositions[i][0], pentPositions[i][1]);
+            ctx.stroke();
+        }
+        // Inner pentamers to each other
+        for (var i = 0; i < 5; i++) {
+            var j = (i + 1) % 5;
+            ctx.beginPath();
+            ctx.moveTo(pentPositions[i][0], pentPositions[i][1]);
+            ctx.lineTo(pentPositions[j][0], pentPositions[j][1]);
+            ctx.stroke();
+        }
+
+        // Labels
+        ctx.fillStyle = '#22d3ee';
+        ctx.font = '12px Inter, sans-serif';
+        ctx.textAlign = 'left';
+        ctx.fillText('Pentamero (5-fold)', 20, H - 36);
+        drawPentagon(140, H - 38, 8, 'rgba(34, 211, 238, 0.3)', 'rgba(34, 211, 238, 0.8)');
+
+        ctx.fillStyle = '#a78bfa';
+        ctx.fillText('Hexamero (6-fold)', 20, H - 14);
+        drawHexagon(140, H - 16, 8, 'rgba(167, 139, 250, 0.3)', 'rgba(167, 139, 250, 0.7)');
+
+        // 5-fold axis indicator
+        ctx.fillStyle = 'rgba(255,255,255,0.4)';
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.textAlign = 'right';
+        ctx.fillText('Eje 5-fold', W - 20, 24);
+        ctx.beginPath();
+        ctx.arc(cx, cy, 3, 0, Math.PI * 2);
+        ctx.fillStyle = 'rgba(255,255,255,0.5)';
+        ctx.fill();
+    })();
+
+    // ============================================================
+    // LAB: Capsid Constructor
+    // Interactive capsid builder for T=1, 3, 4, 7
+    // ============================================================
+    (function() {
+        var container = document.getElementById('lab-container');
+        var canvas = document.getElementById('lab-canvas');
+        if (!container || !canvas) return;
+
+        var W, H, dpr, ctx;
+        var currentT = 1;
+
+        var CAPSID_DATA = {
+            1:  { h: 1, k: 0, hk: '(1,0)', subunits: 60,   pent: 12, hex: 0,  example: 'Parvovirus' },
+            3:  { h: 1, k: 1, hk: '(1,1)', subunits: 180,  pent: 12, hex: 20, example: 'Poliovirus' },
+            4:  { h: 2, k: 0, hk: '(2,0)', subunits: 240,  pent: 12, hex: 30, example: 'Hepatitis B' },
+            7:  { h: 2, k: 1, hk: '(2,1)', subunits: 420,  pent: 12, hex: 60, example: 'VPH (Papilomavirus)' }
+        };
+
+        function resize() {
+            W = container.clientWidth;
+            H = container.clientHeight;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+        }
+
+        function drawPentagon(x, y, r) {
+            ctx.beginPath();
+            for (var i = 0; i < 5; i++) {
+                var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                var px = x + r * Math.cos(a);
+                var py = y + r * Math.sin(a);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(34, 211, 238, 0.3)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(34, 211, 238, 0.9)';
+            ctx.lineWidth = 2;
+            ctx.stroke();
+            // Center dot
+            ctx.beginPath();
+            ctx.arc(x, y, 3, 0, Math.PI * 2);
+            ctx.fillStyle = '#22d3ee';
+            ctx.fill();
+        }
+
+        function drawHexagon(x, y, r) {
+            ctx.beginPath();
+            for (var i = 0; i < 6; i++) {
+                var a = (2 * Math.PI * i) / 6;
+                var px = x + r * Math.cos(a);
+                var py = y + r * Math.sin(a);
+                if (i === 0) ctx.moveTo(px, py);
+                else ctx.lineTo(px, py);
+            }
+            ctx.closePath();
+            ctx.fillStyle = 'rgba(167, 139, 250, 0.2)';
+            ctx.fill();
+            ctx.strokeStyle = 'rgba(167, 139, 250, 0.8)';
+            ctx.lineWidth = 1.5;
+            ctx.stroke();
+            // Center dot
+            ctx.beginPath();
+            ctx.arc(x, y, 2.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#a78bfa';
+            ctx.fill();
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+
+            var cx = W / 2;
+            var cy = H / 2;
+            var R = Math.min(W, H) * 0.40;
+            var T = currentT;
+            var data = CAPSID_DATA[T];
+
+            // Capsid outline
+            ctx.beginPath();
+            ctx.arc(cx, cy, R + 15, 0, Math.PI * 2);
+            ctx.strokeStyle = 'rgba(107, 114, 128, 0.15)';
+            ctx.lineWidth = 1;
+            ctx.stroke();
+
+            // Adaptive sizes
+            var pentSize, hexSize;
+            if (T === 1) { pentSize = R * 0.18; hexSize = 0; }
+            else if (T === 3) { pentSize = R * 0.14; hexSize = R * 0.11; }
+            else if (T === 4) { pentSize = R * 0.12; hexSize = R * 0.10; }
+            else { pentSize = R * 0.10; hexSize = R * 0.08; }
+
+            // === T=1: 12 pentamers only ===
+            if (T === 1) {
+                // Central pentamer
+                drawPentagon(cx, cy, pentSize);
+
+                // Ring of 5 pentamers
+                var r1 = R * 0.48;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + r1 * Math.cos(a), cy + r1 * Math.sin(a), pentSize);
+                }
+
+                // Outer ring of 5 pentamers
+                var r2 = R * 0.88;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + r2 * Math.cos(a), cy + r2 * Math.sin(a), pentSize * 0.8);
+                }
+
+                // Center pentamer label
+                drawCenterLabel(cx, cy);
+            }
+
+            // === T=3: 12 pentamers + 20 hexamers ===
+            else if (T === 3) {
+                // Central pentamer
+                drawPentagon(cx, cy, pentSize);
+
+                // Inner ring: 5 hexamers
+                var rHex1 = R * 0.30;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rHex1 * Math.cos(a), cy + rHex1 * Math.sin(a), hexSize);
+                }
+
+                // Ring of 5 pentamers
+                var rPent1 = R * 0.52;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + rPent1 * Math.cos(a), cy + rPent1 * Math.sin(a), pentSize);
+                }
+
+                // Middle ring: 10 hexamers (2 between each pair of pentamers)
+                var rHex2 = R * 0.65;
+                for (var i = 0; i < 5; i++) {
+                    var a1 = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    var a2 = -Math.PI / 2 + (2 * Math.PI * (i + 1)) / 5;
+                    drawHexagon(cx + rHex2 * Math.cos(a1 + (a2 - a1) * 0.35), cy + rHex2 * Math.sin(a1 + (a2 - a1) * 0.35), hexSize);
+                    drawHexagon(cx + rHex2 * Math.cos(a1 + (a2 - a1) * 0.65), cy + rHex2 * Math.sin(a1 + (a2 - a1) * 0.65), hexSize);
+                }
+
+                // Outer ring: 5 pentamers
+                var rPent2 = R * 0.88;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + rPent2 * Math.cos(a), cy + rPent2 * Math.sin(a), pentSize * 0.8);
+                }
+
+                // Outer ring: 5 hexamers
+                var rHex3 = R * 0.88;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rHex3 * Math.cos(a), cy + rHex3 * Math.sin(a), hexSize * 0.85);
+                }
+
+                drawCenterLabel(cx, cy);
+            }
+
+            // === T=4: 12 pentamers + 30 hexamers ===
+            else if (T === 4) {
+                // Central pentamer
+                drawPentagon(cx, cy, pentSize);
+
+                // Inner ring: 5 hexamers
+                var rH1 = R * 0.24;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rH1 * Math.cos(a), cy + rH1 * Math.sin(a), hexSize);
+                }
+
+                // Ring of 5 pentamers
+                var rP1 = R * 0.44;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + rP1 * Math.cos(a), cy + rP1 * Math.sin(a), pentSize);
+                }
+
+                // Second hex ring: 10 hexamers
+                var rH2 = R * 0.52;
+                for (var i = 0; i < 5; i++) {
+                    var a1 = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    var a2 = -Math.PI / 2 + (2 * Math.PI * (i + 1)) / 5;
+                    drawHexagon(cx + rH2 * Math.cos(a1 + (a2 - a1) * 0.35), cy + rH2 * Math.sin(a1 + (a2 - a1) * 0.35), hexSize);
+                    drawHexagon(cx + rH2 * Math.cos(a1 + (a2 - a1) * 0.65), cy + rH2 * Math.sin(a1 + (a2 - a1) * 0.65), hexSize);
+                }
+
+                // Third hex ring: 5 hexamers
+                var rH3 = R * 0.70;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rH3 * Math.cos(a), cy + rH3 * Math.sin(a), hexSize);
+                }
+
+                // Outer pentamers
+                var rP2 = R * 0.85;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + rP2 * Math.cos(a), cy + rP2 * Math.sin(a), pentSize * 0.8);
+                }
+
+                // Outer hex ring: 10 hexamers
+                var rH4 = R * 0.88;
+                for (var i = 0; i < 5; i++) {
+                    var a1 = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    var a2 = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * (i + 1)) / 5;
+                    drawHexagon(cx + rH4 * Math.cos(a1 + (a2 - a1) * 0.3), cy + rH4 * Math.sin(a1 + (a2 - a1) * 0.3), hexSize * 0.75);
+                    drawHexagon(cx + rH4 * Math.cos(a1 + (a2 - a1) * 0.7), cy + rH4 * Math.sin(a1 + (a2 - a1) * 0.7), hexSize * 0.75);
+                }
+
+                drawCenterLabel(cx, cy);
+            }
+
+            // === T=7: 12 pentamers + 60 hexamers ===
+            else if (T === 7) {
+                var s = 0.85; // scale factor for denser packing
+
+                // Central pentamer
+                drawPentagon(cx, cy, pentSize);
+
+                // Layer 1: 5 hexamers (close ring)
+                var rL1 = R * 0.18 * s;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rL1 * Math.cos(a), cy + rL1 * Math.sin(a), hexSize);
+                }
+
+                // Layer 2: 5 hexamers (between)
+                var rL2 = R * 0.32 * s;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rL2 * Math.cos(a), cy + rL2 * Math.sin(a), hexSize);
+                }
+
+                // Layer 3: 5 pentamers
+                var rL3 = R * 0.48;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + rL3 * Math.cos(a), cy + rL3 * Math.sin(a), pentSize);
+                }
+
+                // Layer 3b: 10 hexamers between pentamers
+                var rL3b = R * 0.43;
+                for (var i = 0; i < 5; i++) {
+                    var a1 = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    var a2 = -Math.PI / 2 + (2 * Math.PI * (i + 1)) / 5;
+                    drawHexagon(cx + rL3b * Math.cos(a1 + (a2 - a1) * 0.4), cy + rL3b * Math.sin(a1 + (a2 - a1) * 0.4), hexSize);
+                    drawHexagon(cx + rL3b * Math.cos(a1 + (a2 - a1) * 0.6), cy + rL3b * Math.sin(a1 + (a2 - a1) * 0.6), hexSize);
+                }
+
+                // Layer 4: 5 hexamers
+                var rL4 = R * 0.58;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rL4 * Math.cos(a), cy + rL4 * Math.sin(a), hexSize);
+                }
+
+                // Layer 5: 10 hexamers
+                var rL5 = R * 0.68;
+                for (var i = 0; i < 5; i++) {
+                    var a1 = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    var a2 = -Math.PI / 2 + (2 * Math.PI * (i + 1)) / 5;
+                    drawHexagon(cx + rL5 * Math.cos(a1 + (a2 - a1) * 0.3), cy + rL5 * Math.sin(a1 + (a2 - a1) * 0.3), hexSize);
+                    drawHexagon(cx + rL5 * Math.cos(a1 + (a2 - a1) * 0.7), cy + rL5 * Math.sin(a1 + (a2 - a1) * 0.7), hexSize);
+                }
+
+                // Layer 6: 5 hexamers
+                var rL6 = R * 0.78;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + (2 * Math.PI * i) / 5;
+                    drawHexagon(cx + rL6 * Math.cos(a), cy + rL6 * Math.sin(a), hexSize);
+                }
+
+                // Outer ring: pentamers
+                var rOP = R * 0.90;
+                for (var i = 0; i < 5; i++) {
+                    var a = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    drawPentagon(cx + rOP * Math.cos(a), cy + rOP * Math.sin(a), pentSize * 0.75);
+                }
+
+                // Outer ring: 10 hexamers
+                var rOH = R * 0.90;
+                for (var i = 0; i < 5; i++) {
+                    var a1 = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * i) / 5;
+                    var a2 = -Math.PI / 2 + Math.PI / 5 + (2 * Math.PI * (i + 1)) / 5;
+                    drawHexagon(cx + rOH * Math.cos(a1 + (a2 - a1) * 0.33), cy + rOH * Math.sin(a1 + (a2 - a1) * 0.33), hexSize * 0.7);
+                    drawHexagon(cx + rOH * Math.cos(a1 + (a2 - a1) * 0.67), cy + rOH * Math.sin(a1 + (a2 - a1) * 0.67), hexSize * 0.7);
+                }
+
+                drawCenterLabel(cx, cy);
+            }
+
+            // Title
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '13px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText('Capside T=' + T + ' -- Vista desde eje 5-fold', cx, 24);
+
+            // Legend
+            ctx.fillStyle = '#22d3ee';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.textAlign = 'left';
+            ctx.fillText('Pentamero (' + data.pent + ')', 20, H - 36);
+            ctx.fillStyle = '#a78bfa';
+            ctx.fillText('Hexamero (' + data.hex + ')', 20, H - 16);
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '12px "JetBrains Mono", monospace';
+            ctx.textAlign = 'right';
+            ctx.fillText('60T = ' + data.subunits + ' subunidades', W - 20, H - 26);
+        }
+
+        function drawCenterLabel(cx, cy) {
+            ctx.beginPath();
+            ctx.arc(cx, cy, 2, 0, Math.PI * 2);
+            ctx.fillStyle = 'rgba(255,255,255,0.4)';
+            ctx.fill();
+        }
+
+        function updateInfo() {
+            var data = CAPSID_DATA[currentT];
+            document.getElementById('lab-t').textContent = currentT;
+            document.getElementById('lab-hk').textContent = data.hk;
+            document.getElementById('lab-sub').textContent = data.subunits;
+            document.getElementById('lab-pent').textContent = data.pent;
+            document.getElementById('lab-hex').textContent = data.hex;
+            document.getElementById('lab-example').textContent = data.example;
+        }
+
+        // Button events
+        var btns = document.querySelectorAll('.capsid-btn');
+        btns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentT = parseInt(this.getAttribute('data-t'));
+                btns.forEach(function(b) {
+                    b.className = 'capsid-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition';
+                });
+                this.className = 'capsid-btn px-3 py-1.5 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition';
+                updateInfo();
+                draw();
+            });
+        });
+
+        // Init
+        resize();
+        updateInfo();
+        draw();
+        window.addEventListener('resize', function() { resize(); draw(); });
+    })();
+    </script>
 </body>
 </html>

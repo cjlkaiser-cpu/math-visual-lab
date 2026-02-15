@@ -84,7 +84,7 @@ Open `index.html` in a browser. All dependencies load from CDN.
 |---------|---------|-----|
 | Three.js | r128 | 3D rendering + clipping planes |
 | Tailwind CSS | CDN | Responsive layout |
-| KaTeX | 0.16.9 | LaTeX formula rendering |
+| KaTeX | 0.16.11 | LaTeX formula rendering |
 | GSAP | 3.12.2 | Construction/morph animations |
 | Inter + JetBrains Mono | — | Typography |
 
@@ -108,9 +108,60 @@ platonic-lab/
 │   └── kepler-synth.js     # Kepler polyhedral synthesizer
 ├── PlatonicLab-Tutorial.html  # Interactive guided tutorial
 ├── tutorial.md             # Tutorial source (markdown)
-├── curso/                  # Course materials
+├── curso/                  # Course (see below)
+│   ├── index.html          # Course landing page with animated previews
+│   ├── curso.html          # Legacy redirect
+│   ├── modulo-01/          # Los Guardianes de la Geometría (L01–L06) ✅
+│   ├── modulo-02/          # La Fórmula de Euler (L07–L12) ✅
+│   ├── modulo-03/          # Dualidad y Simetría (L13–L18)
+│   ├── modulo-04/          # Más Allá de la Tercera Dimensión (L19–L24)
+│   ├── modulo-05/          # Teoría de Grafos Aplicada (L25–L29)
+│   └── modulo-06/          # De Platón al Mundo Moderno (L30–L33)
 └── README.md
 ```
+
+## Course: Matemáticas Visuales — De Platón a 4D
+
+University-level introductory course (33 lessons, 6 modules) covering the mathematics of Platonic solids. Each lesson includes derived formulas (KaTeX), exercises without inline answers, and an interactive LAB (Three.js or SVG).
+
+### Design System
+- Dark theme: `bg-black`, `gray-950` cards, `gray-900` borders
+- Fonts: Inter (body), JetBrains Mono (code/equations)
+- Colors: violet `#a78bfa` primary, cyan `#22d3ee` accent
+- Math: KaTeX v0.16.11 auto-render (`$$` display, `\(\)` inline)
+- 3D: Three.js r128 (wireframe + points + translucent mesh, drag-to-rotate)
+- Breadcrumbs: EigenLab / Math Visual Lab / Platonic Lab / Curso / Módulo
+
+### Module Status
+
+| Module | Topic | Lessons | Status |
+|--------|-------|---------|--------|
+| **01** | Los Guardianes de la Geometría | L01–L06 | Rewritten |
+| **02** | La Fórmula de Euler | L07–L12 | Rewritten |
+| **03** | Dualidad y Simetría | L13–L18 | Pending |
+| **04** | Más Allá de la Tercera Dimensión | L19–L24 | Pending |
+| **05** | Teoría de Grafos Aplicada | L25–L29 | Pending |
+| **06** | De Platón al Mundo Moderno | L30–L33 | Pending |
+
+### Module 1 — Los Guardianes de la Geometría (6 lessons)
+| Lesson | Topic | LAB |
+|--------|-------|-----|
+| L01 | Introducción + Euler discovery | Three.js: 5 solids + V-E+F counter |
+| L02 | Pitágoras: coordenadas, altura tetraedro, φ en icosaedro | Three.js: golden rectangle in icosahedron |
+| L03 | Platón y el Timeo: ángulo diedro, Teeteto | Three.js: dihedral angle measurement |
+| L04 | Euclides: (p-2)(q-2)<4, teselaciones, defecto angular | Three.js: vertex figure + gap visualization |
+| L05 | Radios R/r, volúmenes, esferas circunscrita/inscrita | Three.js: concentric spheres |
+| L06 | Notación de Schläfli: V,E,F from {p,q}, dualidad, 4D | Three.js: {p,q} parameter explorer |
+
+### Module 2 — La Fórmula de Euler (6 lessons)
+| Lesson | Topic | LAB |
+|--------|-------|-----|
+| L07 | Vértices, aristas, caras: double counting pF=2E, qV=2E | Three.js: double counting overlay |
+| L08 | V-E+F=2: prueba, primas paramétricos, grafos planares, K₅ | Three.js: prism constructor + SVG K₅ |
+| L09 | Demostración de Cauchy: 11 pasos sobre diagrama de Schlegel | SVG: interactive proof animation |
+| L10 | Derivación algebraica: V,E,F desde {p,q}, mapa {p,q} | Three.js + HTML grid: {p,q} explorer |
+| L11 | ¿Por qué solo 5?: tres caminos, defecto angular, clasificación | SVG: vertex figure + angular deficit |
+| L12 | Topología: homeomorfismo, χ invariante, Gauss-Bonnet, género | Three.js: sphere/torus + resolution slider |
 
 ## Roadmap
 
@@ -139,4 +190,4 @@ platonic-lab/
 
 ---
 
-**Last updated:** 2026-02-12
+**Last updated:** 2026-02-14

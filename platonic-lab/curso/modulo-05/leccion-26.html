@@ -3,137 +3,769 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 26: Diagramas de Schlegel | Matemáticas Visuales</title>
+    <title>Leccion 26: Grafos Planares y Steinitz | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 05</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 26</span> — Grafos Planares y Steinitz
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-25.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-27.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-25.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">← Anterior</a>
+                    <a href="./leccion-27.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente →</a>
                 </nav>
             </div>
         </div>
     </header>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 5</h3>
-                    <p class="text-sm text-gray-400 mb-4">Teoría de Grafos</p>
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 05</h3>
+                    <p class="text-sm text-gray-500 mb-4">Teoria de Grafos</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>2/5</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 40%"></div>
                         </div>
                     </div>
+
                     <nav class="space-y-2">
-                        <a href="./leccion-25.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">25. Sólidos como Redes</a>
-                        <a href="./leccion-26.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">26. Diagramas de Schlegel</a>
-                        <a href="./leccion-27.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">27. Propiedades de Grafos</a>
-                        <a href="./leccion-28.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">28. Caminos Hamiltonianos</a>
-                        <a href="./leccion-29.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">29. Coloración</a>
+                        <a href="./leccion-25.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">25. De Poliedros a Grafos</a>
+                        <a href="./leccion-26.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">26. Grafos Planares y Steinitz</a>
+                        <a href="./leccion-27.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">27. Coloracion de Grafos</a>
+                        <a href="./leccion-28.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">28. Recorridos: Euler y Hamilton</a>
+                        <a href="./leccion-29.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">29. Espectros, Arboles y Sintesis</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 26</span>
-                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Diagramas de Schlegel</h1>
-                        <p class="text-gray-400 text-lg">Proyecciones planas de poliedros que preservan conectividad.</p>
+                        <span class="text-cyan-400 text-sm font-medium">Leccion 26</span>
+                        <h2 class="text-3xl font-light mt-2 mb-4">
+                            <span class="text-violet-400 font-medium glow-text">Grafos Planares</span> y Steinitz
+                        </h2>
+                        <p class="text-gray-400 text-lg">No todo grafo es un poliedro. El teorema de Steinitz establece la frontera exacta.</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">¿Qué es un Diagrama de Schlegel?</h2>
-                        <p class="text-gray-300 mb-4">Un <strong>diagrama de Schlegel</strong> es una proyección plana de un poliedro que muestra todas sus caras, con una cara "desplegada" hacia afuera como exterior.</p>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h3 class="text-lg font-semibold text-platonic-purple mb-2">Características</h3>
-                            <ul class="list-disc list-inside space-y-1 text-gray-300 ml-4">
-                                <li>Preserva la topología del poliedro</li>
-                                <li>Una cara se convierte en el "exterior"</li>
-                                <li>Todas las demás caras están dentro</li>
-                                <li>Es un grafo planar (sin cruces)</li>
-                            </ul>
+
+                    <!-- 1. Grafos Planares -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">1. Grafos Planares</h3>
+                        <p class="text-gray-300 mb-4">
+                            Un grafo \(G\) es <strong class="text-white">planar</strong> si puede dibujarse en el plano de modo que sus aristas no se crucen, salvo en los vertices que comparten. Tal dibujo se denomina <strong class="text-white">inmersion planar</strong> o <strong class="text-white">grafo plano</strong>. La diferencia es sutil pero importante: "planar" es una propiedad intrinseca del grafo; "plano" se refiere a un dibujo concreto sin cruces.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            El ejemplo mas inmediato es \(K_4\), el grafo completo de 4 vertices. Basta dibujar un triangulo con un punto interior conectado a los tres vertices del triangulo: las 6 aristas no se cruzan. De hecho, \(K_4\) es el grafo esqueleto del tetraedro.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Los cinco grafos platonicos son todos planares. Esto no es una coincidencia: provienen de poliedros convexos tridimensionales, y todo poliedro convexo puede proyectarse al plano desde un punto cercano a una cara. La proyeccion estereografica o la <strong class="text-white">proyeccion de Schlegel</strong> (que veremos en la seccion 6) producen una inmersion planar donde una cara se convierte en el contorno exterior.
+                        </p>
+                        <p class="text-gray-300">
+                            La pregunta central de esta leccion es la inversa: dado un grafo planar, cuando proviene de un poliedro convexo? El teorema de Steinitz dara la respuesta exacta.
+                        </p>
+                    </section>
+
+                    <!-- 2. La Formula de Euler para Grafos Planares -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">2. La Formula de Euler para Grafos Planares</h3>
+                        <p class="text-gray-300 mb-4">
+                            En el Modulo 2 demostramos la formula de Euler para poliedros. Ahora la extendemos a todo grafo planar conexo. Si \(G\) es un grafo plano conexo con \(V\) vertices, \(E\) aristas y \(F\) caras (incluyendo la <strong class="text-white">cara exterior</strong>, la region no acotada), entonces:
+                        </p>
+
+                        $$ V - E + F = 2 $$
+
+                        <p class="text-gray-300 mb-4">
+                            La demostracion procede por induccion sobre el numero de aristas \(E\).
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Caso base.</strong> Si \(G\) es un arbol (grafo conexo sin ciclos), entonces \(E = V - 1\) y hay una unica cara (la cara exterior), asi que \(F = 1\). Se verifica: \(V - (V-1) + 1 = 2\).
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Paso inductivo.</strong> Si \(G\) no es un arbol, contiene al menos un ciclo. Elegimos una arista \(e\) que pertenece a un ciclo. Al eliminar \(e\), el grafo sigue siendo conexo (porque los extremos de \(e\) estan conectados por el resto del ciclo), pero las dos caras que bordean \(e\) se fusionan en una sola. Asi, \(V\) no cambia, \(E\) disminuye en 1 y \(F\) disminuye en 1, dejando \(V - E + F\) invariante. Por hipotesis de induccion, el resultado vale para el grafo reducido, y por tanto tambien para \(G\).
+                        </p>
+                        <p class="text-gray-300">
+                            Esta formula generaliza la relacion poliedrica a <strong class="text-white">todos</strong> los grafos planares conexos, no solo a los que provienen de poliedros.
+                        </p>
+                    </section>
+
+                    <!-- 3. Cotas de Aristas -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">3. Cotas de Aristas</h3>
+                        <p class="text-gray-300 mb-4">
+                            La formula de Euler, combinada con un conteo de incidencias cara-arista, produce desigualdades que limitan la densidad de un grafo planar. En un grafo plano, cada cara esta bordeada por al menos 3 aristas, y cada arista bordea exactamente 2 caras. Sumando sobre todas las caras:
+                        </p>
+
+                        $$ 2E \geq 3F \implies F \leq \frac{2E}{3} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Sustituyendo en la formula de Euler \(V - E + F = 2\):
+                        </p>
+
+                        $$ V - E + \frac{2E}{3} \geq 2 \implies E \leq 3V - 6 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Esta es la <strong class="text-white">cota fundamental de aristas</strong> para grafos planares. Si un grafo tiene mas de \(3V - 6\) aristas, no puede ser planar.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Para grafos <strong class="text-white">sin triangulos</strong> (cintura \(\geq 4\)), cada cara tiene al menos 4 aristas en su frontera, lo que da \(2E \geq 4F\) y una cota mas restrictiva:
+                        </p>
+
+                        $$ E \leq 2V - 4 $$
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Aplicacion a \(K_5\).</strong> El grafo completo \(K_5\) tiene \(V = 5\) y \(E = \binom{5}{2} = 10\). La cota da \(3(5) - 6 = 9 < 10\). Conclusion: \(K_5\) <strong class="text-white">no es planar</strong>.
+                        </p>
+                        <p class="text-gray-300">
+                            <strong class="text-white">Aplicacion a \(K_{3,3}\).</strong> El grafo bipartito completo \(K_{3,3}\) tiene \(V = 6\), \(E = 9\) y es libre de triangulos. La cota para grafos sin triangulos da \(2(6) - 4 = 8 < 9\). Conclusion: \(K_{3,3}\) <strong class="text-white">no es planar</strong>.
+                        </p>
+                    </section>
+
+                    <!-- 4. El Teorema de Kuratowski -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">4. El Teorema de Kuratowski (1930)</h3>
+                        <p class="text-gray-300 mb-4">
+                            Las cotas de aristas demuestran que \(K_5\) y \(K_{3,3}\) no son planares, pero no caracterizan completamente la planaridad. El teorema de Kuratowski proporciona una condicion necesaria y suficiente.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Una <strong class="text-white">subdivision</strong> de un grafo \(H\) se obtiene reemplazando aristas de \(H\) por caminos (insertando vertices de grado 2 en las aristas). Un grafo \(G\) contiene una subdivision de \(H\) si algun subgrafo de \(G\) es isomorfo a una subdivision de \(H\).
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            El teorema establece:
+                        </p>
+
+                        $$ G \text{ es planar} \iff G \text{ no contiene subdivision de } K_5 \text{ ni de } K_{3,3} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Este resultado es notable porque reduce la pregunta de planaridad a la deteccion de exactamente dos <strong class="text-white">obstrucciones minimales</strong>. Toda no-planaridad proviene, en ultima instancia, de una copia "escondida" de \(K_5\) o \(K_{3,3}\).
+                        </p>
+                        <p class="text-gray-300">
+                            Un resultado equivalente es el <strong class="text-white">teorema de Wagner</strong> (1937), que reemplaza "subdivision" por "menor topologico": un grafo es planar si y solo si no tiene a \(K_5\) ni a \(K_{3,3}\) como <strong class="text-white">menor</strong>. Un menor se obtiene contrayendo aristas (fusionando sus extremos) ademas de eliminar vertices y aristas. Los dos criterios son equivalentes para la planaridad, aunque la nocion de menor es mas general y central en la teoria de Robertson-Seymour.
+                        </p>
+                    </section>
+
+                    <!-- 5. El Teorema de Steinitz -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">5. El Teorema de Steinitz (1922)</h3>
+                        <p class="text-gray-300 mb-4">
+                            La planaridad es necesaria pero no suficiente para que un grafo sea el esqueleto de un poliedro convexo. Se requiere ademas una condicion de conectividad. Un grafo \(G\) es <strong class="text-white">\(k\)-conexo</strong> si tiene mas de \(k\) vertices y al eliminar cualquier conjunto de \(k-1\) vertices (y sus aristas incidentes) el grafo resultante sigue siendo conexo.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            La 3-conectividad significa que no se puede desconectar el grafo eliminando 1 o 2 vertices. Intuitivamente, el esqueleto de un poliedro convexo es "robusto" topologicamente: ningun par de vertices es un cuello de botella.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            El teorema de Steinitz establece:
+                        </p>
+
+                        $$ G \text{ es esqueleto de un politopo convexo 3D} \iff G \text{ es 3-conexo y planar} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Los cinco grafos platonicos son todos 3-conexos. De hecho, son \(\delta\)-conexos, donde \(\delta\) es el grado minimo: el tetraedro y el cubo son 3-conexos, el octaedro es 4-conexo, y el icosaedro es 5-conexo. Esto confirma, via Steinitz, que todos provienen de poliedros convexos.
+                        </p>
+                        <p class="text-gray-300">
+                            El teorema de Steinitz es el puente definitivo entre la teoria de grafos y la geometria poliedrica: traduce una propiedad geometrica (ser esqueleto de un politopo convexo) en propiedades puramente combinatorias (planaridad y 3-conectividad).
+                        </p>
+
+                        <!-- Canvas: K5 and K33 -->
+                        <div class="my-6">
+                            <canvas id="k5-k33-canvas" class="w-full rounded-xl" style="height: 260px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Los dos grafos no planares minimales: \(K_5\) y \(K_{3,3}\). Ninguno es esqueleto de un poliedro convexo.</p>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Ejemplos de Schlegel</h3>
-                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-purple mb-2">Tetraedro</h4>
-                                <p class="text-sm text-gray-300">Un triángulo con un punto central conectado a los 3 vértices. 3 triángulos internos + 1 exterior.</p>
+                    </section>
+
+                    <!-- 6. Diagramas de Schlegel -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">6. Diagramas de Schlegel</h3>
+                        <p class="text-gray-300 mb-4">
+                            Un <strong class="text-white">diagrama de Schlegel</strong> es una proyeccion de un poliedro convexo 3D al plano, realizada desde un punto situado ligeramente fuera del centro de una cara. La cara elegida se convierte en el contorno exterior del diagrama, y las demas caras aparecen como regiones interiores.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            El resultado es una inmersion planar del grafo esqueleto donde la estructura combinatoria (vertices, aristas y caras) se preserva completamente. Cada diagrama de Schlegel demuestra constructivamente que el grafo del poliedro es planar.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Cubo.</strong> El diagrama de Schlegel del cubo consiste en un cuadrado exterior (la cara de proyeccion), un cuadrado interior mas pequenio (la cara opuesta), y cuatro aristas que conectan los vertices correspondientes. Las seis caras del cubo son visibles: la exterior, la interior y cuatro trapecios laterales.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Dodecaedro.</strong> El diagrama de Schlegel del dodecaedro tiene un pentagono exterior y una estructura concentrica de pentagonos anidados. Las 12 caras pentagonales son todas visibles como regiones del diagrama.
+                        </p>
+                        <p class="text-gray-300">
+                            Los diagramas de Schlegel son una herramienta esencial para estudiar la combinatoria de poliedros: permiten "aplanar" la estructura tridimensional sin perder informacion topologica.
+                        </p>
+
+                        <!-- Canvas: Schlegel diagrams -->
+                        <div class="my-6">
+                            <canvas id="schlegel-canvas" class="w-full rounded-xl" style="height: 280px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Diagramas de Schlegel del cubo (izquierda) y del dodecaedro (derecha)</p>
+                        </div>
+                    </section>
+
+                    <!-- Ejercicios -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">1.</strong> Verifica la cota \(E \leq 3V - 6\) para los cinco grafos platonicos. Cuales alcanzan la igualdad?</p>
                             </div>
-                            <div class="bg-gray-800/50 p-4 rounded-lg">
-                                <h4 class="font-semibold text-platonic-purple mb-2">Cubo</h4>
-                                <p class="text-sm text-gray-300">Un cuadrado con otro cuadrado dentro, conectados por 4 líneas. Parece una "caja" en perspectiva.</p>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">2.</strong> El grafo de Petersen tiene \(V = 10\), \(E = 15\) y cintura 5. Demuestra que satisface \(E \leq 3V - 6\) pero viola la cota \(E \leq \frac{5}{3}V - \frac{10}{3}\) (la cota para cintura \(\geq 5\)). Que implica esto sobre su planaridad?</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">3.</strong> Demuestra que todo grafo planar tiene al menos un vertice de grado \(\leq 5\), usando la cota \(E \leq 3V - 6\) y el lema del apreton de manos.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">4.</strong> Dibuja el diagrama de Schlegel del octaedro. Cuantas caras triangulares son visibles (incluyendo la cara exterior)?</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">5.</strong> Verifica que los cinco grafos platonicos son 3-conexos. Para el tetraedro, demuestra que al eliminar cualquier par de vertices el grafo resultante sigue siendo conexo.</p>
                             </div>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Relación con la Fórmula de Euler</h3>
-                        <p class="text-gray-300 mb-4">El diagrama de Schlegel es planar, por lo que satisface V - E + F = 2 (incluyendo la cara exterior).</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Schlegel en 4D</h3>
-                        <p class="text-gray-300 mb-4">Los politopos 4D también tienen diagramas de Schlegel 3D, donde una celda 3D se "despliega" como exterior.</p>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Diagramas de Schlegel</h2>
-                        <p class="text-gray-400 mb-4">Visualiza los diagramas de Schlegel en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                    </section>
+
+                    <!-- LAB -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">LAB: Diagramas de Schlegel</h3>
+                        <p class="text-gray-400 mb-4">Selecciona un poliedro para ver su diagrama de Schlegel (inmersion planar). Arrastra vertices para reorganizar. Haz clic en un vertice para resaltar sus vecinos.</p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                            <!-- Controls -->
+                            <div class="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-gray-800">
+                                <button data-graph="0" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition">Tetraedro</button>
+                                <button data-graph="1" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Cubo</button>
+                                <button data-graph="2" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Octaedro</button>
+                                <button data-graph="3" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Dodecaedro</button>
+                                <button data-graph="4" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Icosaedro</button>
+                                <button id="lab-reset" class="ml-auto px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-cyan-400 transition">Reset</button>
+                            </div>
+                            <!-- Info -->
+                            <div id="lab-info" class="flex justify-center gap-6 px-4 py-2 border-b border-gray-800 text-sm mono">
+                                <span class="text-gray-400">V=<span id="info-v" class="text-violet-400">4</span></span>
+                                <span class="text-gray-400">E=<span id="info-e" class="text-violet-400">6</span></span>
+                                <span class="text-gray-400">F=<span id="info-f" class="text-violet-400">4</span></span>
+                            </div>
+                            <!-- Canvas -->
+                            <div id="lab-container" class="w-full bg-black" style="height:480px; position:relative;">
+                                <canvas id="lab-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+                            </div>
                         </div>
-                    </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-25.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-27.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Propiedades →</a>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-25.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-300 transition">
+                            ← Anterior
+                        </a>
+                        <a href="./leccion-27.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg transition">
+                            Siguiente: Coloracion de Grafos →
+                        </a>
                     </div>
                 </article>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales -- De Platon a 4D</p>
         </div>
     </footer>
+
+    <script>
+    // ============================================================
+    // GRAPH DATA for all 5 Platonic solids
+    // ============================================================
+    var GRAPHS = [
+        { name: 'Tetraedro', V: 4, E: 6, F: 4, edges: [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]] },
+        { name: 'Cubo', V: 8, E: 12, F: 6, edges: [[0,1],[0,2],[0,4],[1,3],[1,5],[2,3],[2,6],[3,7],[4,5],[4,6],[5,7],[6,7]] },
+        { name: 'Octaedro', V: 6, E: 12, F: 8, edges: [[0,1],[0,2],[0,3],[0,4],[1,2],[1,4],[1,5],[2,3],[2,5],[3,4],[3,5],[4,5]] },
+        { name: 'Dodecaedro', V: 20, E: 30, F: 12, edges: [[0,1],[1,2],[2,3],[3,4],[4,0],[0,5],[1,6],[2,7],[3,8],[4,9],[5,10],[5,14],[6,10],[6,11],[7,11],[7,12],[8,12],[8,13],[9,13],[9,14],[10,15],[11,16],[12,17],[13,18],[14,19],[15,16],[16,17],[17,18],[18,19],[19,15]] },
+        { name: 'Icosaedro', V: 12, E: 30, F: 20, edges: [[0,1],[0,2],[0,3],[0,4],[0,5],[1,2],[2,3],[3,4],[4,5],[5,1],[1,6],[2,6],[2,7],[3,7],[3,8],[4,8],[4,9],[5,9],[5,10],[1,10],[6,7],[7,8],[8,9],[9,10],[10,6],[11,6],[11,7],[11,8],[11,9],[11,10]] }
+    ];
+
+    // ============================================================
+    // Schlegel layout positions for each graph
+    // ============================================================
+    function schlegelLayout(idx, cx, cy, R) {
+        var pos = [];
+        var i, a;
+        switch (idx) {
+            case 0: // Tetraedro: outer triangle + center vertex
+                for (i = 0; i < 3; i++) {
+                    a = -Math.PI / 2 + 2 * Math.PI * i / 3;
+                    pos.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]);
+                }
+                pos.push([cx, cy]);
+                break;
+            case 1: // Cubo: outer square (v0-v3) + inner square (v4-v7)
+                var r2 = R * 0.42;
+                for (i = 0; i < 4; i++) {
+                    a = -Math.PI / 4 + Math.PI / 2 * i;
+                    pos.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]);
+                }
+                for (i = 0; i < 4; i++) {
+                    a = -Math.PI / 4 + Math.PI / 2 * i + Math.PI / 8;
+                    pos.push([cx + r2 * Math.cos(a), cy + r2 * Math.sin(a)]);
+                }
+                break;
+            case 2: // Octaedro: outer triangle (v0-v2) + inner inverted triangle (v3-v5)
+                var r2 = R * 0.45;
+                for (i = 0; i < 3; i++) {
+                    a = -Math.PI / 2 + 2 * Math.PI * i / 3;
+                    pos.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]);
+                }
+                for (i = 0; i < 3; i++) {
+                    a = Math.PI / 2 + 2 * Math.PI * i / 3;
+                    pos.push([cx + r2 * Math.cos(a), cy + r2 * Math.sin(a)]);
+                }
+                break;
+            case 3: // Dodecaedro: 4 concentric pentagons of 5 vertices
+                var radii = [R, R * 0.72, R * 0.42, R * 0.18];
+                var offsets = [0, Math.PI / 5, 0, Math.PI / 5];
+                for (var ring = 0; ring < 4; ring++) {
+                    for (i = 0; i < 5; i++) {
+                        a = -Math.PI / 2 + 2 * Math.PI * i / 5 + offsets[ring];
+                        pos.push([cx + radii[ring] * Math.cos(a), cy + radii[ring] * Math.sin(a)]);
+                    }
+                }
+                break;
+            case 4: // Icosaedro: v0 center, v1-v5 inner pentagon, v6-v10 outer pentagon, v11 pole
+                pos.push([cx, cy]);
+                var r1 = R * 0.4;
+                for (i = 0; i < 5; i++) {
+                    a = -Math.PI / 2 + 2 * Math.PI * i / 5;
+                    pos.push([cx + r1 * Math.cos(a), cy + r1 * Math.sin(a)]);
+                }
+                for (i = 0; i < 5; i++) {
+                    a = -Math.PI / 2 + 2 * Math.PI * i / 5 + Math.PI / 5;
+                    pos.push([cx + R * Math.cos(a), cy + R * Math.sin(a)]);
+                }
+                pos.push([cx, cy + R * 1.12]);
+                break;
+        }
+        return pos;
+    }
+
+    // ============================================================
+    // ILLUSTRATION 1: K5 and K3,3 (non-planar graphs)
+    // ============================================================
+    (function() {
+        var c = document.getElementById('k5-k33-canvas');
+        if (!c) return;
+        var W = c.clientWidth, H = c.clientHeight;
+        var dpr = window.devicePixelRatio || 1;
+        c.width = W * dpr; c.height = H * dpr;
+        var ctx = c.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        var midX = W / 2;
+
+        // --- K5 (left side) ---
+        var cx1 = midX / 2, cy1 = H / 2 - 12;
+        var r1 = Math.min(midX / 2 - 40, H / 2 - 50);
+        var k5pos = [];
+        for (var i = 0; i < 5; i++) {
+            var a = -Math.PI / 2 + 2 * Math.PI * i / 5;
+            k5pos.push([cx1 + r1 * Math.cos(a), cy1 + r1 * Math.sin(a)]);
+        }
+        // K5 edges
+        ctx.strokeStyle = 'rgba(156, 163, 175, 0.4)';
+        ctx.lineWidth = 1.2;
+        for (var i = 0; i < 5; i++) {
+            for (var j = i + 1; j < 5; j++) {
+                ctx.beginPath();
+                ctx.moveTo(k5pos[i][0], k5pos[i][1]);
+                ctx.lineTo(k5pos[j][0], k5pos[j][1]);
+                ctx.stroke();
+            }
+        }
+        // K5 vertices
+        for (var i = 0; i < 5; i++) {
+            ctx.beginPath();
+            ctx.arc(k5pos[i][0], k5pos[i][1], 6, 0, Math.PI * 2);
+            ctx.fillStyle = '#a78bfa';
+            ctx.fill();
+        }
+        // Labels
+        ctx.fillStyle = '#e5e7eb';
+        ctx.font = '14px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('K\u2085', cx1, 22);
+        ctx.fillStyle = '#f87171';
+        ctx.font = '13px Inter, sans-serif';
+        ctx.fillText('\u2717 no planar', cx1, H - 10);
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.fillText('V=5  E=10 > 3(5)-6=9', cx1, H - 28);
+
+        // --- K3,3 (right side) ---
+        var cx2 = midX + midX / 2, cy2 = H / 2 - 12;
+        var spanX = Math.min(midX / 2 - 30, 120);
+        var spanY = Math.min(H / 2 - 55, 70);
+        var k33pos = [];
+        for (var i = 0; i < 3; i++) {
+            k33pos.push([cx2 - spanX + spanX * i, cy2 - spanY]);
+        }
+        for (var i = 0; i < 3; i++) {
+            k33pos.push([cx2 - spanX + spanX * i, cy2 + spanY]);
+        }
+        // K3,3 edges
+        ctx.strokeStyle = 'rgba(156, 163, 175, 0.4)';
+        ctx.lineWidth = 1.2;
+        for (var i = 0; i < 3; i++) {
+            for (var j = 3; j < 6; j++) {
+                ctx.beginPath();
+                ctx.moveTo(k33pos[i][0], k33pos[i][1]);
+                ctx.lineTo(k33pos[j][0], k33pos[j][1]);
+                ctx.stroke();
+            }
+        }
+        // K3,3 vertices
+        for (var i = 0; i < 6; i++) {
+            ctx.beginPath();
+            ctx.arc(k33pos[i][0], k33pos[i][1], 6, 0, Math.PI * 2);
+            ctx.fillStyle = i < 3 ? '#a78bfa' : '#22d3ee';
+            ctx.fill();
+        }
+        // Labels
+        ctx.fillStyle = '#e5e7eb';
+        ctx.font = '14px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('K\u2083,\u2083', cx2, 22);
+        ctx.fillStyle = '#f87171';
+        ctx.font = '13px Inter, sans-serif';
+        ctx.fillText('\u2717 no planar', cx2, H - 10);
+        ctx.fillStyle = '#9ca3af';
+        ctx.font = '11px "JetBrains Mono", monospace';
+        ctx.fillText('V=6  E=9 > 2(6)-4=8', cx2, H - 28);
+
+        // Divider
+        ctx.strokeStyle = 'rgba(75, 85, 99, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(midX, 10);
+        ctx.lineTo(midX, H - 10);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    })();
+
+    // ============================================================
+    // ILLUSTRATION 2: Schlegel diagrams of Cube and Dodecahedron
+    // ============================================================
+    (function() {
+        var c = document.getElementById('schlegel-canvas');
+        if (!c) return;
+        var W = c.clientWidth, H = c.clientHeight;
+        var dpr = window.devicePixelRatio || 1;
+        c.width = W * dpr; c.height = H * dpr;
+        var ctx = c.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        var midX = W / 2;
+
+        // --- Cube Schlegel (left) ---
+        var cx1 = midX / 2, cy1 = H / 2 - 10;
+        var R1 = Math.min(midX / 2 - 35, H / 2 - 45);
+        var cubePos = schlegelLayout(1, cx1, cy1, R1);
+        var cubeEdges = GRAPHS[1].edges;
+
+        ctx.strokeStyle = 'rgba(156, 163, 175, 0.45)';
+        ctx.lineWidth = 1.3;
+        for (var e = 0; e < cubeEdges.length; e++) {
+            var a = cubeEdges[e][0], b = cubeEdges[e][1];
+            ctx.beginPath();
+            ctx.moveTo(cubePos[a][0], cubePos[a][1]);
+            ctx.lineTo(cubePos[b][0], cubePos[b][1]);
+            ctx.stroke();
+        }
+        for (var i = 0; i < 8; i++) {
+            ctx.beginPath();
+            ctx.arc(cubePos[i][0], cubePos[i][1], 5, 0, Math.PI * 2);
+            ctx.fillStyle = '#a78bfa';
+            ctx.fill();
+        }
+        ctx.fillStyle = '#e5e7eb';
+        ctx.font = '13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Cubo  (V=8, E=12, F=6)', cx1, H - 10);
+
+        // --- Dodecahedron Schlegel (right) ---
+        var cx2 = midX + midX / 2, cy2 = H / 2 - 10;
+        var R2 = Math.min(midX / 2 - 35, H / 2 - 45);
+        var dodecPos = schlegelLayout(3, cx2, cy2, R2);
+        var dodecEdges = GRAPHS[3].edges;
+
+        ctx.strokeStyle = 'rgba(156, 163, 175, 0.4)';
+        ctx.lineWidth = 0.9;
+        for (var e = 0; e < dodecEdges.length; e++) {
+            var a = dodecEdges[e][0], b = dodecEdges[e][1];
+            ctx.beginPath();
+            ctx.moveTo(dodecPos[a][0], dodecPos[a][1]);
+            ctx.lineTo(dodecPos[b][0], dodecPos[b][1]);
+            ctx.stroke();
+        }
+        for (var i = 0; i < 20; i++) {
+            ctx.beginPath();
+            ctx.arc(dodecPos[i][0], dodecPos[i][1], 3.5, 0, Math.PI * 2);
+            ctx.fillStyle = '#a78bfa';
+            ctx.fill();
+        }
+        ctx.fillStyle = '#e5e7eb';
+        ctx.font = '13px Inter, sans-serif';
+        ctx.textAlign = 'center';
+        ctx.fillText('Dodecaedro  (V=20, E=30, F=12)', cx2, H - 10);
+
+        // Divider
+        ctx.strokeStyle = 'rgba(75, 85, 99, 0.4)';
+        ctx.lineWidth = 1;
+        ctx.setLineDash([4, 4]);
+        ctx.beginPath();
+        ctx.moveTo(midX, 10);
+        ctx.lineTo(midX, H - 10);
+        ctx.stroke();
+        ctx.setLineDash([]);
+    })();
+
+    // ============================================================
+    // LAB: Interactive Schlegel Diagram Explorer
+    // ============================================================
+    (function() {
+        var container = document.getElementById('lab-container');
+        var canvas = document.getElementById('lab-canvas');
+        if (!container || !canvas) return;
+
+        var W, H, dpr, ctx;
+        var currentGraph = 0;
+        var positions = [];
+        var selectedVertex = -1;
+        var dragVertex = -1;
+        var isDragging = false;
+
+        function resize() {
+            W = container.clientWidth;
+            H = container.clientHeight;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+        }
+
+        function initPositions() {
+            var R = Math.min(W, H) / 2 - 50;
+            positions = schlegelLayout(currentGraph, W / 2, H / 2, R);
+            selectedVertex = -1;
+        }
+
+        function getNeighbors(v) {
+            var g = GRAPHS[currentGraph];
+            var nbrs = [];
+            for (var i = 0; i < g.edges.length; i++) {
+                var e = g.edges[i];
+                if (e[0] === v) nbrs.push(e[1]);
+                else if (e[1] === v) nbrs.push(e[0]);
+            }
+            return nbrs;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            var g = GRAPHS[currentGraph];
+            var nbrs = selectedVertex >= 0 ? getNeighbors(selectedVertex) : [];
+            var nbrSet = {};
+            for (var i = 0; i < nbrs.length; i++) nbrSet[nbrs[i]] = true;
+
+            // Edges
+            for (var i = 0; i < g.edges.length; i++) {
+                var a = g.edges[i][0], b = g.edges[i][1];
+                var highlight = (selectedVertex >= 0) && (a === selectedVertex || b === selectedVertex);
+                ctx.beginPath();
+                ctx.moveTo(positions[a][0], positions[a][1]);
+                ctx.lineTo(positions[b][0], positions[b][1]);
+                ctx.strokeStyle = highlight ? 'rgba(34, 211, 238, 0.7)' : 'rgba(107, 114, 128, 0.35)';
+                ctx.lineWidth = highlight ? 2.5 : 1.2;
+                ctx.stroke();
+            }
+
+            // Vertices
+            var vr = g.V <= 8 ? 10 : (g.V <= 12 ? 8 : 6);
+            for (var i = 0; i < g.V; i++) {
+                ctx.beginPath();
+                ctx.arc(positions[i][0], positions[i][1], vr, 0, Math.PI * 2);
+                if (i === selectedVertex) {
+                    ctx.fillStyle = '#22d3ee';
+                } else if (nbrSet[i]) {
+                    ctx.fillStyle = '#a78bfa';
+                } else {
+                    ctx.fillStyle = selectedVertex >= 0 ? 'rgba(107, 114, 128, 0.4)' : '#a78bfa';
+                }
+                ctx.fill();
+
+                // Vertex label
+                ctx.fillStyle = '#fff';
+                ctx.font = (g.V <= 12 ? '11' : '9') + 'px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('' + i, positions[i][0], positions[i][1]);
+            }
+
+            // Diagram title
+            ctx.fillStyle = '#6b7280';
+            ctx.font = '12px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.textBaseline = 'top';
+            ctx.fillText('Diagrama de Schlegel -- ' + g.name, W / 2, 12);
+        }
+
+        function updateInfo() {
+            var g = GRAPHS[currentGraph];
+            document.getElementById('info-v').textContent = g.V;
+            document.getElementById('info-e').textContent = g.E;
+            document.getElementById('info-f').textContent = g.F;
+        }
+
+        function findVertex(mx, my) {
+            var g = GRAPHS[currentGraph];
+            var vr = g.V <= 8 ? 14 : (g.V <= 12 ? 12 : 10);
+            for (var i = 0; i < g.V; i++) {
+                var dx = mx - positions[i][0], dy = my - positions[i][1];
+                if (dx * dx + dy * dy < vr * vr) return i;
+            }
+            return -1;
+        }
+
+        function getMousePos(e) {
+            var rect = canvas.getBoundingClientRect();
+            return [e.clientX - rect.left, e.clientY - rect.top];
+        }
+
+        // Mouse events
+        canvas.addEventListener('mousedown', function(e) {
+            var p = getMousePos(e);
+            var v = findVertex(p[0], p[1]);
+            if (v >= 0) { dragVertex = v; isDragging = true; }
+        });
+        canvas.addEventListener('mousemove', function(e) {
+            if (isDragging && dragVertex >= 0) {
+                var p = getMousePos(e);
+                positions[dragVertex] = [p[0], p[1]];
+                draw();
+            }
+        });
+        canvas.addEventListener('mouseup', function(e) {
+            if (!isDragging) return;
+            var p = getMousePos(e);
+            var v = findVertex(p[0], p[1]);
+            if (v >= 0 && v === dragVertex) {
+                selectedVertex = (selectedVertex === v) ? -1 : v;
+            }
+            isDragging = false;
+            dragVertex = -1;
+            draw();
+        });
+        canvas.addEventListener('mouseleave', function() { isDragging = false; dragVertex = -1; });
+
+        // Touch events
+        canvas.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            var t = e.touches[0];
+            var rect = canvas.getBoundingClientRect();
+            var p = [t.clientX - rect.left, t.clientY - rect.top];
+            var v = findVertex(p[0], p[1]);
+            if (v >= 0) { dragVertex = v; isDragging = true; }
+        }, { passive: false });
+        canvas.addEventListener('touchmove', function(e) {
+            e.preventDefault();
+            if (isDragging && dragVertex >= 0) {
+                var t = e.touches[0];
+                var rect = canvas.getBoundingClientRect();
+                positions[dragVertex] = [t.clientX - rect.left, t.clientY - rect.top];
+                draw();
+            }
+        }, { passive: false });
+        canvas.addEventListener('touchend', function(e) {
+            if (dragVertex >= 0) {
+                selectedVertex = (selectedVertex === dragVertex) ? -1 : dragVertex;
+            }
+            isDragging = false; dragVertex = -1;
+            draw();
+        });
+
+        // Graph selection buttons
+        var btns = document.querySelectorAll('.lab-btn');
+        btns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentGraph = parseInt(this.getAttribute('data-graph'));
+                btns.forEach(function(b) {
+                    b.className = 'lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition';
+                });
+                this.className = 'lab-btn px-3 py-1.5 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition';
+                initPositions();
+                updateInfo();
+                draw();
+            });
+        });
+
+        // Reset button
+        document.getElementById('lab-reset').addEventListener('click', function() {
+            initPositions();
+            draw();
+        });
+
+        // Init
+        resize();
+        initPositions();
+        updateInfo();
+        draw();
+        window.addEventListener('resize', function() { resize(); initPositions(); draw(); });
+    })();
+    </script>
 </body>
 </html>

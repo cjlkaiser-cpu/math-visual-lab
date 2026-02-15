@@ -3,52 +3,41 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 24: De 4D a 3D — Visualización | Matemáticas Visuales</title>
+    <title>Leccion 24: Dimensiones Superiores y Sintesis | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
+<body class="bg-black text-gray-100 min-h-screen">
+
+    <!-- Header -->
+    <header class="border-b border-gray-800 bg-black/90 backdrop-blur sticky top-0 z-50">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
             <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+                <div class="flex items-center space-x-2 text-sm text-gray-400">
+                    <a href="../../index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                    <span>/</span>
+                    <a href="../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                    <span>/</span>
+                    <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                    <span>/</span>
+                    <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                    <span>/</span>
+                    <span class="text-violet-400">Modulo 04</span>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-23.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="../modulo-05/leccion-25.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente Módulo →</a>
+                <nav class="flex space-x-3 text-sm">
+                    <a href="./leccion-23.html" class="px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-300 transition">Anterior</a>
+                    <a href="../index.html" class="px-3 py-2 rounded-lg bg-violet-600 hover:bg-violet-500 text-white transition">Volver al Curso</a>
                 </nav>
             </div>
         </div>
@@ -56,85 +45,857 @@
 
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 4</h3>
-                    <p class="text-sm text-gray-400 mb-4">Más Allá de la 3D</p>
+                <div class="bg-gray-950 border border-gray-800 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-1 text-cyan-400">Modulo 04</h3>
+                    <p class="text-sm text-gray-500 mb-4">Mas Alla de la 3D</p>
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>6/6</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 100%"></div>
                         </div>
                     </div>
-                    <div class="mb-4 p-3 bg-green-900/30 border border-green-500/30 rounded-lg">
-                        <p class="text-green-400 text-sm font-semibold text-center">✓ Módulo completado</p>
-                    </div>
-                    <nav class="space-y-2">
-                        <a href="./leccion-19.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">19. Introducción a 4D</a>
-                        <a href="./leccion-20.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">20. El Teseracto</a>
-                        <a href="./leccion-21.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">21. Politopos 4D</a>
-                        <a href="./leccion-22.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">22. Proyecciones</a>
-                        <a href="./leccion-23.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">23. Navegando en 4D</a>
-                        <a href="./leccion-24.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">24. Visualización 4D→3D</a>
+                    <nav class="space-y-1">
+                        <a href="./leccion-19.html" class="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-400 text-sm transition">19. El Salto a la Cuarta Dimension</a>
+                        <a href="./leccion-20.html" class="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-400 text-sm transition">20. Los Seis Politopos Regulares</a>
+                        <a href="./leccion-21.html" class="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-400 text-sm transition">21. Euler-Poincare y Dualidad</a>
+                        <a href="./leccion-22.html" class="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-400 text-sm transition">22. Proyecciones: De 4D a Pantalla</a>
+                        <a href="./leccion-23.html" class="block px-3 py-2 rounded-lg hover:bg-gray-800 text-gray-400 text-sm transition">23. Rotaciones en 4D y el 24-celda</a>
+                        <a href="./leccion-24.html" class="block px-3 py-2 rounded-lg bg-violet-600 text-white text-sm font-medium">24. Dimensiones Superiores y Sintesis</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- Main Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
-                    <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 24</span>
-                            <span class="text-gray-400 text-sm">⏱️ 25 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">De 4D a 3D — Visualización</h1>
-                        <p class="text-gray-400 text-lg">Técnicas avanzadas para comprender objetos tetradimensionales.</p>
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+
+                    <!-- Title block -->
+                    <div class="mb-10">
+                        <span class="text-violet-400 text-sm font-medium mono">Leccion 24 -- Capstone</span>
+                        <h1 class="text-4xl font-bold mt-2 mb-3 glow-text text-white">Dimensiones Superiores y Sintesis</h1>
+                        <p class="text-gray-400 text-lg">Panorama completo: que pasa en \(n \geq 5\), por que 4D es excepcional, y recapitulacion del modulo.</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Técnicas de Visualización</h2>
-                        <p class="text-gray-300 mb-4">Combinamos varias técnicas para entender objetos 4D: coloreado, animación, cortes y proyecciones múltiples.</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Coloreado por Coordenada</h3>
-                        <p class="text-gray-300 mb-4">Podemos colorear los vértices o caras según su coordenada w. Esto ayuda a distinguir partes "delanteras" y "traseras" en la cuarta dimensión.</p>
-                        <div class="bg-platonic-purple/10 border border-platonic-purple rounded-lg p-6 mb-6">
-                            <h4 class="font-semibold text-platonic-purple mb-2">Gradiente de Color</h4>
-                            <p class="text-sm text-gray-300">w = -1 (rojo) → w = 0 (verde) → w = +1 (azul)</p>
-                            <p class="text-sm text-gray-400 mt-2">Permite ver la "profundidad" 4D</p>
+
+                    <!-- ============================================ -->
+                    <!-- Section 1: Las Tres Familias Infinitas -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">1. Las Tres Familias Infinitas</h3>
+                        <p class="text-gray-300 mb-4">
+                            En dimensiones bajas (2, 3, 4) existen politopos regulares "excepcionales" que no pertenecen a ninguna familia general. Pero en toda dimension \(n \geq 1\) encontramos exactamente tres familias infinitas de politopos regulares convexos. Estas familias persisten sin importar cuan grande sea \(n\).
+                        </p>
+
+                        <!-- Simplex -->
+                        <div class="bg-gray-900 rounded-xl p-6 mb-4">
+                            <h4 class="font-semibold text-violet-300 mb-2 mono">Simplex \(\alpha_n\) = {3, 3, ..., 3}</h4>
+                            <p class="text-gray-300 mb-3">
+                                El simplex de dimension \(n\) tiene \(n+1\) vertices equidistantes entre si. Es la generalizacion del triangulo (2D), el tetraedro (3D), la 5-celda (4D), etc.
+                            </p>
+                            <p class="text-gray-300 mb-2">Vertices: \(V = n + 1\)</p>
+                            <p class="text-gray-300 mb-2">Numero de \(k\)-caras:</p>
+                            $$ f_k = \binom{n+1}{k+1} $$
+                            <p class="text-gray-400 text-sm mt-3">
+                                <strong>Ejemplo:</strong> El 5-simplex (dimension 5) tiene \(V = 6\), \(E = \binom{6}{2} = 15\), \(F = \binom{6}{3} = 20\), \(C = \binom{6}{4} = 15\), \(H = \binom{6}{5} = 6\).
+                            </p>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Animación de Rotación</h3>
-                        <p class="text-gray-300 mb-4">La rotación continua en 4D produce animaciones fascinantes donde las partes del objeto parecen "pasar a través" unas de otras.</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Diagramas de Schlegel</h3>
-                        <p class="text-gray-300 mb-4">Similar a cómo un cubo se puede "desplegar" en 2D, los politopos 4D tienen diagramas de Schlegel 3D que los representan como celdas conectadas.</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Resumen del Módulo 4</h3>
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
-                            <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                                <li>6 politopos regulares en 4D</li>
-                                <li>Proyecciones 4D→3D para visualización</li>
-                                <li>Rotaciones en 6 planos independientes</li>
-                                <li>Dualidad: teseracto ↔ 16-celda, 120-celda ↔ 600-celda</li>
+
+                        <!-- Hypercube -->
+                        <div class="bg-gray-900 rounded-xl p-6 mb-4">
+                            <h4 class="font-semibold text-violet-300 mb-2 mono">Hipercubo \(\gamma_n\) = {4, 3, ..., 3}</h4>
+                            <p class="text-gray-300 mb-3">
+                                El hipercubo de dimension \(n\) tiene \(2^n\) vertices, formados por todas las combinaciones de coordenadas \(\pm 1\). Generalizacion del cuadrado, cubo, teseracto, penteracto...
+                            </p>
+                            <p class="text-gray-300 mb-2">Numero de \(k\)-caras:</p>
+                            $$ f_k = \binom{n}{k} \cdot 2^{n-k} $$
+                            <p class="text-gray-400 text-sm mt-3">
+                                <strong>Ejemplo:</strong> El penteracto (5D) tiene \(V = 32\), \(E = \binom{5}{1} \cdot 2^4 = 80\), \(F = \binom{5}{2} \cdot 2^3 = 80\), \(C = \binom{5}{3} \cdot 2^2 = 40\), \(H = \binom{5}{4} \cdot 2^1 = 10\).
+                            </p>
+                        </div>
+
+                        <!-- Cross-polytope -->
+                        <div class="bg-gray-900 rounded-xl p-6 mb-4">
+                            <h4 class="font-semibold text-violet-300 mb-2 mono">Cross-politopo \(\beta_n\) = {3, ..., 3, 4}</h4>
+                            <p class="text-gray-300 mb-3">
+                                El cross-politopo de dimension \(n\) tiene \(2n\) vertices: los vectores unitarios \(\pm e_i\). Es el dual del hipercubo en cada dimension. Generalizacion del cuadrado (2D), octaedro (3D), 16-celda (4D), pentacross (5D)...
+                            </p>
+                            <p class="text-gray-300 mb-2">Numero de \(k\)-caras:</p>
+                            $$ f_k = 2^{k+1} \binom{n}{k+1} $$
+                            <p class="text-gray-400 text-sm mt-3">
+                                <strong>Ejemplo:</strong> El pentacross (5D) tiene \(V = 10\), \(E = 2^2 \binom{5}{2} = 40\), \(F = 2^3 \binom{5}{3} = 80\), \(C = 2^4 \binom{5}{4} = 80\), \(H = 2^5 \binom{5}{5} = 32\).
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- Section 2: Por Que Solo 3 en n>=5 -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">2. Por Que Solo 3 en \(n \geq 5\)</h3>
+                        <p class="text-gray-300 mb-4">
+                            La clasificacion de politopos regulares depende de una restriccion geometrica fundamental: el <strong>angulo diedro</strong> de las celdas debe ser lo suficientemente pequeno para que el politopo se "cierre" en la esfera.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Cuando \(p\) politopos regulares se encuentran alrededor de una arista, la suma de sus angulos diedros debe ser estrictamente menor que \(2\pi\). A medida que la dimension crece, los angulos diedros de los politopos regulares tambien crecen, dejando menos opciones.
+                        </p>
+
+                        <div class="bg-gray-900 rounded-xl p-6 mb-4">
+                            <h4 class="font-semibold text-violet-300 mb-3">Angulos diedros por familia</h4>
+                            <ul class="space-y-2 text-gray-300">
+                                <li><strong class="text-violet-300">Simplex:</strong> angulo diedro \(= \arccos(1/n)\). Crece lentamente, siempre se mantiene suficientemente pequeno.</li>
+                                <li><strong class="text-violet-300">Hipercubo:</strong> angulo diedro \(= 90^\circ\) en todas las dimensiones. Siempre funciona (3 cubos alrededor de cada arista = \(270^\circ < 360^\circ\)).</li>
+                                <li><strong class="text-violet-300">Cross-politopo:</strong> dual del hipercubo, hereda su viabilidad en toda dimension.</li>
+                                <li><strong class="text-violet-300">Dodecaedro/Icosaedro:</strong> angulo diedro \(\approx 116.6^\circ\) y \(\approx 138.2^\circ\). Demasiado grandes para funcionar como celdas en \(n \geq 5\).</li>
                             </ul>
                         </div>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Visualización Final</h2>
-                        <p class="text-gray-400 mb-4">Prueba todas las técnicas de visualización en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+
+                        <div class="bg-violet-950/30 border border-violet-800 rounded-xl p-5 mb-4">
+                            <p class="text-violet-200 font-medium mb-2">Teorema (Schlafli, 1852)</p>
+                            <p class="text-gray-300">
+                                Para \(n \geq 5\), los unicos politopos regulares convexos son el \(n\)-simplex, el \(n\)-hipercubo y el \(n\)-cross-politopo. Los politopos excepcionales solo existen en dimensiones 2, 3 y 4.
+                            </p>
                         </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- Section 3: La Gran Tabla de Clasificacion -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">3. La Gran Tabla de Clasificacion</h3>
+                        <p class="text-gray-300 mb-4">
+                            Esta tabla resume toda la clasificacion de politopos regulares convexos por dimension. Es el resultado culminante de las lecciones 19-24.
+                        </p>
+
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm border-collapse">
+                                <thead>
+                                    <tr class="border-b border-gray-700">
+                                        <th class="text-left py-3 px-4 text-violet-400 font-semibold">Dim</th>
+                                        <th class="text-left py-3 px-4 text-violet-400 font-semibold">Politopos regulares</th>
+                                        <th class="text-left py-3 px-4 text-violet-400 font-semibold">Excepcionales</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300">
+                                    <tr class="border-b border-gray-800">
+                                        <td class="py-3 px-4 mono font-medium">2</td>
+                                        <td class="py-3 px-4">\(\infty\) (poligonos regulares)</td>
+                                        <td class="py-3 px-4 text-yellow-400">Todos (cada \(\{p\}\) con \(p \geq 3\))</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800">
+                                        <td class="py-3 px-4 mono font-medium">3</td>
+                                        <td class="py-3 px-4">5 (solidos platonicos)</td>
+                                        <td class="py-3 px-4 text-yellow-400">Dodecaedro, Icosaedro</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800 bg-violet-950/20">
+                                        <td class="py-3 px-4 mono font-medium text-violet-300">4</td>
+                                        <td class="py-3 px-4 text-violet-200">6 politopos</td>
+                                        <td class="py-3 px-4 text-yellow-400">24-celda, 120-celda, 600-celda</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800">
+                                        <td class="py-3 px-4 mono font-medium">5</td>
+                                        <td class="py-3 px-4">3 (familias infinitas)</td>
+                                        <td class="py-3 px-4 text-gray-500">Ninguno</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 mono font-medium">6+</td>
+                                        <td class="py-3 px-4">3 (familias infinitas)</td>
+                                        <td class="py-3 px-4 text-gray-500">Ninguno</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-gray-400 text-sm">
+                            La dimension 4 es la mas rica: tiene los 3 de las familias infinitas mas 3 excepcionales (24-celda, 120-celda, 600-celda), para un total de 6. Esto hace que la geometria 4D sea unica y fascinante.
+                        </p>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- Section 4: Grupos de Simetria 4D -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">4. Grupos de Simetria en 4D</h3>
+                        <p class="text-gray-300 mb-4">
+                            Cada politopo regular tiene un grupo de simetria que codifica todas sus transformaciones (rotaciones y reflexiones). En 4D, estos grupos son excepcionalmente ricos y conectan con la teoria de grupos de Coxeter.
+                        </p>
+
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm border-collapse">
+                                <thead>
+                                    <tr class="border-b border-gray-700">
+                                        <th class="text-left py-3 px-4 text-violet-400 font-semibold">Politopo</th>
+                                        <th class="text-left py-3 px-4 text-violet-400 font-semibold">Grupo rot.</th>
+                                        <th class="text-right py-3 px-4 text-violet-400 font-semibold">|G_rot|</th>
+                                        <th class="text-left py-3 px-4 text-violet-400 font-semibold">Grupo completo</th>
+                                        <th class="text-right py-3 px-4 text-violet-400 font-semibold">|G|</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300 mono text-xs">
+                                    <tr class="border-b border-gray-800">
+                                        <td class="py-3 px-4">5-celda</td>
+                                        <td class="py-3 px-4">\(A_5\)</td>
+                                        <td class="py-3 px-4 text-right">60</td>
+                                        <td class="py-3 px-4">\(S_5 \times \mathbb{Z}_2\)</td>
+                                        <td class="py-3 px-4 text-right">120</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800">
+                                        <td class="py-3 px-4">Teseracto / 16-celda</td>
+                                        <td class="py-3 px-4">\(B_4^+\)</td>
+                                        <td class="py-3 px-4 text-right">192</td>
+                                        <td class="py-3 px-4">\(B_4\)</td>
+                                        <td class="py-3 px-4 text-right">384</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-800 bg-violet-950/20">
+                                        <td class="py-3 px-4 text-violet-200">24-celda</td>
+                                        <td class="py-3 px-4">\(F_4^+\)</td>
+                                        <td class="py-3 px-4 text-right">576</td>
+                                        <td class="py-3 px-4">\(F_4\)</td>
+                                        <td class="py-3 px-4 text-right">1152</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="py-3 px-4 text-violet-200">120-celda / 600-celda</td>
+                                        <td class="py-3 px-4">\(H_4^+\)</td>
+                                        <td class="py-3 px-4 text-right">7200</td>
+                                        <td class="py-3 px-4">\(H_4\)</td>
+                                        <td class="py-3 px-4 text-right">14400</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-gray-900 rounded-xl p-5">
+                            <p class="text-gray-300 mb-2">
+                                Los grupos \(F_4\) y \(H_4\) son <strong>grupos de Coxeter excepcionales</strong> que solo existen en dimension 4. El grupo \(H_4\) con orden 14400 es el grupo de simetria mas grande de cualquier politopo regular en cualquier dimension finita.
+                            </p>
+                            <p class="text-gray-400 text-sm">
+                                Nota: \(H_4\) esta intimamente relacionado con la simetria icosaedrica. La 120-celda y la 600-celda son, en cierto sentido, las versiones 4D del dodecaedro y el icosaedro.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- Section 5: Hipervolumen -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">5. Hipervolumen: La Bola Unitaria</h3>
+                        <p class="text-gray-300 mb-4">
+                            Las formulas de volumen se generalizan a dimension arbitraria de maneras sorprendentes. Consideremos la \(n\)-bola de radio \(r\):
+                        </p>
+
+                        <div class="bg-gray-900 rounded-xl p-6 mb-4">
+                            <h4 class="font-semibold text-violet-300 mb-3">Formulas de volumen</h4>
+                            <p class="text-gray-300 mb-2"><strong>\(n\)-cubo:</strong> \(V = a^n\) (trivial, lado \(a\))</p>
+                            <p class="text-gray-300 mb-2"><strong>\(n\)-simplex regular:</strong></p>
+                            $$ V_{\text{simplex}} = \frac{\sqrt{n+1}}{n! \cdot 2^{n/2}} \cdot a^n $$
+                            <p class="text-gray-300 mb-2"><strong>\(n\)-bola de radio \(r\):</strong></p>
+                            $$ V_n(r) = \frac{\pi^{n/2}}{\Gamma(n/2 + 1)} \cdot r^n $$
+                        </div>
+
+                        <p class="text-gray-300 mb-4">Valores para la bola unitaria (\(r = 1\)):</p>
+
+                        <div class="overflow-x-auto mb-4">
+                            <table class="w-full text-sm border-collapse">
+                                <thead>
+                                    <tr class="border-b border-gray-700">
+                                        <th class="text-left py-2 px-3 text-violet-400 font-semibold">n</th>
+                                        <th class="text-left py-2 px-3 text-violet-400 font-semibold">Formula</th>
+                                        <th class="text-right py-2 px-3 text-violet-400 font-semibold">\(V_n(1)\)</th>
+                                    </tr>
+                                </thead>
+                                <tbody class="text-gray-300 mono text-xs">
+                                    <tr class="border-b border-gray-800"><td class="py-2 px-3">1</td><td class="py-2 px-3">\(2r\)</td><td class="py-2 px-3 text-right">2.000</td></tr>
+                                    <tr class="border-b border-gray-800"><td class="py-2 px-3">2</td><td class="py-2 px-3">\(\pi r^2\)</td><td class="py-2 px-3 text-right">3.142</td></tr>
+                                    <tr class="border-b border-gray-800"><td class="py-2 px-3">3</td><td class="py-2 px-3">\(\frac{4}{3}\pi r^3\)</td><td class="py-2 px-3 text-right">4.189</td></tr>
+                                    <tr class="border-b border-gray-800"><td class="py-2 px-3">4</td><td class="py-2 px-3">\(\frac{\pi^2}{2} r^4\)</td><td class="py-2 px-3 text-right">4.935</td></tr>
+                                    <tr class="border-b border-gray-800 bg-cyan-950/20"><td class="py-2 px-3 text-cyan-300">5</td><td class="py-2 px-3">\(\frac{8\pi^2}{15} r^5\)</td><td class="py-2 px-3 text-right text-cyan-300">5.264</td></tr>
+                                    <tr><td class="py-2 px-3">6</td><td class="py-2 px-3">\(\frac{\pi^3}{6} r^6\)</td><td class="py-2 px-3 text-right">5.168</td></tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <div class="bg-cyan-950/20 border border-cyan-800 rounded-xl p-5">
+                            <p class="text-cyan-200 font-medium mb-2">Resultado notable</p>
+                            <p class="text-gray-300">
+                                El volumen de la bola unitaria alcanza su maximo alrededor de la dimension 5 (el maximo exacto esta entre \(n = 5\) y \(n = 6\)) y luego <strong>decrece monotonamente</strong> hacia cero conforme \(n \to \infty\). En dimensiones muy altas, casi todo el volumen del hipercubo se concentra en las esquinas, no en la bola inscrita.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- Section 6: Recapitulacion -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">6. Recapitulacion del Modulo 4</h3>
+
+                        <div class="bg-gray-900 rounded-xl p-6 mb-6">
+                            <div class="space-y-3">
+                                <div class="flex items-start space-x-3">
+                                    <span class="mono text-violet-400 text-sm mt-0.5 shrink-0">L19</span>
+                                    <p class="text-gray-300">Introduccion a \(\mathbb{R}^4\): coordenadas \((x,y,z,w)\), construccion del teseracto por extrusion, primeras intuiciones sobre la cuarta dimension.</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="mono text-violet-400 text-sm mt-0.5 shrink-0">L20</span>
+                                    <p class="text-gray-300">Clasificacion completa: 6 politopos regulares en 4D, coordenadas explicitas, simbolos de Schlafli \(\{p, q, r\}\).</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="mono text-violet-400 text-sm mt-0.5 shrink-0">L21</span>
+                                    <p class="text-gray-300">Formula de Euler-Poincare \(V - E + F - C = 0\) en 4D, dualidad \(\{p, q, r\} \leftrightarrow \{r, q, p\}\), verificacion con los 6 politopos.</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="mono text-violet-400 text-sm mt-0.5 shrink-0">L22</span>
+                                    <p class="text-gray-300">Metodos de proyeccion: ortogonal, perspectiva, estereografica, secciones transversales. Diagramas de Schlegel.</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="mono text-violet-400 text-sm mt-0.5 shrink-0">L23</span>
+                                    <p class="text-gray-300">Grupo \(\text{SO}(4)\), rotaciones dobles, cuaterniones unitarios, la 24-celda como grupo de cuaterniones de Hurwitz.</p>
+                                </div>
+                                <div class="flex items-start space-x-3">
+                                    <span class="mono text-violet-400 text-sm mt-0.5 shrink-0">L24</span>
+                                    <p class="text-gray-300">Familias infinitas (\(\alpha_n, \gamma_n, \beta_n\)), clasificacion completa en todas las dimensiones, grupos de simetria excepcionales, panorama \(n\)-dimensional.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-violet-950/20 border border-violet-700 rounded-xl p-6">
+                            <p class="text-gray-200 leading-relaxed">
+                                Con esto concluimos el Modulo 4. Hemos viajado desde las primeras intuiciones sobre el espacio tetradimensional hasta la clasificacion completa de politopos regulares en <em>todas</em> las dimensiones. La dimension 4 ocupa un lugar privilegiado en matematicas: es la unica dimension donde florecen los politopos excepcionales junto con las familias infinitas. Los grupos de Coxeter \(F_4\) y \(H_4\), la auto-dualidad de la 24-celda, y la correspondencia entre cuaterniones y rotaciones 4D revelan una estructura de una riqueza y coherencia extraordinarias. La geometria de dimensiones superiores no es un ejercicio abstracto: es la confirmacion de que el universo matematico posee una arquitectura profunda que solo se hace visible cuando trascendemos las tres dimensiones familiares.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- Exercises -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">1.</strong> Calcula la caracteristica de Euler generalizada para el 5-simplex (6 vertices, todo par conectado). Usa \(\chi = V - E + F - C + H\) donde \(H\) son las 4-celdas. Determina \(V, E, F, C, H\) usando \(f_k = \binom{6}{k+1}\) y verifica el valor de \(\chi\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">2.</strong> Escribe los 10 vertices del cross-politopo en \(\mathbb{R}^5\) (son los vectores \(\pm e_i\)). Calcula el numero de aristas: dos vertices estan conectados si y solo si no son antipodales. Verifica tu resultado con la formula general para el cross-politopo \(\beta_n\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">3.</strong> Para el hipercubo \(n\)-dimensional, usa la formula \(f_k = \binom{n}{k} \cdot 2^{n-k}\) con \(n = 5\) para calcular el numero de 2-caras (\(k = 2\)). Interpreta geometricamente: cada 2-cara del penteracto es un cuadrado. Calcula tambien \(f_3\) y \(f_4\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">4.</strong> El grupo \(H_4\) tiene orden 14400 y el grupo de rotaciones del icosaedro \(I \cong A_5\) tiene orden 60. Verifica que \(|H_4| = 60^2 \times 4\). Investiga por que: \(H_4\) contiene dos copias del grupo icosaedrico actuando en subespacios complementarios de \(\mathbb{R}^4\), gracias a la descomposicion \(\mathrm{SO}(4) \cong (S^3 \times S^3)/\mathbb{Z}_2\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">5.</strong> Usando la formula \(V_n = \frac{\pi^{n/2}}{\Gamma(n/2 + 1)} r^n\), calcula el volumen de la \(n\)-bola unitaria para \(n = 1, 2, 3, 4, 5, 6\). En que dimension alcanza su maximo? Encuentra el radio \(r_0\) para el cual \(V_4(r_0) = V_3(r_0)\).</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- ============================================ -->
+                    <!-- LAB: Escalera Dimensional -->
+                    <!-- ============================================ -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">LAB: Escalera Dimensional</h3>
+                        <p class="text-gray-400 mb-4">
+                            Explora las tres familias infinitas de politopos regulares en dimensiones 2 a 5. Selecciona una familia y una dimension para ver el politopo proyectado con rotacion. El panel de informacion muestra los conteos de caras y la caracteristica de Euler.
+                        </p>
+
+                        <!-- Controls -->
+                        <div class="flex flex-wrap gap-3 mb-4">
+                            <div>
+                                <span class="text-xs text-gray-500 mb-1 block">Familia</span>
+                                <div class="flex gap-2">
+                                    <button id="btn-simplex" onclick="setFamily('simplex')" class="px-3 py-1.5 rounded-lg text-sm bg-violet-600 text-white transition hover:bg-violet-500">Simplex</button>
+                                    <button id="btn-hypercube" onclick="setFamily('hypercube')" class="px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-300 transition hover:bg-gray-700">Hipercubo</button>
+                                    <button id="btn-cross" onclick="setFamily('cross')" class="px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-300 transition hover:bg-gray-700">Cross-politopo</button>
+                                </div>
+                            </div>
+                            <div>
+                                <span class="text-xs text-gray-500 mb-1 block">Dimension</span>
+                                <div class="flex gap-2">
+                                    <button id="btn-dim2" onclick="setDim(2)" class="px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-300 transition hover:bg-gray-700">2D</button>
+                                    <button id="btn-dim3" onclick="setDim(3)" class="px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-300 transition hover:bg-gray-700">3D</button>
+                                    <button id="btn-dim4" onclick="setDim(4)" class="px-3 py-1.5 rounded-lg text-sm bg-cyan-700 text-white transition hover:bg-cyan-600">4D</button>
+                                    <button id="btn-dim5" onclick="setDim(5)" class="px-3 py-1.5 rounded-lg text-sm bg-gray-800 text-gray-300 transition hover:bg-gray-700">5D</button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Info panel -->
+                        <div id="info-panel" class="bg-gray-900 rounded-xl p-4 mb-4 mono text-sm text-gray-300">
+                            <span id="info-name" class="text-violet-300 font-semibold">5-celda</span>
+                            <span class="mx-2 text-gray-600">|</span>
+                            <span id="info-counts">V=5, E=10, F=10, C=5</span>
+                            <span class="mx-2 text-gray-600">|</span>
+                            <span id="info-euler" class="text-cyan-400">chi = 0</span>
+                        </div>
+
+                        <!-- Three.js canvas -->
+                        <div class="rounded-xl overflow-hidden border border-gray-800" style="height: 500px;">
+                            <canvas id="lab-canvas" style="width: 100%; height: 100%; display: block;"></canvas>
+                        </div>
+                        <p class="text-gray-500 text-xs mt-2">Arrastra con el raton para rotar la vista 3D. La rotacion en dimensiones superiores es automatica.</p>
+                    </section>
+
+                    <!-- Bottom Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-23.html" class="px-6 py-3 bg-gray-800 hover:bg-gray-700 rounded-xl font-semibold transition text-gray-300">
+                            Rotaciones en 4D
+                        </a>
+                        <a href="../index.html" class="px-6 py-3 bg-violet-600 hover:bg-violet-500 rounded-xl font-semibold transition text-white">
+                            Volver al Curso
+                        </a>
                     </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-23.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="../modulo-05/leccion-25.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Módulo 5: Teoría de Grafos →</a>
-                    </div>
+
                 </article>
             </main>
+
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-800 mt-16">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+            <p class="text-center text-gray-600 text-sm">
+                EigenLab / Math Visual Lab / Platonic Lab / Curso -- Matematicas Visuales -- De Platon a 4D
+            </p>
         </div>
     </footer>
+
+    <!-- Three.js -->
+    <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+    <script>
+    (function() {
+        'use strict';
+
+        // === STATE ===
+        let currentFamily = 'simplex';
+        let currentDim = 4;
+        let scene, camera, renderer, lineGroup;
+        let mouseDown = false, mouseX = 0, mouseY = 0;
+        let rotY = 0, rotX = 0;
+        let time = 0;
+        const canvas = document.getElementById('lab-canvas');
+
+        // === THREE.JS SETUP ===
+        function initThree() {
+            scene = new THREE.Scene();
+            camera = new THREE.PerspectiveCamera(50, canvas.clientWidth / canvas.clientHeight, 0.1, 100);
+            camera.position.set(0, 0, 5);
+
+            renderer = new THREE.WebGLRenderer({ canvas: canvas, antialias: true, alpha: true });
+            renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            renderer.setPixelRatio(window.devicePixelRatio || 1);
+            renderer.setClearColor(0x030712, 1);
+
+            lineGroup = new THREE.Group();
+            scene.add(lineGroup);
+
+            // Mouse controls
+            canvas.addEventListener('mousedown', function(e) { mouseDown = true; mouseX = e.clientX; mouseY = e.clientY; });
+            canvas.addEventListener('mousemove', function(e) {
+                if (!mouseDown) return;
+                rotY += (e.clientX - mouseX) * 0.005;
+                rotX += (e.clientY - mouseY) * 0.005;
+                mouseX = e.clientX; mouseY = e.clientY;
+            });
+            canvas.addEventListener('mouseup', function() { mouseDown = false; });
+            canvas.addEventListener('mouseleave', function() { mouseDown = false; });
+
+            window.addEventListener('resize', function() {
+                camera.aspect = canvas.clientWidth / canvas.clientHeight;
+                camera.updateProjectionMatrix();
+                renderer.setSize(canvas.clientWidth, canvas.clientHeight);
+            });
+        }
+
+        // === POLYTOPE GENERATORS ===
+
+        // Simplex vertices in nD (n+1 vertices)
+        function simplexVertices(n) {
+            if (n === 2) {
+                return [[Math.cos(0), Math.sin(0)], [Math.cos(2*Math.PI/3), Math.sin(2*Math.PI/3)], [Math.cos(4*Math.PI/3), Math.sin(4*Math.PI/3)]];
+            }
+            // Standard simplex embedding: start with e1..en, then add centroid-based last vertex
+            const verts = [];
+            for (let i = 0; i < n + 1; i++) {
+                const v = new Array(n).fill(0);
+                if (i < n) {
+                    // Use recursive construction
+                    // Place first n vertices at known positions, last vertex centered above
+                    v[0] = 0; // placeholder
+                }
+                verts.push(v);
+            }
+            // Better approach: use the standard equidistant construction
+            return simplexStandard(n);
+        }
+
+        function simplexStandard(n) {
+            // Construct n+1 equidistant vertices in nD
+            const verts = [];
+            for (let i = 0; i <= n; i++) {
+                const v = new Array(n).fill(0);
+                for (let j = 0; j < n; j++) {
+                    if (j < i - 1) {
+                        v[j] = verts[j + 1][j]; // copy from earlier vertex
+                    } else if (j === i - 1 && i > 0) {
+                        // Compute height in this coordinate
+                        let sumSq = 0;
+                        for (let k = 0; k < j; k++) sumSq += v[k] * v[k];
+                        // Distance from origin to previous vertices is 1 (we normalize later)
+                        v[j] = (1 - sumSq > 0) ? Math.sqrt(1 - sumSq) : 0;
+                        // Adjust: the new coordinate that makes distance = same as first pair
+                        if (i === 1) {
+                            v[0] = 1;
+                        }
+                    }
+                }
+                verts.push(v);
+            }
+            // Simpler: use a well-known construction
+            return simplexCoords(n);
+        }
+
+        function simplexCoords(n) {
+            // n+1 vertices in R^n, all pairwise distance = sqrt(2)
+            // v_i = e_i for i=1..n, v_{n+1} = (c, c, ..., c) where c = (1 + sqrt(n+1))/n
+            const verts = [];
+            const c = (1 - Math.sqrt(n + 1)) / n;
+            for (let i = 0; i < n; i++) {
+                const v = new Array(n).fill(c);
+                v[i] = 1 + c;
+                verts.push(v);
+            }
+            const last = new Array(n).fill(c);
+            // Actually let's use: v_i = e_i (i=1..n), v_{n+1} chosen so equidistant
+            // Simpler: just center at origin
+            const verts2 = [];
+            for (let i = 0; i < n; i++) {
+                const v = new Array(n).fill(0);
+                v[i] = 1;
+                verts2.push(v);
+            }
+            // Last vertex: equal distance from all e_i
+            // |v - e_i|^2 = |v|^2 - 2v_i + 1 must be same for all i => all v_i equal = t
+            // |v - e_i|^2 = n*t^2 - 2t + 1
+            // Must equal |e_1 - e_2|^2 = 2
+            // n*t^2 - 2t + 1 = 2 => n*t^2 - 2t - 1 = 0
+            // t = (2 + sqrt(4 + 4n))/(2n) = (1 + sqrt(1+n))/n
+            const t = (1 + Math.sqrt(1 + n)) / n;
+            const lastV = new Array(n).fill(t);
+            verts2.push(lastV);
+            // Center at origin
+            const center = new Array(n).fill(0);
+            for (const v of verts2) for (let j = 0; j < n; j++) center[j] += v[j];
+            for (let j = 0; j < n; j++) center[j] /= verts2.length;
+            for (const v of verts2) for (let j = 0; j < n; j++) v[j] -= center[j];
+            // Normalize to radius ~1.5
+            let maxR = 0;
+            for (const v of verts2) {
+                let r = 0; for (let j = 0; j < n; j++) r += v[j]*v[j];
+                maxR = Math.max(maxR, Math.sqrt(r));
+            }
+            const scale = 1.5 / (maxR || 1);
+            for (const v of verts2) for (let j = 0; j < n; j++) v[j] *= scale;
+            return verts2;
+        }
+
+        // Simplex edges: all pairs
+        function simplexEdges(nVerts) {
+            const edges = [];
+            for (let i = 0; i < nVerts; i++)
+                for (let j = i + 1; j < nVerts; j++)
+                    edges.push([i, j]);
+            return edges;
+        }
+
+        // Hypercube vertices in nD: all (+-1)^n
+        function hypercubeVertices(n) {
+            const verts = [];
+            for (let mask = 0; mask < (1 << n); mask++) {
+                const v = [];
+                for (let j = 0; j < n; j++) {
+                    v.push((mask & (1 << j)) ? 1 : -1);
+                }
+                verts.push(v);
+            }
+            return verts;
+        }
+
+        // Hypercube edges: vertices differing in exactly 1 coordinate
+        function hypercubeEdges(n) {
+            const edges = [];
+            const total = 1 << n;
+            for (let i = 0; i < total; i++) {
+                for (let bit = 0; bit < n; bit++) {
+                    const j = i ^ (1 << bit);
+                    if (j > i) edges.push([i, j]);
+                }
+            }
+            return edges;
+        }
+
+        // Cross-polytope vertices in nD: +-e_i
+        function crossVertices(n) {
+            const verts = [];
+            for (let i = 0; i < n; i++) {
+                const vp = new Array(n).fill(0); vp[i] = 1.5;
+                const vm = new Array(n).fill(0); vm[i] = -1.5;
+                verts.push(vp);
+                verts.push(vm);
+            }
+            return verts;
+        }
+
+        // Cross-polytope edges: connect all non-antipodal pairs
+        function crossEdges(n) {
+            const edges = [];
+            const nV = 2 * n;
+            for (let i = 0; i < nV; i++) {
+                for (let j = i + 1; j < nV; j++) {
+                    // Antipodal if same axis: i and i^1 (0-1, 2-3, 4-5, ...)
+                    const axisI = Math.floor(i / 2);
+                    const axisJ = Math.floor(j / 2);
+                    if (axisI !== axisJ) {
+                        edges.push([i, j]);
+                    }
+                }
+            }
+            return edges;
+        }
+
+        // === PROJECTION ===
+        // Project nD point to 3D using perspective projection
+        function projectTo3D(point, t) {
+            let p = point.slice();
+            const n = p.length;
+
+            // Apply higher-dimensional rotations
+            if (n >= 4) {
+                // Rotate in XW plane
+                const angle1 = t * 0.3;
+                const x = p[0], w = p[3];
+                p[0] = x * Math.cos(angle1) - w * Math.sin(angle1);
+                p[3] = x * Math.sin(angle1) + w * Math.cos(angle1);
+            }
+            if (n >= 5) {
+                // Rotate in YV plane (dim 1 and 4)
+                const angle2 = t * 0.2;
+                const y = p[1], v = p[4];
+                p[1] = y * Math.cos(angle2) - v * Math.sin(angle2);
+                p[4] = y * Math.sin(angle2) + v * Math.cos(angle2);
+            }
+
+            // Cascade perspective projections from nD down to 3D
+            while (p.length > 3) {
+                const dim = p.length;
+                const d = 3.5; // perspective distance
+                const wCoord = p[dim - 1];
+                const scale = d / (d - wCoord);
+                const newP = [];
+                for (let i = 0; i < dim - 1; i++) {
+                    newP.push(p[i] * scale);
+                }
+                p = newP;
+            }
+
+            // For 2D input, embed in 3D
+            while (p.length < 3) p.push(0);
+
+            return p;
+        }
+
+        // === BUILD SCENE ===
+        function buildPolytope() {
+            // Clear old
+            while (lineGroup.children.length > 0) {
+                const child = lineGroup.children[0];
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) child.material.dispose();
+                lineGroup.remove(child);
+            }
+
+            const n = currentDim;
+            let vertices, edges, name;
+
+            if (currentFamily === 'simplex') {
+                if (n === 2) {
+                    vertices = [[1.5, 0], [-0.75, 1.3], [-0.75, -1.3]];
+                } else {
+                    vertices = simplexCoords(n);
+                }
+                edges = simplexEdges(vertices.length);
+                const names = {2: 'Triangulo', 3: 'Tetraedro', 4: '5-celda', 5: '5-simplex'};
+                name = names[n] || n + '-simplex';
+            } else if (currentFamily === 'hypercube') {
+                vertices = hypercubeVertices(n);
+                edges = hypercubeEdges(n);
+                const names = {2: 'Cuadrado', 3: 'Cubo', 4: 'Teseracto', 5: 'Penteracto'};
+                name = names[n] || n + '-cubo';
+            } else {
+                vertices = crossVertices(n);
+                edges = crossEdges(n);
+                const names = {2: 'Cuadrado', 3: 'Octaedro', 4: '16-celda', 5: 'Pentacross'};
+                name = names[n] || n + '-cross';
+            }
+
+            // Store for animation
+            lineGroup.userData = { vertices, edges, name, dim: n };
+
+            // Update info panel
+            updateInfo(vertices, edges, name, n);
+
+            // Initial build of lines
+            updateLines(0);
+        }
+
+        function updateLines(t) {
+            const data = lineGroup.userData;
+            if (!data) return;
+
+            const { vertices, edges } = data;
+
+            // Clear old lines
+            while (lineGroup.children.length > 0) {
+                const child = lineGroup.children[0];
+                if (child.geometry) child.geometry.dispose();
+                if (child.material) child.material.dispose();
+                lineGroup.remove(child);
+            }
+
+            // Project all vertices
+            const projected = vertices.map(function(v) { return projectTo3D(v, t); });
+
+            // Draw edges
+            for (let i = 0; i < edges.length; i++) {
+                const [a, b] = edges[i];
+                const pa = projected[a];
+                const pb = projected[b];
+
+                const geometry = new THREE.BufferGeometry();
+                const positions = new Float32Array([pa[0], pa[1], pa[2], pb[0], pb[1], pb[2]]);
+                geometry.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+
+                // Color by average depth
+                const depth = (pa[2] + pb[2]) / 2;
+                const hue = 0.75 + depth * 0.1; // violet to cyan range
+                const color = new THREE.Color().setHSL(hue % 1, 0.8, 0.6);
+
+                const material = new THREE.LineBasicMaterial({ color: color, transparent: true, opacity: 0.7 });
+                const line = new THREE.Line(geometry, material);
+                lineGroup.add(line);
+            }
+
+            // Draw vertices as small spheres
+            for (let i = 0; i < projected.length; i++) {
+                const p = projected[i];
+                const geo = new THREE.SphereGeometry(0.04, 6, 6);
+                const mat = new THREE.MeshBasicMaterial({ color: 0xa855f7 });
+                const mesh = new THREE.Mesh(geo, mat);
+                mesh.position.set(p[0], p[1], p[2]);
+                lineGroup.add(mesh);
+            }
+        }
+
+        function updateInfo(vertices, edges, name, dim) {
+            document.getElementById('info-name').textContent = name;
+
+            const V = vertices.length;
+            const E = edges.length;
+            let countsStr = 'V=' + V + ', E=' + E;
+
+            // Compute face counts for the info panel
+            if (currentFamily === 'simplex') {
+                const nPlus1 = V;
+                if (dim >= 3) { const F = comb(nPlus1, 3); countsStr += ', F=' + F; }
+                if (dim >= 4) { const C = comb(nPlus1, 4); countsStr += ', C=' + C; }
+                if (dim >= 5) { const H = comb(nPlus1, 5); countsStr += ', H=' + H; }
+            } else if (currentFamily === 'hypercube') {
+                if (dim >= 3) { countsStr += ', F=' + (comb(dim, 2) * Math.pow(2, dim - 2)); }
+                if (dim >= 4) { countsStr += ', C=' + (comb(dim, 3) * Math.pow(2, dim - 3)); }
+                if (dim >= 5) { countsStr += ', H=' + (comb(dim, 4) * Math.pow(2, dim - 4)); }
+            } else { // cross
+                if (dim >= 3) { countsStr += ', F=' + (Math.pow(2, 3) * comb(dim, 3)); }
+                if (dim >= 4) { countsStr += ', C=' + (Math.pow(2, 4) * comb(dim, 4)); }
+                if (dim >= 5) { countsStr += ', H=' + (Math.pow(2, 5) * comb(dim, 5)); }
+            }
+
+            document.getElementById('info-counts').textContent = countsStr;
+
+            // Compute Euler characteristic
+            let chi = V - E;
+            if (currentFamily === 'simplex') {
+                const nPlus1 = V;
+                if (dim >= 3) chi += comb(nPlus1, 3);
+                if (dim >= 4) chi -= comb(nPlus1, 4);
+                if (dim >= 5) chi += comb(nPlus1, 5);
+            } else if (currentFamily === 'hypercube') {
+                if (dim >= 3) chi += comb(dim, 2) * Math.pow(2, dim - 2);
+                if (dim >= 4) chi -= comb(dim, 3) * Math.pow(2, dim - 3);
+                if (dim >= 5) chi += comb(dim, 4) * Math.pow(2, dim - 4);
+            } else {
+                if (dim >= 3) chi += Math.pow(2, 3) * comb(dim, 3);
+                if (dim >= 4) chi -= Math.pow(2, 4) * comb(dim, 4);
+                if (dim >= 5) chi += Math.pow(2, 5) * comb(dim, 5);
+            }
+
+            document.getElementById('info-euler').textContent = 'chi = ' + chi;
+        }
+
+        function comb(n, k) {
+            if (k > n || k < 0) return 0;
+            if (k === 0 || k === n) return 1;
+            let result = 1;
+            for (let i = 0; i < k; i++) {
+                result = result * (n - i) / (i + 1);
+            }
+            return Math.round(result);
+        }
+
+        // === BUTTON HANDLERS ===
+        window.setFamily = function(family) {
+            currentFamily = family;
+            document.getElementById('btn-simplex').className = 'px-3 py-1.5 rounded-lg text-sm transition ' + (family === 'simplex' ? 'bg-violet-600 text-white hover:bg-violet-500' : 'bg-gray-800 text-gray-300 hover:bg-gray-700');
+            document.getElementById('btn-hypercube').className = 'px-3 py-1.5 rounded-lg text-sm transition ' + (family === 'hypercube' ? 'bg-violet-600 text-white hover:bg-violet-500' : 'bg-gray-800 text-gray-300 hover:bg-gray-700');
+            document.getElementById('btn-cross').className = 'px-3 py-1.5 rounded-lg text-sm transition ' + (family === 'cross' ? 'bg-violet-600 text-white hover:bg-violet-500' : 'bg-gray-800 text-gray-300 hover:bg-gray-700');
+            buildPolytope();
+        };
+
+        window.setDim = function(dim) {
+            currentDim = dim;
+            document.getElementById('btn-dim2').className = 'px-3 py-1.5 rounded-lg text-sm transition ' + (dim === 2 ? 'bg-cyan-700 text-white hover:bg-cyan-600' : 'bg-gray-800 text-gray-300 hover:bg-gray-700');
+            document.getElementById('btn-dim3').className = 'px-3 py-1.5 rounded-lg text-sm transition ' + (dim === 3 ? 'bg-cyan-700 text-white hover:bg-cyan-600' : 'bg-gray-800 text-gray-300 hover:bg-gray-700');
+            document.getElementById('btn-dim4').className = 'px-3 py-1.5 rounded-lg text-sm transition ' + (dim === 4 ? 'bg-cyan-700 text-white hover:bg-cyan-600' : 'bg-gray-800 text-gray-300 hover:bg-gray-700');
+            document.getElementById('btn-dim5').className = 'px-3 py-1.5 rounded-lg text-sm transition ' + (dim === 5 ? 'bg-cyan-700 text-white hover:bg-cyan-600' : 'bg-gray-800 text-gray-300 hover:bg-gray-700');
+            buildPolytope();
+        };
+
+        // === ANIMATION LOOP ===
+        function animate() {
+            requestAnimationFrame(animate);
+            time += 0.008;
+
+            // Auto rotation + mouse rotation
+            lineGroup.rotation.y = time * 0.15 + rotY;
+            lineGroup.rotation.x = Math.sin(time * 0.1) * 0.15 + rotX;
+
+            // Update projections for higher-dimensional rotation
+            if (currentDim >= 4) {
+                updateLines(time);
+            }
+
+            renderer.render(scene, camera);
+        }
+
+        // === INIT ===
+        initThree();
+        buildPolytope();
+        animate();
+    })();
+    </script>
+
 </body>
 </html>

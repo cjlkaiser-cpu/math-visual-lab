@@ -3,144 +3,770 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lección 27: Propiedades de los Grafos Platónicos | Matemáticas Visuales</title>
+    <title>Leccion 27: Coloracion de Grafos | Matematicas Visuales</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        platonic: {
-                            purple: '#8b5cf6',
-                            cyan: '#06b6d4',
-                            dark: '#1a1a2e',
-                            card: '#16213e'
-                        }
-                    }
-                }
-            }
-        }
-    </script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.css">
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/katex.min.js"></script>
+    <script defer src="https://cdn.jsdelivr.net/npm/katex@0.16.11/dist/contrib/auto-render.min.js"
+        onload="renderMathInElement(document.body, {delimiters: [{left: '$$', right: '$$', display: true}, {left: '\\(', right: '\\)', display: false}]});"></script>
     <style>
-        .gradient-text {
-            background: linear-gradient(135deg, #8b5cf6, #06b6d4);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-        }
-        .lab-container {
-            border: 2px solid #8b5cf6;
-            border-radius: 12px;
-            overflow: hidden;
-        }
-        .progress-bar {
-            background: linear-gradient(90deg, #8b5cf6, #06b6d4);
-        }
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .glow-text { text-shadow: 0 0 20px rgba(168, 85, 247, 0.5); }
+        .progress-bar { background: linear-gradient(90deg, #a855f7, #22d3ee); }
+        .katex { color: inherit; font-size: 1.1em; }
     </style>
 </head>
-<body class="bg-platonic-dark text-gray-100 min-h-screen">
-    <header class="bg-platonic-card border-b border-gray-700 sticky top-0 z-50">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <div class="flex items-center justify-between h-16">
-                <div class="flex items-center">
-                    <a href="../../index.html" class="text-2xl font-bold gradient-text">PlatonicLab</a>
-                    <span class="mx-4 text-gray-500">|</span>
-                    <a href="../../curso.html" class="text-gray-300 hover:text-platonic-purple transition">Curso</a>
+<body class="bg-black text-gray-100 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <div class="flex justify-between items-center">
+                <div>
+                    <nav class="text-xs text-gray-600 mb-1">
+                        <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                        <span class="mx-1">/</span>
+                        <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+                        <span class="mx-1">/</span>
+                        <span class="text-gray-500">Modulo 05</span>
+                    </nav>
+                    <h1 class="text-lg font-light">
+                        <span class="text-violet-400 font-medium glow-text">Leccion 27</span> — Coloracion de Grafos
+                    </h1>
                 </div>
-                <nav class="flex space-x-4 text-sm">
-                    <a href="./leccion-26.html" class="px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 transition">← Anterior</a>
-                    <a href="./leccion-28.html" class="px-3 py-2 rounded-md bg-platonic-purple hover:bg-purple-600 transition">Siguiente →</a>
+                <nav class="flex gap-2 text-sm">
+                    <a href="./leccion-26.html" class="px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 transition">&larr; Anterior</a>
+                    <a href="./leccion-28.html" class="px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 transition">Siguiente &rarr;</a>
                 </nav>
             </div>
         </div>
     </header>
-    <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+
+    <!-- Main Layout -->
+    <div class="max-w-6xl mx-auto px-6 py-8">
         <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <!-- Sidebar -->
             <aside class="lg:col-span-1">
-                <div class="bg-platonic-card rounded-lg p-6 sticky top-24">
-                    <h3 class="text-lg font-semibold mb-4 text-platonic-cyan">Módulo 5</h3>
-                    <p class="text-sm text-gray-400 mb-4">Teoría de Grafos</p>
+                <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6 sticky top-24">
+                    <h3 class="text-lg font-semibold mb-4 text-cyan-400">Modulo 05</h3>
+                    <p class="text-sm text-gray-500 mb-4">Teoria de Grafos</p>
+
                     <div class="mb-6">
                         <div class="flex justify-between text-xs text-gray-400 mb-2">
                             <span>Progreso</span>
                             <span>3/5</span>
                         </div>
-                        <div class="w-full bg-gray-700 rounded-full h-2">
+                        <div class="w-full bg-gray-800 rounded-full h-2">
                             <div class="progress-bar h-2 rounded-full" style="width: 60%"></div>
                         </div>
                     </div>
+
                     <nav class="space-y-2">
-                        <a href="./leccion-25.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">25. Sólidos como Redes</a>
-                        <a href="./leccion-26.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">26. Diagramas de Schlegel</a>
-                        <a href="./leccion-27.html" class="block px-3 py-2 rounded-md bg-platonic-purple text-white text-sm">27. Propiedades de Grafos</a>
-                        <a href="./leccion-28.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">28. Caminos Hamiltonianos</a>
-                        <a href="./leccion-29.html" class="block px-3 py-2 rounded-md hover:bg-gray-700 text-gray-300 text-sm transition">29. Coloración</a>
+                        <a href="./leccion-25.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">25. De Poliedros a Grafos</a>
+                        <a href="./leccion-26.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">26. Grafos Planares y Steinitz</a>
+                        <a href="./leccion-27.html" class="block px-3 py-2 rounded-lg bg-violet-500/10 text-violet-400 text-sm">27. Coloracion de Grafos</a>
+                        <a href="./leccion-28.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">28. Recorridos: Euler y Hamilton</a>
+                        <a href="./leccion-29.html" class="block px-3 py-2 rounded-lg hover:bg-gray-900 text-gray-400 text-sm transition">29. Espectros, Arboles y Sintesis</a>
                     </nav>
                 </div>
             </aside>
+
+            <!-- Content -->
             <main class="lg:col-span-3">
-                <article class="bg-platonic-card rounded-lg p-8">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
                     <div class="mb-8">
-                        <div class="flex items-center justify-between mb-4">
-                            <span class="text-platonic-cyan text-sm font-medium">Lección 27</span>
-                            <span class="text-gray-400 text-sm">⏱️ 20 minutos</span>
-                        </div>
-                        <h1 class="text-3xl font-bold mb-4 gradient-text">Propiedades de los Grafos Platónicos</h1>
-                        <p class="text-gray-400 text-lg">Regularidad, diámetro, conectividad y otras propiedades topológicas.</p>
+                        <span class="text-cyan-400 text-sm font-medium">Leccion 27</span>
+                        <h2 class="text-3xl font-light mt-2 mb-4">
+                            <span class="text-violet-400 font-medium glow-text">Coloracion</span> de Grafos
+                        </h2>
+                        <p class="text-gray-400 text-lg">Cuantos colores necesita cada grafo platonico? El Teorema de los 4 Colores establece el limite.</p>
                     </div>
-                    <div class="prose prose-invert max-w-none">
-                        <h2 class="text-2xl font-semibold text-platonic-purple mb-4">Propiedades Fundamentales</h2>
-                        <p class="text-gray-300 mb-4">Los grafos platónicos tienen propiedades especiales que los hacen útiles en redes, química y computación.</p>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Regularidad</h3>
-                        <p class="text-gray-300 mb-4">Todos los grafos platónicos son <strong>regulares</strong>: todos los vértices tienen el mismo grado.</p>
+
+                    <!-- 1. Coloracion de Vertices -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">1. Coloracion de Vertices</h3>
+                        <p class="text-gray-300 mb-4">
+                            Una <strong class="text-white">\(k\)-coloracion propia</strong> de un grafo \(G = (V, E)\) es una funcion \(c: V \to \{1, 2, \ldots, k\}\) tal que si \(\{u, v\} \in E\) entonces \(c(u) \neq c(v)\). En otras palabras, asigna \(k\) colores a los vertices de modo que vertices adyacentes reciban colores distintos.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            El <strong class="text-white">numero cromatico</strong> \(\chi(G)\) es el minimo valor de \(k\) para el cual existe una \(k\)-coloracion propia:
+                        </p>
+
+                        $$ \chi(G) = \min\{k : G \text{ admits a proper } k\text{-coloring}\} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Determinar \(\chi(G)\) es en general un problema NP-dificil, pero existen cotas utiles. Como <strong class="text-white">cota inferior</strong>, el numero de clique \(\omega(G)\) (tamano del mayor subgrafo completo) satisface \(\chi(G) \geq \omega(G)\), porque los vertices de una clique necesitan todos colores distintos. Tambien se tiene \(\chi(G) \geq |V| / \alpha(G)\), donde \(\alpha(G)\) es el numero de independencia (tamano del mayor conjunto independiente).
+                        </p>
+                        <p class="text-gray-300">
+                            Como <strong class="text-white">cota superior</strong>, el algoritmo greedy garantiza \(\chi(G) \leq \Delta(G) + 1\), donde \(\Delta(G)\) es el grado maximo. En la practica, la mayoria de grafos admiten coloraciones mucho mejores que esta cota.
+                        </p>
+                    </section>
+
+                    <!-- 2. Numeros Cromaticos de los Cinco Solidos -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">2. Numeros Cromaticos de los Cinco Solidos</h3>
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Tetraedro: \(\chi = 4\).</strong> El grafo del tetraedro es \(K_4\), el grafo completo de 4 vertices. Como todo par de vertices es adyacente, cada vertice necesita un color distinto. Para cualquier grafo completo:
+                        </p>
+                        $$ \chi(K_n) = n $$
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Cubo: \(\chi = 2\).</strong> El grafo del cubo es \(Q_3\), el hipercubo de dimension 3. Es <strong class="text-white">bipartito</strong>: los vertices con un numero par de 1-bits en su representacion binaria forman una parte, y los de numero impar la otra. Toda arista conecta vertices que difieren en exactamente un bit, asi que cambian de paridad. Un grafo es 2-coloreable si y solo si es bipartito:
+                        </p>
+                        $$ \chi(G) = 2 \iff G \text{ es bipartito} \iff G \text{ no tiene ciclos impares} $$
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Octaedro: \(\chi = 3\).</strong> El grafo del octaedro es \(K_{2,2,2}\), el grafo tripartito completo. Cada vertice es adyacente a todos los demas excepto a su vertice antipodal. Contiene triangulos (por ejemplo, los vertices 0, 1, 2 son mutuamente adyacentes), por lo que <strong class="text-white">no es bipartito</strong> y \(\chi \geq 3\). La 3-coloracion optima asigna el mismo color a cada par antipodal: color A a \(\{0, 5\}\), color B a \(\{1, 3\}\), color C a \(\{2, 4\}\). Verificacion: el vertice 0 es adyacente a 1, 2, 3, 4 con colores B, C, B, C, todos distintos de A. El vertice 5 es adyacente a 1, 2, 3, 4 con los mismos colores, todos distintos de A.
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Dodecaedro: \(\chi = 3\).</strong> El dodecaedro no es bipartito porque contiene pentagonos (ciclos de longitud 5, que son impares), asi que \(\chi \geq 3\). Se puede construir explicitamente una 3-coloracion valida para sus 20 vertices. Como no contiene \(K_4\) como subgrafo (es 3-regular, asi que \(\omega \leq 3\)), la cota inferior \(\omega = 3\) coincide con la cota superior.
+                        </p>
+
+                        <p class="text-gray-300 mb-4">
+                            <strong class="text-white">Icosaedro: \(\chi = 4\).</strong> El icosaedro contiene \(K_4\) como subgrafo: por ejemplo, el vertice 0 es adyacente a 1, y ambos son adyacentes a 2 y a 5, pero ademas 2 y 5 no son adyacentes entre si. Sin embargo, tomando los vertices 0, 1, 2, 6 se verifica que todos son mutuamente adyacentes, formando un \(K_4\). Esto da \(\chi \geq 4\). Por el Teorema de los 4 Colores (todo grafo planar es 4-coloreable) se tiene \(\chi \leq 4\). Luego \(\chi = 4\).
+                        </p>
+
                         <div class="overflow-x-auto mb-6">
                             <table class="w-full text-sm text-gray-300">
-                                <thead class="bg-gray-800">
-                                    <tr>
-                                        <th class="px-4 py-2 text-left">Sólido</th>
-                                        <th class="px-4 py-2 text-center">Grado</th>
-                                        <th class="px-4 py-2 text-center">Diametro</th>
-                                        <th class="px-4 py-2 text-center">Girth</th>
+                                <thead>
+                                    <tr class="border-b border-gray-800">
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Solido</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Grafo</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">V</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\Delta\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\omega\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\chi\)</th>
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Razon</th>
                                     </tr>
                                 </thead>
-                                <tbody class="divide-y divide-gray-700">
-                                    <tr><td class="px-4 py-2">Tetraedro</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">1</td><td class="px-4 py-2 text-center">3</td></tr>
-                                    <tr><td class="px-4 py-2">Cubo</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">4</td></tr>
-                                    <tr><td class="px-4 py-2">Octaedro</td><td class="px-4 py-2 text-center">4</td><td class="px-4 py-2 text-center">2</td><td class="px-4 py-2 text-center">3</td></tr>
-                                    <tr><td class="px-4 py-2">Dodecaedro</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">5</td><td class="px-4 py-2 text-center">5</td></tr>
-                                    <tr><td class="px-4 py-2">Icosaedro</td><td class="px-4 py-2 text-center">5</td><td class="px-4 py-2 text-center">3</td><td class="px-4 py-2 text-center">3</td></tr>
+                                <tbody>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400">\(K_4\)</td>
+                                        <td class="px-4 py-2 text-center mono">4</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono">4</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">4</td>
+                                        <td class="px-4 py-2">Completo</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Cubo</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400">\(Q_3\)</td>
+                                        <td class="px-4 py-2 text-center mono">8</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono">2</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">2</td>
+                                        <td class="px-4 py-2">Bipartito</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Octaedro</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400">\(K_{2,2,2}\)</td>
+                                        <td class="px-4 py-2 text-center mono">6</td>
+                                        <td class="px-4 py-2 text-center mono">4</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">3</td>
+                                        <td class="px-4 py-2">Tripartito completo</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400">3-reg</td>
+                                        <td class="px-4 py-2 text-center mono">20</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">3</td>
+                                        <td class="px-4 py-2">Ciclos impares, 3-col.</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center text-cyan-400">5-reg</td>
+                                        <td class="px-4 py-2 text-center mono">12</td>
+                                        <td class="px-4 py-2 text-center mono">5</td>
+                                        <td class="px-4 py-2 text-center mono">4</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">4</td>
+                                        <td class="px-4 py-2">Contiene \(K_4\), planar</td>
+                                    </tr>
                                 </tbody>
                             </table>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Definiciones</h3>
-                        <div class="bg-gray-800/50 rounded-lg p-6 mb-6">
-                            <ul class="list-disc list-inside space-y-2 text-gray-300 ml-4">
-                                <li><strong>Grado:</strong> Número de aristas en cada vértice</li>
-                                <li><strong>Diámetro:</strong> Máxima distancia entre cualquier par de vértices</li>
-                                <li><strong>Girth:</strong> Longitud del ciclo más corto</li>
-                            </ul>
+
+                        <!-- Canvas: Chromatic coloring of all 5 graphs -->
+                        <div class="my-6">
+                            <canvas id="chromatic-canvas" class="w-full rounded-xl" style="height: 300px;"></canvas>
+                            <p class="text-center text-gray-500 text-sm mt-2">Los cinco grafos platonicos con coloracion optima de vertices</p>
                         </div>
-                        <h3 class="text-xl font-semibold text-platonic-cyan mb-3">Conectividad</h3>
-                        <p class="text-gray-300 mb-4">Los grafos platónicos son altamente conectados. Remover cualquier vértice (y sus aristas) mantiene el grafo conectado.</p>
-                    </div>
-                    <div class="mt-10">
-                        <h2 class="text-2xl font-bold text-platonic-cyan mb-4 flex items-center"><span class="mr-2">🔬</span> LAB: Análisis de Grafo</h2>
-                        <p class="text-gray-400 mb-4">Explora las propiedades de los grafos en PlatonicLab.</p>
-                        <div class="lab-container">
-                            <iframe src="../index.html" width="100%" height="600" frameborder="0" class="bg-gray-900"></iframe>
+                    </section>
+
+                    <!-- 3. Algoritmo Greedy y Teorema de Brooks -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">3. Algoritmo Greedy y Teorema de Brooks</h3>
+                        <p class="text-gray-300 mb-4">
+                            El <strong class="text-white">algoritmo greedy de coloracion</strong> funciona asi: se fija un orden \(v_1, v_2, \ldots, v_n\) de los vertices y, para cada vertice \(v_i\), se le asigna el menor color positivo que no este usado por ninguno de sus vecinos ya coloreados. Como \(v_i\) tiene a lo sumo \(\Delta(G)\) vecinos, y cada uno usa a lo sumo un color, siempre hay un color disponible entre \(\{1, 2, \ldots, \Delta(G) + 1\}\). Esto demuestra:
+                        </p>
+
+                        $$ \chi(G) \leq \Delta(G) + 1 $$
+
+                        <p class="text-gray-300 mb-4">
+                            El <strong class="text-white">teorema de Brooks</strong> (1941) mejora esta cota: si \(G\) es conexo y no es un grafo completo ni un ciclo impar, entonces \(\chi(G) \leq \Delta(G)\).
+                        </p>
+
+                        $$ \chi(G) \leq \Delta(G) \quad \text{(Brooks, salvo } G = K_n \text{ o } G = C_{2k+1}\text{)} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Aplicado a los grafos platonicos: el tetraedro es \(K_4\), asi que es una excepcion de Brooks y efectivamente \(\chi = \Delta + 1 = 4\). Los demas satisfacen la cota de Brooks: el cubo tiene \(\chi = 2 \leq 3 = \Delta\), el octaedro \(\chi = 3 \leq 4 = \Delta\), el dodecaedro \(\chi = 3 = \Delta\) y el icosaedro \(\chi = 4 \leq 5 = \Delta\).
+                        </p>
+                        <p class="text-gray-300">
+                            Notar que el dodecaedro alcanza la cota de Brooks con igualdad (\(\chi = \Delta = 3\)), mientras que el cubo y el octaedro quedan estrictamente por debajo.
+                        </p>
+                    </section>
+
+                    <!-- 4. Teorema de los Cuatro Colores -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">4. Teorema de los Cuatro Colores</h3>
+                        <p class="text-gray-300 mb-4">
+                            En 1852, Francis Guthrie observo que para colorear un mapa de los condados de Inglaterra bastaban 4 colores y conjeturo que esto era cierto para todo mapa. La conjetura paso por una "demostracion" incorrecta de Kempe (1879), cuyo error fue descubierto por Heawood (1890). Heawood salvo lo que pudo y demostro el <strong class="text-white">teorema de los 5 colores</strong>: todo grafo planar satisface \(\chi(G) \leq 5\).
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            La demostracion completa del <strong class="text-white">teorema de los 4 colores</strong> llego en 1976, cuando Appel y Haken usaron un ordenador para verificar 1,936 configuraciones reducibles. Fue la primera demostracion matematica importante asistida por computadora:
+                        </p>
+
+                        $$ \text{G planar} \implies \chi(G) \leq 4 $$
+
+                        <p class="text-gray-300 mb-4">
+                            El tetraedro (\(K_4\)) muestra que la cota 4 es optima: es un grafo planar con \(\chi = 4\). El icosaedro es otro ejemplo que alcanza la cota. De los cinco solidos platonicos, dos requieren exactamente 4 colores, dos requieren 3 y uno requiere solo 2.
+                        </p>
+                        <p class="text-gray-300">
+                            Para referencia, el teorema de los 5 colores es mucho mas facil de demostrar: se usa induccion sobre \(|V|\) junto con la formula de Euler (\(|E| \leq 3|V| - 6\) para grafos planares), que garantiza la existencia de un vertice de grado \(\leq 5\).
+                        </p>
+                    </section>
+
+                    <!-- 5. El Polinomio Cromatico -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">5. El Polinomio Cromatico</h3>
+                        <p class="text-gray-300 mb-4">
+                            El <strong class="text-white">polinomio cromatico</strong> \(P(G, k)\) cuenta el numero de \(k\)-coloraciones propias de \(G\). Es un polinomio en \(k\) de grado \(|V|\), y codifica informacion combinatoria profunda sobre el grafo.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            Se calcula mediante <strong class="text-white">eliminacion-contraccion</strong>: dada una arista \(e = \{u,v\}\), se define \(G - e\) como el grafo sin la arista \(e\) y \(G/e\) como el grafo donde se contraen \(u\) y \(v\) en un solo vertice. Entonces:
+                        </p>
+
+                        $$ P(G, k) = P(G - e, k) - P(G / e, k) $$
+
+                        <p class="text-gray-300 mb-4">
+                            Ejemplos fundamentales. Para el grafo completo \(K_n\): el primer vertice tiene \(k\) opciones, el segundo \(k-1\) (distinto del primero), el tercero \(k-2\), y asi sucesivamente:
+                        </p>
+
+                        $$ P(K_n, k) = k(k-1)(k-2)\cdots(k-n+1) = k^{\underline{n}} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Para un camino \(P_n\) de \(n\) vertices: el primer vertice tiene \(k\) opciones, y cada siguiente tiene \(k-1\) (solo debe diferir de su predecesor):
+                        </p>
+
+                        $$ P(P_n, k) = k(k-1)^{n-1} $$
+
+                        <p class="text-gray-300 mb-4">
+                            Para un ciclo \(C_n\):
+                        </p>
+
+                        $$ P(C_n, k) = (k-1)^n + (-1)^n(k-1) $$
+
+                        <p class="text-gray-300 mb-4">
+                            Para el tetraedro \(K_4\): \(P(K_4, k) = k(k-1)(k-2)(k-3)\). Con 4 colores disponibles: \(P(K_4, 4) = 4 \cdot 3 \cdot 2 \cdot 1 = 24\) coloraciones propias. Esto coincide con \(4!\), las permutaciones de los 4 colores asignados a los 4 vertices.
+                        </p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6">
+                            <p class="text-gray-300 mb-2"><strong class="text-cyan-400">Verificacion para \(C_3 = K_3\) (triangulo):</strong></p>
+                            <p class="text-gray-300 mono text-sm">
+                                P(C_3, k) = (k-1)^3 + (-1)^3(k-1) = (k-1)^3 - (k-1) = (k-1)[(k-1)^2 - 1] = (k-1)(k-2)k = k(k-1)(k-2)
+                            </p>
+                            <p class="text-gray-300 mono text-sm mt-1">
+                                Coincide con P(K_3, k) = k(k-1)(k-2). Con k=3: P = 3*2*1 = 6 coloraciones.
+                            </p>
                         </div>
-                    </div>
-                    <div class="mt-12 pt-8 border-t border-gray-700 flex justify-between items-center">
-                        <a href="./leccion-26.html" class="px-6 py-3 bg-gray-700 hover:bg-gray-600 rounded-lg font-semibold transition">← Anterior</a>
-                        <a href="./leccion-28.html" class="px-6 py-3 bg-platonic-purple hover:bg-purple-600 rounded-lg font-semibold transition">Siguiente: Caminos Hamiltonianos →</a>
+                    </section>
+
+                    <!-- 6. Coloracion de Aristas -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-violet-400 mb-4">6. Coloracion de Aristas</h3>
+                        <p class="text-gray-300 mb-4">
+                            La <strong class="text-white">coloracion de aristas</strong> asigna colores a las aristas de modo que aristas incidentes (que comparten un vertice) reciban colores distintos. El <strong class="text-white">indice cromatico</strong> \(\chi'(G)\) es el minimo numero de colores necesarios.
+                        </p>
+                        <p class="text-gray-300 mb-4">
+                            El <strong class="text-white">teorema de Vizing</strong> (1964) establece que \(\chi'(G)\) solo puede tomar uno de dos valores:
+                        </p>
+
+                        $$ \Delta(G) \leq \chi'(G) \leq \Delta(G) + 1 $$
+
+                        <p class="text-gray-300 mb-4">
+                            Los grafos con \(\chi' = \Delta\) se llaman de <strong class="text-white">Clase 1</strong>, y los con \(\chi' = \Delta + 1\) de <strong class="text-white">Clase 2</strong>. Los cinco grafos platonicos son todos de Clase 1:
+                        </p>
+
+                        <div class="overflow-x-auto mb-6">
+                            <table class="w-full text-sm text-gray-300">
+                                <thead>
+                                    <tr class="border-b border-gray-800">
+                                        <th class="px-4 py-3 text-left text-gray-400 font-medium">Solido</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\Delta\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">\(\chi'\)</th>
+                                        <th class="px-4 py-3 text-center text-gray-400 font-medium">Clase</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Tetraedro</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">3</td>
+                                        <td class="px-4 py-2 text-center">1</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Cubo</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">3</td>
+                                        <td class="px-4 py-2 text-center">1</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Octaedro</td>
+                                        <td class="px-4 py-2 text-center mono">4</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">4</td>
+                                        <td class="px-4 py-2 text-center">1</td>
+                                    </tr>
+                                    <tr class="border-b border-gray-900">
+                                        <td class="px-4 py-2">Dodecaedro</td>
+                                        <td class="px-4 py-2 text-center mono">3</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">3</td>
+                                        <td class="px-4 py-2 text-center">1</td>
+                                    </tr>
+                                    <tr>
+                                        <td class="px-4 py-2">Icosaedro</td>
+                                        <td class="px-4 py-2 text-center mono">5</td>
+                                        <td class="px-4 py-2 text-center mono text-violet-400">5</td>
+                                        <td class="px-4 py-2 text-center">1</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+
+                        <p class="text-gray-300">
+                            Que todos sean de Clase 1 no es coincidencia: un resultado clasico establece que todo grafo planar con \(\Delta \geq 7\) es de Clase 1. Para grados menores, hay que verificar caso por caso, pero los grafos platonicos resultan ser todos de Clase 1.
+                        </p>
+                    </section>
+
+                    <!-- Ejercicios -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">Ejercicios</h3>
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl p-6 space-y-4">
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">1.</strong> Verifica que el polinomio cromatico de \(K_3\) (triangulo) es \(P(K_3, k) = k(k-1)(k-2)\). Cuantas 3-coloraciones propias tiene? Cuantas 4-coloraciones?</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">2.</strong> Usa el metodo de eliminacion-contraccion para calcular \(P(C_4, k)\) para el 4-ciclo. Verifica la formula \(P(C_n, k) = (k-1)^n + (-1)^n(k-1)\) para \(n = 4\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">3.</strong> El cubo es bipartito. Demuestra que todo grafo bipartito \(G\) satisface \(P(G, k) \geq k(k-1)^{|V|-1}\), es decir, tiene al menos tantas coloraciones como un arbol con los mismos vertices.</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">4.</strong> Muestra que el icosaedro contiene \(K_4\) como subgrafo identificando 4 vertices mutuamente adyacentes. Concluye que \(\chi(\text{icosaedro}) \geq 4\).</p>
+                            </div>
+                            <div>
+                                <p class="text-gray-300"><strong class="text-white">5.</strong> Para el octaedro con \(\chi = 3\), exhibe todas las 3-coloraciones esencialmente distintas (salvo permutacion de colores). Cuantas 3-coloraciones propias \(P(\text{octaedro}, 3)\) hay en total?</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- LAB -->
+                    <section class="mb-10">
+                        <h3 class="text-xl font-semibold text-cyan-400 mb-4">LAB: Coloracion Interactiva de Grafos</h3>
+                        <p class="text-gray-400 mb-4">Selecciona un grafo platonico y colorea sus vertices. Elige un color de la paleta y haz clic en un vertice para asignarlo. El panel muestra las violaciones de adyacencia.</p>
+
+                        <div class="bg-gray-900 border border-gray-800 rounded-xl overflow-hidden">
+                            <!-- Controls -->
+                            <div class="flex flex-wrap items-center gap-2 px-4 py-3 border-b border-gray-800">
+                                <button data-graph="0" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition">Tetraedro</button>
+                                <button data-graph="1" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Cubo</button>
+                                <button data-graph="2" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Octaedro</button>
+                                <button data-graph="3" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Dodecaedro</button>
+                                <button data-graph="4" class="lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition">Icosaedro</button>
+                            </div>
+                            <!-- Color palette and info -->
+                            <div class="flex flex-wrap items-center gap-3 px-4 py-2 border-b border-gray-800">
+                                <span class="text-xs text-gray-500">Paleta:</span>
+                                <button data-color="0" class="color-btn w-7 h-7 rounded-full border-2 border-white" style="background:#ef4444;" title="Rojo"></button>
+                                <button data-color="1" class="color-btn w-7 h-7 rounded-full border-2 border-gray-700" style="background:#3b82f6;" title="Azul"></button>
+                                <button data-color="2" class="color-btn w-7 h-7 rounded-full border-2 border-gray-700" style="background:#22c55e;" title="Verde"></button>
+                                <button data-color="3" class="color-btn w-7 h-7 rounded-full border-2 border-gray-700" style="background:#eab308;" title="Amarillo"></button>
+                                <span class="mx-2 text-gray-700">|</span>
+                                <span class="text-xs text-gray-400 mono">Violaciones: <span id="lab-violations" class="text-red-400">0</span></span>
+                                <span class="text-xs text-gray-400 mono ml-2">chi = <span id="lab-chi" class="text-violet-400">4</span></span>
+                                <button id="lab-reset" class="ml-auto px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-cyan-400 transition">Reset</button>
+                                <button id="lab-auto" class="px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-cyan-400 transition">Auto-color</button>
+                            </div>
+                            <!-- Canvas -->
+                            <div id="lab-container" class="w-full bg-black" style="height:480px; position:relative;">
+                                <canvas id="lab-canvas" style="position:absolute;top:0;left:0;width:100%;height:100%;"></canvas>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="mt-12 pt-8 border-t border-gray-800 flex justify-between items-center">
+                        <a href="./leccion-26.html" class="px-6 py-3 bg-gray-900 hover:bg-gray-800 rounded-lg text-gray-300 transition">
+                            &larr; Anterior
+                        </a>
+                        <a href="./leccion-28.html" class="px-6 py-3 bg-violet-500/10 text-violet-400 hover:bg-violet-500/20 rounded-lg transition">
+                            Siguiente: Recorridos: Euler y Hamilton &rarr;
+                        </a>
                     </div>
                 </article>
             </main>
         </div>
     </div>
-    <footer class="bg-platonic-card border-t border-gray-700 mt-16">
-        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-            <p class="text-center text-gray-500 text-sm">© 2025 PlatonicLab — Matemáticas Visuales: De Platón a 4D</p>
+
+    <!-- Footer -->
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 text-center mb-2">
+                <a href="../../../../../_portal/index.html" class="hover:text-violet-400 transition">EigenLab</a>
+                <span class="mx-1">/</span>
+                <a href="../../../index.html" class="hover:text-violet-400 transition">Math Visual Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../../index.html" class="hover:text-violet-400 transition">Platonic Lab</a>
+                <span class="mx-1">/</span>
+                <a href="../index.html" class="hover:text-violet-400 transition">Curso</a>
+            </nav>
+            <p class="text-center text-gray-700 text-sm mono">Matematicas Visuales -- De Platon a 4D</p>
         </div>
     </footer>
+
+    <script>
+    // ============================================================
+    // GRAPH DATA for all 5 Platonic solids
+    // ============================================================
+    var GRAPHS = [
+        { name: 'Tetraedro', V: 4, chi: 4, deg: 3, diam: 1, girth: 3,
+          edges: [[0,1],[0,2],[0,3],[1,2],[1,3],[2,3]],
+          coloring: [0,1,2,3] },
+        { name: 'Cubo', V: 8, chi: 2, deg: 3, diam: 3, girth: 4,
+          edges: [[0,1],[0,2],[0,4],[1,3],[1,5],[2,3],[2,6],[3,7],[4,5],[4,6],[5,7],[6,7]],
+          coloring: [0,1,1,0,1,0,0,1] },
+        { name: 'Octaedro', V: 6, chi: 3, deg: 4, diam: 2, girth: 3,
+          edges: [[0,1],[0,2],[0,3],[0,4],[1,2],[1,4],[1,5],[2,3],[2,5],[3,4],[3,5],[4,5]],
+          coloring: [0,1,2,1,2,0] },
+        { name: 'Dodecaedro', V: 20, chi: 3, deg: 3, diam: 5, girth: 5,
+          edges: [[0,1],[1,2],[2,3],[3,4],[4,0],
+                  [0,5],[1,6],[2,7],[3,8],[4,9],
+                  [5,10],[5,14],[6,10],[6,11],[7,11],[7,12],[8,12],[8,13],[9,13],[9,14],
+                  [10,15],[11,16],[12,17],[13,18],[14,19],
+                  [15,16],[16,17],[17,18],[18,19],[19,15]],
+          coloring: null },
+        { name: 'Icosaedro', V: 12, chi: 4, deg: 5, diam: 3, girth: 3,
+          edges: [[0,1],[0,2],[0,3],[0,4],[0,5],
+                  [1,2],[2,3],[3,4],[4,5],[5,1],
+                  [1,6],[2,6],[2,7],[3,7],[3,8],[4,8],[4,9],[5,9],[5,10],[1,10],
+                  [6,7],[7,8],[8,9],[9,10],[10,6],
+                  [11,6],[11,7],[11,8],[11,9],[11,10]],
+          coloring: null }
+    ];
+
+    var PALETTE = ['#ef4444', '#3b82f6', '#22c55e', '#eab308'];
+
+    function circularLayout(n, cx, cy, r) {
+        var pos = [];
+        for (var i = 0; i < n; i++) {
+            var a = -Math.PI / 2 + 2 * Math.PI * i / n;
+            pos.push([cx + r * Math.cos(a), cy + r * Math.sin(a)]);
+        }
+        return pos;
+    }
+
+    // ============================================================
+    // Greedy coloring to generate valid colorings
+    // ============================================================
+    function greedyColor(graph) {
+        var col = new Array(graph.V);
+        for (var i = 0; i < graph.V; i++) col[i] = -1;
+        for (var i = 0; i < graph.V; i++) {
+            var used = {};
+            for (var e = 0; e < graph.edges.length; e++) {
+                var a = graph.edges[e][0], b = graph.edges[e][1];
+                if (a === i && col[b] >= 0) used[col[b]] = true;
+                if (b === i && col[a] >= 0) used[col[a]] = true;
+            }
+            for (var c = 0; c < graph.chi; c++) {
+                if (!used[c]) { col[i] = c; break; }
+            }
+            if (col[i] < 0) col[i] = 0;
+        }
+        return col;
+    }
+
+    // Verify and fix all colorings at load time
+    (function verifyColorings() {
+        for (var g = 0; g < GRAPHS.length; g++) {
+            var graph = GRAPHS[g];
+            if (!graph.coloring) {
+                graph.coloring = greedyColor(graph);
+                continue;
+            }
+            var ok = true;
+            for (var e = 0; e < graph.edges.length; e++) {
+                var u = graph.edges[e][0], v = graph.edges[e][1];
+                if (graph.coloring[u] === graph.coloring[v]) { ok = false; break; }
+            }
+            if (!ok) {
+                graph.coloring = greedyColor(graph);
+            }
+        }
+    })();
+
+    // ============================================================
+    // ILLUSTRATION: The Five Platonic Graphs with Chromatic Coloring
+    // ============================================================
+    (function() {
+        var c = document.getElementById('chromatic-canvas');
+        if (!c) return;
+        var W = c.clientWidth, H = c.clientHeight;
+        var dpr = window.devicePixelRatio || 1;
+        c.width = W * dpr; c.height = H * dpr;
+        var ctx = c.getContext('2d');
+        ctx.scale(dpr, dpr);
+
+        var labels = ['Tetraedro', 'Cubo', 'Octaedro', 'Dodecaedro', 'Icosaedro'];
+        var colW = W / 5;
+
+        for (var g = 0; g < 5; g++) {
+            var graph = GRAPHS[g];
+            var cx = colW * g + colW / 2;
+            var cy = H / 2 - 20;
+            var r = Math.min(colW / 2 - 20, H / 2 - 55);
+            if (graph.V > 12) r = Math.min(colW / 2 - 12, H / 2 - 50);
+            var vr = graph.V <= 8 ? 6 : (graph.V <= 12 ? 5 : 3.5);
+            var pos = circularLayout(graph.V, cx, cy, r);
+
+            // Draw edges
+            ctx.strokeStyle = 'rgba(156, 163, 175, 0.25)';
+            ctx.lineWidth = graph.V > 12 ? 0.6 : 0.9;
+            for (var e = 0; e < graph.edges.length; e++) {
+                var a = graph.edges[e][0], b = graph.edges[e][1];
+                ctx.beginPath();
+                ctx.moveTo(pos[a][0], pos[a][1]);
+                ctx.lineTo(pos[b][0], pos[b][1]);
+                ctx.stroke();
+            }
+
+            // Draw vertices with coloring
+            for (var i = 0; i < graph.V; i++) {
+                ctx.beginPath();
+                ctx.arc(pos[i][0], pos[i][1], vr, 0, Math.PI * 2);
+                ctx.fillStyle = PALETTE[graph.coloring[i]];
+                ctx.fill();
+            }
+
+            // Label and chi
+            ctx.fillStyle = '#9ca3af';
+            ctx.font = '11px Inter, sans-serif';
+            ctx.textAlign = 'center';
+            ctx.fillText(labels[g], cx, H - 24);
+            ctx.fillStyle = '#a78bfa';
+            ctx.font = '12px "JetBrains Mono", monospace';
+            ctx.fillText('\u03C7 = ' + graph.chi, cx, H - 8);
+        }
+    })();
+
+    // ============================================================
+    // LAB: Interactive Graph Coloring
+    // ============================================================
+    (function() {
+        var container = document.getElementById('lab-container');
+        var canvas = document.getElementById('lab-canvas');
+        if (!container || !canvas) return;
+
+        var W, H, dpr, ctx;
+        var currentGraph = 0;
+        var positions = [];
+        var vertexColors = [];
+        var selectedColor = 0;
+
+        function resize() {
+            W = container.clientWidth;
+            H = container.clientHeight;
+            dpr = window.devicePixelRatio || 1;
+            canvas.width = W * dpr;
+            canvas.height = H * dpr;
+            ctx = canvas.getContext('2d');
+            ctx.scale(dpr, dpr);
+        }
+
+        function initPositions() {
+            var g = GRAPHS[currentGraph];
+            positions = circularLayout(g.V, W / 2, H / 2, Math.min(W, H) / 2 - 60);
+            vertexColors = [];
+            for (var i = 0; i < g.V; i++) vertexColors.push(-1);
+        }
+
+        function countViolations() {
+            var g = GRAPHS[currentGraph];
+            var count = 0;
+            for (var e = 0; e < g.edges.length; e++) {
+                var u = g.edges[e][0], v = g.edges[e][1];
+                if (vertexColors[u] >= 0 && vertexColors[v] >= 0 && vertexColors[u] === vertexColors[v]) {
+                    count++;
+                }
+            }
+            return count;
+        }
+
+        function draw() {
+            ctx.clearRect(0, 0, W, H);
+            var g = GRAPHS[currentGraph];
+            var violations = {};
+
+            // Find violating edges
+            for (var e = 0; e < g.edges.length; e++) {
+                var u = g.edges[e][0], v = g.edges[e][1];
+                if (vertexColors[u] >= 0 && vertexColors[v] >= 0 && vertexColors[u] === vertexColors[v]) {
+                    violations[u + '-' + v] = true;
+                }
+            }
+
+            // Draw edges
+            for (var e = 0; e < g.edges.length; e++) {
+                var a = g.edges[e][0], b = g.edges[e][1];
+                var key = a + '-' + b;
+                ctx.beginPath();
+                ctx.moveTo(positions[a][0], positions[a][1]);
+                ctx.lineTo(positions[b][0], positions[b][1]);
+                if (violations[key]) {
+                    ctx.strokeStyle = 'rgba(239, 68, 68, 0.7)';
+                    ctx.lineWidth = 2.5;
+                } else {
+                    ctx.strokeStyle = 'rgba(107, 114, 128, 0.35)';
+                    ctx.lineWidth = 1.2;
+                }
+                ctx.stroke();
+            }
+
+            // Draw vertices
+            var vr = g.V <= 8 ? 14 : (g.V <= 12 ? 11 : 8);
+            for (var i = 0; i < g.V; i++) {
+                ctx.beginPath();
+                ctx.arc(positions[i][0], positions[i][1], vr, 0, Math.PI * 2);
+                if (vertexColors[i] >= 0) {
+                    ctx.fillStyle = PALETTE[vertexColors[i]];
+                } else {
+                    ctx.fillStyle = '#374151';
+                }
+                ctx.fill();
+                ctx.strokeStyle = '#6b7280';
+                ctx.lineWidth = 1;
+                ctx.stroke();
+
+                // Vertex label
+                ctx.fillStyle = '#fff';
+                ctx.font = (g.V <= 12 ? '11' : '9') + 'px "JetBrains Mono", monospace';
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.fillText('' + i, positions[i][0], positions[i][1]);
+            }
+
+            // Update info
+            var viol = countViolations();
+            document.getElementById('lab-violations').textContent = viol;
+            document.getElementById('lab-chi').textContent = g.chi;
+        }
+
+        function findVertex(mx, my) {
+            var g = GRAPHS[currentGraph];
+            var vr = g.V <= 8 ? 18 : (g.V <= 12 ? 15 : 12);
+            for (var i = 0; i < g.V; i++) {
+                var dx = mx - positions[i][0], dy = my - positions[i][1];
+                if (dx * dx + dy * dy < vr * vr) return i;
+            }
+            return -1;
+        }
+
+        function getMousePos(e) {
+            var rect = canvas.getBoundingClientRect();
+            return [e.clientX - rect.left, e.clientY - rect.top];
+        }
+
+        // Click to color vertex
+        canvas.addEventListener('click', function(e) {
+            var p = getMousePos(e);
+            var v = findVertex(p[0], p[1]);
+            if (v >= 0) {
+                vertexColors[v] = selectedColor;
+                draw();
+            }
+        });
+
+        // Touch support
+        canvas.addEventListener('touchstart', function(e) {
+            e.preventDefault();
+            var t = e.touches[0];
+            var rect = canvas.getBoundingClientRect();
+            var p = [t.clientX - rect.left, t.clientY - rect.top];
+            var v = findVertex(p[0], p[1]);
+            if (v >= 0) {
+                vertexColors[v] = selectedColor;
+                draw();
+            }
+        }, { passive: false });
+
+        // Color palette buttons
+        var colorBtns = document.querySelectorAll('.color-btn');
+        colorBtns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                selectedColor = parseInt(this.getAttribute('data-color'));
+                colorBtns.forEach(function(b) {
+                    b.style.borderColor = '#374151';
+                });
+                this.style.borderColor = '#ffffff';
+            });
+        });
+
+        // Graph selection buttons
+        var btns = document.querySelectorAll('.lab-btn');
+        btns.forEach(function(btn) {
+            btn.addEventListener('click', function() {
+                currentGraph = parseInt(this.getAttribute('data-graph'));
+                btns.forEach(function(b) {
+                    b.className = 'lab-btn px-3 py-1.5 rounded-lg text-sm bg-gray-800 border border-gray-700 text-gray-400 hover:text-violet-400 transition';
+                });
+                this.className = 'lab-btn px-3 py-1.5 rounded-lg text-sm bg-violet-500/20 text-violet-400 border border-violet-500/30 transition';
+                initPositions();
+                draw();
+            });
+        });
+
+        // Reset button
+        document.getElementById('lab-reset').addEventListener('click', function() {
+            var g = GRAPHS[currentGraph];
+            vertexColors = [];
+            for (var i = 0; i < g.V; i++) vertexColors.push(-1);
+            draw();
+        });
+
+        // Auto-color button
+        document.getElementById('lab-auto').addEventListener('click', function() {
+            var g = GRAPHS[currentGraph];
+            for (var i = 0; i < g.V; i++) {
+                vertexColors[i] = g.coloring[i];
+            }
+            draw();
+        });
+
+        // Init
+        resize();
+        initPositions();
+        draw();
+        window.addEventListener('resize', function() { resize(); initPositions(); draw(); });
+    })();
+    </script>
 </body>
 </html>

@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EuclidLab — Curso Avanzado de los Elementos</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .serif { font-family: 'Crimson Text', serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .gradient-text { background: linear-gradient(135deg, #fbbf24 0%, #f59e0b 50%, #d97706 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-200 min-h-screen">
+    <!-- Navigation -->
+    <nav class="border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-md sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            <div class="flex items-center gap-4">
+                <span class="text-3xl">📐</span>
+                <div>
+                    <h1 class="font-bold text-amber-400 mono text-lg">EUCLIDLAB</h1>
+                    <p class="text-xs text-neutral-500 serif italic">Τὰ Στοιχεῖα</p>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <header class="relative py-24 px-6 bg-gradient-to-b from-amber-950/20 via-neutral-950 to-neutral-950">
+        <div class="max-w-5xl mx-auto text-center">
+            <p class="mono text-xs text-amber-500/60 mb-6 tracking-[0.3em] uppercase">Curso Universitario Avanzado</p>
+            <h1 class="text-6xl md:text-7xl font-bold serif mb-6">
+                <span class="gradient-text">Los Elementos</span>
+            </h1>
+            <p class="text-xl text-neutral-400 serif italic mb-8">Análisis crítico del tratado fundacional de la matemática</p>
+            <a href="./modulo-01/leccion-01.html" class="inline-flex items-center gap-3 px-8 py-4 bg-amber-500 text-black font-semibold rounded-sm hover:bg-amber-400 transition-all">
+                Comenzar Estudio →
+            </a>
+        </div>
+    </header>
+
+    <!-- Course Overview -->
+    <section class="py-20 px-6">
+        <div class="max-w-7xl mx-auto">
+            <h2 class="text-3xl font-bold text-white mb-12 text-center serif">Estructura del Curso</h2>
+            
+            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                <!-- Module 1 -->
+                <article class="bg-neutral-900 border border-amber-500/30 rounded-lg p-8 hover:shadow-2xl transition-all">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="mono text-xs text-amber-500/80 bg-amber-500/10 px-3 py-1 rounded-full">MÓDULO I</span>
+                        <span class="text-xs text-green-500 mono">● DISPONIBLE</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 serif">Principia Geometrica</h3>
+                    <p class="text-neutral-400 text-sm mb-6 leading-relaxed">
+                        Fundamentos del método axiomático. Definiciones, postulados, nociiones comunes. 
+                        Análisis crítico del aparato conceptual euclidiano y sus lagunas lógicas.
+                    </p>
+                    <a href="./modulo-01/leccion-01.html" class="block w-full py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-center hover:bg-amber-500/20 transition">
+                        Acceder al módulo
+                    </a>
+                </article>
+
+                <!-- Module 2 -->
+                <article class="bg-neutral-900 border border-neutral-800 rounded-lg p-8 opacity-50">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="mono text-xs text-neutral-500 bg-neutral-800 px-3 py-1 rounded-full">MÓDULO II</span>
+                        <span class="text-xs text-neutral-600 mono">PRÓXIMAMENTE</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 serif">Parallela et Area</h3>
+                    <p class="text-neutral-500 text-sm mb-6">Teorema de Pitágoras y álgebra geométrica.</p>
+                </article>
+
+                <!-- Module 3 -->
+                <article class="bg-neutral-900 border border-neutral-800 rounded-lg p-8 opacity-50">
+                    <div class="flex items-center justify-between mb-6">
+                        <span class="mono text-xs text-neutral-500 bg-neutral-800 px-3 py-1 rounded-full">MÓDULO III</span>
+                        <span class="text-xs text-neutral-600 mono">PRÓXIMAMENTE</span>
+                    </div>
+                    <h3 class="text-xl font-bold text-white mb-3 serif">De Circulo</h3>
+                    <p class="text-neutral-500 text-sm mb-6">Geometría del círculo y construcción del pentágono.</p>
+                </article>
+            </div>
+        </div>
+    </section>
+
+    <!-- Quote Section -->
+    <section class="py-24 px-6 bg-gradient-to-b from-neutral-950 via-amber-950/10 to-neutral-950">
+        <div class="max-w-4xl mx-auto text-center">
+            <blockquote class="serif text-3xl text-amber-200/90 italic mb-8">
+                "Οὐδεὶς ἀγεωμέτρητος εἰσίτω"
+            </blockquote>
+            <p class="text-xl text-amber-400/80 serif">"Que no entre nadie que no sepa geometría"</p>
+            <p class="text-sm text-neutral-600 mono mt-4">— Inscripción atribuida a la Academia de Platón</p>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="border-t border-neutral-800 py-12 px-6">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-neutral-600 text-sm">EigenLab Mathematics • Edición crítica con análisis histórico y filológico</p>
+        </div>
+    </footer>
+</body>
+</html>

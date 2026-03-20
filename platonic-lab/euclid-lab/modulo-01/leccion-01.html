@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio Prima: De Methodo Demonstrativa | EuclidLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .serif { font-family: 'Crimson Text', serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .greek { font-family: 'Crimson Text', serif; font-style: italic; }
+        .drop-cap::first-letter {
+            float: left;
+            font-family: 'Crimson Text', serif;
+            font-size: 4rem;
+            line-height: 0.8;
+            padding-right: 0.5rem;
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-200 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <nav class="text-xs text-neutral-600 mb-2 flex items-center gap-2">
+                <a href="../../../index.html" class="hover:text-amber-400 transition">EigenLab</a>
+                <span>›</span>
+                <a href="../../index.html" class="hover:text-amber-400 transition">Mathematics</a>
+                <span>›</span>
+                <span class="text-amber-400">EuclidLab</span>
+            </nav>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-amber-500/60 mono mb-1">LECTIO PRIMA</p>
+                    <h1 class="text-xl font-bold text-white serif">De Methodo Demonstrativa</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <span class="px-3 py-1 bg-neutral-900 text-neutral-500 text-xs rounded-full">Inicio</span>
+                    <a href="./leccion-02.html" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm hover:bg-amber-500/20 transition flex items-center gap-2">
+                        Lectio Secunda →
+                    </a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-3">
+                <div class="sticky top-32 space-y-6">
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
+                        <p class="text-xs text-neutral-500 mono mb-2">MODULUS I</p>
+                        <h3 class="text-lg font-semibold text-white serif mb-1">Principia Geometrica</h3>
+                        <p class="text-xs text-neutral-600 serif italic mb-4">Fundamenta methodi axiomatice</p>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-neutral-500 mb-2">
+                                <span>Progressus</span>
+                                <span class="text-amber-400 mono">1/6</span>
+                            </div>
+                            <div class="h-1 bg-neutral-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-amber-500 to-amber-600 w-1/6"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="bg-neutral-900 border border-neutral-800 rounded-lg p-4">
+                        <p class="text-xs text-neutral-600 mono mb-4 uppercase tracking-wider">Lectiones</p>
+                        <div class="space-y-1">
+                            <a href="./leccion-01.html" class="flex items-center gap-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400">
+                                <span class="text-xs mono font-bold">I</span>
+                                <span class="text-sm">De Methodo Demonstrativa</span>
+                            </a>
+                            <a href="./leccion-02.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">II</span>
+                                <span class="text-sm">De Definitionibus</span>
+                            </a>
+                            <a href="./leccion-03.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">III</span>
+                                <span class="text-sm">De Postulatis</span>
+                            </a>
+                            <a href="./leccion-04.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">IV</span>
+                                <span class="text-sm">De Axiomatis</span>
+                            </a>
+                            <a href="./leccion-05.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">V</span>
+                                <span class="text-sm">De Prima Constructione</span>
+                            </a>
+                            <a href="./leccion-06.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">VI</span>
+                                <span class="text-sm">De Congruentia</span>
+                            </a>
+                        </div>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="lg:col-span-9">
+                <article class="bg-neutral-900 border border-neutral-800 rounded-lg p-8 lg:p-12">
+                    <!-- Header -->
+                    <header class="mb-12 pb-8 border-b border-neutral-800">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs mono rounded border border-amber-500/30">HISTORIA & PHILOSOPHIA</span>
+                            <span class="text-neutral-600 text-sm">Tempus legendi: 25 min</span>
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6 serif">El Espíritu de la Demostración</h1>
+                        <p class="text-xl text-neutral-400 serif italic leading-relaxed">
+                            Sobre el método axiomático-deductivo y su génesis en la escuela matemática alejandrina del siglo IV a.C.
+                        </p>
+                    </header>
+
+                    <!-- Introducción -->
+                    <section class="mb-16">
+                        <p class="drop-cap text-lg text-neutral-300 leading-relaxed mb-6">
+                            Los <strong>Στοιχεῖα</strong> (Elementa) de Euclides constituyen, sin lugar a dudas, 
+                            el tratado científico más influyente jamás escrito. Composición de trece libros redactada 
+                            alrededor del año 300 a.C. en la ciudad de Alejandría, ha servido como modelo de rigor 
+                            lógico durante más de dos milenios, determinando no solo el desarrollo de las matemáticas 
+                            sino también la estructura misma del pensamiento científico occidental.
+                        </p>
+                        
+                        <div class="bg-neutral-800/50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+                            <p class="text-lg text-amber-200/90 serif italic mb-2">
+                                "Los Elementos no son solo un libro de geometría, sino el paradigma supremo de cómo 
+                                debe organizarse el conocimiento humano: partiendo de primeros principios evidentes 
+                                y construyendo mediante deducciones necesarias todo un edificio conceptual."
+                            </p>
+                            <p class="text-sm text-neutral-500">— Proclo Diadoco, <em>In Primum Euclidis Elementorum Librum Commentarii</em>, c. 450 d.C.</p>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            La pregunta fundamental que debe plantearse el estudiante moderno no es tanto <em>qué</em> 
+                            contienen los Elementos —los teoremas de geometría plana y sólida, la teoría de números, 
+                            la clasificación de los irracionales— sino <em>cómo</em> están organizados estos contenidos 
+                            y por qué esta organización representó una revolución epistemológica sin precedentes.
+                        </p>
+                    </section>
+
+                    <!-- Contexto Histórico -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§1</span>
+                            El Contexto Alejandrino
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-amber-400 font-semibold mb-2">300 a.C.</h3>
+                                <p class="text-sm text-neutral-400">Fechas tradicionales de composición</p>
+                            </div>
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-amber-400 font-semibold mb-2">13 Libros</h3>
+                                <p class="text-sm text-neutral-400">465 proposiciones demostradas</p>
+                            </div>
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-amber-400 font-semibold mb-2">∞ Influencia</h3>
+                                <p class="text-sm text-neutral-400">Más ediciones que cualquier texto salvo la Biblia</p>
+                            </div>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            Euclides vivió durante el reinado de Ptolomeo I Sóter (367-282 a.C.), el general macedonio 
+                            que, tras la muerte de Alejandro Magno, se convirtió en soberano de Egipto y fundó la dinastía 
+                            ptolemaica. Fue precisamente bajo el patrocinio real que floreció en Alejandría el centro 
+                            cultural más importante del mundo antiguo: el <strong>Museo</strong> (Μουσεῖον) y su anexa 
+                            <strong>Biblioteca</strong> (Βιβλιοθήκη), instituciones dedicadas al estudio y preservación 
+                            de todo el saber griego.
+                        </p>
+
+                        <div class="bg-neutral-800/50 rounded-lg p-6 my-8 border border-neutral-700">
+                            <h3 class="text-lg font-semibold text-white mb-4 serif">La Escuela de Alejandría</h3>
+                            <p class="text-neutral-400 text-sm leading-relaxed mb-4">
+                                La Biblioteca de Alejandría albergó, en su apogeo, entre 400.000 y 700.000 rollos de papiro. 
+                                Allí convergieron sabios de toda la cuenca mediterránea: Arquímedes de Siracusa estudió en 
+                                Alejandría antes de regresar a Sicilia; Eratóstenes, famoso por su cálculo de la circunferencia 
+                                terrestre, fue su director; Apolonio de Perga redactó allí sus tratados sobre las cónicas.
+                            </p>
+                            <p class="text-neutral-400 text-sm leading-relaxed">
+                                Fue en este ambiente de intensa actividad matemática que Euclides compuso los Elementos, 
+                                no como obra de investigación original (pues, como veremos, la mayoría de los teoremas ya eran conocidos), 
+                                sino como <strong>síntesis sistemática</strong> de todo el conocimiento geométrico acumulado desde los pitagóricos.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- La Revolución Epistemológica -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§2</span>
+                            La Revolución Epistemológica
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            Para comprender la magnitud del logro euclidiano, debemos contrastarlo con las tradiciones 
+                            matemáticas que le precedieron. Los egipcios y babilonios poseían conocimientos geométricos 
+                            sofisticados —la fórmula para el volumen de un tronco de pirámide, aproximaciones de π, 
+                            tablas de triángulos pitagóricos— pero su tratamiento era eminentemente <strong>algorítmico-práctico</strong>.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+                            <div class="bg-blue-950/20 border border-blue-800/30 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold text-blue-400 mb-4 serif">Tradición Egipcia-Babilónica</h3>
+                                <ul class="space-y-3 text-sm text-neutral-400">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-500">▸</span>
+                                        <span>Recetas operativas sin justificación teórica</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-500">▸</span>
+                                        <span>"Calcula así y obtendrás el resultado"</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-500">▸</span>
+                                        <span>Aproximaciones empíricas (π ≈ 3.16, 3.125)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-500">▸</span>
+                                        <span>Contexto: agrimensura, construcción, tributos</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-blue-500">▸</span>
+                                        <span>No hay distinción entre exacto y aproximado</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-amber-950/20 border border-amber-800/30 rounded-lg p-6">
+                                <h3 class="text-lg font-semibold text-amber-400 mb-4 serif">Tradición Griega (Euclides)</h3>
+                                <ul class="space-y-3 text-sm text-neutral-300">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>Teoremas demostrados deductivamente</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>"Esto es verdadero porque se deduce de principios evidentes"</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>Resultados exactos (el área del círculo es πr² exactamente)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>Contexto: conocimiento puro, verdad eterna</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>Demarcación estricta entre exacto y aproximado</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            Esta diferencia no es meramente metodológica; es <strong>filosófica y ontológica</strong>. 
+                            Para Platón, cuya influencia permea toda la matemática griega clásica, las entidades geométricas 
+                            —el triángulo perfecto, el círculo verdadero— existen en un reino de formas inteligibles, 
+                            accesible únicamente a la razón pura (νόησις), distinto y superior al mundo sensible de la 
+                            experiencia (αἴσθησις).
+                        </p>
+
+                        <div class="bg-neutral-800/50 rounded-lg p-6 my-8 border border-neutral-700">
+                            <p class="text-neutral-300 serif italic text-lg mb-3">
+                                "El conocimiento geométrico es el conocimiento de lo que <em>siempre es</em> (τὸ ὄν ἀεί), 
+                                y no de lo que <em>llega a ser y deja de ser</em> (γιγνόμενον καὶ ἀπολλύμενον)."
+                            </p>
+                            <p class="text-sm text-neutral-500">— Platón, <em>República</em>, VI 527a-b</p>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed">
+                            En este contexto filosófico, la demostración no es un lujo pedante sino la única vía de acceso 
+                            al conocimiento verdadero. Los Elementos de Euclides representan la consumación de este ideal: 
+                            un edificio conceptual donde cada proposición descansa firmemente sobre fundamentos lógicos, 
+                            formando una cadena ininterrumpida desde los axiomas más simples hasta los teoremas más complejos.
+                        </p>
+                    </section>
+
+                    <!-- El Método Axiomático-Deductivo -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§3</span>
+                            El Método Axiomático-Deductivo
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            La estructura de los Elementos puede visualizarse como una <strong>piramide invertida</strong>: 
+                            un amplio edificio de teoremas y construcciones descansa sobre un reducido conjunto de principios 
+                            fundamentales. Esta organización se articula en cinco niveles jerárquicos:
+                        </p>
+
+                        <!-- Diagrama de la estructura -->
+                        <div class="bg-neutral-800/30 rounded-lg p-8 my-8 border border-neutral-700">
+                            <div class="space-y-4 max-w-2xl mx-auto">
+                                <div class="bg-gradient-to-r from-amber-500/20 to-amber-600/10 border border-amber-500/40 rounded-lg p-5">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-12 h-12 rounded-full bg-amber-500/30 flex items-center justify-center text-2xl">🏛️</div>
+                                        <div>
+                                            <h4 class="font-bold text-amber-300 text-lg">THEOREMATA & PROPOSITIONES</h4>
+                                            <p class="text-sm text-amber-400/70">Resultados derivados lógicamente (465 en total)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <div class="flex justify-center">
+                                    <svg class="w-6 h-8 text-neutral-600" viewBox="0 0 24 40" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 0v40M4 32l8 8 8-8"/>
+                                    </svg>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-neutral-700/50 to-neutral-800/50 border border-neutral-600 rounded-lg p-4 ml-4">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-xl">📐</div>
+                                        <div>
+                                            <h4 class="font-semibold text-neutral-300">POSTULATA</h4>
+                                            <p class="text-sm text-neutral-500">5 afirmaciones específicas de geometría</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-center">
+                                    <svg class="w-6 h-8 text-neutral-600" viewBox="0 0 24 40" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 0v40M4 32l8 8 8-8"/>
+                                    </svg>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-neutral-700/50 to-neutral-800/50 border border-neutral-600 rounded-lg p-4 ml-8">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-xl">⚖️</div>
+                                        <div>
+                                            <h4 class="font-semibold text-neutral-300">AXIOMATA COMMUNIA</h4>
+                                            <p class="text-sm text-neutral-500">5 nociiones comunes a toda magnitud</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-center">
+                                    <svg class="w-6 h-8 text-neutral-600" viewBox="0 0 24 40" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 0v40M4 32l8 8 8-8"/>
+                                    </svg>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-neutral-700/50 to-neutral-800/50 border border-neutral-600 rounded-lg p-4 ml-12">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-neutral-600 flex items-center justify-center text-xl">📖</div>
+                                        <div>
+                                            <h4 class="font-semibold text-neutral-300">DEFINITIONES</h4>
+                                            <p class="text-sm text-neutral-500">23 definiciones del Libro I</p>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="flex justify-center">
+                                    <svg class="w-6 h-8 text-neutral-600" viewBox="0 0 24 40" fill="none" stroke="currentColor" stroke-width="2">
+                                        <path d="M12 0v40M4 32l8 8 8-8"/>
+                                    </svg>
+                                </div>
+
+                                <div class="bg-gradient-to-r from-neutral-800/30 to-neutral-900/50 border border-neutral-700 rounded-lg p-4 ml-16">
+                                    <div class="flex items-center gap-4">
+                                        <div class="w-10 h-10 rounded-full bg-neutral-700 flex items-center justify-center text-xl">?</div>
+                                        <div>
+                                            <h4 class="font-semibold text-neutral-400">NOTIONES PRIMITIVAE</h4>
+                                            <p class="text-sm text-neutral-600">Punctum, Linea, Superficies (no definibles)</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            Esta estructura implica que <strong>nada se da por sentado</strong>. Cada proposición en los 
+                            Elementos debe derivarse lógicamente de proposiciones anteriores, que a su vez dependen de 
+                            los axiomas. No hay «saltos» intuitivos permitidos; cada paso debe ser justificado explícitamente.
+                        </p>
+
+                        <div class="bg-red-950/20 border border-red-800/30 rounded-lg p-6 my-8">
+                            <h4 class="text-red-400 font-semibold mb-3 flex items-center gap-2">
+                                <span>⚠️</span>
+                                <span>Crítica Moderna: Las Lagunas Euclidianas</span>
+                            </h4>
+                            <p class="text-sm text-neutral-400 leading-relaxed">
+                                El análisis moderno (siglos XIX-XX) ha revelado que los Elementos contienen numerosas 
+                                <strong>lagunas lógicas</strong>. Euclides frecuentemente usa propiedades «evidentes» 
+                                que no se deducen de sus axiomas: continuidad del espacio, ordenación de puntos en una línea, 
+                                intersección de círculos. La axiomatización completa requirió el trabajo de 
+                                Pasch (1882), Hilbert (1899) y Tarski (1959).
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- El Problema de la Demarcación -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§4</span>
+                            Demarcación entre Postulados y Axiomas
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            Una peculiaridad de los Elementos que ha intrigado a los comentaristas desde la Antigüedad 
+                            es la <strong>distinción</strong> que establece Euclides entre <em>postulados</em> (αἰτήματα) 
+                            y <em>axiomas comunes</em> (κοιναὶ ἔννοιαι). Si bien ambos son proposiciones indemostradas, 
+                            difieren en su ámbito de aplicación:
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-lg font-semibold text-amber-400 mb-4 serif">Postulata (5)</h3>
+                                <p class="text-sm text-neutral-400 mb-4">
+                                    Afirmaciones <strong>específicas de la geometría</strong>. Describen las construcciones 
+                                    permitidas (trazar líneas, describir círculos) y propiedades particulares del espacio.
+                                </p>
+                                <p class="text-xs text-neutral-500 mono bg-neutral-900/50 p-3 rounded">
+                                    Postulatim I: "Petitur ut a quovis puncto ad quodvis punctum rectam lineam ducere liceat."
+                                </p>
+                            </div>
+
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-lg font-semibold text-amber-400 mb-4 serif">Axiomata Communia (5)</h3>
+                                <p class="text-sm text-neutral-400 mb-4">
+                                    Verdades generales sobre cualquier tipo de <strong>magnitud</strong>. Aplicables 
+                                    igualmente a números, figuras, ángulos y volúmenes.
+                                </p>
+                                <p class="text-xs text-neutral-500 mono bg-neutral-900/50 p-3 rounded">
+                                    Axioma I: "Quae eidem aequalia sunt, et inter se sunt aequalia."
+                                </p>
+                            </div>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed">
+                            Esta distinción, aunque filológicamente cuestionable (Proclo sugiere que los antiguos griegos 
+                            no distinguían entre ambos términos), cumple una función pedagógica clara: separar lo que es 
+                            específico del dominio geométrico de lo que tiene validez universal en toda ciencia matemática.
+                        </p>
+                    </section>
+
+                    <!-- Síntesis -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§5</span>
+                            Síntesis y Prospectiva
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            El método euclidiano, a pesar de sus imperfecciones desde la perspectiva de la lógica moderna, 
+                            estableció el <strong>paradigma supremo del conocimiento científico</strong>. Su influencia 
+                            trasciende ampliamente las matemáticas:
+                        </p>
+
+                        <div class="space-y-4 my-8">
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/20 rounded-lg border-l-4 border-violet-500">
+                                <span class="text-violet-400 font-bold text-lg">17</span>
+                                <div>
+                                    <h4 class="font-semibold text-white mb-1">Spinoza: Ética Ordine Geometrico Demonstrata</h4>
+                                    <p class="text-sm text-neutral-400">La obra capital de Baruch Spinoza (1677) imita explícitamente la estructura de los Elementos, deduciendo proposiciones éticas de "definiciones" y "axiomas" sobre Dios, la naturaleza y la mente humana.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/20 rounded-lg border-l-4 border-blue-500">
+                                <span class="text-blue-400 font-bold text-lg">18</span>
+                                <div>
+                                    <h4 class="font-semibold text-white mb-1">Newton: Philosophiæ Naturalis Principia Mathematica</h4>
+                                    <p class="text-sm text-neutral-400">Los Principia (1687) de Isaac Newton siguen fielmente el modelo euclidiano: "Leyes de Movimiento" (axiomas) → demostraciones de lemas → proposiciones sobre gravitación universal.</p>
+                                </div>
+                            </div>
+
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/20 rounded-lg border-l-4 border-red-500">
+                                <span class="text-red-400 font-bold text-lg">76</span>
+                                <div>
+                                    <h4 class="font-semibold text-white mb-1">Declaración de Independencia de los EE.UU.</h4>
+                                    <p class="text-sm text-neutral-400">Thomas Jefferson, formado en el humanismo clásico, estructuró el documento de 1776 como una demostración euclidiana: "axiomas" sobre derechos naturales → deductio de la necesidad de independencia.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-950/30 border border-amber-800/30 rounded-lg p-8 my-8">
+                            <h3 class="text-xl font-bold text-amber-400 mb-4 serif">Hacia la Lectura de los Elementos</h3>
+                            <p class="text-neutral-300 leading-relaxed mb-4">
+                                En las lecciones siguientes, procederemos a un análisis detallado del aparato conceptual 
+                                de los Elementos. No nos limitaremos a describir las definiciones, postulados y axiomas, 
+                                sino que examinaremos críticamente:
+                            </p>
+                            <ul class="space-y-2 text-neutral-400 text-sm">
+                                <li>• La circularidad de las definiciones y el problema de los términos primitivos</li>
+                                <li>• El status epistemológico del V Postulado y las geometrías no euclidianas</li>
+                                <li>• Las suposiciones tácitas en las demostraciones euclidianas</li>
+                                <li>• La relación entre el texto griego y nuestras tradiciones modernas</li>
+                            </ul>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed italic serif text-lg">
+                            «El estudio de Euclides no es solo un ejercicio histórico, sino una inmersión en el nacimiento 
+                            mismo del pensamiento deductivo, aquel que transformó al hombre de mero observador de la naturaleza 
+                            en artífice del conocimiento científico.»
+                        </p>
+                    </section>
+
+                    <!-- Referencias -->
+                    <section class="mb-12 pt-8 border-t border-neutral-800">
+                        <h3 class="text-lg font-bold text-white mb-6 serif">Lecturas Complementarias</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Texto Primario</p>
+                                <p class="text-neutral-400">Euclidis Elementa, ed. I. L. Heiberg (Teubner, 1883-1885)</p>
+                            </div>
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Comentario Antiguo</p>
+                                <p class="text-neutral-400">Procli Diadochi, In Primum Euclidis Elementorum Librum Commentarii</p>
+                            </div>
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Estudio Moderno</p>
+                                <p class="text-neutral-400">B. L. van der Waerden, Science Awakening (1954)</p>
+                            </div>
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Análisis Filosófico</p>
+                                <p class="text-neutral-400">I. Mueller, Philosophy of Mathematics and Deductive Structure in Euclid's Elements (1981)</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="flex items-center justify-between pt-8 border-t border-neutral-800">
+                        <span class="px-6 py-3 bg-neutral-800 text-neutral-600 rounded-lg cursor-not-allowed">← Praecedens</span>
+                        <a href="./leccion-02.html" class="px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg hover:bg-amber-500/20 transition font-medium">
+                            Lectio Secunda: De Definitionibus →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-t border-neutral-800 py-8 px-6 bg-neutral-950">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-neutral-600 text-sm serif italic mb-2">Εὐκλείδης ὁ Ἀλεξανδρεύς</p>
+            <p class="text-neutral-700 text-xs">Euclides Alexandrinus • fl. 300 a.C.</p>
+        </div>
+    </footer>
+</body>
+</html>

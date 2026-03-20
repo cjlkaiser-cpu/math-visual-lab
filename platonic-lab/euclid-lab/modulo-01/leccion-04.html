@@ -1,0 +1,225 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 4: Los Axiomas Comunes | EuclidLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .progress-bar { background: linear-gradient(90deg, #f59e0b, #a855f7); }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <nav class="text-xs text-gray-500 mb-2">
+                <a href="#" class="hover:text-amber-400 transition">EigenLab</a>
+                <span class="mx-2">›</span>
+                <span class="text-amber-400">EuclidLab</span>
+            </nav>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-lg font-semibold text-amber-400 mono">Lección 4</h1>
+                    <h2 class="text-xl font-bold text-white">Los Axiomas Comunes</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="./leccion-03.html" class="px-4 py-2 bg-gray-900 text-gray-300 rounded-lg text-sm hover:bg-gray-800 transition">← Anterior</a>
+                    <a href="./leccion-05.html" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm hover:bg-amber-500/20 transition">Siguiente →</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="sticky top-32 space-y-6">
+                    <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6">
+                        <div class="text-xs text-gray-500 mono mb-2">MÓDULO 01</div>
+                        <h3 class="text-lg font-semibold text-white mb-4">Primeros Principios</h3>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                <span>Progreso</span>
+                                <span class="text-amber-400">4/6</span>
+                            </div>
+                            <div class="h-2 bg-gray-900 rounded-full overflow-hidden">
+                                <div class="h-full progress-bar w-4/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6">
+                        <h4 class="text-sm font-semibold text-gray-400 mb-4 mono">LECCIONES</h4>
+                        <nav class="space-y-2">
+                            <a href="./leccion-04.html" class="flex items-center gap-3 p-3 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/30">
+                                <span class="text-xs mono">04</span>
+                                <span class="text-sm">Los Axiomas Comunes</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <div class="mb-10 pb-8 border-b border-gray-900">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs mono rounded-full border border-amber-500/30">FUNDAMENTOS</span>
+                            <span class="text-gray-500 text-sm">15 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold text-white mb-4">Los Axiomas Comunes</h1>
+                        <p class="text-gray-400 text-lg">Los "principios generales del entendimiento" que Euclides aplicaba a toda magnitud.</p>
+                    </div>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">¿Qué son los Axiomas Comunes?</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                A diferencia de los postulados (específicos de geometría), los <strong>axiomas comunes</strong> 
+                                o <strong>nociiones comunes</strong> son verdades generales aplicables a toda clase de magnitudes: 
+                                números, líneas, ángulos, volúmenes, etc.
+                            </p>
+                            <p class="mb-4">
+                                Son principios tan fundamentales que Euclides pensaba que nadie podría negarlos. 
+                                Son las reglas básicas de la <strong>igualdad</strong> y la <strong>comparación</strong>.
+                            </p>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">Los Cinco Axiomas Comunes</h2>
+                        
+                        <div class="space-y-4">
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border-l-4 border-amber-500">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-2xl">1</span>
+                                    <div>
+                                        <h3 class="font-semibold text-amber-400 mb-2">Igualdad Transitiva</h3>
+                                        <p class="text-gray-300 italic">"Cosas iguales a una misma cosa son iguales entre sí."</p>
+                                        <p class="text-sm text-gray-500 mt-2">Si A = C y B = C, entonces A = B</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border-l-4 border-amber-500/80">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-2xl">2</span>
+                                    <div>
+                                        <h3 class="font-semibold text-amber-400 mb-2">Suma de Iguales</h3>
+                                        <p class="text-gray-300 italic">"Si a iguales se añaden iguales, los todos son iguales."</p>
+                                        <p class="text-sm text-gray-500 mt-2">Si A = B, entonces A + C = B + C</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border-l-4 border-amber-500/60">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-2xl">3</span>
+                                    <div>
+                                        <h3 class="font-semibold text-amber-400 mb-2">Resta de Iguales</h3>
+                                        <p class="text-gray-300 italic">"Si de iguales se quitan iguales, los restos son iguales."</p>
+                                        <p class="text-sm text-gray-500 mt-2">Si A = B, entonces A - C = B - C</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border-l-4 border-amber-500/40">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-2xl">4</span>
+                                    <div>
+                                        <h3 class="font-semibold text-amber-400 mb-2">Coincidencia es Igualdad</h3>
+                                        <p class="text-gray-300 italic">"Las cosas que coinciden entre sí son iguales."</p>
+                                        <p class="text-sm text-gray-500 mt-2">Base del principio de superposición</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border-l-4 border-amber-500/30">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-2xl">5</span>
+                                    <div>
+                                        <h3 class="font-semibold text-amber-400 mb-2">El Todo Mayor que la Parte</h3>
+                                        <p class="text-gray-300 italic">"El todo es mayor que la parte."</p>
+                                        <p class="text-sm text-gray-500 mt-2">Principio de orden: A + B > A</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">El Trasfondo Aristotélico</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                Estos axiomas reflejan la influencia de <strong>Aristóteles</strong>, quien en sus 
+                                <em>Analíticos</em> discutió los "axiomas comunes a todas las ciencias". Euclides aplicó 
+                                esta idea matemáticamente.
+                            </p>
+                            <div class="bg-gray-900/50 rounded-xl p-6 border-l-4 border-amber-400 my-8">
+                                <p class="text-gray-300 italic">
+                                    "El axioma es lo que se da como verdadero y primero para cada género de investigación... 
+                                    Aquello de lo que es imposible pensar lo contrario."
+                                </p>
+                                <p class="text-sm text-gray-500 mt-2">— Aristóteles, Analíticos Posteriores</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">Uso en Demostraciones</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                Los axiomas comunes aparecen constantemente en las demostraciones euclidianas:
+                            </p>
+                            <ul class="space-y-3">
+                                <li class="flex items-start gap-3">
+                                    <span class="text-amber-400">▸</span>
+                                    <span><strong>I.4 (LAL):</strong> Usa el axioma 4 (superposición) para demostrar congruencia</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-amber-400">▸</span>
+                                    <span><strong>I.13:</strong> Usa el axioma 2 para sumar ángulos</span>
+                                </li>
+                                <li class="flex items-start gap-3">
+                                    <span class="text-amber-400">▸</span>
+                                    <span><strong>I.16:</strong> Usa el axioma 5 para comparar ángulos</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">Resumen</h2>
+                        <div class="bg-gradient-to-r from-amber-500/10 to-violet-500/10 rounded-xl p-6 border border-amber-500/30">
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>Los axiomas son <strong>generales</strong> (aplican a toda magnitud)</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>Gobiernan la <strong>igualdad</strong> y las <strong>operaciones</strong> con magnitudes</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>Reflejan la influencia <strong>aristotélica</strong> en Euclides</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>Se usan constantemente en las <strong>demostraciones</strong></span></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <div class="flex items-center justify-between pt-8 border-t border-gray-900">
+                        <a href="./leccion-03.html" class="px-6 py-3 bg-gray-900 text-gray-300 rounded-lg hover:bg-gray-800 transition">← Anterior</a>
+                        <a href="./leccion-05.html" class="px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg hover:bg-amber-500/20 transition">Siguiente: El Primer Triángulo →</a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 mb-2">
+                <span class="mono">EigenLab</span>
+                <span class="mx-2">›</span>
+                <span class="mono text-amber-400">EuclidLab</span>
+            </nav>
+            <p class="text-xs text-gray-700">Módulo 01 — Primeros Principios</p>
+        </div>
+    </footer>
+</body>
+</html>

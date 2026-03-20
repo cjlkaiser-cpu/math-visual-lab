@@ -1,0 +1,405 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio Tertia: De Postulatis | EuclidLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .serif { font-family: 'Crimson Text', serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .postulate-card { 
+            transition: all 0.3s ease;
+        }
+        .postulate-card:hover {
+            transform: translateX(8px);
+        }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-200 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <nav class="text-xs text-neutral-600 mb-2 flex items-center gap-2">
+                <a href="../../../index.html" class="hover:text-amber-400 transition">EigenLab</a>
+                <span>›</span>
+                <a href="../../index.html" class="hover:text-amber-400 transition">Mathematics</a>
+                <span>›</span>
+                <span class="text-amber-400">EuclidLab</span>
+            </nav>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-amber-500/60 mono mb-1">LECTIO TERTIA</p>
+                    <h1 class="text-xl font-bold text-white serif">De Postulatis, praesertim de Quinto</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="./leccion-02.html" class="px-4 py-2 bg-neutral-800 text-neutral-400 rounded-lg text-sm hover:bg-neutral-700 transition">← Lectio II</a>
+                    <a href="./leccion-04.html" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm hover:bg-amber-500/20 transition">Lectio IV →</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-3">
+                <div class="sticky top-32 space-y-6">
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
+                        <p class="text-xs text-neutral-500 mono mb-2">MODULUS I</p>
+                        <h3 class="text-lg font-semibold text-white serif mb-1">Principia Geometrica</h3>
+                        <p class="text-xs text-neutral-600 serif italic mb-4">Fundamenta methodi axiomatice</p>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-neutral-500 mb-2">
+                                <span>Progressus</span>
+                                <span class="text-amber-400 mono">3/6</span>
+                            </div>
+                            <div class="h-1 bg-neutral-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-amber-500 to-amber-600 w-3/6"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="bg-neutral-900 border border-neutral-800 rounded-lg p-4">
+                        <p class="text-xs text-neutral-600 mono mb-4 uppercase tracking-wider">Lectiones</p>
+                        <div class="space-y-1">
+                            <a href="./leccion-01.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">I</span>
+                                <span class="text-sm">De Methodo Demonstrativa</span>
+                            </a>
+                            <a href="./leccion-02.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">II</span>
+                                <span class="text-sm">De Definitionibus</span>
+                            </a>
+                            <a href="./leccion-03.html" class="flex items-center gap-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400">
+                                <span class="text-xs mono font-bold">III</span>
+                                <span class="text-sm">De Postulatis</span>
+                            </a>
+                            <a href="./leccion-04.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">IV</span>
+                                <span class="text-sm">De Axiomatis</span>
+                            </a>
+                            <a href="./leccion-05.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">V</span>
+                                <span class="text-sm">De Prima Constructione</span>
+                            </a>
+                            <a href="./leccion-06.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">VI</span>
+                                <span class="text-sm">De Congruentia</span>
+                            </a>
+                        </div>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="lg:col-span-9">
+                <article class="bg-neutral-900 border border-neutral-800 rounded-lg p-8 lg:p-12">
+                    <!-- Header -->
+                    <header class="mb-12 pb-8 border-b border-neutral-800">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-violet-500/10 text-violet-400 text-xs mono rounded border border-violet-500/30">FUNDAMENTA GEOMETRIAE</span>
+                            <span class="text-neutral-600 text-sm">Tempus legendi: 35 min</span>
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6 serif">De Postulatis, praesertim de Quinto</h1>
+                        <p class="text-xl text-neutral-400 serif italic leading-relaxed">
+                            Analysis quinque postulatorum Euclidis. Historia duorum milium annorum 
+                            tentaminum demonstrandi Postulatum V. Geometriae non-Euclideae.
+                        </p>
+                    </header>
+
+                    <!-- Introduction -->
+                    <section class="mb-16">
+                        <p class="text-lg text-neutral-300 leading-relaxed mb-6">
+                            Los <strong>αἰτήματα</strong> (postulata) constituyen el núcleo constructivo de la geometría 
+                            euclidiana. A diferencia de los axiomas comunes —que valen para toda magnitud— los postulados 
+                            son afirmaciones <strong>específicamente geométricas</strong> que establecen qué construcciones 
+                            son posibles y qué propiedades tiene el espacio. El quinto postulado, en particular, ha sido 
+                            descrito como «el postulado más famoso de la historia de las matemáticas».
+                        </p>
+
+                        <div class="bg-violet-950/20 border-l-4 border-violet-500 rounded-r-lg p-6 my-8">
+                            <p class="text-lg text-violet-200/90 serif italic mb-3">
+                                "El quinto postulado es la piedra angular de la geometría. Todos los intentos de 
+                                demostrarlo han fracasado, y este fracaso ha sido más fecundo que cualquier éxito 
+                                concebible."
+                            </p>
+                            <p class="text-sm text-neutral-500">— Henri Poincaré, <em>La Science et l'Hypothèse</em> (1902)</p>
+                        </div>
+                    </section>
+
+                    <!-- Enumeration of Postulates -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-sm">§1</span>
+                            Enumeratio Quinque Postulatorum
+                        </h2>
+
+                        <div class="space-y-6">
+                            <!-- Postulate I -->
+                            <div class="postulate-card bg-gradient-to-r from-amber-500/5 to-transparent rounded-lg p-6 border-l-4 border-amber-500">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xl mono shrink-0">I</div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-amber-400 mb-2 serif">Constructio Rectae</h3>
+                                        <p class="text-neutral-300 text-sm greek mb-2">
+                                            Ἠιτήσθω ἀπὸ παντὸς σημείου ἐπὶ πᾶν σημεῖον εὐθεῖαν γραμμὴν ἀγαγεῖν.
+                                        </p>
+                                        <p class="text-neutral-500 text-xs italic mb-3">
+                                            Petitur ut a quovis puncto ad quodvis punctum rectam lineam ducere liceat.
+                                        </p>
+                                        <div class="bg-neutral-800/50 rounded p-3">
+                                            <p class="text-neutral-400 text-xs">
+                                                <strong>Interpretatio:</strong> Dati duo puncta quaelibet, existit linea recta 
+                                                unica per ea iuncta. Hoc postulatum legitimat usum <em>regulae</em> in constructionibus.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Postulate II -->
+                            <div class="postulate-card bg-gradient-to-r from-amber-500/5 to-transparent rounded-lg p-6 border-l-4 border-amber-500/70">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xl mono shrink-0">II</div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-amber-400 mb-2 serif">Prolongatio Continua</h3>
+                                        <p class="text-neutral-300 text-sm greek mb-2">
+                                            Καὶ πεπερασμένην εὐθεῖαν κατὰ τὸ συνεχὲς ἐπʼ εὐθείας ἐκβαλεῖν.
+                                        </p>
+                                        <p class="text-neutral-500 text-xs italic mb-3">
+                                            Et lineam rectam finitam secundum continuum in directum proferre.
+                                        </p>
+                                        <div class="bg-neutral-800/50 rounded p-3">
+                                            <p class="text-neutral-400 text-xs">
+                                                <strong>Interpretatio:</strong> Omnis linea finita extendi potest indefinitio 
+                                                in utramque partem. Spatium geometricum est <em>infinitum</em> sine finibus.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Postulate III -->
+                            <div class="postulate-card bg-gradient-to-r from-amber-500/5 to-transparent rounded-lg p-6 border-l-4 border-amber-500/50">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xl mono shrink-0">III</div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-amber-400 mb-2 serif">Constructio Circuli</h3>
+                                        <p class="text-neutral-300 text-sm greek mb-2">
+                                            Καὶ παντὶ κέντρῳ καὶ διαστήματι κύκλον γράφεσθαι.
+                                        </p>
+                                        <p class="text-neutral-500 text-xs italic mb-3">
+                                            Et omni centro et intervallo circulum describere.
+                                        </p>
+                                        <div class="bg-neutral-800/50 rounded p-3">
+                                            <p class="text-neutral-400 text-xs">
+                                                <strong>Interpretatio:</strong> Datus punctum O et radius r, existit circulus 
+                                                unicus centro O et radio r. Legitimat usum <em>circini</em>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Postulate IV -->
+                            <div class="postulate-card bg-gradient-to-r from-cyan-500/5 to-transparent rounded-lg p-6 border-l-4 border-cyan-500">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-cyan-500/20 flex items-center justify-center text-cyan-400 font-bold text-xl mono shrink-0">IV</div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-cyan-400 mb-2 serif">Aequalitas Angulorum Rectarum</h3>
+                                        <p class="text-neutral-300 text-sm greek mb-2">
+                                            Καὶ πάσας τὰς ὀρθὰς γωνίας ἴσας ἀλλήλαις εἶναι.
+                                        </p>
+                                        <p class="text-neutral-500 text-xs italic mb-3">
+                                            Et omnes angulos rectos inter se aequales esse.
+                                        </p>
+                                        <div class="bg-neutral-800/50 rounded p-3">
+                                            <p class="text-neutral-400 text-xs">
+                                                <strong>Interpretatio:</strong> Mensura anguli recti (90°) est universalis 
+                                                et constans in spatio euclideo. Implicat <em>homogeneitatem spatii</em>.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Postulate V -->
+                            <div class="postulate-card bg-gradient-to-r from-violet-500/10 to-transparent rounded-lg p-6 border-l-4 border-violet-500">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-12 h-12 rounded-full bg-violet-500/20 flex items-center justify-center text-violet-400 font-bold text-xl mono shrink-0">V</div>
+                                    <div class="flex-1">
+                                        <h3 class="text-lg font-semibold text-violet-400 mb-2 serif">Postulatum Parallelearum</h3>
+                                        <p class="text-neutral-300 text-sm greek mb-2 leading-relaxed">
+                                            Καὶ ἐὰν εἰς δύο εὐθείας εὐθεῖα ἐμπίπτουσα τὰς ἐντὸς καὶ ἐπὶ τὰ αὐτὰ μέρη γωνίας δύο ὀρθῶν ἐλάσσονας ποιῇ, ἐκβαλλομένας τὰς δύο εὐθείας ἐπʼ ἄπειρον συμπίπτειν, ἐφʼ ἃ μέρη εἰσὶν αἱ τῶν δύο ὀρθῶν ἐλάσσονες.
+                                        </p>
+                                        <p class="text-neutral-500 text-xs italic mb-3">
+                                            Et si in duas rectas recta incidens angulos interiores et ad easdem partes 
+                                            duobus rectis minores fecerit, productis duabus rectis in infinitum convenire, 
+                                            ad quas partes sunt qui duobus rectis minores.
+                                        </p>
+                                        <div class="bg-violet-950/20 border border-violet-500/30 rounded p-3">
+                                            <p class="text-neutral-400 text-xs">
+                                                <strong>Interpretatio Moderna:</strong> Data linea l et punctum P extra eam, 
+                                                existit <em>unica</em> parallela ad l per P. Hoc postulatum distinguit 
+                                                geometriam euclideam ab aliis.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Classification of Postulates -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-sm">§2</span>
+                            Classificatio Postulatorum
+                        </h2>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-amber-400 font-semibold mb-4 flex items-center gap-2">
+                                    <span class="text-2xl">📐</span>
+                                    <span>Postulata Constructiva (I-III)</span>
+                                </h3>
+                                <p class="text-neutral-400 text-sm mb-4">
+                                    Los tres primeros postulados son <strong>constructivos</strong>: legitiman el uso 
+                                    de herramientas geométricas y establecen las operaciones básicas permitidas.
+                                </p>
+                                <ul class="space-y-2 text-sm text-neutral-500">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>Postulatum I: Uso de la <em>regla</em> (sin marcas)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>Postulatum III: Uso del <em>compás</em> (collapsible)</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-amber-500">▸</span>
+                                        <span>Postulatum II: Infinitud del espacio</span>
+                                    </li>
+                                </ul>
+                            </div>
+
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-violet-400 font-semibold mb-4 flex items-center gap-2">
+                                    <span class="text-2xl">⚖️</span>
+                                    <span>Postulata Theoretica (IV-V)</span>
+                                </h3>
+                                <p class="text-neutral-400 text-sm mb-4">
+                                    Los postulados IV y V son <strong>existenciales</strong>: afirman propiedades 
+                                    del espacio geométrico sin proporcionar construcciones explícitas.
+                                </p>
+                                <ul class="space-y-2 text-sm text-neutral-500">
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-violet-500">▸</span>
+                                        <span>Postulatum IV: Uniformidad angular</span>
+                                    </li>
+                                    <li class="flex items-start gap-2">
+                                        <span class="text-violet-500">▸</span>
+                                        <span>Postulatum V: Existencia de paralelas</span>
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Synthesis -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-violet-500/20 text-violet-400 flex items-center justify-center text-sm">§3</span>
+                            Synthesis
+                        </h2>
+
+                        <div class="bg-gradient-to-r from-violet-950/30 to-neutral-900/50 border border-violet-500/30 rounded-lg p-8">
+                            <div class="space-y-4">
+                                <div class="flex items-start gap-4">
+                                    <span class="text-violet-400 font-bold text-xl">1</span>
+                                    <p class="text-neutral-300 text-sm">
+                                        Los <strong>quinque postulata</strong> son afirmaciones específicamente geométricas 
+                                        que complementan los axiomas comunes de carácter general.
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-violet-400 font-bold text-xl">2</span>
+                                    <p class="text-neutral-300 text-sm">
+                                        Los postulados <strong>I-III</strong> son constructivos y legitiman el uso de 
+                                        regla y compás en las demostraciones.
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-violet-400 font-bold text-xl">3</span>
+                                    <p class="text-neutral-300 text-sm">
+                                        El <strong>Postulatum V</strong> ha sido objeto de intentos de demostración durante 
+                                        dos milenios, todos ellos fallidos.
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-violet-400 font-bold text-xl">4</span>
+                                    <p class="text-neutral-300 text-sm">
+                                        El fracaso en demostrar el V Postulado llevó al descubrimiento de las 
+                                        <strong>geometrías no-euclidianas</strong> en el siglo XIX.
+                                    </p>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <span class="text-violet-400 font-bold text-xl">5</span>
+                                    <p class="text-neutral-300 text-sm">
+                                        La independencia del Postulatum V demuestra que la geometría euclidiana es 
+                                        una <strong>elección axiomática</strong> entre múltiples sistemas consistentes.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-6 bg-amber-950/20 border border-amber-500/30 rounded-lg">
+                            <p class="text-neutral-300 text-sm leading-relaxed">
+                                En la <strong>Lectio Quarta</strong>, examinaremos los <strong>Axiomata Communia</strong> 
+                                (Κοιναὶ Ἔννοιαι) —las "nociones comunes" que Euclides consideraba válidas para toda 
+                                clase de magnitudes— y analizaremos su diferencia fundamental con los postulados 
+                                específicamente geométricos.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- References -->
+                    <section class="mb-12 pt-8 border-t border-neutral-800">
+                        <h3 class="text-lg font-bold text-white mb-6 serif">Lectiones Selectae</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Textus Primarius</p>
+                                <p class="text-neutral-400">Euclidis Elementa I, Postulata 1-5</p>
+                            </div>
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Historia</p>
+                                <p class="text-neutral-400">R. Bonola, <em>Non-Euclidean Geometry</em> (1912)</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="flex items-center justify-between pt-8 border-t border-neutral-800">
+                        <a href="./leccion-02.html" class="px-6 py-3 bg-neutral-800 text-neutral-300 rounded-lg hover:bg-neutral-700 transition">
+                            ← Lectio II: De Definitionibus
+                        </a>
+                        <a href="./leccion-04.html" class="px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg hover:bg-amber-500/20 transition font-medium">
+                            Lectio IV: De Axiomatis Communibus →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-t border-neutral-800 py-8 px-6 bg-neutral-950">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-neutral-600 serif italic mb-2">Αἴτημα πέμπτον — Postulatum V</p>
+            <p class="text-neutral-700 text-xs"> fundamentum geometriae euclideae</p>
+        </div>
+    </footer>
+</body>
+</html>

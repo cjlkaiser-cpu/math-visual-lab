@@ -1,0 +1,277 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 6: Congruencia y Criterios | EuclidLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .progress-bar { background: linear-gradient(90deg, #f59e0b, #a855f7); }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <nav class="text-xs text-gray-500 mb-2">
+                <a href="#" class="hover:text-amber-400 transition">EigenLab</a>
+                <span class="mx-2">›</span>
+                <span class="text-amber-400">EuclidLab</span>
+            </nav>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-lg font-semibold text-amber-400 mono">Lección 6</h1>
+                    <h2 class="text-xl font-bold text-white">Congruencia y Criterios</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="./leccion-05.html" class="px-4 py-2 bg-gray-900 text-gray-300 rounded-lg text-sm hover:bg-gray-800 transition">← Anterior</a>
+                    <a href="#" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm cursor-not-allowed opacity-50">Siguiente →</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="sticky top-32 space-y-6">
+                    <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6">
+                        <div class="text-xs text-gray-500 mono mb-2">MÓDULO 01</div>
+                        <h3 class="text-lg font-semibold text-white mb-4">Primeros Principios</h3>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                <span>Progreso</span>
+                                <span class="text-green-400 font-bold">6/6 ✓</span>
+                            </div>
+                            <div class="h-2 bg-gray-900 rounded-full overflow-hidden">
+                                <div class="h-full progress-bar w-full"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6">
+                        <h4 class="text-sm font-semibold text-gray-400 mb-4 mono">LECCIONES</h4>
+                        <nav class="space-y-2">
+                            <a href="./leccion-06.html" class="flex items-center gap-3 p-3 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/30">
+                                <span class="text-xs mono">06</span>
+                                <span class="text-sm">Congruencia y Criterios</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <div class="mb-10 pb-8 border-b border-gray-900">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs mono rounded-full border border-amber-500/30">TEOREMAS</span>
+                            <span class="text-gray-500 text-sm">30 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold text-white mb-4">Congruencia y Criterios</h1>
+                        <p class="text-gray-400 text-lg">Los tres casos de congruencia de triángulos: LAL, ALA, LLL.</p>
+                    </div>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">¿Qué es la Congruencia?</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                Dos figuras son <strong>congruentes</strong> si tienen la misma forma y tamaño. 
+                                En triángulos, esto significa que sus tres lados y tres ángulos son respectivamente iguales.
+                            </p>
+                            <div class="bg-gray-900/50 rounded-xl p-6 border-l-4 border-amber-400 my-8">
+                                <p class="text-amber-400 font-semibold mb-2">Definición Euclidiana:</p>
+                                <p class="text-gray-300 italic">"Dos figuras coinciden cuando una puede colocarse sobre la otra de modo que se ajusten mutuamente."</p>
+                                <p class="text-sm text-gray-500 mt-2">— Basado en Axioma 4: Las cosas que coinciden son iguales</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">Los Tres Casos de Congruencia</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border border-amber-500/20">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-16 h-16 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xl mono shrink-0">LAL</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-amber-400 mb-2">Lado-Ángulo-Lado (I.4)</h3>
+                                        <p class="text-gray-300 mb-2">
+                                            Si dos triángulos tienen dos lados iguales a dos lados respectivamente, 
+                                            y los ángulos comprendidos entre esos lados son iguales, entonces los triángulos son congruentes.
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            <strong>Datos:</strong> AB = DE, AC = DF, ∠A = ∠D → <strong>Conclusión:</strong> ΔABC ≅ ΔDEF
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border border-amber-500/20">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-16 h-16 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xl mono shrink-0">ALA</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-amber-400 mb-2">Ángulo-Lado-Ángulo (I.26)</h3>
+                                        <p class="text-gray-300 mb-2">
+                                            Si dos triángulos tienen dos ángulos iguales a dos ángulos respectivamente, 
+                                            y un lado igual a un lado (ya sea el lado entre los ángulos o un lado opuesto a uno de ellos), 
+                                            entonces los triángulos son congruentes.
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            <strong>Datos:</strong> ∠A = ∠D, ∠B = ∠E, AB = DE → <strong>Conclusión:</strong> ΔABC ≅ ΔDEF
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border border-amber-500/20">
+                                <div class="flex items-start gap-4">
+                                    <div class="w-16 h-16 rounded-lg bg-amber-500/20 flex items-center justify-center text-amber-400 font-bold text-xl mono shrink-0">LLL</div>
+                                    <div>
+                                        <h3 class="text-lg font-semibold text-amber-400 mb-2">Lado-Lado-Lado (I.8)</h3>
+                                        <p class="text-gray-300 mb-2">
+                                            Si dos triángulos tienen los tres lados iguales a tres lados respectivamente, 
+                                            entonces los triángulos son congruentes.
+                                        </p>
+                                        <p class="text-sm text-gray-500">
+                                            <strong>Datos:</strong> AB = DE, BC = EF, CA = FD → <strong>Conclusión:</strong> ΔABC ≅ ΔDEF
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">La Demostración de I.4 (LAL)</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                La demostración de LAL usa el método de <strong>superposición</strong>, que es controvertido:
+                            </p>
+                            <div class="bg-gray-900 rounded-xl p-6 my-8">
+                                <h3 class="text-lg font-semibold text-white mb-4">Pasos de la Demostración:</h3>
+                                <ol class="space-y-3 text-gray-400">
+                                    <li><span class="text-amber-400">1.</span> Se superpone el punto A sobre D</li>
+                                    <li><span class="text-amber-400">2.</span> Se hace coincidir el lado AB con DE</li>
+                                    <li><span class="text-amber-400">3.</span> Como ∠A = ∠D, el lado AC coincide con DF</li>
+                                    <li><span class="text-amber-400">4.</span> Como AB = DE, el punto B coincide con E</li>
+                                    <li><span class="text-amber-400">5.</span> Como AC = DF, el punto C coincide con F</li>
+                                    <li><span class="text-amber-400">6.</span> Por tanto, BC coincide con EF</li>
+                                    <li><span class="text-amber-400">7.</span> Los triángulos coinciden: son iguales (Axioma 4)</li>
+                                </ol>
+                            </div>
+                            <div class="bg-yellow-500/5 rounded-xl p-6 border border-yellow-500/20">
+                                <h3 class="text-lg font-semibold text-yellow-400 mb-3">⚠️ Crítica al Método de Superposición</h3>
+                                <p class="text-sm text-gray-400">
+                                    ¿Tenemos derecho a "mover" figuras en el plano? Esta operación asume propiedades de 
+                                    congruencia que queremos demostrar. Hilbert evitó este problema usando axiomas de congruencia.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">¿Por qué no existe AAA?</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                Si dos triángulos tienen los tres ángulos iguales, son <strong>semejantes</strong>, no necesariamente congruentes.
+                            </p>
+                            <div class="grid grid-cols-2 gap-4 my-8">
+                                <div class="bg-gray-900 rounded-lg p-4 text-center">
+                                    <div class="text-3xl mb-2">🔺</div>
+                                    <p class="text-sm text-gray-400">Triángulo pequeño<br>Ángulos: 60°, 60°, 60°</p>
+                                </div>
+                                <div class="bg-gray-900 rounded-lg p-4 text-center">
+                                    <div class="text-3xl mb-2">🔺</div>
+                                    <p class="text-sm text-gray-400">Triángulo grande<br>Ángulos: 60°, 60°, 60°</p>
+                                </div>
+                            </div>
+                            <p class="text-sm text-gray-500 text-center italic">
+                                Mismos ángulos, tamaños diferentes → no son congruentes
+                            </p>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="text-2xl">🧪</span>
+                            LAB: Verificador de Congruencia
+                        </h2>
+                        <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                            <p class="text-gray-300 mb-4">
+                                Dados los datos de dos triángulos, determina si son congruentes y qué criterio aplica.
+                            </p>
+                            <div class="bg-black rounded-lg p-6">
+                                <div class="grid grid-cols-2 gap-8">
+                                    <div>
+                                        <h4 class="text-amber-400 font-semibold mb-3">Triángulo ABC</h4>
+                                        <ul class="space-y-2 text-sm text-gray-400">
+                                            <li>AB = 5 cm</li>
+                                            <li>∠A = 60°</li>
+                                            <li>AC = 7 cm</li>
+                                        </ul>
+                                    </div>
+                                    <div>
+                                        <h4 class="text-amber-400 font-semibold mb-3">Triángulo DEF</h4>
+                                        <ul class="space-y-2 text-sm text-gray-400">
+                                            <li>DE = 5 cm</li>
+                                            <li>∠D = 60°</li>
+                                            <li>DF = 7 cm</li>
+                                        </ul>
+                                    </div>
+                                </div>
+                                <div class="mt-6 pt-6 border-t border-gray-800">
+                                    <p class="text-sm text-gray-500 mb-3">¿Son congruentes? ¿Qué criterio aplica?</p>
+                                    <div class="flex gap-3">
+                                        <button class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm">LAL</button>
+                                        <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-lg text-sm">ALA</button>
+                                        <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-lg text-sm">LLL</button>
+                                        <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-lg text-sm">No son congruentes</button>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">Resumen del Módulo 1</h2>
+                        <div class="bg-gradient-to-r from-amber-500/10 via-violet-500/10 to-amber-500/10 rounded-xl p-6 border border-amber-500/30">
+                            <p class="text-gray-300 mb-4">
+                                Hemos completado el estudio de los <strong>primeros principios</strong> de la geometría euclidiana:
+                            </p>
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">📚</span><span>El <strong>método axiomático-deductivo</strong>: definiciones → axiomas → teoremas</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">📐</span><span><strong>23 definiciones</strong>: punto, línea, ángulo...</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">📏</span><span><strong>5 postulados</strong>: construcciones y propiedades del espacio</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">⚖️</span><span><strong>5 axiomas comunes</strong>: igualdad y comparación</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">🔺</span><span><strong>3 criterios de congruencia</strong>: LAL, ALA, LLL</span></li>
+                            </ul>
+                            <div class="mt-6 pt-6 border-t border-amber-500/20">
+                                <p class="text-green-400 text-center font-semibold">🎉 ¡Módulo 1 completado!</p>
+                                <p class="text-gray-500 text-sm text-center mt-2">Próximo módulo: Paralelas y Áreas</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <div class="flex items-center justify-between pt-8 border-t border-gray-900">
+                        <a href="./leccion-05.html" class="px-6 py-3 bg-gray-900 text-gray-300 rounded-lg hover:bg-gray-800 transition">← Anterior</a>
+                        <span class="px-6 py-3 bg-green-500/10 border border-green-500/30 text-green-400 rounded-lg">Módulo Completado ✓</span>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 mb-2">
+                <span class="mono">EigenLab</span>
+                <span class="mx-2">›</span>
+                <span class="mono text-amber-400">EuclidLab</span>
+            </nav>
+            <p class="text-xs text-gray-700">Módulo 01 — Primeros Principios ✓ Completado</p>
+        </div>
+    </footer>
+</body>
+</html>

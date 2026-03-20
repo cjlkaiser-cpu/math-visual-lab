@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lección 5: El Primer Triángulo | EuclidLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .progress-bar { background: linear-gradient(90deg, #f59e0b, #a855f7); }
+    </style>
+</head>
+<body class="bg-black text-gray-100 min-h-screen">
+    <header class="border-b border-gray-900 bg-black/80 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-6xl mx-auto px-6 py-4">
+            <nav class="text-xs text-gray-500 mb-2">
+                <a href="#" class="hover:text-amber-400 transition">EigenLab</a>
+                <span class="mx-2">›</span>
+                <span class="text-amber-400">EuclidLab</span>
+            </nav>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-lg font-semibold text-amber-400 mono">Lección 5</h1>
+                    <h2 class="text-xl font-bold text-white">El Primer Triángulo</h2>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="./leccion-04.html" class="px-4 py-2 bg-gray-900 text-gray-300 rounded-lg text-sm hover:bg-gray-800 transition">← Anterior</a>
+                    <a href="./leccion-06.html" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm hover:bg-amber-500/20 transition">Siguiente →</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-6xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-4 gap-8">
+            <aside class="lg:col-span-1">
+                <div class="sticky top-32 space-y-6">
+                    <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6">
+                        <div class="text-xs text-gray-500 mono mb-2">MÓDULO 01</div>
+                        <h3 class="text-lg font-semibold text-white mb-4">Primeros Principios</h3>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-gray-400 mb-2">
+                                <span>Progreso</span>
+                                <span class="text-amber-400">5/6</span>
+                            </div>
+                            <div class="h-2 bg-gray-900 rounded-full overflow-hidden">
+                                <div class="h-full progress-bar w-5/6"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="bg-gray-950 border border-gray-900 rounded-2xl p-6">
+                        <h4 class="text-sm font-semibold text-gray-400 mb-4 mono">LECCIONES</h4>
+                        <nav class="space-y-2">
+                            <a href="./leccion-05.html" class="flex items-center gap-3 p-3 bg-amber-500/10 text-amber-400 rounded-lg border border-amber-500/30">
+                                <span class="text-xs mono">05</span>
+                                <span class="text-sm">El Primer Triángulo</span>
+                            </a>
+                        </nav>
+                    </div>
+                </div>
+            </aside>
+
+            <main class="lg:col-span-3">
+                <article class="bg-gray-950 border border-gray-900 rounded-2xl p-8">
+                    <div class="mb-10 pb-8 border-b border-gray-900">
+                        <div class="flex items-center gap-4 mb-4">
+                            <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs mono rounded-full border border-amber-500/30">CONSTRUCCIÓN</span>
+                            <span class="text-gray-500 text-sm">25 minutos</span>
+                        </div>
+                        <h1 class="text-3xl font-bold text-white mb-4">El Primer Triángulo</h1>
+                        <p class="text-gray-400 text-lg">Proposición I.1: Construcción del triángulo equilátero sobre un segmento dado.</p>
+                    </div>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">La Proposición I.1</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                La primera proposición de los Elementos es una <strong>construcción</strong>, no un teorema. 
+                                Euclides nos enseña a construir un <strong>triángulo equilátero</strong> sobre cualquier segmento dado.
+                            </p>
+                            <div class="bg-gray-900/50 rounded-xl p-6 border-l-4 border-amber-400 my-8">
+                                <p class="text-amber-400 font-semibold mb-2">Enunciado de I.1:</p>
+                                <p class="text-gray-300 italic">"Sobre una línea recta finita dada construir un triángulo equilátero."</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">La Construcción Paso a Paso</h2>
+                        
+                        <div class="space-y-6">
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border border-amber-500/20">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold mono">1</span>
+                                    <div>
+                                        <h3 class="font-semibold text-white mb-2">Dado el Segmento AB</h3>
+                                        <p class="text-gray-400 text-sm">Tenemos un segmento finito AB. Queremos construir un triángulo equilátero sobre él.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border border-amber-500/20">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold mono">2</span>
+                                    <div>
+                                        <h3 class="font-semibold text-white mb-2">Dibujar Círculo con Centro A</h3>
+                                        <p class="text-gray-400 text-sm">Con centro en A y radio AB, dibujamos un círculo (Postulado III).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border border-amber-500/20">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold mono">3</span>
+                                    <div>
+                                        <h3 class="font-semibold text-white mb-2">Dibujar Círculo con Centro B</h3>
+                                        <p class="text-gray-400 text-sm">Con centro en B y radio BA, dibujamos otro círculo (Postulado III).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-amber-500/5 to-transparent rounded-xl p-6 border border-amber-500/20">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-10 h-10 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center font-bold mono">4</span>
+                                    <div>
+                                        <h3 class="font-semibold text-white mb-2">Encontrar Intersección C</h3>
+                                        <p class="text-gray-400 text-sm">Los círculos se intersectan en un punto C. Unimos CA y CB (Postulado I).</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="bg-gradient-to-r from-green-500/10 to-transparent rounded-xl p-6 border border-green-500/30">
+                                <div class="flex items-start gap-4">
+                                    <span class="w-10 h-10 rounded-full bg-green-500/20 text-green-400 flex items-center justify-center font-bold mono">✓</span>
+                                    <div>
+                                        <h3 class="font-semibold text-white mb-2">¡ABC es Equilátero!</h3>
+                                        <p class="text-gray-400 text-sm">Demostración: CA = AB (radios del primer círculo) y CB = AB (radios del segundo). Por tanto, CA = CB = AB.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">Crítica a la Demostración</h2>
+                        <div class="prose prose-invert max-w-none text-gray-300">
+                            <p class="mb-4">
+                                Aunque la construcción funciona, la <strong>demostración</strong> tiene una laguna lógica señalada por Zeno de Sidón:
+                            </p>
+                            <div class="bg-red-500/5 rounded-xl p-6 border border-red-500/20 my-8">
+                                <h3 class="text-lg font-semibold text-red-400 mb-4">⚠️ El Problema</h3>
+                                <p class="mb-3">
+                                    Euclides asume sin demostrar que los dos círculos se <strong>intersectan</strong>. 
+                                    Los postulados no garantizan la existencia de este punto de intersección.
+                                </p>
+                                <p class="text-sm text-gray-400">
+                                    Esta es una de las "lagunas lógicas" que la axiomatización moderna (Hilbert) tuvo que resolver 
+                                    añadiendo axiomas de orden y continuidad.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6 flex items-center gap-3">
+                            <span class="text-2xl">🧪</span>
+                            LAB: Constructor Euclidiano
+                        </h2>
+                        <div class="bg-gray-900 rounded-xl p-6 border border-gray-800">
+                            <p class="text-gray-300 mb-4">
+                                Practica la construcción del triángulo equilátero paso a paso.
+                            </p>
+                            <div class="bg-black rounded-lg p-8 h-64 flex items-center justify-center border border-dashed border-gray-700">
+                                <div class="text-center text-gray-500">
+                                    <p class="text-3xl mb-2">📐</p>
+                                    <p class="mb-2">Constructor Euclidiano Interactivo</p>
+                                    <p class="text-sm text-gray-600">Haz clic para comenzar la construcción</p>
+                                </div>
+                            </div>
+                            <div class="mt-4 flex gap-2">
+                                <button class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm">Paso 1: Dibujar AB</button>
+                                <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-lg text-sm">Paso 2: Círculo A</button>
+                                <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-lg text-sm">Paso 3: Círculo B</button>
+                                <button class="px-4 py-2 bg-gray-800 text-gray-400 rounded-lg text-sm">Paso 4: Unir C</button>
+                            </div>
+                        </div>
+                    </section>
+
+                    <section class="mb-10">
+                        <h2 class="text-2xl font-bold text-white mb-6">Resumen</h2>
+                        <div class="bg-gradient-to-r from-amber-500/10 to-green-500/10 rounded-xl p-6 border border-amber-500/30">
+                            <ul class="space-y-3 text-gray-300">
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>La primera proposición es una <strong>construcción</strong> (I.1)</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>Usa postulados I (línea) y III (círculo)</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>La demostración tiene una <strong>laguna</strong>: asume intersección de círculos</span></li>
+                                <li class="flex items-start gap-3"><span class="text-amber-400 font-bold">✓</span><span>Ejemplo de método constructivo de Euclides</span></li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <div class="flex items-center justify-between pt-8 border-t border-gray-900">
+                        <a href="./leccion-04.html" class="px-6 py-3 bg-gray-900 text-gray-300 rounded-lg hover:bg-gray-800 transition">← Anterior</a>
+                        <a href="./leccion-06.html" class="px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg hover:bg-amber-500/20 transition">Siguiente: Congruencia →</a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-t border-gray-900 py-6 mt-12">
+        <div class="max-w-6xl mx-auto px-6">
+            <nav class="text-xs text-gray-600 mb-2">
+                <span class="mono">EigenLab</span>
+                <span class="mx-2">›</span>
+                <span class="mono text-amber-400">EuclidLab</span>
+            </nav>
+            <p class="text-xs text-gray-700">Módulo 01 — Primeros Principios</p>
+        </div>
+    </footer>
+</body>
+</html>

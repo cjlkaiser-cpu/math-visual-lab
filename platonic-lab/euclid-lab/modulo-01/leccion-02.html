@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lectio Secunda: De Definitionibus | EuclidLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .serif { font-family: 'Crimson Text', serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .definition-card { 
+            transition: all 0.3s ease;
+            border-left: 3px solid rgba(245, 158, 11, 0.3);
+        }
+        .definition-card:hover {
+            border-left-color: rgba(245, 158, 11, 0.8);
+            background: rgba(245, 158, 11, 0.05);
+        }
+        .drop-cap::first-letter {
+            float: left;
+            font-family: 'Crimson Text', serif;
+            font-size: 4rem;
+            line-height: 0.8;
+            padding-right: 0.5rem;
+            color: #f59e0b;
+        }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-200 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <nav class="text-xs text-neutral-600 mb-2 flex items-center gap-2">
+                <a href="../../../index.html" class="hover:text-amber-400 transition">EigenLab</a>
+                <span>›</span>
+                <a href="../../index.html" class="hover:text-amber-400 transition">Mathematics</a>
+                <span>›</span>
+                <span class="text-amber-400">EuclidLab</span>
+            </nav>
+            <div class="flex items-center justify-between">
+                <div>
+                    <p class="text-xs text-amber-500/60 mono mb-1">LECTIO SECUNDA</p>
+                    <h1 class="text-xl font-bold text-white serif">De Definitionibus et Horum Critica</h1>
+                </div>
+                <div class="flex items-center gap-3">
+                    <a href="./leccion-01.html" class="px-4 py-2 bg-neutral-800 text-neutral-400 rounded-lg text-sm hover:bg-neutral-700 transition">← Lectio I</a>
+                    <a href="./leccion-03.html" class="px-4 py-2 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg text-sm hover:bg-amber-500/20 transition">Lectio III →</a>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <div class="max-w-7xl mx-auto px-6 py-8">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Sidebar -->
+            <aside class="lg:col-span-3">
+                <div class="sticky top-32 space-y-6">
+                    <div class="bg-neutral-900 border border-neutral-800 rounded-lg p-6">
+                        <p class="text-xs text-neutral-500 mono mb-2">MODULUS I</p>
+                        <h3 class="text-lg font-semibold text-white serif mb-1">Principia Geometrica</h3>
+                        <p class="text-xs text-neutral-600 serif italic mb-4">Fundamenta methodi axiomatice</p>
+                        <div class="mb-4">
+                            <div class="flex justify-between text-xs text-neutral-500 mb-2">
+                                <span>Progressus</span>
+                                <span class="text-amber-400 mono">2/6</span>
+                            </div>
+                            <div class="h-1 bg-neutral-800 rounded-full overflow-hidden">
+                                <div class="h-full bg-gradient-to-r from-amber-500 to-amber-600 w-2/6"></div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <nav class="bg-neutral-900 border border-neutral-800 rounded-lg p-4">
+                        <p class="text-xs text-neutral-600 mono mb-4 uppercase tracking-wider">Lectiones</p>
+                        <div class="space-y-1">
+                            <a href="./leccion-01.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">I</span>
+                                <span class="text-sm">De Methodo Demonstrativa</span>
+                            </a>
+                            <a href="./leccion-02.html" class="flex items-center gap-3 p-3 bg-amber-500/10 border border-amber-500/30 rounded-lg text-amber-400">
+                                <span class="text-xs mono font-bold">II</span>
+                                <span class="text-sm">De Definitionibus</span>
+                            </a>
+                            <a href="./leccion-03.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">III</span>
+                                <span class="text-sm">De Postulatis</span>
+                            </a>
+                            <a href="./leccion-04.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">IV</span>
+                                <span class="text-sm">De Axiomatis</span>
+                            </a>
+                            <a href="./leccion-05.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">V</span>
+                                <span class="text-sm">De Prima Constructione</span>
+                            </a>
+                            <a href="./leccion-06.html" class="flex items-center gap-3 p-3 text-neutral-500 hover:bg-neutral-800 rounded-lg transition">
+                                <span class="text-xs mono">VI</span>
+                                <span class="text-sm">De Congruentia</span>
+                            </a>
+                        </div>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <main class="lg:col-span-9">
+                <article class="bg-neutral-900 border border-neutral-800 rounded-lg p-8 lg:p-12">
+                    <!-- Header -->
+                    <header class="mb-12 pb-8 border-b border-neutral-800">
+                        <div class="flex items-center gap-3 mb-4">
+                            <span class="px-3 py-1 bg-amber-500/10 text-amber-400 text-xs mono rounded border border-amber-500/30">ANALYSIS CRITICA</span>
+                            <span class="text-neutral-600 text-sm">Tempus legendi: 30 min</span>
+                        </div>
+                        <h1 class="text-4xl lg:text-5xl font-bold text-white mb-6 serif">De Definitionibus et Horum Critica</h1>
+                        <p class="text-xl text-neutral-400 serif italic leading-relaxed">
+                            Analysis philologica et philosophica definitionum initiarum Libri I. 
+                            Problema notionum primitivarum et regressus in infinitum.
+                        </p>
+                    </header>
+
+                    <!-- Introduction -->
+                    <section class="mb-16">
+                        <p class="drop-cap text-lg text-neutral-300 leading-relaxed mb-6">
+                            El <strong>problema de las definiciones</strong> constituye uno de los desafíos más agudos 
+                            para cualquier sistema axiomático. Euclides, consciente de la necesidad de precisión 
+                            terminológica, abre el Libro I con una serie de <em>ὅροι</em> (definitiones) que pretenden 
+                            establecer el significado de los conceptos fundamentales. Sin embargo, el análisis moderno 
+                            revela que estas definiciones contienen serias dificultades lógicas que han ocupado a 
+                            filósofos y matemáticos durante siglos.
+                        </p>
+
+                        <div class="bg-neutral-800/50 border-l-4 border-amber-500 rounded-r-lg p-6 my-8">
+                            <p class="text-lg text-amber-200/90 serif italic mb-3">
+                                "Σημεῖόν ἐστιν, οὗ μέρος οὐθέν."<br>
+                                "Punctum est, cuius pars nulla est."
+                            </p>
+                            <p class="text-neutral-500 text-sm">— Definitio I, Elementa, Liber I</p>
+                        </div>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            Esta célebre primera definición —«Un punto es lo que no tiene partes»— ejemplifica 
+                            perfectamente la tensión inherente al proyecto euclidiano. ¿Qué significa «tener partes»? 
+                            Si intentamos definir «partes», necesitaremos más conceptos primitivos, y así 
+                            <em>ad infinitum</em>. En algún momento, todo sistema deductivo debe enfrentar el 
+                            problema de los <strong>términos primitivos</strong>: conceptos que no se definen en 
+                            términos de otros, sino que se comprenden por intuición o experiencia.
+                        </p>
+                    </section>
+
+                    <!-- The 23 Definitions -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§1</span>
+                            Enumeratio Definitionum Libri I
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            El Libro I contiene exactamente <strong>23 definitiones</strong>, organizadas según un criterio 
+                            didáctico que progresa de lo más simple a lo más complejo: desde el punto sin dimensiones 
+                            hasta las líneas paralelas en el plano.
+                        </p>
+
+                        <div class="grid grid-cols-1 lg:grid-cols-2 gap-4 my-8">
+                            <!-- Group 1: Fundamentals -->
+                            <div class="definition-card bg-neutral-800/30 rounded-lg p-6">
+                                <h3 class="text-amber-400 font-semibold mb-4 mono text-sm uppercase tracking-wider">Definitiones 1-7: Elementa Fundamenta</h3>
+                                <div class="space-y-4">
+                                    <div class="border-b border-neutral-700 pb-3">
+                                        <p class="text-amber-500/80 mono text-xs mb-1">DEF. I</p>
+                                        <p class="text-neutral-300 text-sm greek">Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.</p>
+                                        <p class="text-neutral-500 text-xs mt-1 italic">Punctum est, cuius pars nulla.</p>
+                                    </div>
+                                    <div class="border-b border-neutral-700 pb-3">
+                                        <p class="text-amber-500/80 mono text-xs mb-1">DEF. II</p>
+                                        <p class="text-neutral-300 text-sm greek">Γραμμὴ δὲ μῆκος ἀπλατές.</p>
+                                        <p class="text-neutral-500 text-xs mt-1 italic">Linea vero longitudo sine latitudine.</p>
+                                    </div>
+                                    <div class="border-b border-neutral-700 pb-3">
+                                        <p class="text-amber-500/80 mono text-xs mb-1">DEF. III</p>
+                                        <p class="text-neutral-300 text-sm greek">Γραμμῆς δὲ πέρατα σημεῖα.</p>
+                                        <p class="text-neutral-500 text-xs mt-1 italic">Lineae autem termini puncta.</p>
+                                    </div>
+                                    <div class="border-b border-neutral-700 pb-3">
+                                        <p class="text-amber-500/80 mono text-xs mb-1">DEF. IV</p>
+                                        <p class="text-neutral-300 text-sm greek">Εὐθεῖα γραμμή ἐστιν, ἣ ἐξ ἴσου τὰ ἐφʼ ἑαυτῆς σημεῖα κεῖται.</p>
+                                        <p class="text-neutral-500 text-xs mt-1 italic">Recta linea est, quae ex aequo sua puncta iacet.</p>
+                                    </div>
+                                    <div>
+                                        <p class="text-amber-500/80 mono text-xs mb-1">DEF. V-VII</p>
+                                        <p class="text-neutral-500 text-xs">Superficies, planum, angulus planus...</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Group 2: Angles -->
+                            <div class="definition-card bg-neutral-800/30 rounded-lg p-6">
+                                <h3 class="text-amber-400 font-semibold mb-4 mono text-sm uppercase tracking-wider">Definitiones 8-12: De Angulis</h3>
+                                <div class="space-y-4">
+                                    <div class="border-b border-neutral-700 pb-3">
+                                        <p class="text-amber-500/80 mono text-xs mb-1">DEF. VIII</p>
+                                        <p class="text-neutral-300 text-sm greek">Ἐπίπεδος δὲ γωνία ἐστὶν... ἡ ἐν ἐπιπέδῳ δύο γραμμῶν ἁπτομένων ἀλλήλων...</p>
+                                        <p class="text-neutral-500 text-xs mt-1 italic">Angulus planus est... in plano duarum linearum sese tangentium...</p>
+                                    </div>
+                                    <div class="border-b border-neutral-700 pb-3">
+                                        <p class="text-amber-500/80 mono text-xs mb-1">DEF. IX</p>
+                                        <p class="text-neutral-300 text-sm greek">Ὅταν δὲ αἱ περιέχουσαι τὴν γωνίαν γραμμαὶ εὐθεῖαι ὦσιν...</p>
+                                        <p class="text-neutral-500 text-xs mt-1 italic">Quando autem continentes angulum lineae rectae sunt...</p>
+                                    </div>
+                                    <div class="grid grid-cols-3 gap-2 text-xs">
+                                        <div class="bg-neutral-800/50 p-2 rounded text-center">
+                                            <p class="text-amber-500/60 mono">X</p>
+                                            <p class="text-neutral-400">Orthos</p>
+                                        </div>
+                                        <div class="bg-neutral-800/50 p-2 rounded text-center">
+                                            <p class="text-amber-500/60 mono">XI</p>
+                                            <p class="text-neutral-400">Amblyx</p>
+                                        </div>
+                                        <div class="bg-neutral-800/50 p-2 rounded text-center">
+                                            <p class="text-amber-500/60 mono">XII</p>
+                                            <p class="text-neutral-400">Oxyx</p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Group 3: Boundaries and Figures -->
+                            <div class="definition-card bg-neutral-800/30 rounded-lg p-6">
+                                <h3 class="text-amber-400 font-semibold mb-4 mono text-sm uppercase tracking-wider">Definitiones 13-22: Termini et Figurae</h3>
+                                <div class="space-y-3 text-sm">
+                                    <div class="flex justify-between items-center border-b border-neutral-700 pb-2">
+                                        <span class="text-neutral-300">XIII. Ὅρος — Terminus</span>
+                                        <span class="text-neutral-500 text-xs">Boundary</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-neutral-700 pb-2">
+                                        <span class="text-neutral-300">XIV. Σχῆμα — Figura</span>
+                                        <span class="text-neutral-500 text-xs">Figure</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-neutral-700 pb-2">
+                                        <span class="text-neutral-300">XV. Κύκλος — Circulus</span>
+                                        <span class="text-neutral-500 text-xs">Circle</span>
+                                    </div>
+                                    <div class="flex justify-between items-center border-b border-neutral-700 pb-2">
+                                        <span class="text-neutral-300">XVI-XIX. Triangula genera</span>
+                                        <span class="text-neutral-500 text-xs">Types of triangles</span>
+                                    </div>
+                                    <div class="flex justify-between items-center">
+                                        <span class="text-neutral-300">XX-XXII. Quadrilatera</span>
+                                        <span class="text-neutral-500 text-xs">Four-sided figures</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Group 4: The Crown -->
+                            <div class="definition-card bg-neutral-800/30 rounded-lg p-6 border-amber-500/30">
+                                <h3 class="text-amber-400 font-semibold mb-4 mono text-sm uppercase tracking-wider">Definitio XXIII: Corona</h3>
+                                <div class="bg-amber-950/20 border border-amber-500/20 rounded-lg p-4">
+                                    <p class="text-amber-500/80 mono text-xs mb-2">DEF. XXIII</p>
+                                    <p class="text-neutral-300 text-sm greek leading-relaxed">
+                                        Παράλληλοί εἰσιν εὐθεῖαι, αἵτινες ἐν τῷ αὐτῷ ἐπιπέδῳ οὖσαι καὶ ἐκβαλλόμεναι εἰς ἄπειρον ἐφʼ ἑκάτερα τὰ μέρη ἐπὶ μηδέτερα συμπίπτουσιν ἀλλήλαις.
+                                    </p>
+                                    <p class="text-neutral-500 text-xs mt-2 italic">
+                                        Parallelae sunt rectae, quae in eodem plano existentes et producentes in infinitum 
+                                        ad utramque partem ad neutram conveniunt inter se.
+                                    </p>
+                                </div>
+                                <p class="text-neutral-400 text-xs mt-3">
+                                    Esta definición, la más compleja de todas, anticipa el problema de las paralelas 
+                                    que ocupará a matemáticos durante dos milenios.
+                                </p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Critique of Definitions -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§2</span>
+                            Critica Logica Definitionum
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            El análisis moderno revela que las definiciones euclidianas sufren de varios defectos 
+                            lógicos que Aristóteles ya había identificado en sus <em>Analíticos Posteriores</em> 
+                            y <em>Topica</em>. Examinemos los principales:
+                        </p>
+
+                        <div class="space-y-6 my-8">
+                            <div class="bg-red-950/20 border-l-4 border-red-500/50 rounded-r-lg p-6">
+                                <h3 class="text-red-400 font-semibold mb-3 flex items-center gap-2">
+                                    <span class="mono">1.</span>
+                                    <span>Circulus in Definiendo</span>
+                                </h3>
+                                <p class="text-neutral-400 text-sm leading-relaxed mb-3">
+                                    Muchas definiciones usan términos que presuponen lo definido. Definir «línea» 
+                                    como «longitud sin anchura» requiere entender «longitud» y «anchura», pero estos 
+                                    conceptos son igualmente primitivos que «línea» misma.
+                                </p>
+                                <div class="bg-neutral-900/50 p-3 rounded text-xs text-neutral-500 mono">
+                                    DEF. II: Γραμμὴ δὲ μῆκος ἀπλατές.<br>
+                                    Problema: Quid est "mēkos"? Quid est "platos"?
+                                </div>
+                            </div>
+
+                            <div class="bg-orange-950/20 border-l-4 border-orange-500/50 rounded-r-lg p-6">
+                                <h3 class="text-orange-400 font-semibold mb-3 flex items-center gap-2">
+                                    <span class="mono">2.</span>
+                                    <span>Ambiguitas Definitonis IV</span>
+                                </h3>
+                                <p class="text-neutral-400 text-sm leading-relaxed mb-3">
+                                    La definición de línea recta —«aquella que yace por igual respecto de sus puntos»— 
+                                    ha generado siglos de debates. Proclo registra al menos seis interpretaciones 
+                                    diferentes entre los comentaristas antiguos.
+                                </p>
+                                <div class="bg-neutral-900/50 p-3 rounded text-xs text-neutral-500">
+                                    <p class="mb-1"><strong>Interpretatio Symmetrica:</strong> La línea es su eje de simetría.</p>
+                                    <p class="mb-1"><strong>Interpretatio Cinematic:</strong> Un observador no cambia de dirección al recorrerla.</p>
+                                    <p><strong>Interpretatio Metrica:</strong> La distancia entre puntos es la mínima posible.</p>
+                                </div>
+                            </div>
+
+                            <div class="bg-yellow-950/20 border-l-4 border-yellow-500/50 rounded-r-lg p-6">
+                                <h3 class="text-yellow-400 font-semibold mb-3 flex items-center gap-2">
+                                    <span class="mono">3.</span>
+                                    <span>Definiciones Geneticae vs. Statisticae</span>
+                                </h3>
+                                <p class="text-neutral-400 text-sm leading-relaxed">
+                                    Euclides mezcla definiciones por <em>generación</em> (cómo se construye) 
+                                    con definiciones por <em>propiedades</em> (qué características tiene). 
+                                    Esta ambigüedad metodológica fue criticada por Leibniz y luego por Hilbert.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-neutral-800/50 rounded-lg p-6 my-8 border border-neutral-700">
+                            <h3 class="text-lg font-semibold text-white mb-4 serif">Sententia Aristotelis</h3>
+                            <p class="text-neutral-300 serif italic text-lg mb-3">
+                                "Non oportet in demonstrationibus adhibere ea quae demonstranda sunt; neque in definitionibus 
+                                ea quae definienda sunt. Nam si in definitione aliquid quaeritur, et illud definitione indiget, 
+                                et sic in infinitum."
+                            </p>
+                            <p class="text-neutral-500 text-sm">
+                                — Aristoteles, <em>Analytica Posteriora</em>, I.3 (72b20-25)
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- The Problem of Primitive Terms -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§3</span>
+                            Problema Notionum Primitivarum
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            El problema fundamental es que cualquier sistema deductivo debe contener términos que 
+                            <strong>no se definen</strong>. Estos términos primitivos (punctum, linea, est) no pueden 
+                            eliminarse mediante definiciones ulteriores sin caer en el regresus in infinitum.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6 my-8">
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-amber-400 font-semibold mb-4">Solutio Aristotelica</h3>
+                                <p class="text-neutral-400 text-sm leading-relaxed mb-4">
+                                    Aristóteles acepta la necesidad de términos primitivos (<em>archai</em>) que se 
+                                    comprenden por intuición (<em>nous</em>). Estos conceptos son "más conocidos por naturaleza" 
+                                    aunque no "más conocidos para nosotros".
+                                </p>
+                                <p class="text-xs text-neutral-500 italic">
+                                    "Quaedam sunt nota naturae, quamvis non nota nobis."
+                                </p>
+                            </div>
+
+                            <div class="bg-neutral-800/30 rounded-lg p-6 border border-neutral-700">
+                                <h3 class="text-amber-400 font-semibold mb-4">Solutio Hilbertiana (1899)</h3>
+                                <p class="text-neutral-400 text-sm leading-relaxed mb-4">
+                                    David Hilbert, en sus <em>Grundlagen der Geometrie</em>, propone una solución radical: 
+                                    los términos primitivos carecen de significado intrínseco. Su "significado" viene 
+                                    dado exclusivamente por los axiomas.
+                                </p>
+                                <p class="text-xs text-neutral-500 italic">
+                                    "Punctum, linea, planum sunt vocabula vacua quae relationes axiomaticas significant."
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="bg-violet-950/20 border border-violet-500/30 rounded-lg p-6 my-8">
+                            <h3 class="text-violet-400 font-semibold mb-3">Moderna Formalisatio</h3>
+                            <p class="text-neutral-400 text-sm leading-relaxed mb-4">
+                                La axiomatización moderna (Tarski, 1959) trata la geometría como un sistema formal 
+                                donde:
+                            </p>
+                            <ul class="space-y-2 text-sm text-neutral-500">
+                                <li class="flex items-start gap-2">
+                                    <span class="text-violet-500">▸</span>
+                                    <span>"Punto", "entre", "congruente" son símbolos primitivos sin definición.</span>
+                                </li>
+                                    <li class="flex items-start gap-2">
+                                    <span class="text-violet-500">▸</span>
+                                    <span>Su comportamiento se especifica completamente en los axiomas.</span>
+                                </li>
+                                <li class="flex items-start gap-2">
+                                    <span class="text-violet-500">▸</span>
+                                    <span>Múltiples interpretaciones (modelos) son posibles.</span>
+                                </li>
+                            </ul>
+                        </div>
+                    </section>
+
+                    <!-- Pedagogical Merit -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§4</span>
+                            De Merito Pedagogico
+                        </h2>
+
+                        <p class="text-neutral-300 leading-relaxed mb-6">
+                            A pesar de sus deficiencias lógicas, las definiciones euclidianas conservan un valor 
+                            pedagógico innegable. Sus <strong>descripciones intuitivas</strong> preparan la mente del 
+                            estudiante para operar con conceptos abstractos antes de enfrentarlos formalmente.
+                        </p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-4 my-8">
+                            <div class="bg-green-950/20 border border-green-500/30 rounded-lg p-5 text-center">
+                                <p class="text-3xl mb-2">🎯</p>
+                                <h4 class="text-green-400 font-semibold text-sm mb-2">Intuitio</h4>
+                                <p class="text-neutral-500 text-xs">Las definiciones apuntan a la intuición espacial y la experiencia perceptiva.</p>
+                            </div>
+                            <div class="bg-blue-950/20 border border-blue-500/30 rounded-lg p-5 text-center">
+                                <p class="text-3xl mb-2">🧩</p>
+                                <h4 class="text-blue-400 font-semibold text-sm mb-2">Constructio</h4>
+                                <p class="text-neutral-500 text-xs">Muchas definiciones sugieren procedimientos constructivos (Postulata).</p>
+                            </div>
+                            <div class="bg-purple-950/20 border border-purple-500/30 rounded-lg p-5 text-center">
+                                <p class="text-3xl mb-2">⚖️</p>
+                                <h4 class="text-purple-400 font-semibold text-sm mb-2">Equilibrium</h4>
+                                <p class="text-neutral-500 text-xs">Balance entre precisión formal y accesibilidad heurística.</p>
+                            </div>
+                        </div>
+
+                        <div class="bg-amber-950/30 border border-amber-500/30 rounded-lg p-6 my-8">
+                            <p class="text-neutral-300 leading-relaxed italic serif text-lg mb-4">
+                                "El error fundamental de los críticos modernos es juzgar a Euclides con estándares 
+                                que él no pretendía satisfacer. Las definiciones de los Elementos no son definiciones 
+                                lógicas en el sentido de Hilbert, sino <strong>explicaciones intuitivas</strong> que 
+                                preparan el terreno para los axiomas."
+                            </p>
+                            <p class="text-neutral-500 text-sm">
+                                — Árpád Szabó, <em>The Beginnings of Greek Mathematics</em> (1978)
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- Synthesis -->
+                    <section class="mb-16">
+                        <h2 class="text-2xl font-bold text-white mb-8 serif flex items-center gap-3">
+                            <span class="w-8 h-8 rounded-full bg-amber-500/20 text-amber-400 flex items-center justify-center text-sm">§5</span>
+                            Synthesis et Prospectus
+                        </h2>
+
+                        <div class="space-y-4">
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/30 rounded-lg border-l-4 border-amber-500/50">
+                                <span class="text-amber-400 font-bold text-xl">1</span>
+                                <p class="text-neutral-300 text-sm leading-relaxed">
+                                    Las <strong>23 definiciones</strong> del Libro I son descripciones intuitivas, no definiciones 
+                                    formales completas en el sentido moderno.
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/30 rounded-lg border-l-4 border-amber-500/50">
+                                <span class="text-amber-400 font-bold text-xl">2</span>
+                                <p class="text-neutral-300 text-sm leading-relaxed">
+                                    El problema del <strong>regresus in infinitum</strong> obliga a aceptar términos primitivos 
+                                    sin definición (punctum, linea, superficies).
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/30 rounded-lg border-l-4 border-amber-500/50">
+                                <span class="text-amber-400 font-bold text-xl">3</span>
+                                <p class="text-neutral-300 text-sm leading-relaxed">
+                                    Las definiciones contienen <strong>circularidades</strong> y <strong>ambigüedades</strong> 
+                                    que fueron criticadas desde la Antigüedad.
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/30 rounded-lg border-l-4 border-amber-500/50">
+                                <span class="text-amber-400 font-bold text-xl">4</span>
+                                <p class="text-neutral-300 text-sm leading-relaxed">
+                                    La solución moderna (Hilbert, Tarski): el significado de los términos primitivos 
+                                    se determina exclusivamente por los <strong>axiomas</strong>.
+                                </p>
+                            </div>
+                            <div class="flex items-start gap-4 p-4 bg-neutral-800/30 rounded-lg border-l-4 border-amber-500/50">
+                                <span class="text-amber-400 font-bold text-xl">5</span>
+                                <p class="text-neutral-300 text-sm leading-relaxed">
+                                    A pesar de sus imperfecciones lógicas, las definiciones euclidianas tienen 
+                                    inmenso <strong>valor pedagógico</strong> como preparación intuitiva.
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="mt-8 p-6 bg-gradient-to-r from-amber-950/30 to-neutral-900/50 border border-amber-500/30 rounded-lg">
+                            <p class="text-neutral-300 text-sm leading-relaxed">
+                                En la <strong>Lectio Tertia</strong>, examinaremos los <strong>Postulata</strong> —las 
+                                afirmaciones específicas de geometría que complementan las definiciones— y analizaremos 
+                                en detalle el celebérrimo <em>Postulatum V</em>, cuyo estatus epistemológico ha sido 
+                                debatido durante dos milenios.
+                            </p>
+                        </div>
+                    </section>
+
+                    <!-- References -->
+                    <section class="mb-12 pt-8 border-t border-neutral-800">
+                        <h3 class="text-lg font-bold text-white mb-6 serif">Lectiones Selectae</h3>
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-sm">
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Textus Primarius</p>
+                                <p class="text-neutral-400">Euclidis Elementa I, Def. 1-23</p>
+                            </div>
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Commentarius Antiquus</p>
+                                <p class="text-neutral-400">Proclus, In Eucl. I (Friedlein, 1873)</p>
+                            </div>
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Analysis Critica</p>
+                                <p class="text-neutral-400">H. B. Gottschalk, "The Deifying of Definitions" (CQ 1972)</p>
+                            </div>
+                            <div class="bg-neutral-800/30 p-4 rounded-lg">
+                                <p class="font-semibold text-amber-400 mb-1">Reformatio Moderna</p>
+                                <p class="text-neutral-400">D. Hilbert, Grundlagen der Geometrie (1899)</p>
+                            </div>
+                        </div>
+                    </section>
+
+                    <!-- Navigation -->
+                    <div class="flex items-center justify-between pt-8 border-t border-neutral-800">
+                        <a href="./leccion-01.html" class="px-6 py-3 bg-neutral-800 text-neutral-300 rounded-lg hover:bg-neutral-700 transition">
+                            ← Lectio I: De Methodo
+                        </a>
+                        <a href="./leccion-03.html" class="px-6 py-3 bg-amber-500/10 border border-amber-500/30 text-amber-400 rounded-lg hover:bg-amber-500/20 transition font-medium">
+                            Lectio III: De Postulatis →
+                        </a>
+                    </div>
+                </article>
+            </main>
+        </div>
+    </div>
+
+    <footer class="border-t border-neutral-800 py-8 px-6 bg-neutral-950">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-neutral-600 serif italic mb-2">Ὅρος γραμμῆς πέρατα σημεῖα</p>
+            <p class="text-neutral-700 text-xs">Definitio III, Elementa I</p>
+        </div>
+    </footer>
+</body>
+</html>

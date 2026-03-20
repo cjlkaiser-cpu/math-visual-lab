@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Index Operum — EuclidLab</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@300;400;500;600&family=Inter:wght@300;400;500;600;700&family=Crimson+Text:ital,wght@0,400;0,600;1,400&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Inter', sans-serif; }
+        .serif { font-family: 'Crimson Text', serif; }
+        .mono { font-family: 'JetBrains Mono', monospace; }
+        .greek { font-family: 'Crimson Text', serif; font-style: italic; }
+    </style>
+</head>
+<body class="bg-neutral-950 text-neutral-200 min-h-screen">
+    <!-- Header -->
+    <header class="border-b border-neutral-800 bg-neutral-950/95 backdrop-blur-sm sticky top-0 z-50">
+        <div class="max-w-7xl mx-auto px-6 py-4">
+            <nav class="text-xs text-neutral-600 mb-2 flex items-center gap-2">
+                <a href="../index.html" class="hover:text-amber-400 transition">EuclidLab</a>
+                <span>›</span>
+                <span class="text-amber-400">Index Operum</span>
+            </nav>
+            <div class="flex items-center justify-between">
+                <div>
+                    <h1 class="text-xl font-bold text-white serif">Index Operum</h1>
+                    <p class="text-xs text-neutral-500 serif italic">Στοιχεῖα — Tabula contentorum</p>
+                </div>
+                <a href="../index.html" class="text-sm text-neutral-400 hover:text-amber-400 transition">
+                    ← Ad portam
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-7xl mx-auto px-6 py-12">
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8">
+            <!-- Sidebar Navigation -->
+            <aside class="lg:col-span-3">
+                <div class="sticky top-32 bg-neutral-900 border border-neutral-800 rounded-lg p-6">
+                    <h2 class="text-sm font-semibold text-neutral-400 mb-4 mono uppercase tracking-wider">Navigatio</h2>
+                    <nav class="space-y-2">
+                        <a href="#moduli" class="block p-3 text-neutral-300 hover:bg-neutral-800 rounded-lg transition text-sm">
+                            Moduli Cursus
+                        </a>
+                        <a href="#libri" class="block p-3 text-neutral-300 hover:bg-neutral-800 rounded-lg transition text-sm">
+                            Libri Elementorum
+                        </a>
+                        <a href="#definitiones" class="block p-3 text-neutral-300 hover:bg-neutral-800 rounded-lg transition text-sm">
+                            Definitiones Libri I
+                        </a>
+                        <a href="#postulata" class="block p-3 text-neutral-300 hover:bg-neutral-800 rounded-lg transition text-sm">
+                            Postulata & Axiomata
+                        </a>
+                        <a href="#propositiones" class="block p-3 text-neutral-300 hover:bg-neutral-800 rounded-lg transition text-sm">
+                            Propositiones Selectae
+                        </a>
+                        <a href="#bibliographia" class="block p-3 text-neutral-300 hover:bg-neutral-800 rounded-lg transition text-sm">
+                            Bibliographia
+                        </a>
+                    </nav>
+                </div>
+            </aside>
+
+            <!-- Main Content -->
+            <div class="lg:col-span-9 space-y-12">
+                <!-- Title -->
+                <div class="text-center py-8">
+                    <p class="text-5xl mb-4">📐</p>
+                    <h1 class="text-4xl font-bold text-white mb-4 serif">Index Operum Euclidis</h1>
+                    <p class="text-neutral-400 serif italic text-lg max-w-2xl mx-auto">
+                        Tabula systematica contentorum operis mathematici maximi antiquorum, 
+                        cum nexibus ad lectiones modernas
+                    </p>
+                </div>
+
+                <!-- Moduli Section -->
+                <section id="moduli" class="bg-neutral-900 border border-neutral-800 rounded-lg p-8">
+                    <h2 class="text-2xl font-bold text-amber-400 mb-8 serif flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-lg">I</span>
+                        Moduli Cursus EuclidLab
+                    </h2>
+
+                    <div class="space-y-6">
+                        <div class="border-l-4 border-amber-500 pl-6 py-2">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-semibold text-white serif">Modulus I: Principia Geometrica</h3>
+                                <span class="px-3 py-1 bg-green-500/10 text-green-400 text-xs mono rounded-full">COMPLETUS</span>
+                            </div>
+                            <p class="text-neutral-400 text-sm mb-4">Fundamenta methodi axiomatice. Definitiones, postulata, axiomata communia. Analysis critica.</p>
+                            <div class="grid grid-cols-1 md:grid-cols-2 gap-3 text-sm">
+                                <a href="./modulo-01/leccion-01.html" class="flex items-center gap-2 p-3 bg-neutral-800/50 rounded-lg hover:bg-neutral-800 transition text-neutral-300">
+                                    <span class="mono text-amber-500">L.I</span>
+                                    <span>De Methodo Demonstrativa</span>
+                                </a>
+                                <a href="./modulo-01/leccion-02.html" class="flex items-center gap-2 p-3 bg-neutral-800/50 rounded-lg hover:bg-neutral-800 transition text-neutral-300">
+                                    <span class="mono text-amber-500">L.II</span>
+                                    <span>De Definitionibus</span>
+                                </a>
+                                <a href="./modulo-01/leccion-03.html" class="flex items-center gap-2 p-3 bg-neutral-800/50 rounded-lg hover:bg-neutral-800 transition text-neutral-300">
+                                    <span class="mono text-amber-500">L.III</span>
+                                    <span>De Postulatis</span>
+                                </a>
+                                <a href="./modulo-01/leccion-04.html" class="flex items-center gap-2 p-3 bg-neutral-800/50 rounded-lg hover:bg-neutral-800 transition text-neutral-300">
+                                    <span class="mono text-amber-500">L.IV</span>
+                                    <span>De Axiomatis Communibus</span>
+                                </a>
+                                <a href="./modulo-01/leccion-05.html" class="flex items-center gap-2 p-3 bg-neutral-800/50 rounded-lg hover:bg-neutral-800 transition text-neutral-300">
+                                    <span class="mono text-amber-500">L.V</span>
+                                    <span>De Prima Constructione</span>
+                                </a>
+                                <a href="./modulo-01/leccion-06.html" class="flex items-center gap-2 p-3 bg-neutral-800/50 rounded-lg hover:bg-neutral-800 transition text-neutral-300">
+                                    <span class="mono text-amber-500">L.VI</span>
+                                    <span>De Congruentia Triangulorum</span>
+                                </a>
+                            </div>
+                        </div>
+
+                        <div class="border-l-4 border-neutral-700 pl-6 py-2 opacity-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-semibold text-white serif">Modulus II: Parallela et Area</h3>
+                                <span class="px-3 py-1 bg-neutral-800 text-neutral-500 text-xs mono rounded-full">IN PROGRESSU</span>
+                            </div>
+                            <p class="text-neutral-500 text-sm mb-4">Theorema Pythagorae. Algebra geometrica. Applicationes arearum.</p>
+                        </div>
+
+                        <div class="border-l-4 border-neutral-700 pl-6 py-2 opacity-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-semibold text-white serif">Modulus III: De Circulo</h3>
+                                <span class="px-3 py-1 bg-neutral-800 text-neutral-500 text-xs mono rounded-full">PLANIFICATUS</span>
+                            </div>
+                            <p class="text-neutral-500 text-sm mb-4">Anguli in circulo. Tangentes. Constructio pentagoni regularis.</p>
+                        </div>
+
+                        <div class="border-l-4 border-neutral-700 pl-6 py-2 opacity-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-semibold text-white serif">Modulus IV: Proportio et Similitudo</h3>
+                                <span class="px-3 py-1 bg-neutral-800 text-neutral-500 text-xs mono rounded-full">PLANIFICATUS</span>
+                            </div>
+                            <p class="text-neutral-500 text-sm mb-4">Theoria Eudoxi. Proportio aurea. Similitudo figurarum.</p>
+                        </div>
+
+                        <div class="border-l-4 border-neutral-700 pl-6 py-2 opacity-50">
+                            <div class="flex items-center justify-between mb-2">
+                                <h3 class="text-xl font-semibold text-white serif">Modulus V: Corpora Regularia</h3>
+                                <span class="px-3 py-1 bg-neutral-800 text-neutral-500 text-xs mono rounded-full">PLANIFICATUS</span>
+                            </div>
+                            <p class="text-neutral-500 text-sm mb-4">Constructio quinque corporum Platonicorum. Demonstratio unicitatis.</p>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Libri Section -->
+                <section id="libri" class="bg-neutral-900 border border-neutral-800 rounded-lg p-8">
+                    <h2 class="text-2xl font-bold text-amber-400 mb-8 serif flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-lg">II</span>
+                        Libri Elementorum Secundum Heiberg
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <div class="bg-neutral-800/30 rounded-lg p-4 border-l-4 border-amber-500/50">
+                                <h3 class="font-semibold text-amber-400 mb-2">Libri I-VI</h3>
+                                <p class="text-sm text-neutral-400">Geometria plana. Triangula, parallela, circuli, proportio.</p>
+                            </div>
+                            <div class="bg-neutral-800/30 rounded-lg p-4 border-l-4 border-amber-500/30">
+                                <h3 class="font-semibold text-amber-400 mb-2">Libri VII-IX</h3>
+                                <p class="text-sm text-neutral-400">Arithmetica. Numeri primi, divisores, progressiones geometricae.</p>
+                            </div>
+                            <div class="bg-neutral-800/30 rounded-lg p-4 border-l-4 border-amber-500/20">
+                                <h3 class="font-semibold text-amber-400 mb-2">Liber X</h3>
+                                <p class="text-sm text-neutral-400">De lineis incommensurabilibus. Classificatio irrationalium.</p>
+                            </div>
+                        </div>
+                        <div class="space-y-4">
+                            <div class="bg-neutral-800/30 rounded-lg p-4 border-l-4 border-amber-500/20">
+                                <h3 class="font-semibold text-amber-400 mb-2">Libri XI-XII</h3>
+                                <p class="text-sm text-neutral-400">Geometria solida. Methodus exhauriendi (prototypus integrationis).</p>
+                            </div>
+                            <div class="bg-neutral-800/30 rounded-lg p-4 border-l-4 border-amber-500/10">
+                                <h3 class="font-semibold text-amber-400 mb-2">Liber XIII</h3>
+                                <p class="text-sm text-neutral-400">Constructio corporum regularium. Corona operis.</p>
+                            </div>
+                            <div class="bg-neutral-800/20 rounded-lg p-4 border border-neutral-700">
+                                <p class="text-xs text-neutral-500 mono">Σύνολον: 465 propositiones (theorems + problemata)</p>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Definitiones Section -->
+                <section id="definitiones" class="bg-neutral-900 border border-neutral-800 rounded-lg p-8">
+                    <h2 class="text-2xl font-bold text-amber-400 mb-8 serif flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-lg">III</span>
+                        Definitiones Libri I
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-x-8 gap-y-3 text-sm">
+                        <div class="flex gap-4 p-3 bg-neutral-800/30 rounded-lg">
+                            <span class="mono text-amber-500/60 w-6">1</span>
+                            <span class="text-neutral-300">Σημεῖόν ἐστιν, οὗ μέρος οὐθέν.</span>
+                        </div>
+                        <div class="flex gap-4 p-3 bg-neutral-800/30 rounded-lg">
+                            <span class="mono text-amber-500/60 w-6">2</span>
+                            <span class="text-neutral-300">Γραμμὴ δὲ μῆκος ἀπλατές.</span>
+                        </div>
+                        <div class="flex gap-4 p-3 bg-neutral-800/30 rounded-lg">
+                            <span class="mono text-amber-500/60 w-6">3</span>
+                            <span class="text-neutral-300">Γραμμῆς δὲ πέρατα σημεῖα.</span>
+                        </div>
+                        <div class="flex gap-4 p-3 bg-neutral-800/30 rounded-lg">
+                            <span class="mono text-amber-500/60 w-6">4</span>
+                            <span class="text-neutral-300">Εὐθεῖα γραμμή ἐστιν, ἣ ἐξ ἴσου τὰ ἐφʼ ἑαυτῆς σημεῖα κεῖται.</span>
+                        </div>
+                        <div class="flex gap-4 p-3 bg-neutral-800/30 rounded-lg">
+                            <span class="mono text-amber-500/60 w-6">5</span>
+                            <span class="text-neutral-300">Ἐπιφάνεια δέ ἐστιν, ὃ μῆκος καὶ πλάτος μόνον ἔχει.</span>
+                        </div>
+                        <div class="flex gap-4 p-3 bg-neutral-800/30 rounded-lg">
+                            <span class="mono text-amber-500/60 w-6">23</span>
+                            <span class="text-neutral-300">Παράλληλοί εἰσιν εὐθεῖαι...</span>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Postulata Section -->
+                <section id="postulata" class="bg-neutral-900 border border-neutral-800 rounded-lg p-8">
+                    <h2 class="text-2xl font-bold text-amber-400 mb-8 serif flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-lg">IV</span>
+                        Postulata et Axiomata Communia
+                    </h2>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-4 serif">Αἰτήματα — Postulata</h3>
+                            <div class="space-y-3">
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-amber-500/50">
+                                    <span class="mono text-amber-400 font-bold">I</span>
+                                    <p class="text-sm text-neutral-300">Ἠιτήσθω ἀπὸ παντὸς σημείου ἐπὶ πᾶν σημεῖον εὐθεῖαν γραμμὴν ἀγαγεῖν.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-amber-500/40">
+                                    <span class="mono text-amber-400 font-bold">II</span>
+                                    <p class="text-sm text-neutral-300">Καὶ πεπερασμένην εὐθεῖαν κατὰ τὸ συνεχὲς ἐπʼ εὐθείας ἐκβαλεῖν.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-amber-500/30">
+                                    <span class="mono text-amber-400 font-bold">III</span>
+                                    <p class="text-sm text-neutral-300">Καὶ παντὶ κέντρῳ καὶ διαστήματι κύκλον γράφεσθαι.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-cyan-500/50">
+                                    <span class="mono text-cyan-400 font-bold">IV</span>
+                                    <p class="text-sm text-neutral-300">Καὶ πάσας τὰς ὀρθὰς γωνίας ἴσας ἀλλήλαις εἶναι.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-violet-500/50">
+                                    <span class="mono text-violet-400 font-bold">V</span>
+                                    <p class="text-sm text-neutral-300">Καὶ ἐὰν εἰς δύο εὐθείας εὐθεῖα ἐμπίπτουσα τὰς ἐντὸς καὶ ἐπὶ τὰ αὐτὰ μέρη γωνίας δύο ὀρθῶν ἐλάσσονας ποιῇ...</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div>
+                            <h3 class="text-lg font-semibold text-white mb-4 serif">Κοιναὶ Ἔννοιαι — Axiomata</h3>
+                            <div class="space-y-3">
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-neutral-600">
+                                    <span class="mono text-neutral-400 font-bold">I</span>
+                                    <p class="text-sm text-neutral-300">Τὰ τῷ αὐτῷ ἴσα καὶ ἀλλήλοις ἐστὶν ἴσα.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-neutral-600">
+                                    <span class="mono text-neutral-400 font-bold">II</span>
+                                    <p class="text-sm text-neutral-300">Καὶ ἐὰν ἴσοις ἴσα προστεθῇ, τὰ ὅλα ἐστὶν ἴσα.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-neutral-600">
+                                    <span class="mono text-neutral-400 font-bold">III</span>
+                                    <p class="text-sm text-neutral-300">Καὶ ἐὰν ἀπὸ ἴσων ἴσα ἀφαιρεθῇ, τὰ καταλειπόμενά ἐστιν ἴσα.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-neutral-600">
+                                    <span class="mono text-neutral-400 font-bold">IV</span>
+                                    <p class="text-sm text-neutral-300">Καὶ τὰ ἐφαρμόζοντα ἐπʼ ἄλληλα ἴσα ἀλλήλοις ἐστίν.</p>
+                                </div>
+                                <div class="flex gap-4 p-4 bg-neutral-800/40 rounded-lg border-l-2 border-neutral-600">
+                                    <span class="mono text-neutral-400 font-bold">V</span>
+                                    <p class="text-sm text-neutral-300">Καὶ τὸ ὅλον τοῦ μέρους μεῖζόν ἐστιν.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Propositiones Selectae -->
+                <section id="propositiones" class="bg-neutral-900 border border-neutral-800 rounded-lg p-8">
+                    <h2 class="text-2xl font-bold text-amber-400 mb-8 serif flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-lg">V</span>
+                        Propositiones Selectae Libri I
+                    </h2>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm">
+                            <thead>
+                                <tr class="border-b border-neutral-700">
+                                    <th class="text-left py-3 px-4 text-neutral-500 mono font-normal">Prop.</th>
+                                    <th class="text-left py-3 px-4 text-neutral-500 font-normal">Enunciatio</th>
+                                    <th class="text-left py-3 px-4 text-neutral-500 font-normal">Typus</th>
+                                </tr>
+                            </thead>
+                            <tbody class="divide-y divide-neutral-800">
+                                <tr class="hover:bg-neutral-800/30 transition-colors">
+                                    <td class="py-4 px-4 mono text-amber-500">I.1</td>
+                                    <td class="py-4 px-4 text-neutral-300">Constructio trianguli aequilateri</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 bg-blue-500/10 text-blue-400 text-xs rounded">Problema</span></td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/30 transition-colors">
+                                    <td class="py-4 px-4 mono text-amber-500">I.4</td>
+                                    <td class="py-4 px-4 text-neutral-300">Congruentia LAL (Latus-Angulus-Latus)</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded">Theorema</span></td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/30 transition-colors">
+                                    <td class="py-4 px-4 mono text-amber-500">I.5</td>
+                                    <td class="py-4 px-4 text-neutral-300">Anguli ad basim trianguli isoscelis aequales</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded">Theorema</span></td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/30 transition-colors">
+                                    <td class="py-4 px-4 mono text-amber-500">I.16</td>
+                                    <td class="py-4 px-4 text-neutral-300">Angulus externus maior interno opposito</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded">Theorema</span></td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/30 transition-colors">
+                                    <td class="py-4 px-4 mono text-amber-500">I.29</td>
+                                    <td class="py-4 px-4 text-neutral-300">De parallela secante: aequalitas alternorum</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 bg-violet-500/10 text-violet-400 text-xs rounded">Theorema (Post. V)</span></td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/30 transition-colors">
+                                    <td class="py-4 px-4 mono text-amber-500">I.32</td>
+                                    <td class="py-4 px-4 text-neutral-300">Summa angulorum trianguli = duobus rectis</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded">Theorema</span></td>
+                                </tr>
+                                <tr class="hover:bg-neutral-800/30 transition-colors">
+                                    <td class="py-4 px-4 mono text-amber-500">I.47</td>
+                                    <td class="py-4 px-4 text-neutral-300">Theorema Pythagorae</td>
+                                    <td class="py-4 px-4"><span class="px-2 py-1 bg-green-500/10 text-green-400 text-xs rounded">Theorema</span></td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </section>
+
+                <!-- Bibliographia -->
+                <section id="bibliographia" class="bg-neutral-900 border border-neutral-800 rounded-lg p-8">
+                    <h2 class="text-2xl font-bold text-amber-400 mb-8 serif flex items-center gap-3">
+                        <span class="w-10 h-10 rounded-full bg-amber-500/10 flex items-center justify-center text-lg">VI</span>
+                        Bibliographia Selecta
+                    </h2>
+
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-white serif border-b border-neutral-700 pb-2">Editiones Principes</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="p-3 bg-neutral-800/30 rounded-lg">
+                                    <p class="text-amber-400 font-medium">Heiberg, I. L. & Menge, H.</p>
+                                    <p class="text-neutral-400 italic">Euclidis Opera Omnia</p>
+                                    <p class="text-neutral-600">Teubner, Lipsiae, 1883-1916 (8 vol.)</p>
+                                </div>
+                                <div class="p-3 bg-neutral-800/30 rounded-lg">
+                                    <p class="text-amber-400 font-medium">Fitzpatrick, R.</p>
+                                    <p class="text-neutral-400 italic">Euclid's Elements of Geometry</p>
+                                    <p class="text-neutral-600">Lulu, 2007 (ed. bilingue gr.-angl.)</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="space-y-4">
+                            <h3 class="text-lg font-semibold text-white serif border-b border-neutral-700 pb-2">Studia Moderna</h3>
+                            <div class="space-y-3 text-sm">
+                                <div class="p-3 bg-neutral-800/30 rounded-lg">
+                                    <p class="text-amber-400 font-medium">Mueller, I.</p>
+                                    <p class="text-neutral-400 italic">Philosophy of Mathematics and Deductive Structure in Euclid's Elements</p>
+                                    <p class="text-neutral-600">MIT Press, 1981</p>
+                                </div>
+                                <div class="p-3 bg-neutral-800/30 rounded-lg">
+                                    <p class="text-amber-400 font-medium">Hartshorne, R.</p>
+                                    <p class="text-neutral-400 italic">Geometry: Euclid and Beyond</p>
+                                    <p class="text-neutral-600">Springer, 2000</p>
+                                </div>
+                                <div class="p-3 bg-neutral-800/30 rounded-lg">
+                                    <p class="text-amber-400 font-medium">Netz, R.</p>
+                                    <p class="text-neutral-400 italic">The Shaping of Deduction in Greek Mathematics</p>
+                                    <p class="text-neutral-600">Cambridge, 1999</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Footer Note -->
+                <div class="text-center py-8 border-t border-neutral-800">
+                    <p class="text-neutral-600 serif italic text-lg mb-2">Ὁδὸς ἄνω κάτω μία καὶ ὡυτή</p>
+                    <p class="text-neutral-700 text-sm">Index compilatus est ad usum scholarum mathematicarum</p>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <footer class="border-t border-neutral-800 py-8 px-6 bg-neutral-950">
+        <div class="max-w-7xl mx-auto text-center">
+            <p class="text-neutral-700 text-sm">EuclidLab • Index Operum • MMXXVI</p>
+        </div>
+    </footer>
+</body>
+</html>

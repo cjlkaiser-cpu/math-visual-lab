@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guía: Campos Vectoriales | Math Visual Lab</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Crimson+Pro:ital,wght@0,400;0,600;1,400&family=Inter:wght@400;500;600&family=Fira+Code:wght@400;500&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --color-bg: #0a0a0a; --color-surface: #141414; --color-surface-elevated: #1a1a1a;
+            --color-border: #262626; --color-text: #e5e5e5; --color-text-secondary: #a3a3a3;
+            --color-accent: #f97316; --color-accent-dim: rgba(249,115,22,0.1);
+            --font-serif: 'Crimson Pro', Georgia, serif; --font-sans: 'Inter', system-ui, sans-serif;
+            --font-mono: 'Fira Code', monospace;
+        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: var(--font-serif); font-size: 19px; line-height: 1.7; color: var(--color-text); background-color: var(--color-bg); padding: 2rem; max-width: 900px; margin: 0 auto; }
+        header { margin-bottom: 3rem; padding-bottom: 2rem; border-bottom: 1px solid var(--color-border); }
+        .breadcrumb { font-family: var(--font-sans); font-size: 0.85rem; color: var(--color-text-secondary); margin-bottom: 1rem; }
+        .breadcrumb a { color: var(--color-accent); text-decoration: none; }
+        .breadcrumb a:hover { text-decoration: underline; }
+        h1 { font-family: var(--font-serif); font-size: 2.5rem; font-weight: 600; margin-bottom: 0.5rem; letter-spacing: -0.02em; }
+        .subtitle { font-size: 1.25rem; color: var(--color-text-secondary); font-style: italic; }
+        h2 { font-family: var(--font-sans); font-size: 0.85rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.1em; color: var(--color-accent); margin-top: 3rem; margin-bottom: 1.25rem; }
+        h3 { font-family: var(--font-serif); font-size: 1.4rem; font-weight: 600; margin-top: 2rem; margin-bottom: 0.75rem; }
+        p { margin-bottom: 1.25rem; }
+        .intro { font-size: 1.15rem; color: var(--color-text-secondary); border-left: 3px solid var(--color-accent); padding-left: 1.5rem; margin: 2rem 0; }
+        .equation-block { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 2rem; margin: 1.5rem 0; text-align: center; }
+        .equation { font-family: var(--font-mono); font-size: 1.35rem; color: var(--color-accent); margin-bottom: 0.75rem; }
+        .equation-label { font-family: var(--font-sans); font-size: 0.85rem; color: var(--color-text-secondary); }
+        .concept-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(250px, 1fr)); gap: 1.5rem; margin: 1.5rem 0; }
+        .concept-card { background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; padding: 1.5rem; }
+        .concept-card h4 { font-family: var(--font-sans); font-size: 1rem; font-weight: 600; margin-bottom: 0.75rem; color: var(--color-accent); }
+        .concept-card p { font-size: 0.95rem; margin-bottom: 0; color: var(--color-text-secondary); }
+        .key-insight { background: var(--color-accent-dim); border: 1px solid var(--color-accent); border-radius: 8px; padding: 1.5rem; margin: 1.5rem 0; }
+        .key-insight strong { color: var(--color-accent); }
+        .experiment-block { background: var(--color-surface-elevated); border-radius: 8px; padding: 1.75rem; margin: 1.5rem 0; border-left: 3px solid var(--color-accent); }
+        .experiment-block h4 { font-family: var(--font-sans); font-weight: 600; margin-bottom: 1rem; }
+        .experiment-block ol { margin-left: 1.25rem; color: var(--color-text-secondary); }
+        .experiment-block li { margin-bottom: 0.5rem; }
+        .connections-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 1rem; margin: 1.5rem 0; }
+        .connection-item { display: flex; align-items: center; gap: 0.75rem; padding: 1rem; background: var(--color-surface); border: 1px solid var(--color-border); border-radius: 8px; text-decoration: none; color: var(--color-text); transition: border-color 0.2s; }
+        .connection-item:hover { border-color: var(--color-accent); background: var(--color-surface-elevated); }
+        .connection-icon { font-size: 1.5rem; }
+        .connection-text { font-family: var(--font-sans); font-size: 0.9rem; }
+        ul { margin-left: 1.25rem; margin-bottom: 1.25rem; }
+        li { margin-bottom: 0.5rem; }
+        footer { margin-top: 4rem; padding-top: 2rem; border-top: 1px solid var(--color-border); text-align: center; }
+        .btn-launch { display: inline-flex; align-items: center; gap: 0.5rem; font-family: var(--font-sans); font-size: 1rem; font-weight: 500; padding: 1rem 2rem; background: var(--color-accent); color: #030712; border-radius: 8px; text-decoration: none; transition: opacity 0.2s; }
+        .btn-launch:hover { opacity: 0.9; }
+        .preset-table { width: 100%; border-collapse: collapse; font-family: var(--font-sans); font-size: 0.85rem; margin: 1.5rem 0; }
+        .preset-table th { text-align: left; padding: 0.6rem 0.75rem; background: var(--color-surface); border-bottom: 1px solid var(--color-border); color: var(--color-text-secondary); font-weight: 600; font-size: 0.75rem; text-transform: uppercase; }
+        .preset-table td { padding: 0.55rem 0.75rem; border-bottom: 1px solid var(--color-border); }
+        .preset-table td:nth-child(2) { font-family: var(--font-mono); font-size: 0.82rem; color: var(--color-accent); }
+        .preset-table tr td:first-child { font-weight: 500; }
+    </style>
+</head>
+<body>
+    <header>
+        <nav class="breadcrumb">
+            <a href="https://cjlkaiser-cpu.github.io/eigenlab/_portal/index.html">EigenLab</a> /
+            <a href="../index.html">Math Visual Lab</a> /
+            <span>Guía: Campos Vectoriales</span>
+        </nav>
+        <h1>Campos Vectoriales</h1>
+        <p class="subtitle">Divergencia, rotacional y advección de partículas en 2D</p>
+    </header>
+
+    <p class="intro">
+        Un campo vectorial asigna un vector a cada punto del plano: F(x, y) = (P(x,y), Q(x,y)).
+        Las partículas que fluyen a lo largo de esas flechas revelan la estructura global del campo:
+        fuentes, sumideros, vórtices y puntos de silla. Dos operadores diferenciales — divergencia
+        y rotacional — capturan exactamente esas dos propiedades en un solo número.
+    </p>
+
+    <h2>El Campo Vectorial</h2>
+
+    <div class="equation-block">
+        <div class="equation">F(x, y) = P(x, y) î + Q(x, y) ĵ</div>
+        <div class="equation-label">P y Q son funciones escalares que determinan las componentes horizontal y vertical en cada punto</div>
+    </div>
+
+    <p>Visualmente, cada flecha del grid muestra la dirección y la magnitud de F en ese punto. Las partículas integran el campo numéricamente — cada partícula sigue la ecuación <span style="font-family:var(--font-mono);color:var(--color-accent)">dr/dt = F(r)</span> — y revelan la dinámica global que las flechas sueltas no dejan ver.</p>
+
+    <h2>Divergencia y Rotacional</h2>
+
+    <div class="concept-grid">
+        <div class="concept-card">
+            <h4>Divergencia ∇·F</h4>
+            <p>Mide cuánto "sale" el campo de un punto. ∇·F = ∂P/∂x + ∂Q/∂y. Positivo → fuente (las partículas se alejan). Negativo → sumidero (las partículas convergen). Cero → flujo incompresible.</p>
+        </div>
+        <div class="concept-card">
+            <h4>Rotacional ∇×F</h4>
+            <p>En 2D es un escalar: ∇×F = ∂Q/∂x − ∂P/∂y. Mide la tendencia a girar. Positivo → rotación antihoraria. Negativo → rotación horaria. Cero → campo irrotacional (conservativo).</p>
+        </div>
+    </div>
+
+    <div class="equation-block">
+        <div class="equation">∇·F = ∂P/∂x + ∂Q/∂y &nbsp;&nbsp;&nbsp; ∇×F = ∂Q/∂x − ∂P/∂y</div>
+        <div class="equation-label">La simulación calcula y muestra ambos valores en tiempo real para el campo activo</div>
+    </div>
+
+    <h2>Los Ocho Presets</h2>
+
+    <table class="preset-table">
+        <thead>
+            <tr><th>Preset</th><th>F(x, y)</th><th>∇·F</th><th>∇×F</th><th>Física</th></tr>
+        </thead>
+        <tbody>
+            <tr><td>Rotación</td><td>(−y, x)</td><td>0</td><td>2</td><td>Sólido rígido girando. Irrotacional excepto en el origen.</td></tr>
+            <tr><td>Fuente</td><td>(x, y)</td><td>2</td><td>0</td><td>Fluido emergiendo del origen. Análogo a carga puntual positiva.</td></tr>
+            <tr><td>Sumidero</td><td>(−x, −y)</td><td>−2</td><td>0</td><td>Fluido convergiendo. Análogo a carga negativa o pozo gravitacional.</td></tr>
+            <tr><td>Dipolo</td><td>campo dipolar</td><td>≈0</td><td>≈0</td><td>Fuente + sumidero separados. Análogo a dipolo eléctrico.</td></tr>
+            <tr><td>Silla</td><td>(y, x)</td><td>0</td><td>0</td><td>Punto de equilibrio inestable. Expansión en X, contracción en Y.</td></tr>
+            <tr><td>Sin/Cos</td><td>(sin y, cos x)</td><td>0</td><td>variable</td><td>Patrón periódico con celdas de circulación alternadas.</td></tr>
+            <tr><td>Uniforme</td><td>(1, 0)</td><td>0</td><td>0</td><td>Flujo laminar uniforme. ∇·F = ∇×F = 0: el más simple posible.</td></tr>
+            <tr><td>Vórtice Par</td><td>dos vórtices</td><td>0</td><td>local</td><td>Dos centros de rotación opuestos: el fluido serpentea entre ellos.</td></tr>
+        </tbody>
+    </table>
+
+    <h2>Campos Conservativos</h2>
+
+    <p>Un campo F se llama <em>conservativo</em> (o gradiente) si existe una función escalar φ tal que F = ∇φ. Para estos campos:</p>
+
+    <ul>
+        <li>El rotacional es siempre cero: ∇×F = 0 (condición necesaria y suficiente en dominios simplemente conexos).</li>
+        <li>La integral de línea no depende del camino: ∮ F·dr = 0 sobre cualquier curva cerrada.</li>
+        <li>Existe una función potencial: φ(x,y) con ∂φ/∂x = P y ∂φ/∂y = Q.</li>
+    </ul>
+
+    <div class="key-insight">
+        <strong>Fuente → Sumidero → Dipolo muestra el teorema de Gauss en acción.</strong> El flujo total de F a través de cualquier curva cerrada es igual a la integral de la divergencia en el interior (teorema de la divergencia 2D). Con la fuente, todas las partículas escapan hacia afuera; con el dipolo, lo que entra por un lado sale por el otro y el flujo neto es cero.
+    </div>
+
+    <h2>Aplicaciones Físicas</h2>
+
+    <div class="concept-grid">
+        <div class="concept-card">
+            <h4>Campo Eléctrico</h4>
+            <p>E = −∇V es un campo conservativo (∇×E = 0 en estática). Una carga positiva es una fuente (∇·E > 0), una negativa es un sumidero. El preset Dipolo reproduce exactamente un dipolo eléctrico.</p>
+        </div>
+        <div class="concept-card">
+            <h4>Fluidos incompresibles</h4>
+            <p>Un fluido incompresible cumple ∇·v = 0. Los presets Rotación, Silla, Sin/Cos y Vórtice Par son todos incompresibles. El flujo de agua en un canal sin divergencias sigue esta condición.</p>
+        </div>
+        <div class="concept-card">
+            <h4>Campo gravitacional</h4>
+            <p>g = −GM/r² r̂ es equivalente al preset Sumidero en 2D. ∇·g = 0 fuera de la masa (solo diverge en el origen). ∇×g = 0 siempre: la gravedad no "gira" las trayectorias.</p>
+        </div>
+        <div class="concept-card">
+            <h4>Sistemas dinámicos</h4>
+            <p>Cualquier sistema ẋ = f(x,y), ẏ = g(x,y) define un campo vectorial. Sus puntos fijos (F = 0) son los equilibrios; el signo del rotacional y la divergencia locales determinan si son estables, inestables o espirales.</p>
+        </div>
+    </div>
+
+    <h2>Controles de la Simulación</h2>
+
+    <ul>
+        <li><strong>Presets</strong> — 8 campos predefinidos con estructura matemática distinta. Empezar por Rotación y Fuente.</li>
+        <li><strong>Mostrar Vectores</strong> — Grid de flechas coloreadas por magnitud. Deshabilitar para ver solo las trazas de partículas.</li>
+        <li><strong>Advección de partículas</strong> — Miles de partículas integran el campo en tiempo real, revelando líneas de flujo.</li>
+        <li><strong>Panel estadístico</strong> — Muestra ∇·F y ∇×F calculados numéricamente para el campo activo.</li>
+    </ul>
+
+    <h2>Experimentos Guiados</h2>
+
+    <div class="experiment-block">
+        <h4>Experimento 1 — Fuente vs. Sumidero: divergencia opuesta</h4>
+        <ol>
+            <li>Activa el preset <em>Fuente</em>. Las partículas se alejan del origen en todas direcciones. ∇·F = +2.</li>
+            <li>Activa <em>Sumidero</em>. Las partículas convergen al origen. ∇·F = −2.</li>
+            <li>Compara las flechas: misma magnitud, dirección opuesta. F_sumidero = −F_fuente.</li>
+            <li>Activa <em>Dipolo</em>. El flujo sale de la fuente y entra en el sumidero; el flujo neto a través de cualquier curva que encierre ambas es exactamente cero.</li>
+        </ol>
+    </div>
+
+    <div class="experiment-block">
+        <h4>Experimento 2 — Rotación pura: ∇·F = 0 pero ∇×F ≠ 0</h4>
+        <ol>
+            <li>Activa <em>Rotación</em>: F = (−y, x). Las partículas orbitan el origen.</li>
+            <li>Observa: ∇·F = ∂(−y)/∂x + ∂x/∂y = 0. Flujo incompresible: ninguna partícula desaparece ni se crea.</li>
+            <li>Pero ∇×F = ∂x/∂x − ∂(−y)/∂y = 1 + 1 = 2. El campo tiene rotación en todo punto.</li>
+            <li>Compara con <em>Uniforme</em>: las partículas avanzan en línea recta, ∇·F = ∇×F = 0. El campo más simple posible.</li>
+        </ol>
+    </div>
+
+    <div class="experiment-block">
+        <h4>Experimento 3 — Punto de silla: equilibrio inestable</h4>
+        <ol>
+            <li>Activa <em>Silla</em>: F = (y, x). Observa que las partículas se alejan a lo largo del eje y = x y convergen en y = −x.</li>
+            <li>El origen es un punto fijo (F = 0 allí), pero inestable: cualquier perturbación aleja la partícula.</li>
+            <li>∇·F = 0 y ∇×F = 0: campo irrotacional e incompresible. El flujo hiperbólico solo redirige energía.</li>
+            <li>Este patrón aparece cerca de puntos de silla en paisajes de energía potencial: entre dos valles hay siempre un col en forma de silla.</li>
+        </ol>
+    </div>
+
+    <h2>Conexiones</h2>
+
+    <div class="connections-grid">
+        <a href="../vector-field.html" class="connection-item">
+            <span class="connection-icon">→</span>
+            <div class="connection-text"><strong>Campo Vectorial (EDOs)</strong><br>Sistemas autónomos y atractores</div>
+        </a>
+        <a href="../ecuaciones-diferenciales.html" class="connection-item">
+            <span class="connection-icon">∂</span>
+            <div class="connection-text"><strong>Ecuaciones Diferenciales</strong><br>Interpretación geométrica de EDOs</div>
+        </a>
+        <a href="../lorenz-attractor.html" class="connection-item">
+            <span class="connection-icon">~</span>
+            <div class="connection-text"><strong>Atractor de Lorenz</strong><br>Campo vectorial 3D caótico</div>
+        </a>
+        <a href="../three-body.html" class="connection-item">
+            <span class="connection-icon">o</span>
+            <div class="connection-text"><strong>Tres Cuerpos</strong><br>Campo gravitacional complejo</div>
+        </a>
+    </div>
+
+    <footer>
+        <a href="../campos-vectoriales.html" class="btn-launch">Abrir simulación →</a>
+    </footer>
+</body>
+</html>
